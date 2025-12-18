@@ -1,4 +1,6 @@
+// lib/screens/home_screen.dart
 import 'package:flutter/material.dart';
+import 'dart:ui';
 
 import 'estoque_screen.dart';
 import 'relatorios_screen.dart';
@@ -9,10 +11,7 @@ import 'config_screen.dart';
 class HomeScreen extends StatefulWidget {
   final String userLogin;
 
-  const HomeScreen({
-    super.key,
-    required this.userLogin,
-  });
+  const HomeScreen({super.key, required this.userLogin});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -32,9 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _onTap(int index) {
     if (index == 2) {
       Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) => const ScannerScreen(),
-        ),
+        MaterialPageRoute(builder: (_) => const ScannerScreen()),
       );
       return;
     }
@@ -44,10 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  Widget _navItem({
-    required IconData icon,
-    required int index,
-  }) {
+  Widget _navItem({required IconData icon, required int index}) {
     final bool isActive = _currentIndex == index;
 
     return GestureDetector(
@@ -62,11 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             AnimatedContainer(
               duration: const Duration(milliseconds: 200),
-              transform: Matrix4.translationValues(
-                0,
-                isActive ? -4 : 0,
-                0,
-              ),
+              transform: Matrix4.translationValues(0, isActive ? -4 : 0, 0),
               child: Icon(
                 icon,
                 size: 26,
@@ -106,11 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-        child: const Icon(
-          Icons.qr_code_scanner,
-          color: Colors.white,
-          size: 28,
-        ),
+        child: const Icon(Icons.qr_code_scanner, color: Colors.white, size: 28),
       ),
     );
   }
@@ -119,48 +105,37 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _screens,
-      ),
+      body: IndexedStack(index: _currentIndex, children: _screens),
       bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Container(
-            height: 72,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(28),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.12),
-                  blurRadius: 20,
-                  offset: const Offset(0, 10),
+        child: SizedBox(
+          height: 72,
+          child: Stack(
+            children: [
+              // Blur limitado apenas ao rodapé
+              ClipRRect(
+                borderRadius: BorderRadius.circular(28),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6), // blur discreto
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.transparent, // transparente total
+                      borderRadius: BorderRadius.circular(28),
+                    ),
+                  ),
                 ),
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _navItem(
-                  icon: Icons.inventory_2_outlined,
-                  index: 0,
-                ),
-                _navItem(
-                  icon: Icons.bar_chart,
-                  index: 1,
-                ),
-                _scannerButton(),
-                _navItem(
-                  icon: Icons.notifications,
-                  index: 3,
-                ),
-                _navItem(
-                  icon: Icons.settings,
-                  index: 4,
-                ),
-              ],
-            ),
+              ),
+              // Conteúdo do rodapé
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _navItem(icon: Icons.inventory_2_outlined, index: 0),
+                  _navItem(icon: Icons.bar_chart, index: 1),
+                  _scannerButton(),
+                  _navItem(icon: Icons.notifications, index: 3),
+                  _navItem(icon: Icons.settings, index: 4),
+                ],
+              ),
+            ],
           ),
         ),
       ),

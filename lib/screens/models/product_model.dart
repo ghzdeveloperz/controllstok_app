@@ -1,4 +1,5 @@
-class ProductModel {
+// lib/screens/models/product_model.dart
+class Product {
   final String id;
   final String name;
   final String barcode;
@@ -10,7 +11,7 @@ class ProductModel {
   final double unitPrice;
   final String image;
 
-  ProductModel({
+  Product({
     required this.id,
     required this.name,
     required this.barcode,
@@ -23,11 +24,8 @@ class ProductModel {
     required this.image,
   });
 
-  factory ProductModel.fromFirestore(
-    String id,
-    Map<String, dynamic> data,
-  ) {
-    return ProductModel(
+  factory Product.fromMap(String id, Map<String, dynamic> data) {
+    return Product(
       id: id,
       name: data['name'] ?? '',
       barcode: data['barcode'] ?? '',
@@ -37,7 +35,7 @@ class ProductModel {
       price: (data['price'] ?? 0).toDouble(),
       cost: (data['cost'] ?? 0).toDouble(),
       unitPrice: (data['unitPrice'] ?? 0).toDouble(),
-      image: data['image'] ?? '',
+      image: data['image'] ?? '', // <-- garantir que venha algo
     );
   }
 }

@@ -5,6 +5,8 @@ import '../../screens/models/product.dart';
 
 class ProductsFirestore {
   static final _db = FirebaseFirestore.instance;
+
+  // ================= UPDATE PRODUCT =================
   static Future<void> updateProduct({
     required String userLogin,
     required String productId,
@@ -17,9 +19,15 @@ class ProductsFirestore {
         .doc(userLogin)
         .collection('products')
         .doc(productId)
-        .update({'name': name, 'category': category, 'minStock': minStock});
+        .update({
+          'name': name,
+          'category': category,
+          'minStock': minStock,
+          'updatedAt': FieldValue.serverTimestamp(),
+        });
   }
 
+  // ================= STREAM PRODUCTS =================
   static Stream<List<Product>> streamProducts(String userLogin) {
     return _db
         .collection('users')
@@ -30,17 +38,12 @@ class ProductsFirestore {
           return snapshot.docs.map((doc) {
             final data = doc.data();
 
-            // ===== LOG DE DEBUG (sem print) =====
-            if (data['price'] == null ||
-                data['quantity'] == null ||
-                data['cost'] == null) {
-              developer.log(
-                'Produto com campo nulo detectado! DocID: ${doc.id}, Data: $data',
-                name: 'ProductsFirestore',
-              );
-            }
+            // Debug completo da imagem
+            developer.log(
+              'DocID: ${doc.id}, image: ${data['image'] ?? "NULL"} (${data['image']?.runtimeType})',
+              name: 'ProductsFirestore',
+            );
 
-            // 👇 ORDEM CORRETA
             return Product.fromMap(doc.id, data);
           }).toList();
         });

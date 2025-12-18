@@ -1,3 +1,4 @@
+// lib/screens/estoque_screen.dart
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -95,6 +96,7 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
   }
 
   // ================= CATEGORIES =================
+  // ================= CATEGORIES =================
   Widget _buildCategories() {
     return SizedBox(
       height: 44,
@@ -125,13 +127,20 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
                     _selectedCategory = category.name;
                   });
                 },
-                child: Container(
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: isSelected ? Colors.black : Colors.white,
+                    color: isSelected
+                        ? Colors.black
+                        : Colors.transparent, // transparente
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.black),
+                    border: Border.all(
+                      color: isSelected
+                          ? Colors.black
+                          : Colors.grey.shade400, // apenas contorno sutil
+                    ),
                   ),
                   child: Text(
                     category.name,
@@ -190,22 +199,23 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
           );
         }
 
-        return GridView.builder(
-          padding: const EdgeInsets.all(16),
-          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-            maxCrossAxisExtent: 250,
-            childAspectRatio: 0.80,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-          ),
-          itemCount: filteredProducts.length,
-          itemBuilder: (context, index) {
-            return ProductCard(
-              product: filteredProducts[index],
-              userLogin: widget.userLogin, // 🔥 FECHA O FLUXO
-            );
-          },
-        );
+ return GridView.builder(
+  padding: const EdgeInsets.all(16),
+  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+    maxCrossAxisExtent: 250,
+    childAspectRatio: 0.80,
+    crossAxisSpacing: 12,
+    mainAxisSpacing: 12,
+  ),
+  itemCount: filteredProducts.length,
+  itemBuilder: (context, index) {
+    return ProductCard(
+      product: filteredProducts[index],
+      userLogin: widget.userLogin,
+      userCategories: snapshot.data?.map((c) => c.name).toList() ?? [], // 🔥 PASSA A LISTA DE CATEGORIAS
+    );
+  },
+);
       },
     );
   }

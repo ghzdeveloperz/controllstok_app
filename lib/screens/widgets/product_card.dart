@@ -1,4 +1,3 @@
-// lib/screens/widgets/product_card.dart
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../models/product.dart';
@@ -6,12 +5,14 @@ import 'product_details_modal.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
-  final String userLogin; // 🔥 AGORA EXISTE
+  final String userLogin;
+  final List<String> userCategories;
 
   const ProductCard({
     super.key,
     required this.product,
     required this.userLogin,
+    required this.userCategories,
   });
 
   // ===== STATUS =====
@@ -43,7 +44,7 @@ class ProductCard extends StatelessWidget {
           backgroundColor: Colors.transparent,
           builder: (_) => ProductDetailsModal(
             product: product,
-            userLogin: userLogin, // ✅ AGORA FUNCIONA
+            userLogin: userLogin,
           ),
         );
       },
@@ -68,7 +69,6 @@ class ProductCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(child: _buildImage()),
-
               Padding(
                 padding: const EdgeInsets.fromLTRB(12, 6, 12, 8),
                 child: Column(
@@ -109,7 +109,6 @@ class ProductCard extends StatelessWidget {
                         ),
                       ],
                     ),
-
                     const SizedBox(height: 6),
 
                     // ===== ESTOQUE + TOTAL =====
@@ -125,7 +124,7 @@ class ProductCard extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          'R\$ ${totalValue.toStringAsFixed(2)}',
+                          'R\$ ${(product.price != 0 ? product.price : product.cost * product.quantity).toStringAsFixed(2)}',
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w700,
@@ -134,7 +133,6 @@ class ProductCard extends StatelessWidget {
                         ),
                       ],
                     ),
-
                     const SizedBox(height: 4),
 
                     // ===== STATUS =====
