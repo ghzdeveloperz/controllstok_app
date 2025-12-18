@@ -23,7 +23,8 @@ class ProductCard extends StatelessWidget {
     return Colors.green.shade600;
   }
 
-  double get totalValue => product.price * product.quantity;
+  double get totalValue => (product.price != 0 ? product.price : product.cost) * product.quantity;
+
 
   @override
   Widget build(BuildContext context) {

@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import '../firebase/firestore/products_firestore.dart';
-import 'models/product.dart';
-import 'widgets/product_card.dart';
+import '../firebase/firestore/categories_firestore.dart';
+import '../../screens/widgets/product_card.dart';
+import '../screens/models/product.dart';
+import '../screens/models/category.dart';
 
 class EstoqueScreen extends StatefulWidget {
   final String userLogin;
 
-  const EstoqueScreen({
-    super.key,
-    required this.userLogin,
-  });
+  const EstoqueScreen({super.key, required this.userLogin});
 
   @override
   State<EstoqueScreen> createState() => _EstoqueScreenState();
@@ -31,9 +29,7 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
             _buildHeader(),
             _buildSearch(),
             _buildCategories(),
-            Expanded(
-              child: _buildProducts(),
-            ),
+            Expanded(child: _buildProducts()),
           ],
         ),
       ),
@@ -103,45 +99,55 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
 
   // ================= CATEGORIES =================
   Widget _buildCategories() {
-    final categories = ['Todos', 'Orientais', 'Bebidas', 'Outros'];
-
     return SizedBox(
       height: 44,
-      child: ListView.separated(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (context, index) {
-          final category = categories[index];
-          final selected = category == _selectedCategory;
+      child: StreamBuilder<List<Category>>(
+        stream: CategoriesFirestore.streamCategories(widget.userLogin),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-          return GestureDetector(
-            onTap: () {
-              setState(() {
-                _selectedCategory = category;
-              });
-            },
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: selected ? Colors.black : Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: Colors.black),
-              ),
-              child: Text(
-                category,
-                style: TextStyle(
-                  color: selected ? Colors.white : Colors.black,
-                  fontWeight: FontWeight.w500,
+          final categories = [
+            Category(id: 'todos', name: 'Todos'),
+            ...snapshot.data!
+          ];
+
+          return ListView.separated(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            scrollDirection: Axis.horizontal,
+            itemCount: categories.length,
+            separatorBuilder: (_, _) => const SizedBox(width: 8),
+            itemBuilder: (context, index) {
+              final category = categories[index];
+              final selected = category.name == _selectedCategory;
+
+              return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _selectedCategory = category.name;
+                  });
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: selected ? Colors.black : Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.black),
+                  ),
+                  child: Text(
+                    category.name,
+                    style: TextStyle(
+                      color: selected ? Colors.white : Colors.black,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           );
         },
-        separatorBuilder: (_, _) => const SizedBox(width: 8),
-
-
-        itemCount: categories.length,
       ),
     );
   }
@@ -169,11 +175,8 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
         final filteredProducts = products.where((product) {
           final matchesSearch =
               product.name.toLowerCase().contains(_searchText);
-
-          final matchesCategory =
-              _selectedCategory == 'Todos' ||
+          final matchesCategory = _selectedCategory == 'Todos' ||
               product.category == _selectedCategory;
-
           return matchesSearch && matchesCategory;
         }).toList();
 
@@ -188,17 +191,15 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
 
         return GridView.builder(
           padding: const EdgeInsets.all(16),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
+          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+            maxCrossAxisExtent: 250, // responsivo
             childAspectRatio: 0.80,
             crossAxisSpacing: 12,
             mainAxisSpacing: 12,
           ),
           itemCount: filteredProducts.length,
           itemBuilder: (context, index) {
-            return ProductCard(
-              product: filteredProducts[index],
-            );
+            return ProductCard(product: filteredProducts[index]);
           },
         );
       },
