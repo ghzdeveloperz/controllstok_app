@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import '../firebase/firestore/products_firestore.dart';
 import '../firebase/firestore/categories_firestore.dart';
-import '../../screens/widgets/product_card.dart';
-import '../screens/models/product.dart';
-import '../screens/models/category.dart';
+
+import 'widgets/product_card.dart';
+import 'models/product.dart';
+import 'models/category.dart';
 
 class EstoqueScreen extends StatefulWidget {
   final String userLogin;
@@ -51,7 +53,6 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
                 style: GoogleFonts.poppins(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
                 ),
               ),
               Text(
@@ -63,11 +64,7 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
               ),
             ],
           ),
-          const Icon(
-            Icons.inventory_2_outlined,
-            size: 28,
-            color: Colors.black,
-          ),
+          const Icon(Icons.inventory_2_outlined, size: 28),
         ],
       ),
     );
@@ -104,13 +101,13 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
       child: StreamBuilder<List<Category>>(
         stream: CategoriesFirestore.streamCategories(widget.userLogin),
         builder: (context, snapshot) {
-          if (!snapshot.hasData) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
 
           final categories = [
             Category(id: 'todos', name: 'Todos'),
-            ...snapshot.data!
+            ...(snapshot.data ?? []),
           ];
 
           return ListView.separated(
@@ -120,7 +117,7 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
             separatorBuilder: (_, _) => const SizedBox(width: 8),
             itemBuilder: (context, index) {
               final category = categories[index];
-              final selected = category.name == _selectedCategory;
+              final isSelected = category.name == _selectedCategory;
 
               return GestureDetector(
                 onTap: () {
@@ -132,14 +129,14 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: selected ? Colors.black : Colors.white,
+                    color: isSelected ? Colors.black : Colors.white,
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(color: Colors.black),
                   ),
                   child: Text(
                     category.name,
                     style: TextStyle(
-                      color: selected ? Colors.white : Colors.black,
+                      color: isSelected ? Colors.white : Colors.black,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -173,10 +170,14 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
         final products = snapshot.data ?? [];
 
         final filteredProducts = products.where((product) {
-          final matchesSearch =
-              product.name.toLowerCase().contains(_searchText);
-          final matchesCategory = _selectedCategory == 'Todos' ||
+          final matchesSearch = product.name.toLowerCase().contains(
+            _searchText,
+          );
+
+          final matchesCategory =
+              _selectedCategory == 'Todos' ||
               product.category == _selectedCategory;
+
           return matchesSearch && matchesCategory;
         }).toList();
 
@@ -192,14 +193,17 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
         return GridView.builder(
           padding: const EdgeInsets.all(16),
           gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-            maxCrossAxisExtent: 250, // responsivo
+            maxCrossAxisExtent: 250,
             childAspectRatio: 0.80,
             crossAxisSpacing: 12,
             mainAxisSpacing: 12,
           ),
           itemCount: filteredProducts.length,
           itemBuilder: (context, index) {
-            return ProductCard(product: filteredProducts[index]);
+            return ProductCard(
+              product: filteredProducts[index],
+              userLogin: widget.userLogin, // 🔥 FECHA O FLUXO
+            );
           },
         );
       },

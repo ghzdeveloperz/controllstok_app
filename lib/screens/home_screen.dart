@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'estoque_screen.dart';
 import 'relatorios_screen.dart';
 import 'scanner_screen.dart';
@@ -7,7 +8,11 @@ import 'config_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final String userLogin;
-  const HomeScreen({super.key, required this.userLogin});
+
+  const HomeScreen({
+    super.key,
+    required this.userLogin,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -19,7 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late final List<Widget> _screens = [
     EstoqueScreen(userLogin: widget.userLogin),
     const RelatoriosScreen(),
-    const SizedBox(), // scanner é tratado separado
+    const SizedBox(), // placeholder do botão scanner
     const AlertasScreen(),
     const ConfigScreen(),
   ];
@@ -27,7 +32,9 @@ class _HomeScreenState extends State<HomeScreen> {
   void _onTap(int index) {
     if (index == 2) {
       Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const ScannerScreen()),
+        MaterialPageRoute(
+          builder: (_) => const ScannerScreen(),
+        ),
       );
       return;
     }
@@ -55,7 +62,6 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             AnimatedContainer(
               duration: const Duration(milliseconds: 200),
-              curve: Curves.easeOut,
               transform: Matrix4.translationValues(
                 0,
                 isActive ? -4 : 0,
@@ -94,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withAlpha(60),
+              color: Colors.black.withValues(alpha: 0.25),
               blurRadius: 12,
               offset: const Offset(0, 6),
             ),
@@ -127,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
               borderRadius: BorderRadius.circular(28),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withAlpha(30),
+                  color: Colors.black.withValues(alpha: 0.12),
                   blurRadius: 20,
                   offset: const Offset(0, 10),
                 ),
