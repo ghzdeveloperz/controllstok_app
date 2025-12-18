@@ -31,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _onTap(int index) {
     if (index == 2) {
       Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const ScannerScreen()),
+        MaterialPageRoute(builder: (_) => ScannerScreen(userLogin: widget.userLogin)),
       );
       return;
     }

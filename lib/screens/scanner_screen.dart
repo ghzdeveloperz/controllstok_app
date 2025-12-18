@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ScannerScreen extends StatefulWidget {
-  const ScannerScreen({super.key});
+  final String userLogin;
+
+  const ScannerScreen({super.key, required this.userLogin});
 
   @override
   State<ScannerScreen> createState() => _ScannerScreenState();
@@ -11,7 +14,10 @@ class ScannerScreen extends StatefulWidget {
 class _ScannerScreenState extends State<ScannerScreen> {
   final MobileScannerController _controller = MobileScannerController();
   String? scannedCode;
+  String? productName;
   bool _hasScanned = false;
+
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   void dispose() {
@@ -19,7 +25,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
     super.dispose();
   }
 
-  void _onDetect(BarcodeCapture capture) {
+  Future<void> _onDetect(BarcodeCapture capture) async {
     if (_hasScanned) return;
     if (capture.barcodes.isEmpty) return;
 
@@ -34,11 +40,45 @@ class _ScannerScreenState extends State<ScannerScreen> {
     });
 
     _controller.stop();
+
+    try {
+      debugPrint(
+        'Buscando produto no caminho: /users/${widget.userLogin}/products',
+      );
+      debugPrint('Barcode escaneado: $code');
+
+      // Consulta no Firestore pelo barcode
+      final querySnapshot = await _firestore
+          .collection('users')
+          .doc(widget.userLogin)
+          .collection('products')
+          .where('barcode', isEqualTo: code)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        final doc = querySnapshot.docs.first;
+        debugPrint('Produto encontrado: ${doc['name']} (Barcode: $code)');
+        setState(() {
+          productName = doc['name'] ?? 'Nome não disponível';
+        });
+      } else {
+        debugPrint('Produto não encontrado para o barcode: $code');
+        setState(() {
+          productName = 'Produto não encontrado';
+        });
+      }
+    } catch (e) {
+      debugPrint('Erro ao buscar produto: $e');
+      setState(() {
+        productName = 'Erro ao buscar produto';
+      });
+    }
   }
 
   void _resetScanner() {
     setState(() {
       scannedCode = null;
+      productName = null;
       _hasScanned = false;
     });
     _controller.start();
@@ -54,21 +94,15 @@ class _ScannerScreenState extends State<ScannerScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _resetScanner,
-          ),
+          IconButton(icon: const Icon(Icons.refresh), onPressed: _resetScanner),
         ],
       ),
       body: Stack(
         children: [
-          // câmera full screen
-          MobileScanner(
-            controller: _controller,
-            onDetect: _onDetect,
-          ),
+          // Câmera full screen
+          MobileScanner(controller: _controller, onDetect: _onDetect),
 
-          // marcador central visível somente se ainda não escaneou
+          // Marcador central
           if (!_hasScanned)
             Center(
               child: Container(
@@ -84,16 +118,17 @@ class _ScannerScreenState extends State<ScannerScreen> {
                   child: Text(
                     'Posicione o código de barras aqui',
                     style: TextStyle(
-                        color: Colors.white70,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500),
+                      color: Colors.white70,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               ),
             ),
 
-          // overlay de código escaneado
-          if (scannedCode != null)
+          // Resultado do scan
+          if (_hasScanned)
             Center(
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -101,34 +136,25 @@ class _ScannerScreenState extends State<ScannerScreen> {
                 decoration: BoxDecoration(
                   color: Colors.black.withAlpha((0.75 * 255).toInt()),
                   borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withAlpha((0.75 * 255).toInt()),
-                      blurRadius: 20,
-                      spreadRadius: 5,
-                    ),
-                  ],
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(
-                      Icons.check_circle_outline,
-                      color: Colors.greenAccent,
+                    Icon(
+                      productName == 'Produto não encontrado' ||
+                              productName == 'Erro ao buscar produto'
+                          ? Icons.error_outline
+                          : Icons.check_circle_outline,
+                      color:
+                          productName == 'Produto não encontrado' ||
+                              productName == 'Erro ao buscar produto'
+                          ? Colors.redAccent
+                          : Colors.greenAccent,
                       size: 48,
                     ),
                     const SizedBox(height: 12),
-                    const Text(
-                      'Código escaneado:',
-                      style: TextStyle(
-                        color: Colors.white70,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
                     Text(
-                      scannedCode!,
+                      productName ?? '',
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         color: Colors.white,
@@ -136,12 +162,25 @@ class _ScannerScreenState extends State<ScannerScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                    if (productName == 'Produto não encontrado' ||
+                        productName == 'Erro ao buscar produto')
+                      const SizedBox(height: 6),
+                    if (productName == 'Produto não encontrado' ||
+                        productName == 'Erro ao buscar produto')
+                      Text(
+                        'Código: $scannedCode',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 16,
+                        ),
+                      ),
                   ],
                 ),
               ),
             ),
 
-          // botão reset
+          // Botão reset
           if (_hasScanned)
             Positioned(
               bottom: 30,
