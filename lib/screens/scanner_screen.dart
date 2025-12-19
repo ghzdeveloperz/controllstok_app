@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // Para HapticFeedback
+import 'package:flutter/services.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'widgets/scan_result_card.dart';
 import 'widgets/bottom_cart.dart';
+import 'widgets/finalize_modal.dart';
 
 class ScannerScreen extends StatefulWidget {
   final String userLogin;
@@ -17,12 +18,11 @@ class ScannerScreen extends StatefulWidget {
 
 class _ScannerScreenState extends State<ScannerScreen> {
   final MobileScannerController _controller = MobileScannerController();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   String? scannedCode;
   String? productName;
   bool _hasScanned = false;
-
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   List<CartItem> cart = [];
 
@@ -38,14 +38,30 @@ class _ScannerScreenState extends State<ScannerScreen> {
         : base64String;
   }
 
+  // 🔥 MODAL DE FINALIZAÇÃO
+  Future<void> _openFinalizeModal() async {
+    if (cart.isEmpty) return;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const FinalizeModal(),
+    );
+
+    if (confirmed == true) {
+      debugPrint('Compra finalizada');
+
+      setState(() {
+        cart.clear();
+      });
+    }
+  }
+
   Future<void> _onDetect(BarcodeCapture capture) async {
-    if (capture.barcodes.isEmpty) return;
+    if (capture.barcodes.isEmpty || _hasScanned) return;
 
-    final barcode = capture.barcodes.first;
-    final code = barcode.rawValue;
-
+    final code = capture.barcodes.first.rawValue;
     if (code == null || code.isEmpty) return;
-    if (_hasScanned) return;
 
     _controller.stop();
 
@@ -55,22 +71,19 @@ class _ScannerScreenState extends State<ScannerScreen> {
     });
 
     try {
-      final querySnapshot = await _firestore
+      final snapshot = await _firestore
           .collection('users')
           .doc(widget.userLogin)
           .collection('products')
           .where('barcode', isEqualTo: code)
           .get();
 
-      if (querySnapshot.docs.isNotEmpty) {
-        final doc = querySnapshot.docs.first;
-        final data = doc.data();
+      if (snapshot.docs.isNotEmpty) {
+        final data = snapshot.docs.first.data();
 
-        final String name = data['name'] ?? 'Nome não disponível';
-        final String imageBase64 = data['image'] ?? '';
-
-        // ✅ CORREÇÃO DEFINITIVA DO unitPrice
-        final double unitPrice = data.containsKey('unitPrice')
+        final name = data['name'] ?? 'Nome não disponível';
+        final imageBase64 = data['image'] ?? '';
+        final unitPrice = data.containsKey('unitPrice')
             ? (data['unitPrice'] as num).toDouble()
             : 0.0;
 
@@ -96,13 +109,12 @@ class _ScannerScreenState extends State<ScannerScreen> {
           productName = name;
         });
       } else {
-        HapticFeedback.vibrate();
         setState(() {
           productName = 'Produto não encontrado';
         });
       }
     } catch (e) {
-      debugPrint('Erro ao buscar produto: $e');
+      debugPrint('Erro: $e');
       setState(() {
         productName = 'Erro ao buscar produto';
       });
@@ -148,34 +160,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
       ),
       body: Stack(
         children: [
-          MobileScanner(
-            controller: _controller,
-            onDetect: _onDetect,
-          ),
-
-          if (!_hasScanned)
-            Center(
-              child: Container(
-                width: MediaQuery.of(context).size.width * 0.8,
-                height: 80,
-                decoration: const BoxDecoration(
-                  border: Border(
-                    top: BorderSide(width: 3, color: Colors.greenAccent),
-                    bottom: BorderSide(width: 3, color: Colors.greenAccent),
-                  ),
-                ),
-                child: const Center(
-                  child: Text(
-                    'Posicione o código de barras aqui',
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ),
-            ),
+          MobileScanner(controller: _controller, onDetect: _onDetect),
 
           if (_hasScanned)
             ScanResultCard(
@@ -189,9 +174,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
               cart: cart,
               increment: _incrementQuantity,
               decrement: _decrementQuantity,
-              onFinalize: () {
-                // ação de finalizar
-              },
+              onFinalize: _openFinalizeModal, // ✅ CONECTADO
             ),
           ),
         ],

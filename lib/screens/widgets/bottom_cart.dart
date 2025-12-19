@@ -1,6 +1,8 @@
+// lib/screens/widgets/bottom_cart.dart
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../scanner_screen.dart'; // CartItem
+
 
 class BottomCart extends StatelessWidget {
   final List<CartItem> cart;
