@@ -8,6 +8,8 @@ plugins {
 
 
 android {
+
+    
     namespace = "com.example.controllstok_app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
