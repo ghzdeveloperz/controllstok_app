@@ -1,15 +1,17 @@
-import 'dart:async'; // Adicione esta importação para usar Timer
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 class ScanResultCard extends StatefulWidget {
   final String productName;
+  final bool isError;
   final String scannedCode;
-  final VoidCallback? onDismiss; // Callback opcional para quando o card for dispensado (útil se o pai quiser controlar)
+  final VoidCallback? onDismiss;
 
   const ScanResultCard({
     super.key,
     required this.productName,
     required this.scannedCode,
+    required this.isError,
     this.onDismiss,
   });
 
@@ -30,44 +32,48 @@ class _ScanResultCardState extends State<ScanResultCard>
 
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 600),
+      duration: const Duration(milliseconds: 500),
     );
 
-    _scaleAnimation = Tween<double>(begin: 0.7, end: 1.0)
-        .animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
+    _scaleAnimation = Tween<double>(
+      begin: 0.7,
+      end: 1.0,
+    ).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.elasticOut),
+    );
 
-    _opacityAnimation = Tween<double>(begin: 0, end: 1)
-        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
+    _opacityAnimation = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
+    );
 
-    // Inicia a animação de entrada
+    // animação de entrada
     _controller.forward();
 
-    // Após 3 segundos (ajuste conforme necessário), inicia a animação de saída
-    _dismissTimer = Timer(const Duration(seconds: 3), () {
-      _dismissCard();
-    });
+    // ⏱️ TIMER MENOR (antes 3s)
+    _dismissTimer = Timer(const Duration(milliseconds: 1200), _dismissCard);
   }
 
   void _dismissCard() {
-    // Anima a saída com fade-out mais suave: duração maior para o fade-out
-    _controller.duration = const Duration(milliseconds: 800); // Duração maior para saída (fade-out mais lento)
+    _controller.duration = const Duration(milliseconds: 600);
+
     _controller.reverse().then((_) {
-      widget.onDismiss?.call(); // Chama o callback se fornecido
-      // Ou, se não houver callback, você pode simplesmente deixar o widget ser removido pelo pai
+      widget.onDismiss?.call();
     });
   }
 
   @override
   void dispose() {
-    _dismissTimer?.cancel(); // Cancela o timer se o widget for descartado
+    _dismissTimer?.cancel();
     _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    bool isError = widget.productName == 'Produto não encontrado' ||
-        widget.productName == 'Erro ao buscar produto';
+    final isError = widget.isError;
 
     return Center(
       child: AnimatedBuilder(
@@ -85,11 +91,11 @@ class _ScanResultCardState extends State<ScanResultCard>
           decoration: BoxDecoration(
             color: const Color.fromRGBO(255, 255, 255, 0.7),
             borderRadius: BorderRadius.circular(16),
-            boxShadow: [
+            boxShadow: const [
               BoxShadow(
                 color: Colors.black26,
                 blurRadius: 12,
-                offset: const Offset(0, 4),
+                offset: Offset(0, 4),
               ),
             ],
           ),
@@ -98,27 +104,26 @@ class _ScanResultCardState extends State<ScanResultCard>
             children: [
               TweenAnimationBuilder<double>(
                 tween: Tween<double>(begin: 0, end: 1),
-                duration: const Duration(milliseconds: 700),
+                duration: const Duration(milliseconds: 600),
                 curve: Curves.elasticOut,
                 builder: (context, value, child) {
                   if (isError) {
-                    return Transform.scale(
-                      scale: value,
-                      child: child,
-                    );
-                  } else {
-                    return Transform.scale(
-                      scale: value,
-                      child: Transform.rotate(
-                        angle: value * 2 * 3.14159,
-                        child: child,
-                      ),
-                    );
+                    return Transform.scale(scale: value, child: child);
                   }
+                  return Transform.scale(
+                    scale: value,
+                    child: Transform.rotate(
+                      angle: value * 2 * 3.14159,
+                      child: child,
+                    ),
+                  );
                 },
                 child: Icon(
-                  isError ? Icons.error_outline : Icons.check_circle_outline,
-                  color: isError ? Colors.redAccent : Colors.greenAccent,
+                  isError
+                      ? Icons.error_outline
+                      : Icons.check_circle_outline,
+                  color:
+                      isError ? Colors.redAccent : Colors.greenAccent,
                   size: 56,
                 ),
               ),
@@ -127,7 +132,8 @@ class _ScanResultCardState extends State<ScanResultCard>
                 widget.productName,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: isError ? Colors.redAccent : Colors.black87,
+                  color:
+                      isError ? Colors.redAccent : Colors.black87,
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),

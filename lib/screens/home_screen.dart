@@ -1,4 +1,3 @@
-// lib/screens/home_screen.dart
 import 'package:flutter/material.dart';
 import 'dart:ui';
 
@@ -11,7 +10,10 @@ import 'config_screen.dart';
 class HomeScreen extends StatefulWidget {
   final String userLogin;
 
-  const HomeScreen({super.key, required this.userLogin});
+  const HomeScreen({
+    super.key,
+    required this.userLogin,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -23,15 +25,19 @@ class _HomeScreenState extends State<HomeScreen> {
   late final List<Widget> _screens = [
     EstoqueScreen(userLogin: widget.userLogin),
     const RelatoriosScreen(),
-    const SizedBox(), // placeholder do botão scanner
-    const AlertasScreen(),
+    const SizedBox(),
+    AlertasScreen(userLogin: widget.userLogin), // ✅ agora bate
     const ConfigScreen(),
   ];
 
   void _onTap(int index) {
     if (index == 2) {
       Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => ScannerScreen(userLogin: widget.userLogin)),
+        MaterialPageRoute(
+          builder: (_) => ScannerScreen(
+            userLogin: widget.userLogin,
+          ),
+        ),
       );
       return;
     }
@@ -49,7 +55,6 @@ class _HomeScreenState extends State<HomeScreen> {
       behavior: HitTestBehavior.opaque,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        curve: Curves.easeOut,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -111,20 +116,18 @@ class _HomeScreenState extends State<HomeScreen> {
           height: 72,
           child: Stack(
             children: [
-              // Blur limitado apenas ao rodapé
               ClipRRect(
                 borderRadius: BorderRadius.circular(28),
                 child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6), // blur discreto
+                  filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.transparent, // transparente total
+                      color: Colors.transparent,
                       borderRadius: BorderRadius.circular(28),
                     ),
                   ),
                 ),
               ),
-              // Conteúdo do rodapé
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [

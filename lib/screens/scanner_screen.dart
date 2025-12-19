@@ -23,6 +23,7 @@ class _ScannerScreenState extends State<ScannerScreen>
 
   String? scannedCode;
   String? productName;
+  bool _isError = false;
   bool _hasScanned = false;
 
   List<CartItem> cart = [];
@@ -53,7 +54,9 @@ class _ScannerScreenState extends State<ScannerScreen>
   }
 
   String _cleanBase64(String base64String) {
-    return base64String.contains(',') ? base64String.split(',').last : base64String;
+    return base64String.contains(',')
+        ? base64String.split(',').last
+        : base64String;
   }
 
   // 🔥 Atualiza unitPrice no Firestore + carrinho
@@ -82,7 +85,7 @@ class _ScannerScreenState extends State<ScannerScreen>
     }
   }
 
-  // 🔥 Atualiza estoque + custo médio no Firestore
+  // 🔥 Finaliza carrinho
   Future<void> _finalizeCart() async {
     if (cart.isEmpty) return;
 
@@ -97,21 +100,22 @@ class _ScannerScreenState extends State<ScannerScreen>
             .get();
 
         if (snapshot.docs.isEmpty) continue;
+
         final docRef = snapshot.docs.first.reference;
         final data = snapshot.docs.first.data();
 
         final oldQty = (data['quantity'] ?? 0).toInt();
         final oldCost = (data['cost'] ?? 0).toDouble();
-        final loteUnitPrice = item.unitPrice; // preço do lote (entrada)
+        final loteUnitPrice = item.unitPrice;
 
-        // 🔥 calcula novo custo médio
-        final newAvgCost = ((oldQty * oldCost) + (item.quantity * loteUnitPrice)) /
-            (oldQty + item.quantity);
+        final newAvgCost =
+            ((oldQty * oldCost) + (item.quantity * loteUnitPrice)) /
+                (oldQty + item.quantity);
 
         await docRef.update({
           'quantity': oldQty + item.quantity,
           'cost': newAvgCost,
-          'unitPrice': loteUnitPrice, // mantém o preço de venda
+          'unitPrice': loteUnitPrice,
           'updatedAt': DateTime.now(),
         });
       } catch (e) {
@@ -119,7 +123,6 @@ class _ScannerScreenState extends State<ScannerScreen>
       }
     }
 
-    // limpa carrinho local
     if (!mounted) return;
     setState(() => cart.clear());
   }
@@ -133,16 +136,15 @@ class _ScannerScreenState extends State<ScannerScreen>
       builder: (_) => const FinalizeModal(),
     );
 
-    if (!mounted) return; // ⚡ Proteção contra uso assíncrono do context
+    if (!mounted) return;
 
     if (result != null) {
       await _finalizeCart();
-
-      // volta para tela anterior (estoque)
       if (mounted) Navigator.of(context).pop();
     }
   }
 
+  // 🔥 SCAN
   Future<void> _onDetect(BarcodeCapture capture) async {
     if (capture.barcodes.isEmpty || _hasScanned) return;
 
@@ -155,6 +157,7 @@ class _ScannerScreenState extends State<ScannerScreen>
     setState(() {
       scannedCode = code;
       _hasScanned = true;
+      _isError = false;
     });
 
     try {
@@ -168,9 +171,15 @@ class _ScannerScreenState extends State<ScannerScreen>
 
       if (!mounted) return;
 
-      if (snapshot.docs.isNotEmpty) {
+      // ❌ NÃO ENCONTROU
+      if (snapshot.docs.isEmpty) {
+        setState(() {
+          productName = 'Produto não encontrado';
+          _isError = true;
+        });
+      } else {
+        // ✅ ENCONTROU
         final data = snapshot.docs.first.data();
-
         HapticFeedback.vibrate();
 
         setState(() {
@@ -191,24 +200,35 @@ class _ScannerScreenState extends State<ScannerScreen>
           }
 
           productName = data['name'];
+          _isError = false;
         });
       }
     } catch (e) {
       debugPrint('Erro ao detectar código: $e');
+      if (!mounted) return;
+
+      setState(() {
+        productName = 'Erro ao buscar produto';
+        _isError = true;
+      });
     }
 
-    await Future.delayed(const Duration(milliseconds: 1500));
+    await Future.delayed(const Duration(milliseconds: 1800));
 
     if (!mounted) return;
     setState(() {
       scannedCode = null;
       productName = null;
+      _isError = false;
       _hasScanned = false;
     });
+
     _controller.start();
   }
 
-  void _incrementQuantity(int index) => setState(() => cart[index].quantity++);
+  void _incrementQuantity(int index) =>
+      setState(() => cart[index].quantity++);
+
   void _decrementQuantity(int index) {
     setState(() {
       if (cart[index].quantity > 1) {
@@ -262,11 +282,15 @@ class _ScannerScreenState extends State<ScannerScreen>
         children: [
           MobileScanner(controller: _controller, onDetect: _onDetect),
           _buildScannerOverlay(),
-          if (_hasScanned)
+
+          if (_hasScanned && scannedCode != null && productName != null)
             ScanResultCard(
-              productName: productName ?? '',
-              scannedCode: scannedCode ?? '',
+              productName: productName!,
+              scannedCode: scannedCode!,
+              isError: _isError,
+              onDismiss: () {},
             ),
+
           Align(
             alignment: Alignment.bottomCenter,
             child: BottomCart(
@@ -283,6 +307,9 @@ class _ScannerScreenState extends State<ScannerScreen>
   }
 }
 
+// ========================
+// MODEL
+// ========================
 class CartItem {
   final String barcode;
   final String name;
