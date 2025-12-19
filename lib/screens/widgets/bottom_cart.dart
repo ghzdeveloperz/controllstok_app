@@ -1,14 +1,14 @@
 // lib/screens/widgets/bottom_cart.dart
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import '../scanner_screen.dart'; // CartItem
+import '../scanner_screen.dart';
 
-
-class BottomCart extends StatelessWidget {
+class BottomCart extends StatefulWidget {
   final List<CartItem> cart;
   final void Function(int) increment;
   final void Function(int) decrement;
   final VoidCallback onFinalize;
+  final void Function(String barcode, double newPrice) onEditPrice;
 
   const BottomCart({
     super.key,
@@ -16,44 +16,125 @@ class BottomCart extends StatelessWidget {
     required this.increment,
     required this.decrement,
     required this.onFinalize,
+    required this.onEditPrice,
   });
 
+  @override
+  State<BottomCart> createState() => _BottomCartState();
+}
+
+class _BottomCartState extends State<BottomCart> {
+  String? _movementType; // entrada | saida
+
   double get total =>
-      cart.fold(0, (sum, item) => sum + item.quantity * item.unitPrice);
+      widget.cart.fold(0, (sum, item) => sum + item.quantity * item.unitPrice);
+
+  void _editPrice(BuildContext context, CartItem item) {
+    final controller = TextEditingController(
+      text: item.unitPrice.toStringAsFixed(2),
+    );
+
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Alterar preço unitário'),
+        content: TextField(
+          controller: controller,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          decoration: const InputDecoration(
+            prefixText: 'R\$ ',
+            border: OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancelar'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              final value = double.tryParse(
+                controller.text.replaceAll(',', '.'),
+              );
+              if (value != null && value > 0) {
+                // Atualiza unitPrice no Firestore e no carrinho
+                widget.onEditPrice(item.barcode, value);
+                setState(() {}); // rebuild para atualizar total
+              }
+              Navigator.pop(context);
+            },
+
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.black,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Salvar'),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final cartHeight = MediaQuery.of(context).size.height * 0.35;
+    final cartHeight = MediaQuery.of(context).size.height * 0.4;
 
     return Container(
       height: cartHeight,
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white.withAlpha((0.5 * 255).round()),
+        color: Colors.white.withAlpha((0.9 * 255).round()),
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
       ),
       child: Column(
         children: [
-          // 🔹 LISTA DE PRODUTOS
+          Row(
+            children: [
+              Expanded(
+                child: ChoiceChip(
+                  label: const Text('Entrada'),
+                  selected: _movementType == 'entrada',
+                  selectedColor: Colors.green.shade600,
+                  labelStyle: TextStyle(
+                    color: _movementType == 'entrada'
+                        ? Colors.white
+                        : Colors.black,
+                  ),
+                  onSelected: (_) => setState(() => _movementType = 'entrada'),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: ChoiceChip(
+                  label: const Text('Saída'),
+                  selected: _movementType == 'saida',
+                  selectedColor: Colors.red.shade600,
+                  labelStyle: TextStyle(
+                    color: _movementType == 'saida'
+                        ? Colors.white
+                        : Colors.black,
+                  ),
+                  onSelected: (_) => setState(() => _movementType = 'saida'),
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 12),
+
           Expanded(
-            child: cart.isNotEmpty
-                ? ListView.builder(
+            child: widget.cart.isEmpty
+                ? const Center(child: Text('Nenhum produto no carrinho'))
+                : ListView.builder(
                     padding: EdgeInsets.zero,
-                    itemCount: cart.length,
-                    itemBuilder: (context, index) {
-                      final item = cart[index];
+                    itemCount: widget.cart.length,
+                    itemBuilder: (_, index) {
+                      final item = widget.cart[index];
 
                       return Card(
                         margin: const EdgeInsets.symmetric(vertical: 4),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        color: Colors.white.withAlpha((0.85 * 255).round()),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 6,
-                          ),
+                          padding: const EdgeInsets.all(8),
                           child: Row(
                             children: [
                               item.imageBase64.isNotEmpty
@@ -63,13 +144,10 @@ class BottomCart extends StatelessWidget {
                                       height: 40,
                                       fit: BoxFit.cover,
                                     )
-                                  : const Icon(
-                                      Icons.image_not_supported,
-                                      color: Colors.black45,
-                                    ),
+                                  : const Icon(Icons.image_not_supported),
+
                               const SizedBox(width: 8),
 
-                              // 🔹 Nome + preço
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,44 +155,43 @@ class BottomCart extends StatelessWidget {
                                     Text(
                                       item.name,
                                       style: const TextStyle(
-                                        color: Colors.black87,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      'R\$ ${item.unitPrice.toStringAsFixed(2)} / un',
-                                      style: const TextStyle(
-                                        color: Colors.black54,
-                                        fontSize: 13,
-                                      ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          'R\$ ${item.unitPrice.toStringAsFixed(2)} / un',
+                                          style: const TextStyle(
+                                            color: Colors.black54,
+                                            fontSize: 13,
+                                          ),
+                                        ),
+                                        if (_movementType == 'entrada')
+                                          IconButton(
+                                            icon: const Icon(
+                                              Icons.edit,
+                                              size: 18,
+                                            ),
+                                            onPressed: () =>
+                                                _editPrice(context, item),
+                                          ),
+                                      ],
                                     ),
                                   ],
                                 ),
                               ),
 
-                              // 🔹 Quantidade
                               Row(
                                 children: [
                                   IconButton(
-                                    onPressed: () => decrement(index),
-                                    icon: const Icon(
-                                      Icons.remove_circle_outline,
-                                      color: Colors.black54,
-                                    ),
+                                    onPressed: () => widget.decrement(index),
+                                    icon: const Icon(Icons.remove),
                                   ),
-                                  Text(
-                                    item.quantity.toString(),
-                                    style: const TextStyle(
-                                      color: Colors.black87,
-                                    ),
-                                  ),
+                                  Text(item.quantity.toString()),
                                   IconButton(
-                                    onPressed: () => increment(index),
-                                    icon: const Icon(
-                                      Icons.add_circle_outline,
-                                      color: Colors.black54,
-                                    ),
+                                    onPressed: () => widget.increment(index),
+                                    icon: const Icon(Icons.add),
                                   ),
                                 ],
                               ),
@@ -123,18 +200,11 @@ class BottomCart extends StatelessWidget {
                         ),
                       );
                     },
-                  )
-                : const Center(
-                    child: Text(
-                      'Nenhum produto escaneado ainda',
-                      style: TextStyle(color: Colors.black54, fontSize: 16),
-                    ),
                   ),
           ),
 
           const SizedBox(height: 8),
 
-          // 🔹 TOTAL
           Align(
             alignment: Alignment.centerRight,
             child: RichText(
@@ -161,18 +231,17 @@ class BottomCart extends StatelessWidget {
 
           const SizedBox(height: 8),
 
-          // 🔹 BOTÃO FINALIZAR
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: onFinalize,
+              onPressed: (_movementType == null || widget.cart.isEmpty)
+                  ? null
+                  : widget.onFinalize,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 12,
-                ),
+                disabledBackgroundColor: Colors.grey.shade400,
+                padding: const EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),

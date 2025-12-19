@@ -159,7 +159,7 @@
       try {
         final bytes = base64Decode(widget.product.image.split(',').last);
         return ClipRRect(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(1),
           child: Image.memory(bytes, height: 160, fit: BoxFit.contain),
         );
       } catch (_) {
