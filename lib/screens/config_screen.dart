@@ -5,7 +5,9 @@ import 'conf_options/notificacoes_screen.dart';
 import 'conf_options/sobre_screen.dart';
 
 class ConfigScreen extends StatelessWidget {
-  const ConfigScreen({super.key});
+  final String userLogin; // RECEBENDO LOGIN REAL
+
+  const ConfigScreen({super.key, required this.userLogin});
 
   void _logout(BuildContext context) {
     Navigator.of(context).pushAndRemoveUntil(
@@ -35,9 +37,10 @@ class ConfigScreen extends StatelessWidget {
               context,
               icon: Icons.person_outline,
               title: 'Perfil',
-              subtitle: 'Edite suas informações pessoais',
-              page: const PerfilScreen(),
+              subtitle: 'Informações Pessoais',
+              page: PerfilScreen(userLogin: userLogin), // 🔥 LOGIN PASSADO AQUI
             ),
+
             const SizedBox(height: 16),
 
             _buildOption(
@@ -53,10 +56,8 @@ class ConfigScreen extends StatelessWidget {
               context,
               icon: Icons.info_outline,
               title: 'Sobre',
-              subtitle: 'Versão 1.0.0 • Informações do app',
-              page: SobreScreen(
-                logoutCallback: () => _logout(context),
-              ),
+              subtitle: 'Informações do app',
+              page: SobreScreen(logoutCallback: () => _logout(context)),
             ),
           ],
         ),
@@ -78,8 +79,8 @@ class ConfigScreen extends StatelessWidget {
       shadowColor: Colors.black12,
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
-        onTap: () => Navigator.of(context)
-            .push(MaterialPageRoute(builder: (_) => page)),
+        onTap: () =>
+            Navigator.of(context).push(MaterialPageRoute(builder: (_) => page)),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
           child: Row(
@@ -108,10 +109,7 @@ class ConfigScreen extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         subtitle,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[600],
-                        ),
+                        style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                       ),
                     ],
                   ],

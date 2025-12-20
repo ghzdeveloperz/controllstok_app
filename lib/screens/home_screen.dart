@@ -34,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
       const RelatoriosScreen(),
       const SizedBox(), // placeholder do scanner
       AlertasScreen(userLogin: widget.userLogin),
-      const ConfigScreen(),
+      ConfigScreen(userLogin: widget.userLogin),
     ];
 
     _initNotifications();
