@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
-import 'services/firebase_service.dart';
-import 'screens/login_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'services/firebase_service.dart';
+import 'screens/login_screen.dart';
+import 'notifications/notification_service.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // garante que async funciona
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // 🔥 Firebase
   await FirebaseService.init();
+
+  // 🔔 Inicializa notificações locais
+  await NotificationService.instance.init();
+
   runApp(const MyApp());
 }
 
@@ -18,8 +25,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'ControlStok',
-      theme: ThemeData(textTheme: GoogleFonts.poppinsTextTheme()),
-      home: const LoginScreen(), // abrimos direto a tela de login
+      theme: ThemeData(
+        textTheme: GoogleFonts.poppinsTextTheme(),
+        scaffoldBackgroundColor: Colors.white,
+      ),
+      home: const LoginScreen(),
     );
   }
 }

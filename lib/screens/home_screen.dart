@@ -6,6 +6,7 @@ import 'relatorios_screen.dart';
 import 'scanner_screen.dart';
 import 'alertas_screen.dart';
 import 'config_screen.dart';
+import '../notifications/notification_service.dart';
 
 class HomeScreen extends StatefulWidget {
   final String userLogin;
@@ -21,14 +22,41 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
+  late final List<Widget> _screens;
+  bool _notificationsStarted = false;
 
-  late final List<Widget> _screens = [
-    EstoqueScreen(userLogin: widget.userLogin),
-    const RelatoriosScreen(),
-    const SizedBox(),
-    AlertasScreen(userLogin: widget.userLogin), // ✅ agora bate
-    const ConfigScreen(),
-  ];
+  @override
+  void initState() {
+    super.initState();
+
+    _screens = [
+      EstoqueScreen(userLogin: widget.userLogin),
+      const RelatoriosScreen(),
+      const SizedBox(), // placeholder do scanner
+      AlertasScreen(userLogin: widget.userLogin),
+      const ConfigScreen(),
+    ];
+
+    _initNotifications();
+
+    // 🔔 TESTE TEMPORÁRIO — REMOVE DEPOIS
+    //Future.delayed(const Duration(seconds: 2), () {
+    //NotificationService.instance.showTestNotification();
+    //});
+  }
+
+  Future<void> _initNotifications() async {
+    if (_notificationsStarted) return;
+
+    _notificationsStarted = true;
+
+    await NotificationService.instance.init();
+
+    if (!mounted) return;
+
+    NotificationService.instance
+        .startListeningStockAlerts(widget.userLogin);
+  }
 
   void _onTap(int index) {
     if (index == 2) {
@@ -61,7 +89,11 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             AnimatedContainer(
               duration: const Duration(milliseconds: 200),
-              transform: Matrix4.translationValues(0, isActive ? -4 : 0, 0),
+              transform: Matrix4.translationValues(
+                0,
+                isActive ? -4 : 0,
+                0,
+              ),
               child: Icon(
                 icon,
                 size: 26,
@@ -101,16 +133,29 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-        child: const Icon(Icons.qr_code_scanner, color: Colors.white, size: 28),
+        child: const Icon(
+          Icons.qr_code_scanner,
+          color: Colors.white,
+          size: 28,
+        ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    NotificationService.instance.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: IndexedStack(index: _currentIndex, children: _screens),
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _screens,
+      ),
       bottomNavigationBar: SafeArea(
         child: SizedBox(
           height: 72,
@@ -119,7 +164,10 @@ class _HomeScreenState extends State<HomeScreen> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(28),
                 child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+                  filter: ImageFilter.blur(
+                    sigmaX: 6,
+                    sigmaY: 6,
+                  ),
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.transparent,
@@ -131,11 +179,23 @@ class _HomeScreenState extends State<HomeScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _navItem(icon: Icons.inventory_2_outlined, index: 0),
-                  _navItem(icon: Icons.bar_chart, index: 1),
+                  _navItem(
+                    icon: Icons.inventory_2_outlined,
+                    index: 0,
+                  ),
+                  _navItem(
+                    icon: Icons.bar_chart,
+                    index: 1,
+                  ),
                   _scannerButton(),
-                  _navItem(icon: Icons.notifications, index: 3),
-                  _navItem(icon: Icons.settings, index: 4),
+                  _navItem(
+                    icon: Icons.notifications,
+                    index: 3,
+                  ),
+                  _navItem(
+                    icon: Icons.settings,
+                    index: 4,
+                  ),
                 ],
               ),
             ],
