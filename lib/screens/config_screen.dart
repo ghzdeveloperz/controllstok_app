@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import '../screens/login_screen.dart';
+
 import 'conf_options/perfil_screen.dart';
-import 'conf_options/notificacoes_screen.dart';
+import 'conf_options/categorias_screen.dart';
 import 'conf_options/sobre_screen.dart';
 
 class ConfigScreen extends StatelessWidget {
-  final String userLogin; // RECEBENDO LOGIN REAL
+  final String userLogin; // LOGIN REAL
 
   const ConfigScreen({super.key, required this.userLogin});
 
@@ -37,19 +38,20 @@ class ConfigScreen extends StatelessWidget {
               context,
               icon: Icons.person_outline,
               title: 'Perfil',
-              subtitle: 'Informações Pessoais',
-              page: PerfilScreen(userLogin: userLogin), // 🔥 LOGIN PASSADO AQUI
+              subtitle: 'Informações pessoais',
+              page: PerfilScreen(userLogin: userLogin),
             ),
 
             const SizedBox(height: 16),
 
             _buildOption(
               context,
-              icon: Icons.notifications_outlined,
-              title: 'Notificações',
-              subtitle: 'Gerencie alertas do aplicativo',
-              page: const NotificacoesScreen(),
+              icon: Icons.category_outlined,
+              title: 'Categorias',
+              subtitle: 'Gerencie categorias do estoque',
+              page: CategoriasScreen(userLogin: userLogin),
             ),
+
             const SizedBox(height: 16),
 
             _buildOption(
@@ -57,7 +59,9 @@ class ConfigScreen extends StatelessWidget {
               icon: Icons.info_outline,
               title: 'Sobre',
               subtitle: 'Informações do app',
-              page: SobreScreen(logoutCallback: () => _logout(context)),
+              page: SobreScreen(
+                logoutCallback: () => _logout(context),
+              ),
             ),
           ],
         ),
@@ -79,18 +83,21 @@ class ConfigScreen extends StatelessWidget {
       shadowColor: Colors.black12,
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
-        onTap: () =>
-            Navigator.of(context).push(MaterialPageRoute(builder: (_) => page)),
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => page),
+          );
+        },
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
           child: Row(
             children: [
               Container(
+                padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: Colors.grey[100],
                   borderRadius: BorderRadius.circular(12),
                 ),
-                padding: const EdgeInsets.all(12),
                 child: Icon(icon, color: Colors.black87, size: 28),
               ),
               const SizedBox(width: 20),
@@ -109,13 +116,20 @@ class ConfigScreen extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         subtitle,
-                        style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey[600],
+                        ),
                       ),
                     ],
                   ],
                 ),
               ),
-              const Icon(Icons.arrow_forward_ios, size: 18, color: Colors.grey),
+              const Icon(
+                Icons.arrow_forward_ios,
+                size: 18,
+                color: Colors.grey,
+              ),
             ],
           ),
         ),

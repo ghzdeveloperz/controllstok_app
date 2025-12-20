@@ -10,11 +10,13 @@ class Category {
   });
 
   factory Category.fromFirestore(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>;
+    final data = doc.data();
 
     return Category(
       id: doc.id,
-      name: data['name'] ?? '',
+      name: data is Map<String, dynamic>
+          ? data['name'] ?? ''
+          : '',
     );
   }
 }
