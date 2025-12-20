@@ -1,15 +1,18 @@
-// lib/screens/conf_options/perfil_screen.dart
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../../services/auth_service.dart';
 import '../login_screen.dart';
 
 class PerfilScreen extends StatelessWidget {
-  final String userLogin; // login real
+  final String userLogin;
 
   const PerfilScreen({super.key, required this.userLogin});
 
   @override
   Widget build(BuildContext context) {
+    final AuthService authService = AuthService();
+
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
@@ -40,6 +43,7 @@ class PerfilScreen extends StatelessWidget {
                   ),
                 ),
               ),
+
               const SizedBox(height: 24),
 
               // Cartão de informações
@@ -91,15 +95,21 @@ class PerfilScreen extends StatelessWidget {
 
               const SizedBox(height: 32),
 
-              // Botão de Logout estilizado preto e branco
+              // Botão de Logout (REAL)
               Center(
                 child: ElevatedButton.icon(
-                  onPressed: () {
-                    // Ao clicar, volta para LoginScreen e remove todas as rotas anteriores
+                  onPressed: () async {
+                    // 🔥 Limpa sessão salva
+                    await authService.logout();
+
+                    if (!context.mounted) return;
+
+                    // 🔒 Remove toda a stack de navegação
                     Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(
-                          builder: (_) => const LoginScreen()),
-                      (route) => false,
+                        builder: (_) => const LoginScreen(),
+                      ),
+                      (_) => false,
                     );
                   },
                   icon: const Icon(Icons.logout, color: Colors.black87),
@@ -114,7 +124,9 @@ class PerfilScreen extends StatelessWidget {
                     backgroundColor: Colors.white,
                     foregroundColor: Colors.black87,
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 28, vertical: 16),
+                      horizontal: 28,
+                      vertical: 16,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                       side: const BorderSide(color: Colors.black87),

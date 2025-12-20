@@ -1,7 +1,6 @@
-// lib/screens/login_screen.dart
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
-import './home_screen.dart';
+import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,12 +12,14 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _loginController = TextEditingController();
   final _passwordController = TextEditingController();
-  final AuthService authService = AuthService();
+  final AuthService _authService = AuthService();
 
   String? error;
   bool isLoading = false;
 
-  void handleLogin() async {
+  Future<void> handleLogin() async {
+    if (isLoading) return;
+
     setState(() {
       error = null;
       isLoading = true;
@@ -35,30 +36,31 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    try {
-      final loginError = await authService.login(login: login, password: password);
+    final loginError =
+        await _authService.login(login: login, password: password);
 
-      if (loginError == null) {
-        // Login OK, navega para HomeScreen
-        if (!mounted) return;
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (_) => HomeScreen(userLogin: login),
-          ),
-        );
-      } else {
-        setState(() {
-          error = loginError;
-          isLoading = false;
-        });
-      }
-    } catch (e) {
+    if (!mounted) return;
+
+    if (loginError == null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => HomeScreen(userLogin: login),
+        ),
+      );
+    } else {
       setState(() {
-        error = "Erro ao tentar logar. Tente novamente.";
+        error = loginError;
         isLoading = false;
       });
     }
+  }
+
+  @override
+  void dispose() {
+    _loginController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -71,7 +73,11 @@ class _LoginScreenState extends State<LoginScreen> {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Color(0xFFE3F2FD), Colors.white, Color(0xFFE3F2FD)],
+            colors: [
+              Color(0xFFE3F2FD),
+              Colors.white,
+              Color(0xFFE3F2FD),
+            ],
           ),
         ),
         child: Center(
@@ -117,6 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: TextStyle(color: Colors.grey),
                   ),
                   const SizedBox(height: 20),
+
                   if (error != null)
                     Container(
                       width: double.infinity,
@@ -135,9 +142,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
+
                   if (error != null) const SizedBox(height: 16),
+
                   TextField(
                     controller: _loginController,
+                    enabled: !isLoading,
                     decoration: InputDecoration(
                       prefixIcon: const Icon(Icons.person_outline),
                       hintText: "Login",
@@ -157,9 +167,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
+
                   const SizedBox(height: 14),
+
                   TextField(
                     controller: _passwordController,
+                    enabled: !isLoading,
                     obscureText: true,
                     decoration: InputDecoration(
                       prefixIcon: const Icon(Icons.lock_outline),
@@ -180,7 +193,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
+
                   const SizedBox(height: 22),
+
                   SizedBox(
                     width: double.infinity,
                     height: 52,
@@ -195,7 +210,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         elevation: 4,
                       ),
                       child: isLoading
-                          ? const CircularProgressIndicator(color: Colors.white)
+                          ? const SizedBox(
+                              width: 22,
+                              height: 22,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.5,
+                                color: Colors.white,
+                              ),
+                            )
                           : const Text(
                               "Entrar",
                               style: TextStyle(
@@ -205,7 +227,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                     ),
                   ),
+
                   const SizedBox(height: 16),
+
                   const Text(
                     "Esqueceu a senha? Consulte o administrador.",
                     style: TextStyle(color: Colors.grey),
