@@ -22,7 +22,7 @@ class ConfigScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text('Configurações'),
+        title: const Text('Configurações', style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         elevation: 0.5,
@@ -48,7 +48,7 @@ class ConfigScreen extends StatelessWidget {
               context,
               icon: Icons.category_outlined,
               title: 'Categorias',
-              subtitle: 'Gerencie categorias do estoque',
+              subtitle: 'Categorias do Estoque',
               page: CategoriasScreen(userLogin: userLogin),
             ),
 
