@@ -1,4 +1,3 @@
-// lib/screens/widgets/bottom_cart.dart
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../scanner_screen.dart';
@@ -7,7 +6,7 @@ class BottomCart extends StatefulWidget {
   final List<CartItem> cart;
   final void Function(int) increment;
   final void Function(int) decrement;
-  final VoidCallback onFinalize;
+  final void Function(String movementType) onFinalize;
   final void Function(String barcode, double newPrice) onEditPrice;
 
   const BottomCart({
@@ -24,7 +23,7 @@ class BottomCart extends StatefulWidget {
 }
 
 class _BottomCartState extends State<BottomCart> {
-  String? _movementType; // entrada | saida
+  String? _movementType; // 'entrada' | 'saida'
 
   double get total =>
       widget.cart.fold(0, (sum, item) => sum + item.quantity * item.unitPrice);
@@ -52,22 +51,63 @@ class _BottomCartState extends State<BottomCart> {
             child: const Text('Cancelar'),
           ),
           ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.black,
+              foregroundColor: Colors.white,
+            ),
             onPressed: () {
               final value = double.tryParse(
                 controller.text.replaceAll(',', '.'),
               );
               if (value != null && value > 0) {
-                // Atualiza unitPrice no Firestore e no carrinho
                 widget.onEditPrice(item.barcode, value);
-                setState(() {}); // rebuild para atualizar total
+                setState(() {});
               }
               Navigator.pop(context);
             },
+            child: const Text('Salvar'),
+          ),
+        ],
+      ),
+    );
+  }
 
+  void _editQuantity(BuildContext context, int index) {
+    final controller = TextEditingController(
+      text: widget.cart[index].quantity.toString(),
+    );
+
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Alterar quantidade'),
+        content: TextField(
+          controller: controller,
+          keyboardType: TextInputType.number,
+          decoration: const InputDecoration(
+            hintText: 'Quantidade',
+            border: OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancelar'),
+          ),
+          ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.black,
               foregroundColor: Colors.white,
             ),
+            onPressed: () {
+              final value = int.tryParse(controller.text);
+              if (value != null && value > 0) {
+                setState(() {
+                  widget.cart[index].quantity = value;
+                });
+              }
+              Navigator.pop(context);
+            },
             child: const Text('Salvar'),
           ),
         ],
@@ -88,6 +128,7 @@ class _BottomCartState extends State<BottomCart> {
       ),
       child: Column(
         children: [
+          /// ---------- TIPO DE MOVIMENTAÇÃO ----------
           Row(
             children: [
               Expanded(
@@ -100,7 +141,9 @@ class _BottomCartState extends State<BottomCart> {
                         ? Colors.white
                         : Colors.black,
                   ),
-                  onSelected: (_) => setState(() => _movementType = 'entrada'),
+                  onSelected: (_) {
+                    setState(() => _movementType = 'entrada');
+                  },
                 ),
               ),
               const SizedBox(width: 8),
@@ -114,7 +157,9 @@ class _BottomCartState extends State<BottomCart> {
                         ? Colors.white
                         : Colors.black,
                   ),
-                  onSelected: (_) => setState(() => _movementType = 'saida'),
+                  onSelected: (_) {
+                    setState(() => _movementType = 'saida');
+                  },
                 ),
               ),
             ],
@@ -122,6 +167,7 @@ class _BottomCartState extends State<BottomCart> {
 
           const SizedBox(height: 12),
 
+          /// ---------- LISTA ----------
           Expanded(
             child: widget.cart.isEmpty
                 ? const Center(child: Text('Nenhum produto no carrinho'))
@@ -138,11 +184,14 @@ class _BottomCartState extends State<BottomCart> {
                           child: Row(
                             children: [
                               item.imageBase64.isNotEmpty
-                                  ? Image.memory(
-                                      base64Decode(item.imageBase64),
-                                      width: 40,
-                                      height: 40,
-                                      fit: BoxFit.cover,
+                                  ? ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Image.memory(
+                                        base64Decode(item.imageBase64),
+                                        width: 40,
+                                        height: 40,
+                                        fit: BoxFit.cover,
+                                      ),
                                     )
                                   : const Icon(Icons.image_not_supported),
 
@@ -168,13 +217,17 @@ class _BottomCartState extends State<BottomCart> {
                                           ),
                                         ),
                                         if (_movementType == 'entrada')
-                                          IconButton(
-                                            icon: const Icon(
-                                              Icons.edit,
-                                              size: 18,
-                                            ),
-                                            onPressed: () =>
+                                          GestureDetector(
+                                            onTap: () =>
                                                 _editPrice(context, item),
+                                            child: const Padding(
+                                              padding: EdgeInsets.only(left: 4),
+                                              child: Icon(
+                                                Icons.edit,
+                                                size: 16,
+                                                color: Color.fromARGB(255, 183, 3, 3),
+                                              ),
+                                            ),
                                           ),
                                       ],
                                     ),
@@ -185,13 +238,32 @@ class _BottomCartState extends State<BottomCart> {
                               Row(
                                 children: [
                                   IconButton(
-                                    onPressed: () => widget.decrement(index),
                                     icon: const Icon(Icons.remove),
+                                    onPressed: () => widget.decrement(index),
                                   ),
-                                  Text(item.quantity.toString()),
+                                  GestureDetector(
+                                    onTap: () => _editQuantity(context, index),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 4,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade200,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Text(
+                                        item.quantity.toString(),
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+
                                   IconButton(
-                                    onPressed: () => widget.increment(index),
                                     icon: const Icon(Icons.add),
+                                    onPressed: () => widget.increment(index),
                                   ),
                                 ],
                               ),
@@ -205,38 +277,13 @@ class _BottomCartState extends State<BottomCart> {
 
           const SizedBox(height: 8),
 
-          Align(
-            alignment: Alignment.centerRight,
-            child: RichText(
-              text: TextSpan(
-                text: 'Total: ',
-                style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-                children: [
-                  TextSpan(
-                    text: 'R\$ ${total.toStringAsFixed(2)}',
-                    style: TextStyle(
-                      color: total > 0 ? Colors.green : Colors.black54,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          const SizedBox(height: 8),
-
+          /// ---------- FINALIZAR ----------
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
               onPressed: (_movementType == null || widget.cart.isEmpty)
                   ? null
-                  : widget.onFinalize,
+                  : () => widget.onFinalize(_movementType!),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
                 foregroundColor: Colors.white,
