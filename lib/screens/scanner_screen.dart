@@ -40,10 +40,8 @@ class _ScannerScreenState extends State<ScannerScreen>
       duration: const Duration(milliseconds: 1200),
     )..repeat(reverse: true);
 
-    _opacityAnimation = Tween<double>(
-      begin: 0.4,
-      end: 1,
-    ).animate(_animationController);
+    _opacityAnimation =
+        Tween<double>(begin: 0.4, end: 1).animate(_animationController);
   }
 
   @override
@@ -59,7 +57,47 @@ class _ScannerScreenState extends State<ScannerScreen>
         : base64String;
   }
 
-  // 🔥 Atualiza unitPrice no Firestore + carrinho
+  // ========================
+  // OVERLAY DO SCANNER (ANIMADO)
+  // ========================
+  Widget _buildScannerOverlay() {
+    if (_hasScanned) return const SizedBox.shrink();
+
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FadeTransition(
+            opacity: _opacityAnimation,
+            child: Container(
+              width: 260,
+              height: 160,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(color: Colors.white, width: 2),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          FadeTransition(
+            opacity: _opacityAnimation,
+            child: const Text(
+              'Posicione o código de barras aqui',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ========================
+  // ATUALIZA PREÇO
+  // ========================
   Future<void> _updatePrice(String barcode, double newPrice) async {
     try {
       final snapshot = await _firestore
@@ -81,12 +119,14 @@ class _ScannerScreenState extends State<ScannerScreen>
         if (index != -1) cart[index].unitPrice = newPrice;
       });
     } catch (e) {
-      debugPrint('Erro ao atualizar unitPrice: $e');
+      debugPrint('Erro ao atualizar preço: $e');
     }
   }
 
-  // 🔥 Finaliza carrinho
-  Future<void> _finalizeCart() async {
+  // ========================
+  // FINALIZAÇÃO (ENTRADA / SAÍDA)
+  // ========================
+  Future<void> _finalizeCart(String movementType) async {
     if (cart.isEmpty) return;
 
     for (final item in cart) {
@@ -106,20 +146,28 @@ class _ScannerScreenState extends State<ScannerScreen>
 
         final oldQty = (data['quantity'] ?? 0).toInt();
         final oldCost = (data['cost'] ?? 0).toDouble();
-        final loteUnitPrice = item.unitPrice;
 
-        final newAvgCost =
-            ((oldQty * oldCost) + (item.quantity * loteUnitPrice)) /
-                (oldQty + item.quantity);
+        final int newQty = movementType == 'entrada'
+            ? oldQty + item.quantity
+            : oldQty - item.quantity;
+
+        if (newQty < 0) continue;
+
+        double newCost = oldCost;
+
+        if (movementType == 'entrada') {
+          newCost =
+              ((oldQty * oldCost) + (item.quantity * item.unitPrice)) / newQty;
+        }
 
         await docRef.update({
-          'quantity': oldQty + item.quantity,
-          'cost': newAvgCost,
-          'unitPrice': loteUnitPrice,
+          'quantity': newQty,
+          'cost': newCost,
+          'unitPrice': item.unitPrice,
           'updatedAt': DateTime.now(),
         });
       } catch (e) {
-        debugPrint('Erro ao finalizar item ${item.name}: $e');
+        debugPrint('Erro ao finalizar ${item.name}: $e');
       }
     }
 
@@ -127,7 +175,7 @@ class _ScannerScreenState extends State<ScannerScreen>
     setState(() => cart.clear());
   }
 
-  Future<void> _openFinalizeModal() async {
+  Future<void> _openFinalizeModal(String movementType) async {
     if (cart.isEmpty) return;
 
     final result = await showDialog<FinalizeModalResult>(
@@ -139,12 +187,14 @@ class _ScannerScreenState extends State<ScannerScreen>
     if (!mounted) return;
 
     if (result != null) {
-      await _finalizeCart();
+      await _finalizeCart(movementType);
       if (mounted) Navigator.of(context).pop();
     }
   }
 
-  // 🔥 SCAN
+  // ========================
+  // SCAN
+  // ========================
   Future<void> _onDetect(BarcodeCapture capture) async {
     if (capture.barcodes.isEmpty || _hasScanned) return;
 
@@ -152,7 +202,6 @@ class _ScannerScreenState extends State<ScannerScreen>
     if (code == null || code.isEmpty) return;
 
     _controller.stop();
-    if (!mounted) return;
 
     setState(() {
       scannedCode = code;
@@ -169,21 +218,17 @@ class _ScannerScreenState extends State<ScannerScreen>
           .limit(1)
           .get();
 
-      if (!mounted) return;
-
-      // ❌ NÃO ENCONTROU
       if (snapshot.docs.isEmpty) {
         setState(() {
           productName = 'Produto não encontrado';
           _isError = true;
         });
       } else {
-        // ✅ ENCONTROU
         final data = snapshot.docs.first.data();
         HapticFeedback.vibrate();
 
         setState(() {
-          final index = cart.indexWhere((item) => item.barcode == code);
+          final index = cart.indexWhere((i) => i.barcode == code);
 
           if (index != -1) {
             cart[index].quantity++;
@@ -200,13 +245,9 @@ class _ScannerScreenState extends State<ScannerScreen>
           }
 
           productName = data['name'];
-          _isError = false;
         });
       }
     } catch (e) {
-      debugPrint('Erro ao detectar código: $e');
-      if (!mounted) return;
-
       setState(() {
         productName = 'Erro ao buscar produto';
         _isError = true;
@@ -215,12 +256,11 @@ class _ScannerScreenState extends State<ScannerScreen>
 
     await Future.delayed(const Duration(milliseconds: 1800));
 
-    if (!mounted) return;
     setState(() {
       scannedCode = null;
       productName = null;
-      _isError = false;
       _hasScanned = false;
+      _isError = false;
     });
 
     _controller.start();
@@ -239,41 +279,6 @@ class _ScannerScreenState extends State<ScannerScreen>
     });
   }
 
-  Widget _buildScannerOverlay() {
-    if (_hasScanned) return const SizedBox();
-
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          FadeTransition(
-            opacity: _opacityAnimation,
-            child: Container(
-              width: 260,
-              height: 160,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.white, width: 2),
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          FadeTransition(
-            opacity: _opacityAnimation,
-            child: const Text(
-              'Posicione o código de barras aqui',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -281,6 +286,7 @@ class _ScannerScreenState extends State<ScannerScreen>
       body: Stack(
         children: [
           MobileScanner(controller: _controller, onDetect: _onDetect),
+
           _buildScannerOverlay(),
 
           if (_hasScanned && scannedCode != null && productName != null)
