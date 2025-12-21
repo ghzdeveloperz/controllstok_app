@@ -29,8 +29,9 @@ class _BottomCartState extends State<BottomCart> {
       widget.cart.fold(0, (sum, item) => sum + item.quantity * item.unitPrice);
 
   void _editPrice(BuildContext context, CartItem item) {
-    final controller =
-        TextEditingController(text: item.unitPrice.toStringAsFixed(2));
+    final controller = TextEditingController(
+      text: item.unitPrice.toStringAsFixed(2),
+    );
 
     showDialog(
       context: context,
@@ -55,11 +56,55 @@ class _BottomCartState extends State<BottomCart> {
               foregroundColor: Colors.white,
             ),
             onPressed: () {
-              final value =
-                  double.tryParse(controller.text.replaceAll(',', '.'));
+              final value = double.tryParse(
+                controller.text.replaceAll(',', '.'),
+              );
               if (value != null && value > 0) {
                 widget.onEditPrice(item.barcode, value);
                 setState(() {});
+              }
+              Navigator.pop(context);
+            },
+            child: const Text('Salvar'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _editQuantity(BuildContext context, int index) {
+    final controller = TextEditingController(
+      text: widget.cart[index].quantity.toString(),
+    );
+
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Alterar quantidade'),
+        content: TextField(
+          controller: controller,
+          keyboardType: TextInputType.number,
+          decoration: const InputDecoration(
+            hintText: 'Quantidade',
+            border: OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancelar'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.black,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () {
+              final value = int.tryParse(controller.text);
+              if (value != null && value > 0) {
+                setState(() {
+                  widget.cart[index].quantity = value;
+                });
               }
               Navigator.pop(context);
             },
@@ -108,8 +153,9 @@ class _BottomCartState extends State<BottomCart> {
                   selected: _movementType == 'saida',
                   selectedColor: Colors.red.shade600,
                   labelStyle: TextStyle(
-                    color:
-                        _movementType == 'saida' ? Colors.white : Colors.black,
+                    color: _movementType == 'saida'
+                        ? Colors.white
+                        : Colors.black,
                   ),
                   onSelected: (_) {
                     setState(() => _movementType = 'saida');
@@ -126,6 +172,7 @@ class _BottomCartState extends State<BottomCart> {
             child: widget.cart.isEmpty
                 ? const Center(child: Text('Nenhum produto no carrinho'))
                 : ListView.builder(
+                    padding: EdgeInsets.zero,
                     itemCount: widget.cart.length,
                     itemBuilder: (_, index) {
                       final item = widget.cart[index];
@@ -137,11 +184,14 @@ class _BottomCartState extends State<BottomCart> {
                           child: Row(
                             children: [
                               item.imageBase64.isNotEmpty
-                                  ? Image.memory(
-                                      base64Decode(item.imageBase64),
-                                      width: 40,
-                                      height: 40,
-                                      fit: BoxFit.cover,
+                                  ? ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Image.memory(
+                                        base64Decode(item.imageBase64),
+                                        width: 40,
+                                        height: 40,
+                                        fit: BoxFit.cover,
+                                      ),
                                     )
                                   : const Icon(Icons.image_not_supported),
 
@@ -167,10 +217,17 @@ class _BottomCartState extends State<BottomCart> {
                                           ),
                                         ),
                                         if (_movementType == 'entrada')
-                                          IconButton(
-                                            icon: const Icon(Icons.edit, size: 18),
-                                            onPressed: () =>
+                                          GestureDetector(
+                                            onTap: () =>
                                                 _editPrice(context, item),
+                                            child: const Padding(
+                                              padding: EdgeInsets.only(left: 4),
+                                              child: Icon(
+                                                Icons.edit,
+                                                size: 16,
+                                                color: Color.fromARGB(255, 183, 3, 3),
+                                              ),
+                                            ),
                                           ),
                                       ],
                                     ),
@@ -182,14 +239,31 @@ class _BottomCartState extends State<BottomCart> {
                                 children: [
                                   IconButton(
                                     icon: const Icon(Icons.remove),
-                                    onPressed: () =>
-                                        widget.decrement(index),
+                                    onPressed: () => widget.decrement(index),
                                   ),
-                                  Text(item.quantity.toString()),
+                                  GestureDetector(
+                                    onTap: () => _editQuantity(context, index),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 4,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade200,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Text(
+                                        item.quantity.toString(),
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+
                                   IconButton(
                                     icon: const Icon(Icons.add),
-                                    onPressed: () =>
-                                        widget.increment(index),
+                                    onPressed: () => widget.increment(index),
                                   ),
                                 ],
                               ),

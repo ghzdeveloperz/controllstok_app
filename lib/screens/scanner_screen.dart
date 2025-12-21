@@ -60,40 +60,97 @@ class _ScannerScreenState extends State<ScannerScreen>
   // ========================
   // OVERLAY DO SCANNER (ANIMADO)
   // ========================
-  Widget _buildScannerOverlay() {
-    if (_hasScanned) return const SizedBox.shrink();
+Widget _buildScannerOverlay() {
+  if (_hasScanned) return const SizedBox.shrink();
 
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          FadeTransition(
-            opacity: _opacityAnimation,
-            child: Container(
-              width: 260,
-              height: 160,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(18),
-                border: Border.all(color: Colors.white, width: 2),
+  return Center(
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SizedBox(
+          width: 350,
+          height: 130,
+          child: Stack(
+            children: [
+              // Cantos do scanner
+              _buildCorner(top: 0, left: 0),
+              _buildCorner(top: 0, right: 0, rotate: true),
+              _buildCorner(bottom: 0, left: 0, rotate: true),
+              _buildCorner(bottom: 0, right: 0),
+
+              // Linha de varredura
+              FadeTransition(
+                opacity: _opacityAnimation,
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    height: 2,
+                    width: 220,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(2),
+                      gradient: const LinearGradient(
+                        colors: [
+                          Colors.transparent,
+                          Colors.white,
+                          Colors.transparent,
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
               ),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 18),
+
+        FadeTransition(
+          opacity: _opacityAnimation,
+          child: Text(
+            'Alinhe o código de barras',
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: 0.85),
+
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              letterSpacing: 0.6,
             ),
           ),
-          const SizedBox(height: 16),
-          FadeTransition(
-            opacity: _opacityAnimation,
-            child: const Text(
-              'Posicione o código de barras aqui',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget _buildCorner({
+  double? top,
+  double? bottom,
+  double? left,
+  double? right,
+  bool rotate = false,
+}) {
+  return Positioned(
+    top: top,
+    bottom: bottom,
+    left: left,
+    right: right,
+    child: Transform.rotate(
+      angle: rotate ? 3.14 / 2 : 0,
+      child: Container(
+        width: 26,
+        height: 26,
+        decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(color: Colors.white, width: 2),
+            left: BorderSide(color: Colors.white, width: 2),
           ),
-        ],
+        ),
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   // ========================
   // ATUALIZA PREÇO
