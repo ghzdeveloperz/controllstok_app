@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/session_service.dart';
 import 'relatorios_days.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 enum PeriodType { daily, monthly, yearly }
 
@@ -34,7 +35,7 @@ class _RelatoriosScreenState extends State<RelatoriosScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F6F6),
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [
@@ -47,38 +48,45 @@ class _RelatoriosScreenState extends State<RelatoriosScreen> {
     );
   }
 
-  Widget _buildHeader() {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 12,
-            offset: Offset(0, 4),
+// ================= HEADER =================
+// ================= HEADER =================
+Widget _buildHeader() {
+  // Header da página Relatórios com período selecionável
+  return Container(
+    padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+    decoration: const BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black12,
+          blurRadius: 12,
+          offset: Offset(0, 4),
+        ),
+      ],
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Relatórios', // título principal da página
+          style: GoogleFonts.poppins(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
           ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Relatórios',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 12),
-          _PeriodSelector(
-            selected: _selectedPeriod,
-            onChange: (value) {
-              setState(() => _selectedPeriod = value);
-            },
-          ),
-        ],
-      ),
-    );
-  }
+        ),
+        const SizedBox(height: 12),
+        _PeriodSelector( // Widget customizado para selecionar período
+          selected: _selectedPeriod,
+          onChange: (value) {
+            setState(() => _selectedPeriod = value);
+          },
+        ),
+      ],
+    ),
+  );
+}
+
 
   Widget _buildContent() {
     if (_loading) {

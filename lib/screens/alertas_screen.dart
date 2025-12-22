@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AlertasScreen extends StatelessWidget {
   final String userLogin;
@@ -14,9 +15,12 @@ class AlertasScreen extends StatelessWidget {
         elevation: 0,
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
-        title: const Text(
+        title: Text(
           'Alertas de Estoque',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: GoogleFonts.poppins(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
       body: StreamBuilder<QuerySnapshot>(
@@ -35,6 +39,7 @@ class AlertasScreen extends StatelessWidget {
           }
 
           final docs = snapshot.data!.docs;
+
 
           // 🔴 Estoque zerado
           final zeroStock = docs.where((doc) {
