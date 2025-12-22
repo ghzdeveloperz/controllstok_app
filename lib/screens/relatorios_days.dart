@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -17,12 +18,24 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
   bool _localeReady = false;
   final MovementsDaysFirestore _movementsService = MovementsDaysFirestore();
   late DateTime _displayDate;
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
     _initializeLocale();
-    _displayDate = DateTime.now(); // Sempre inicia no dia atual
+    _displayDate = DateTime.now();
+
+    // Atualiza a tela a cada minuto para refletir "Hoje" em tempo real
+    _timer = Timer.periodic(const Duration(minutes: 1), (_) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 
   Future<void> _initializeLocale() async {
@@ -64,6 +77,18 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
     }
   }
 
+  // Getter que retorna o texto do botão com base na data atual
+  String get _displayDateText {
+    final now = DateTime.now();
+    if (_displayDate.year == now.year &&
+        _displayDate.month == now.month &&
+        _displayDate.day == now.day) {
+      return 'Hoje';
+    } else {
+      return DateFormat('dd/MM/yyyy').format(_displayDate);
+    }
+  }
+
   String _formatDateTitle(DateTime date) {
     final weekdayName = DateFormat('EEEE', 'pt_BR').format(date);
     final day = DateFormat('dd', 'pt_BR').format(date);
@@ -86,7 +111,6 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
 
     return Column(
       children: [
-        // Linha de botões lado a lado
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           child: Row(
@@ -117,15 +141,7 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
                         ),
                         const SizedBox(width: 6),
                         Text(
-                          _displayDate.isAtSameMomentAs(
-                                DateTime(
-                                  DateTime.now().year,
-                                  DateTime.now().month,
-                                  DateTime.now().day,
-                                ),
-                              )
-                              ? 'Hoje'
-                              : DateFormat('dd/MM/yyyy').format(_displayDate),
+                          _displayDateText, // Usa o getter
                           style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
@@ -169,8 +185,6 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
             ],
           ),
         ),
-
-        // Conteúdo principal
         Expanded(
           child: StreamBuilder<List<Movement>>(
             stream: _movementsService.getDailyMovementsStream(
@@ -240,8 +254,7 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
                         children: [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(12),
-                            child:
-                                productImage != null && productImage.isNotEmpty
+                            child: productImage != null && productImage.isNotEmpty
                                 ? Image.memory(
                                     base64Decode(
                                       productImage.contains(',')
@@ -288,9 +301,7 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
                                         ),
                                         decoration: BoxDecoration(
                                           color: Colors.green.shade50,
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
+                                          borderRadius: BorderRadius.circular(8),
                                         ),
                                         child: Text(
                                           'Entrada: $totalAdd',
@@ -310,9 +321,7 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
                                         margin: const EdgeInsets.only(left: 8),
                                         decoration: BoxDecoration(
                                           color: Colors.red.shade50,
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
+                                          borderRadius: BorderRadius.circular(8),
                                         ),
                                         child: Text(
                                           'Saída: $totalRemove',
@@ -335,9 +344,7 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
                                           height: 8,
                                           decoration: BoxDecoration(
                                             color: Colors.green,
-                                            borderRadius: BorderRadius.circular(
-                                              4,
-                                            ),
+                                            borderRadius: BorderRadius.circular(4),
                                           ),
                                         ),
                                       ),
@@ -346,14 +353,10 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
                                         flex: totalRemove,
                                         child: Container(
                                           height: 8,
-                                          margin: const EdgeInsets.only(
-                                            left: 2,
-                                          ),
+                                          margin: const EdgeInsets.only(left: 2),
                                           decoration: BoxDecoration(
                                             color: Colors.red,
-                                            borderRadius: BorderRadius.circular(
-                                              4,
-                                            ),
+                                            borderRadius: BorderRadius.circular(4),
                                           ),
                                         ),
                                       ),

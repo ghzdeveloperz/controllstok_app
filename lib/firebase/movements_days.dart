@@ -102,6 +102,38 @@ class MovementsDaysFirestore {
   }
 
   /// =======================
+  /// MOVIMENTAÇÕES DO MÊS EM TEMPO REAL
+  /// =======================
+  Stream<List<Movement>> getMonthlyMovementsStream({
+    required String userId,
+    required int month,
+    required int year,
+  }) {
+    final start = DateTime(year, month, 1);
+    final end = (month < 12)
+        ? DateTime(year, month + 1, 1)
+        : DateTime(year + 1, 1, 1);
+
+    return _firestore
+        .collection('users')
+        .doc(userId)
+        .collection('movements')
+        .where('timestamp', isGreaterThanOrEqualTo: start)
+        .where('timestamp', isLessThan: end)
+        .orderBy('timestamp')
+        .snapshots()
+        .asyncMap((snapshot) async {
+      final movements = <Movement>[];
+      for (final doc in snapshot.docs) {
+        final productId = doc.data()['productId'] as String? ?? '';
+        final image = await _getProductImage(userId: userId, productId: productId);
+        movements.add(Movement.fromFirestore(doc, productImage: image));
+      }
+      return movements;
+    });
+  }
+
+  /// =======================
   /// MOVIMENTAÇÕES DO DIA (uma vez)
   /// =======================
   Future<List<Movement>> getDailyMovements({
@@ -131,7 +163,9 @@ class MovementsDaysFirestore {
     return movements;
   }
 
-  /// Movimentações do MÊS
+  /// =======================
+  /// MOVIMENTAÇÕES DO MÊS (uma vez)
+  /// =======================
   Future<List<Movement>> getMonthlyMovements({
     required String userId,
     required int month,
@@ -162,7 +196,9 @@ class MovementsDaysFirestore {
     return movements;
   }
 
-  /// Movimentações do ANO
+  /// =======================
+  /// MOVIMENTAÇÕES DO ANO (uma vez)
+  /// =======================
   Future<List<Movement>> getYearlyMovements({
     required String userId,
     required int year,

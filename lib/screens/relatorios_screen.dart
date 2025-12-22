@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../services/session_service.dart';
 import 'relatorios_days.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'relatorios_months.dart';
 
 enum PeriodType { daily, monthly, yearly }
 
@@ -48,45 +49,45 @@ class _RelatoriosScreenState extends State<RelatoriosScreen> {
     );
   }
 
-// ================= HEADER =================
-// ================= HEADER =================
-Widget _buildHeader() {
-  // Header da página Relatórios com período selecionável
-  return Container(
-    padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
-    decoration: const BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black12,
-          blurRadius: 12,
-          offset: Offset(0, 4),
-        ),
-      ],
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Relatórios', // título principal da página
-          style: GoogleFonts.poppins(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
+  // ================= HEADER =================
+  // ================= HEADER =================
+  Widget _buildHeader() {
+    // Header da página Relatórios com período selecionável
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 12,
+            offset: Offset(0, 4),
           ),
-        ),
-        const SizedBox(height: 12),
-        _PeriodSelector( // Widget customizado para selecionar período
-          selected: _selectedPeriod,
-          onChange: (value) {
-            setState(() => _selectedPeriod = value);
-          },
-        ),
-      ],
-    ),
-  );
-}
-
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Relatórios', // título principal da página
+            style: GoogleFonts.poppins(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 12),
+          _PeriodSelector(
+            // Widget customizado para selecionar período
+            selected: _selectedPeriod,
+            onChange: (value) {
+              setState(() => _selectedPeriod = value);
+            },
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _buildContent() {
     if (_loading) {
@@ -101,11 +102,11 @@ Widget _buildHeader() {
       case PeriodType.daily:
         return RelatoriosDays(userId: _userId!);
       case PeriodType.monthly:
-        return const Center(
-            child: Text('Relatórios mensais em desenvolvimento'));
+        return RelatoriosMonths(userId: _userId!);
       case PeriodType.yearly:
         return const Center(
-            child: Text('Relatórios anuais em desenvolvimento'));
+          child: Text('Relatórios anuais em desenvolvimento'),
+        );
     }
   }
 }
