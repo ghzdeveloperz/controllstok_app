@@ -1,4 +1,3 @@
-// lib/screens/relatorios_days.dart
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -7,9 +6,8 @@ import '../firebase/movements_days.dart';
 
 class RelatoriosDays extends StatefulWidget {
   final String userId;
-  final DateTime? selectedDate;
 
-  const RelatoriosDays({super.key, required this.userId, this.selectedDate});
+  const RelatoriosDays({super.key, required this.userId});
 
   @override
   State<RelatoriosDays> createState() => _RelatoriosDaysState();
@@ -24,7 +22,7 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
   void initState() {
     super.initState();
     _initializeLocale();
-    _displayDate = widget.selectedDate ?? DateTime.now();
+    _displayDate = DateTime.now(); // Sempre inicia no dia atual
   }
 
   Future<void> _initializeLocale() async {
@@ -42,16 +40,13 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
       builder: (context, child) {
         return Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxWidth: 800, //largura do modal
-              maxHeight: 600, // altura do modal
-            ),
+            constraints: const BoxConstraints(maxWidth: 800, maxHeight: 600),
             child: Theme(
               data: Theme.of(context).copyWith(
                 colorScheme: const ColorScheme.light(
                   primary: Colors.black,
                   onPrimary: Colors.white,
-                  onSurface: Colors.black,
+                  onSurface: Colors.black87,
                 ),
                 textButtonTheme: TextButtonThemeData(
                   style: TextButton.styleFrom(foregroundColor: Colors.black),
@@ -77,6 +72,12 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
     return '${weekdayName[0].toUpperCase()}${weekdayName.substring(1)}, $day de ${monthName[0].toUpperCase()}${monthName.substring(1)} de $year';
   }
 
+  void _saveReport() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Relatório salvo com sucesso!')),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (!_localeReady) {
@@ -85,48 +86,87 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
 
     return Column(
       children: [
-        // Botão compacto de seleção de data
+        // Linha de botões lado a lado
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-          child: GestureDetector(
-            onTap: _pickDate,
-            child: Container(
-              width: double.infinity, // botão ocupa toda a largura disponível
-              padding: const EdgeInsets.symmetric(
-                vertical: 12,
-              ), // padding vertical
-              decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 4,
-                    offset: Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Row(
-                mainAxisAlignment:
-                    MainAxisAlignment.center, // conteúdo centralizado
-                children: [
-                  const Icon(
-                    Icons.calendar_today,
-                    size: 18,
-                    color: Colors.white,
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    DateFormat('dd/MM/yyyy').format(_displayDate),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          child: Row(
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: _pickDate,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 4,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.calendar_today,
+                          size: 18,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          _displayDate.isAtSameMomentAs(
+                                DateTime(
+                                  DateTime.now().year,
+                                  DateTime.now().month,
+                                  DateTime.now().day,
+                                ),
+                              )
+                              ? 'Hoje'
+                              : DateFormat('dd/MM/yyyy').format(_displayDate),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
+                ),
               ),
-            ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: _saveReport,
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: Colors.black),
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.save, size: 18),
+                      SizedBox(width: 8),
+                      Text(
+                        'Salvar Relatório',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
 
