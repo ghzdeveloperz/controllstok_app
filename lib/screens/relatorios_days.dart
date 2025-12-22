@@ -43,8 +43,8 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
         return Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(
-              maxWidth: 800,//largura do modal
-              maxHeight: 600// altura do modal
+              maxWidth: 800, //largura do modal
+              maxHeight: 600, // altura do modal
             ),
             child: Theme(
               data: Theme.of(context).copyWith(
@@ -87,11 +87,14 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
       children: [
         // Botão compacto de seleção de data
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
           child: GestureDetector(
             onTap: _pickDate,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              width: double.infinity, // botão ocupa toda a largura disponível
+              padding: const EdgeInsets.symmetric(
+                vertical: 12,
+              ), // padding vertical
               decoration: BoxDecoration(
                 color: Colors.black,
                 borderRadius: BorderRadius.circular(12),
@@ -104,8 +107,8 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
                 ],
               ),
               child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment:
+                    MainAxisAlignment.center, // conteúdo centralizado
                 children: [
                   const Icon(
                     Icons.calendar_today,
