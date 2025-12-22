@@ -1,17 +1,9 @@
 import 'package:flutter/material.dart';
+import '../services/session_service.dart';
+import 'relatorios_days.dart';
 
-/// =======================
-/// ENUM DE PERÍODO
-/// =======================
-enum PeriodType {
-  daily,
-  monthly,
-  yearly,
-}
+enum PeriodType { daily, monthly, yearly }
 
-/// =======================
-/// TELA DE RELATÓRIOS
-/// =======================
 class RelatoriosScreen extends StatefulWidget {
   const RelatoriosScreen({super.key});
 
@@ -21,6 +13,23 @@ class RelatoriosScreen extends StatefulWidget {
 
 class _RelatoriosScreenState extends State<RelatoriosScreen> {
   PeriodType _selectedPeriod = PeriodType.daily;
+  bool _loading = false;
+  String? _userId;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUser();
+  }
+
+  Future<void> _loadUser() async {
+    setState(() => _loading = true);
+    final login = await SessionService.getUserLogin();
+    if (login != null) {
+      setState(() => _userId = login);
+    }
+    setState(() => _loading = false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,99 +38,67 @@ class _RelatoriosScreenState extends State<RelatoriosScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            /// ---------- HEADER CLARO ----------
-            Container(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(
-                  bottom: Radius.circular(24),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 12,
-                    offset: Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Relatórios',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-
-                  /// ---------- SELETOR DE PERÍODO ----------
-                  _PeriodSelector(
-                    selected: _selectedPeriod,
-                    onChange: (value) {
-                      setState(() => _selectedPeriod = value);
-                    },
-                  ),
-                ],
-              ),
-            ),
-
+            _buildHeader(),
             const SizedBox(height: 16),
-
-            /// ---------- CONTEÚDO ----------
-            Expanded(
-              child: _buildContent(),
-            ),
+            Expanded(child: _buildContent()),
           ],
         ),
       ),
     );
   }
 
-  /// =======================
-  /// RENDERIZA POR PERÍODO
-  /// =======================
+  Widget _buildHeader() {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 12,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Relatórios',
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 12),
+          _PeriodSelector(
+            selected: _selectedPeriod,
+            onChange: (value) {
+              setState(() => _selectedPeriod = value);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildContent() {
+    if (_loading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (_userId == null) {
+      return const Center(child: Text('Nenhum usuário logado.'));
+    }
+
     switch (_selectedPeriod) {
       case PeriodType.daily:
-        return _buildDailyView();
+        return RelatoriosDays(userId: _userId!);
       case PeriodType.monthly:
-        return _buildMonthlyView();
+        return const Center(
+            child: Text('Relatórios mensais em desenvolvimento'));
       case PeriodType.yearly:
-        return _buildYearlyView();
+        return const Center(
+            child: Text('Relatórios anuais em desenvolvimento'));
     }
-  }
-
-  /// =======================
-  /// PLACEHOLDERS (GRÁFICOS)
-  /// =======================
-  Widget _buildDailyView() {
-    return const Center(
-      child: Text(
-        'Gráficos Diários',
-        style: TextStyle(fontSize: 16),
-      ),
-    );
-  }
-
-  Widget _buildMonthlyView() {
-    return const Center(
-      child: Text(
-        'Gráficos Mensais',
-        style: TextStyle(fontSize: 16),
-      ),
-    );
-  }
-
-  Widget _buildYearlyView() {
-    return const Center(
-      child: Text(
-        'Gráficos Anuais',
-        style: TextStyle(fontSize: 16),
-      ),
-    );
   }
 }
 
@@ -132,10 +109,7 @@ class _PeriodSelector extends StatelessWidget {
   final PeriodType selected;
   final ValueChanged<PeriodType> onChange;
 
-  const _PeriodSelector({
-    required this.selected,
-    required this.onChange,
-  });
+  const _PeriodSelector({required this.selected, required this.onChange});
 
   @override
   Widget build(BuildContext context) {

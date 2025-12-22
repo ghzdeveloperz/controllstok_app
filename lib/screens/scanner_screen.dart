@@ -1,3 +1,4 @@
+// lib/screens/scanner_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -58,99 +59,91 @@ class _ScannerScreenState extends State<ScannerScreen>
   }
 
   // ========================
-  // OVERLAY DO SCANNER (ANIMADO)
+  // OVERLAY DO SCANNER
   // ========================
-Widget _buildScannerOverlay() {
-  if (_hasScanned) return const SizedBox.shrink();
+  Widget _buildScannerOverlay() {
+    if (_hasScanned) return const SizedBox.shrink();
 
-  return Center(
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        SizedBox(
-          width: 350,
-          height: 130,
-          child: Stack(
-            children: [
-              // Cantos do scanner
-              _buildCorner(top: 0, left: 0),
-              _buildCorner(top: 0, right: 0, rotate: true),
-              _buildCorner(bottom: 0, left: 0, rotate: true),
-              _buildCorner(bottom: 0, right: 0),
-
-              // Linha de varredura
-              FadeTransition(
-                opacity: _opacityAnimation,
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Container(
-                    height: 2,
-                    width: 220,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(2),
-                      gradient: const LinearGradient(
-                        colors: [
-                          Colors.transparent,
-                          Colors.white,
-                          Colors.transparent,
-                        ],
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            width: 350,
+            height: 130,
+            child: Stack(
+              children: [
+                _buildCorner(top: 0, left: 0),
+                _buildCorner(top: 0, right: 0, rotate: true),
+                _buildCorner(bottom: 0, left: 0, rotate: true),
+                _buildCorner(bottom: 0, right: 0),
+                FadeTransition(
+                  opacity: _opacityAnimation,
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                      height: 2,
+                      width: 220,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(2),
+                        gradient: const LinearGradient(
+                          colors: [
+                            Colors.transparent,
+                            Colors.white,
+                            Colors.transparent,
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
+          const SizedBox(height: 18),
+          FadeTransition(
+            opacity: _opacityAnimation,
+            child: Text(
+              'Alinhe o código de barras',
+              style: TextStyle(
+                color: Colors.white.withValues(alpha: 0.85),
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-        const SizedBox(height: 18),
-
-        FadeTransition(
-          opacity: _opacityAnimation,
-          child: Text(
-            'Alinhe o código de barras',
-            style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.85),
-
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              letterSpacing: 0.6,
+  Widget _buildCorner({
+    double? top,
+    double? bottom,
+    double? left,
+    double? right,
+    bool rotate = false,
+  }) {
+    return Positioned(
+      top: top,
+      bottom: bottom,
+      left: left,
+      right: right,
+      child: Transform.rotate(
+        angle: rotate ? 3.14 / 2 : 0,
+        child: Container(
+          width: 26,
+          height: 26,
+          decoration: const BoxDecoration(
+            border: Border(
+              top: BorderSide(color: Colors.white, width: 2),
+              left: BorderSide(color: Colors.white, width: 2),
             ),
           ),
         ),
-      ],
-    ),
-  );
-}
-
-Widget _buildCorner({
-  double? top,
-  double? bottom,
-  double? left,
-  double? right,
-  bool rotate = false,
-}) {
-  return Positioned(
-    top: top,
-    bottom: bottom,
-    left: left,
-    right: right,
-    child: Transform.rotate(
-      angle: rotate ? 3.14 / 2 : 0,
-      child: Container(
-        width: 26,
-        height: 26,
-        decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(color: Colors.white, width: 2),
-            left: BorderSide(color: Colors.white, width: 2),
-          ),
-        ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 
   // ========================
   // ATUALIZA PREÇO
@@ -183,7 +176,7 @@ Widget _buildCorner({
   // ========================
   // FINALIZAÇÃO (ENTRADA / SAÍDA)
   // ========================
-  Future<void> _finalizeCart(String movementType) async {
+  Future<void> _finalizeCart(String movementType, DateTime selectedDate) async {
     if (cart.isEmpty) return;
 
     for (final item in cart) {
@@ -217,11 +210,27 @@ Widget _buildCorner({
               ((oldQty * oldCost) + (item.quantity * item.unitPrice)) / newQty;
         }
 
+        // Atualiza produto
         await docRef.update({
           'quantity': newQty,
           'cost': newCost,
           'unitPrice': item.unitPrice,
           'updatedAt': DateTime.now(),
+        });
+
+        // 🔥 REGISTRA MOVIMENTAÇÃO COM A DATA DO MODAL
+        await _firestore
+            .collection('users')
+            .doc(widget.userLogin)
+            .collection('movements')
+            .add({
+          'productId': docRef.id,
+          'productName': item.name,
+          'type': movementType == 'entrada' ? 'add' : 'remove',
+          'quantity': item.quantity,
+          'unitPrice': item.unitPrice,
+          'cost': item.quantity * item.unitPrice,
+          'timestamp': Timestamp.fromDate(selectedDate),
         });
       } catch (e) {
         debugPrint('Erro ao finalizar ${item.name}: $e');
@@ -244,7 +253,7 @@ Widget _buildCorner({
     if (!mounted) return;
 
     if (result != null) {
-      await _finalizeCart(movementType);
+      await _finalizeCart(movementType, result.selectedDate);
       if (mounted) Navigator.of(context).pop();
     }
   }
@@ -343,9 +352,7 @@ Widget _buildCorner({
       body: Stack(
         children: [
           MobileScanner(controller: _controller, onDetect: _onDetect),
-
           _buildScannerOverlay(),
-
           if (_hasScanned && scannedCode != null && productName != null)
             ScanResultCard(
               productName: productName!,
@@ -353,7 +360,6 @@ Widget _buildCorner({
               isError: _isError,
               onDismiss: () {},
             ),
-
           Align(
             alignment: Alignment.bottomCenter,
             child: BottomCart(

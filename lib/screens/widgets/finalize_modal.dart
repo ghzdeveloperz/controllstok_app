@@ -3,11 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class FinalizeModalResult {
-  final DateTime date;
+  final DateTime selectedDate;
 
-  FinalizeModalResult({
-    required this.date,
-  });
+  FinalizeModalResult({required this.selectedDate});
 }
 
 class FinalizeModal extends StatefulWidget {
@@ -59,7 +57,6 @@ class _FinalizeModalState extends State<FinalizeModal> {
             ),
           ),
           const SizedBox(height: 6),
-
           InkWell(
             onTap: _pickDate,
             borderRadius: BorderRadius.circular(12),
@@ -96,10 +93,9 @@ class _FinalizeModalState extends State<FinalizeModal> {
         ),
         ElevatedButton(
           onPressed: () {
+            // Retorna o resultado correto para o scanner_screen
             Navigator.of(context).pop(
-              FinalizeModalResult(
-                date: _selectedDate,
-              ),
+              FinalizeModalResult(selectedDate: _selectedDate),
             );
           },
           style: ElevatedButton.styleFrom(

@@ -1,3 +1,4 @@
+// lib/screens/widgets/bottom_cart.dart
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../scanner_screen.dart';
