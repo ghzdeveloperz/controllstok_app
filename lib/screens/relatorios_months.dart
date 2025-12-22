@@ -89,7 +89,6 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths> {
     return '${monthName[0].toUpperCase()}${monthName.substring(1)} de ${date.year}';
   }
 
-
   // =====================================================
   // GRÁFICO MENSAL PREMIUM COM SCROLL E ANIMAÇÕES
   // =====================================================
@@ -235,7 +234,7 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths> {
                               style: const TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,
-                                color: Color(0xFF424242),
+                                color: Color.fromARGB(255, 211, 12, 12),
                               ),
                             );
                           },
