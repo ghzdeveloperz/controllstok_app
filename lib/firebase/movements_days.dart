@@ -1,4 +1,3 @@
-// lib/firebase/movements_days.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// =======================
@@ -12,7 +11,7 @@ class Movement {
   final int quantity;
   final double unitPrice;
   final DateTime timestamp;
-  final String? image; // imagem do produto, opcional
+  final String? image;
 
   Movement({
     required this.id,
@@ -25,15 +24,15 @@ class Movement {
     this.image,
   });
 
-  /// Getter para facilitar a exibição da data
+  /// 👉 Usado diretamente nos relatórios/gráficos
   DateTime get date => timestamp;
 
-  /// Cria um Movement a partir do doc do Firestore e da imagem do produto
   factory Movement.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> doc, {
     String? productImage,
   }) {
-    final data = doc.data()!;
+    final data = doc.data() ?? {};
+
     return Movement(
       id: doc.id,
       productId: data['productId'] ?? '',
@@ -41,23 +40,35 @@ class Movement {
       type: data['type'] ?? 'add',
       quantity: (data['quantity'] as num?)?.toInt() ?? 0,
       unitPrice: (data['unitPrice'] as num?)?.toDouble() ?? 0.0,
-      timestamp: (data['timestamp'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      timestamp:
+          (data['timestamp'] as Timestamp?)?.toDate() ?? DateTime.now(),
       image: productImage,
     );
   }
 }
 
 /// =======================
-/// SERVICE (DIÁRIO / MENSAL / ANUAL)
+/// SERVICE
 /// =======================
 class MovementsDaysFirestore {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  /// Função auxiliar para pegar a imagem do produto
+  /// Cache local de imagens (performance)
+  final Map<String, String?> _productImageCache = {};
+
+  /// =======================
+  /// IMAGEM DO PRODUTO (COM CACHE)
+  /// =======================
   Future<String?> _getProductImage({
     required String userId,
     required String productId,
   }) async {
+    if (productId.isEmpty) return null;
+
+    if (_productImageCache.containsKey(productId)) {
+      return _productImageCache[productId];
+    }
+
     final doc = await _firestore
         .collection('users')
         .doc(userId)
@@ -65,15 +76,14 @@ class MovementsDaysFirestore {
         .doc(productId)
         .get();
 
-    if (doc.exists) {
-      final data = doc.data();
-      return data?['image'] as String?;
-    }
-    return null;
+    final image = doc.data()?['image'] as String?;
+    _productImageCache[productId] = image;
+
+    return image;
   }
 
   /// =======================
-  /// MOVIMENTAÇÕES EM TEMPO REAL
+  /// MOVIMENTAÇÕES DIÁRIAS (STREAM)
   /// =======================
   Stream<List<Movement>> getDailyMovementsStream({
     required String userId,
@@ -92,17 +102,26 @@ class MovementsDaysFirestore {
         .snapshots()
         .asyncMap((snapshot) async {
       final movements = <Movement>[];
+
       for (final doc in snapshot.docs) {
         final productId = doc.data()['productId'] as String? ?? '';
-        final image = await _getProductImage(userId: userId, productId: productId);
-        movements.add(Movement.fromFirestore(doc, productImage: image));
+        final image = await _getProductImage(
+          userId: userId,
+          productId: productId,
+        );
+
+        movements.add(
+          Movement.fromFirestore(doc, productImage: image),
+        );
       }
+
       return movements;
     });
   }
 
   /// =======================
-  /// MOVIMENTAÇÕES DO MÊS EM TEMPO REAL
+  /// MOVIMENTAÇÕES MENSAIS (STREAM)
+  /// 👉 USADO NO GRÁFICO
   /// =======================
   Stream<List<Movement>> getMonthlyMovementsStream({
     required String userId,
@@ -110,9 +129,8 @@ class MovementsDaysFirestore {
     required int year,
   }) {
     final start = DateTime(year, month, 1);
-    final end = (month < 12)
-        ? DateTime(year, month + 1, 1)
-        : DateTime(year + 1, 1, 1);
+    final end =
+        (month < 12) ? DateTime(year, month + 1, 1) : DateTime(year + 1, 1, 1);
 
     return _firestore
         .collection('users')
@@ -124,17 +142,25 @@ class MovementsDaysFirestore {
         .snapshots()
         .asyncMap((snapshot) async {
       final movements = <Movement>[];
+
       for (final doc in snapshot.docs) {
         final productId = doc.data()['productId'] as String? ?? '';
-        final image = await _getProductImage(userId: userId, productId: productId);
-        movements.add(Movement.fromFirestore(doc, productImage: image));
+        final image = await _getProductImage(
+          userId: userId,
+          productId: productId,
+        );
+
+        movements.add(
+          Movement.fromFirestore(doc, productImage: image),
+        );
       }
+
       return movements;
     });
   }
 
   /// =======================
-  /// MOVIMENTAÇÕES DO DIA (uma vez)
+  /// MOVIMENTAÇÕES DIÁRIAS (ONCE)
   /// =======================
   Future<List<Movement>> getDailyMovements({
     required String userId,
@@ -156,15 +182,19 @@ class MovementsDaysFirestore {
 
     for (final doc in snapshot.docs) {
       final productId = doc.data()['productId'] as String? ?? '';
-      final image = await _getProductImage(userId: userId, productId: productId);
-      movements.add(Movement.fromFirestore(doc, productImage: image));
+      final image =
+          await _getProductImage(userId: userId, productId: productId);
+
+      movements.add(
+        Movement.fromFirestore(doc, productImage: image),
+      );
     }
 
     return movements;
   }
 
   /// =======================
-  /// MOVIMENTAÇÕES DO MÊS (uma vez)
+  /// MOVIMENTAÇÕES MENSAIS (ONCE)
   /// =======================
   Future<List<Movement>> getMonthlyMovements({
     required String userId,
@@ -172,9 +202,8 @@ class MovementsDaysFirestore {
     required int year,
   }) async {
     final start = DateTime(year, month, 1);
-    final end = (month < 12)
-        ? DateTime(year, month + 1, 1)
-        : DateTime(year + 1, 1, 1);
+    final end =
+        (month < 12) ? DateTime(year, month + 1, 1) : DateTime(year + 1, 1, 1);
 
     final snapshot = await _firestore
         .collection('users')
@@ -189,15 +218,19 @@ class MovementsDaysFirestore {
 
     for (final doc in snapshot.docs) {
       final productId = doc.data()['productId'] as String? ?? '';
-      final image = await _getProductImage(userId: userId, productId: productId);
-      movements.add(Movement.fromFirestore(doc, productImage: image));
+      final image =
+          await _getProductImage(userId: userId, productId: productId);
+
+      movements.add(
+        Movement.fromFirestore(doc, productImage: image),
+      );
     }
 
     return movements;
   }
 
   /// =======================
-  /// MOVIMENTAÇÕES DO ANO (uma vez)
+  /// MOVIMENTAÇÕES ANUAIS
   /// =======================
   Future<List<Movement>> getYearlyMovements({
     required String userId,
@@ -219,8 +252,12 @@ class MovementsDaysFirestore {
 
     for (final doc in snapshot.docs) {
       final productId = doc.data()['productId'] as String? ?? '';
-      final image = await _getProductImage(userId: userId, productId: productId);
-      movements.add(Movement.fromFirestore(doc, productImage: image));
+      final image =
+          await _getProductImage(userId: userId, productId: productId);
+
+      movements.add(
+        Movement.fromFirestore(doc, productImage: image),
+      );
     }
 
     return movements;

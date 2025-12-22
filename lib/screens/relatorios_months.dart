@@ -1,9 +1,8 @@
-// lib/screens/relatorios_months.dart
 import 'dart:async';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:fl_chart/fl_chart.dart';
 import '../firebase/movements_days.dart';
 
 class RelatoriosMonths extends StatefulWidget {
@@ -51,266 +50,427 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths> {
       lastDate: DateTime(2100),
       locale: const Locale('pt', 'BR'),
       builder: (context, child) {
-        return Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 800, maxHeight: 600),
-            child: Theme(
-              data: Theme.of(context).copyWith(
-                colorScheme: const ColorScheme.light(
-                  primary: Colors.black,
-                  onPrimary: Colors.white,
-                  onSurface: Colors.black87,
-                ),
-                textButtonTheme: TextButtonThemeData(
-                  style: TextButton.styleFrom(foregroundColor: Colors.black),
-                ),
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Color(0xFF1A1A1A), // Preto elegante
+              onPrimary: Colors.white,
+              onSurface: Color(0xFF1A1A1A),
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: const Color(0xFF1A1A1A),
               ),
-              child: child!,
             ),
           ),
+          child: child!,
         );
       },
     );
 
     if (picked != null) {
-      setState(() => _displayMonth = DateTime(picked.year, picked.month));
+      setState(() {
+        _displayMonth = DateTime(picked.year, picked.month);
+      });
     }
   }
 
   String get _displayMonthText {
     final now = DateTime.now();
-    return (_displayMonth.year == now.year && _displayMonth.month == now.month)
-        ? 'Este mês'
-        : DateFormat('MM/yyyy').format(_displayMonth);
+    if (_displayMonth.year == now.year && _displayMonth.month == now.month) {
+      return 'Este mês';
+    }
+    return DateFormat('MM/yyyy').format(_displayMonth);
   }
 
   String _formatMonthTitle(DateTime date) {
     final monthName = DateFormat('MMMM', 'pt_BR').format(date);
-    final year = date.year;
-    return '${monthName[0].toUpperCase()}${monthName.substring(1)} de $year';
+    return '${monthName[0].toUpperCase()}${monthName.substring(1)} de ${date.year}';
   }
 
   void _saveReport() {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Relatório mensal salvo com sucesso!')),
+      SnackBar(
+        content: const Text('Relatório mensal salvo com sucesso!'),
+        backgroundColor: const Color(0xFF4CAF50), // Verde premium
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+    );
+  }
+
+  // =====================================================
+  // GRÁFICO MENSAL PREMIUM COM SCROLL E ANIMAÇÕES
+  // =====================================================
+  Widget _buildBarChart(List<Movement> movements) {
+    final Map<int, int> addByDay = {};
+    final Map<int, int> removeByDay = {};
+
+    for (final m in movements) {
+      final day = m.date.day;
+      if (m.type == 'add') {
+        addByDay[day] = (addByDay[day] ?? 0) + m.quantity;
+      } else {
+        removeByDay[day] = (removeByDay[day] ?? 0) + m.quantity;
+      }
+    }
+
+    final daysInMonth = DateUtils.getDaysInMonth(
+      _displayMonth.year,
+      _displayMonth.month,
+    );
+    const double dayWidth = 50; // Aumentado para melhor visual
+    final double chartWidth = daysInMonth * dayWidth;
+
+    final barGroups = List.generate(daysInMonth, (index) {
+      final day = index + 1;
+      return BarChartGroupData(
+        x: day,
+        barsSpace: 8, // Espaço maior entre barras
+        barRods: [
+          BarChartRodData(
+            toY: (addByDay[day] ?? 0).toDouble(),
+            gradient: const LinearGradient(
+              colors: [
+                Color(0xFF4CAF50),
+                Color(0xFF81C784),
+              ], // Gradiente verde premium
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+            ),
+            width: 12,
+            borderRadius: BorderRadius.circular(6),
+            backDrawRodData: BackgroundBarChartRodData(
+              show: true,
+              toY: 0,
+              color: Colors.grey.shade200,
+            ),
+          ),
+          BarChartRodData(
+            toY: (removeByDay[day] ?? 0).toDouble(),
+            gradient: const LinearGradient(
+              colors: [
+                Color(0xFFF44336),
+                Color(0xFFEF5350),
+              ], // Gradiente vermelho premium
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+            ),
+            width: 12,
+            borderRadius: BorderRadius.circular(6),
+            backDrawRodData: BackgroundBarChartRodData(
+              show: true,
+              toY: 0,
+              color: Colors.grey.shade200,
+            ),
+          ),
+        ],
+      );
+    });
+
+    final maxY =
+        barGroups
+            .expand((e) => e.barRods)
+            .map((e) => e.toY)
+            .fold<double>(0, (p, c) => c > p ? c : p) +
+        5; // Margem superior
+
+    return Container(
+      margin: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFFF5F5F5), Color(0xFFE0E0E0)], // Fundo sutil
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1), // Corrigido
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Card(
+        elevation: 0, // Removido para usar o container
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        color: Colors.transparent, // Transparente para mostrar o gradiente
+        child: SizedBox(
+          height: 350, // Altura aumentada
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: SizedBox(
+              width: chartWidth < MediaQuery.of(context).size.width
+                  ? MediaQuery.of(context).size.width
+                  : chartWidth,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 20,
+                ),
+                child: BarChart(
+                  BarChartData(
+                    maxY: maxY,
+                    barGroups: barGroups,
+                    gridData: FlGridData(
+                      show: true,
+                      drawVerticalLine: false,
+                      horizontalInterval: 5,
+                      getDrawingHorizontalLine: (value) {
+                        return FlLine(
+                          color: Colors.grey.shade300,
+                          strokeWidth: 1,
+                          dashArray: [5, 5],
+                        );
+                      },
+                    ),
+                    borderData: FlBorderData(show: false),
+                    titlesData: FlTitlesData(
+                      topTitles: const AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                      rightTitles: const AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                      leftTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          reservedSize: 40,
+                          interval: 5,
+                          getTitlesWidget: (value, meta) {
+                            return Text(
+                              value.toInt().toString(),
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0xFF424242),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          interval: 1,
+                          getTitlesWidget: (value, meta) {
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 8),
+                              child: Text(
+                                value.toInt().toString(),
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  color: Color(0xFF424242),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                    barTouchData: BarTouchData(
+                      enabled: true,
+                      touchTooltipData: BarTouchTooltipData(
+                        tooltipBorderRadius: BorderRadius.circular(
+                          8,
+                        ), // versão antiga usa tooltipBorderRadius
+                        tooltipMargin: 8, // margem do tooltip
+                        getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                          final type = rodIndex == 0 ? 'Entrada' : 'Saída';
+                          return BarTooltipItem(
+                            '$type\n${rod.toY.toInt()}',
+                            const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  duration: const Duration(milliseconds: 800), // Corrigido
+                  curve: Curves.easeInOut, // Corrigido
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!_localeReady) return const Center(child: CircularProgressIndicator());
+    if (!_localeReady) {
+      return const Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(
+            Color(0xFF4CAF50),
+          ), // Verde premium
+        ),
+      );
+    }
 
-    return Column(
-      children: [
-        _buildHeaderButtons(),
-        const SizedBox(height: 8),
-        Expanded(child: _buildChartSection()),
-      ],
-    );
-  }
-
-  Widget _buildHeaderButtons() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: Row(
+    return Scaffold(
+      backgroundColor: const Color(0xFFFAFAFA), // Fundo premium
+      body: Column(
         children: [
-          Expanded(
-            child: GestureDetector(
-              onTap: _pickMonth,
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 4,
-                      offset: Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.calendar_today, size: 18, color: Colors.white),
-                    const SizedBox(width: 6),
-                    Text(
-                      _displayMonthText,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            child: Row(
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: _pickMonth,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0xFF1A1A1A),
+                            Color(0xFF424242),
+                          ], // Gradiente preto
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(
+                              alpha: 0.2,
+                            ), // Corrigido
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.calendar_today,
+                            size: 20,
+                            color: Colors.white,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            _displayMonthText,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: OutlinedButton(
-              onPressed: _saveReport,
-              style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: Colors.black),
-                backgroundColor: Colors.white,
-                foregroundColor: Colors.black,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.save, size: 18),
-                  SizedBox(width: 8),
-                  Text(
-                    'Salvar Relatório',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
+                const SizedBox(width: 12),
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: _saveReport,
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(
+                        color: Color(0xFF1A1A1A),
+                        width: 2,
+                      ),
+                      backgroundColor: Colors.white,
+                      foregroundColor: const Color(0xFF1A1A1A),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 2,
+                      shadowColor: Colors.black.withValues(
+                        alpha: 0.1,
+                      ), // Corrigido
+                    ),
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.save, size: 20),
+                        SizedBox(width: 8),
+                        Text(
+                          'Salvar Relatório',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: StreamBuilder<List<Movement>>(
+              stream: _movementsService.getMonthlyMovementsStream(
+                userId: widget.userId,
+                month: _displayMonth.month,
+                year: _displayMonth.year,
               ),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Color(0xFF4CAF50),
+                      ),
+                    ),
+                  );
+                }
+
+                final movements = snapshot.data!;
+                if (movements.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.bar_chart,
+                          size: 64,
+                          color: Colors.grey.shade400,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Nenhuma movimentação em ${DateFormat('MM/yyyy').format(_displayMonth)}',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            color: Color(0xFF757575),
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
+                return ListView(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                      child: Text(
+                        _formatMonthTitle(_displayMonth),
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF1A1A1A),
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ),
+                    _buildBarChart(movements),
+                    const SizedBox(height: 24),
+                  ],
+                );
+              },
             ),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildChartSection() {
-    return StreamBuilder<List<Movement>>(
-      stream: _movementsService.getMonthlyMovementsStream(
-        userId: widget.userId,
-        month: _displayMonth.month,
-        year: _displayMonth.year,
-      ),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
-
-        final movements = snapshot.data!;
-        if (movements.isEmpty) {
-          return Center(
-            child: Text(
-              'Nenhuma movimentação em ${DateFormat('MM/yyyy').format(_displayMonth)}',
-              style: const TextStyle(fontSize: 16, color: Colors.black54),
-            ),
-          );
-        }
-
-        final daysInMonth = DateTime(_displayMonth.year, _displayMonth.month + 1, 0).day;
-        final dailyTotals = List.generate(daysInMonth, (_) => {'add': 0, 'remove': 0});
-
-        for (final m in movements) {
-          if (m.date.month == _displayMonth.month && m.date.year == _displayMonth.year) {
-            final dayIndex = m.date.day - 1;
-            if (m.type == 'add') {
-              dailyTotals[dayIndex]['add'] = dailyTotals[dayIndex]['add']! + m.quantity;
-            } else if (m.type == 'remove') {
-              dailyTotals[dayIndex]['remove'] = dailyTotals[dayIndex]['remove']! + m.quantity;
-            }
-          }
-        }
-
-        final barGroups = List.generate(daysInMonth, (index) {
-          final day = index + 1;
-          return BarChartGroupData(
-            x: day,
-            barRods: [
-              BarChartRodData(
-                toY: dailyTotals[index]['add']!.toDouble(),
-                color: Colors.green,
-                width: 8,
-              ),
-              BarChartRodData(
-                toY: dailyTotals[index]['remove']!.toDouble(),
-                color: Colors.red,
-                width: 8,
-              ),
-            ],
-            barsSpace: 4,
-          );
-        });
-
-        final maxY = dailyTotals
-                .map((e) => e['add']! + e['remove']!)
-                .reduce((a, b) => a > b ? a : b)
-                .toDouble() +
-            5;
-
-        return Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              Text(
-                _formatMonthTitle(_displayMonth),
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.3,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Expanded(
-                child: BarChart(
-                  BarChartData(
-                    alignment: BarChartAlignment.spaceBetween,
-                    maxY: maxY,
-                    barGroups: barGroups,
-                    titlesData: FlTitlesData(
-                      bottomTitles: AxisTitles(
-                        sideTitles: SideTitles(
-                          showTitles: true,
-                          getTitlesWidget: (value, _) {
-                            return Padding(
-                              padding: const EdgeInsets.only(top: 4.0),
-                              child: Text(
-                                value.toInt().toString(),
-                                style: const TextStyle(fontSize: 10),
-                              ),
-                            );
-                          },
-                          reservedSize: 28,
-                        ),
-                      ),
-                      leftTitles: AxisTitles(
-                        sideTitles: SideTitles(showTitles: true, interval: 5),
-                      ),
-                      topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                      rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                    ),
-                    gridData: FlGridData(show: true),
-                    borderData: FlBorderData(show: false),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildLegend(Colors.green, 'Entrada'),
-                  const SizedBox(width: 16),
-                  _buildLegend(Colors.red, 'Saída'),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildLegend(Color color, String text) {
-    return Row(
-      children: [
-        Container(width: 12, height: 12, color: color),
-        const SizedBox(width: 4),
-        Text(text, style: const TextStyle(fontSize: 12)),
-      ],
     );
   }
 }
