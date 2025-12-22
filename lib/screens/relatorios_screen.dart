@@ -3,6 +3,7 @@ import '../services/session_service.dart';
 import 'relatorios_days.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'relatorios_months.dart';
+import 'relatorios_years.dart';
 
 enum PeriodType { daily, monthly, yearly }
 
@@ -104,9 +105,7 @@ class _RelatoriosScreenState extends State<RelatoriosScreen> {
       case PeriodType.monthly:
         return RelatoriosMonths(userId: _userId!);
       case PeriodType.yearly:
-        return const Center(
-          child: Text('Relatórios anuais em desenvolvimento'),
-        );
+        return RelatoriosYears(userId: _userId!);
     }
   }
 }
