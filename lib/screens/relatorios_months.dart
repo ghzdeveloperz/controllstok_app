@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import '../firebase/movements_days.dart';
+import '../screens/models/salve_modal.dart';
 
 class RelatoriosMonths extends StatefulWidget {
   final String userId;
@@ -88,16 +89,6 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths> {
     return '${monthName[0].toUpperCase()}${monthName.substring(1)} de ${date.year}';
   }
 
-  void _saveReport() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Relatório mensal salvo com sucesso!'),
-        backgroundColor: const Color(0xFF4CAF50), // Verde premium
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-    );
-  }
 
   // =====================================================
   // GRÁFICO MENSAL PREMIUM COM SCROLL E ANIMAÇÕES
@@ -369,7 +360,10 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: OutlinedButton(
-                    onPressed: _saveReport,
+                    onPressed: () {
+                      // Aqui você chama o modal
+                      SalveModal.show(context);
+                    },
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(
                         color: Color(0xFF1A1A1A),
@@ -392,7 +386,7 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths> {
                         Icon(Icons.save, size: 20),
                         SizedBox(width: 8),
                         Text(
-                          'Salvar Relatório',
+                          'Exportar Relatório',
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 16,

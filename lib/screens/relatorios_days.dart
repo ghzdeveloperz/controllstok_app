@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:controllstok_app/screens/models/salve_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -93,17 +94,6 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
     return '${weekdayName[0].toUpperCase()}${weekdayName.substring(1)}, $day de ${monthName[0].toUpperCase()}${monthName.substring(1)} de $year';
   }
 
-  void _saveReport() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Relatório diário salvo com sucesso!'),
-        backgroundColor: const Color(0xFF4CAF50),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     if (!_localeReady) {
@@ -129,15 +119,14 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
-                          colors: [
-                            Color(0xFF1A1A1A),
-                            Color(0xFF424242),
-                          ],
+                          colors: [Color(0xFF1A1A1A), Color(0xFF424242)],
                         ),
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.2), // Linha 140
+                            color: Colors.black.withValues(
+                              alpha: 0.2,
+                            ), // Linha 140
                             blurRadius: 8,
                             offset: const Offset(0, 4),
                           ),
@@ -146,7 +135,11 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.calendar_today, size: 20, color: Colors.white),
+                          const Icon(
+                            Icons.calendar_today,
+                            size: 20,
+                            color: Colors.white,
+                          ),
                           const SizedBox(width: 8),
                           Text(
                             _displayDateText,
@@ -164,9 +157,15 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: OutlinedButton(
-                    onPressed: _saveReport,
+                    onPressed: () {
+                      // Aqui você chama o modal
+                      SalveModal.show(context);
+                    },
                     style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: Color(0xFF1A1A1A), width: 2),
+                      side: const BorderSide(
+                        color: Color(0xFF1A1A1A),
+                        width: 2,
+                      ),
                       backgroundColor: Colors.white,
                       foregroundColor: const Color(0xFF1A1A1A),
                       padding: const EdgeInsets.symmetric(vertical: 14),
@@ -174,7 +173,9 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       elevation: 2,
-                      shadowColor: Colors.black.withValues(alpha: 0.1), // Linha 177
+                      shadowColor: Colors.black.withValues(
+                        alpha: 0.1,
+                      ), // Linha 177
                     ),
                     child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -182,7 +183,7 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
                         Icon(Icons.save, size: 20),
                         SizedBox(width: 8),
                         Text(
-                          'Salvar Relatório',
+                          'Exportar Relatório',
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 16,
@@ -205,7 +206,9 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
                 if (!snapshot.hasData) {
                   return const Center(
                     child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Color(0xFF4CAF50),
+                      ),
                     ),
                   );
                 }
@@ -216,7 +219,11 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.bar_chart, size: 64, color: Colors.grey.shade400),
+                        Icon(
+                          Icons.bar_chart,
+                          size: 64,
+                          color: Colors.grey.shade400,
+                        ),
                         const SizedBox(height: 16),
                         Text(
                           'Nenhuma movimentação em ${DateFormat('dd/MM/yyyy').format(_displayDate)}',
@@ -280,10 +287,14 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
                           children: [
                             ClipRRect(
                               borderRadius: BorderRadius.circular(12),
-                              child: productImage != null && productImage.isNotEmpty
+                              child:
+                                  productImage != null &&
+                                      productImage.isNotEmpty
                                   ? Image.memory(
                                       base64Decode(
-                                        productImage.contains(',') ? productImage.split(',')[1] : productImage,
+                                        productImage.contains(',')
+                                            ? productImage.split(',')[1]
+                                            : productImage,
                                       ),
                                       width: 60,
                                       height: 60,
@@ -319,10 +330,15 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
                                     children: [
                                       if (totalAdd > 0)
                                         Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                            vertical: 4,
+                                          ),
                                           decoration: BoxDecoration(
                                             color: Colors.green.shade50,
-                                            borderRadius: BorderRadius.circular(8),
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
                                           ),
                                           child: Text(
                                             'Entrada: $totalAdd',
@@ -335,11 +351,18 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
                                         ),
                                       if (totalRemove > 0)
                                         Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                          margin: const EdgeInsets.only(left: 8),
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                            vertical: 4,
+                                          ),
+                                          margin: const EdgeInsets.only(
+                                            left: 8,
+                                          ),
                                           decoration: BoxDecoration(
                                             color: Colors.red.shade50,
-                                            borderRadius: BorderRadius.circular(8),
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
                                           ),
                                           child: Text(
                                             'Saída: $totalRemove',
@@ -362,7 +385,8 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
                                             height: 8,
                                             decoration: BoxDecoration(
                                               color: Colors.green,
-                                              borderRadius: BorderRadius.circular(4),
+                                              borderRadius:
+                                                  BorderRadius.circular(4),
                                             ),
                                           ),
                                         ),
@@ -371,10 +395,13 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
                                           flex: totalRemove,
                                           child: Container(
                                             height: 8,
-                                            margin: const EdgeInsets.only(left: 2),
+                                            margin: const EdgeInsets.only(
+                                              left: 2,
+                                            ),
                                             decoration: BoxDecoration(
                                               color: Colors.red,
-                                              borderRadius: BorderRadius.circular(4),
+                                              borderRadius:
+                                                  BorderRadius.circular(4),
                                             ),
                                           ),
                                         ),
@@ -391,7 +418,10 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
                 }
 
                 return ListView(
-                  padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 0,
+                    vertical: 8,
+                  ),
                   children: children,
                 );
               },

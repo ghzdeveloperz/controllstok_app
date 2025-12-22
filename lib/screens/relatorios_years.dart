@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import '../firebase/movements_days.dart';
+import '../screens/models/salve_modal.dart';
 
 /// =======================
 /// LEGEND WIDGET
@@ -117,16 +118,6 @@ class _RelatoriosYearsState extends State<RelatoriosYears> {
     setState(() => _movements = data);
   }
 
-  void _saveReport() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Relatório anual salvo com sucesso!'),
-        backgroundColor: const Color(0xFF4CAF50),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-    );
-  }
 
   Widget _buildBarChart() {
     final Map<int, int> addByMonth = {};
@@ -334,7 +325,10 @@ class _RelatoriosYearsState extends State<RelatoriosYears> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: OutlinedButton(
-                    onPressed: _saveReport,
+                    onPressed: () {
+                      // Aqui você chama o modal
+                      SalveModal.show(context);
+                    },
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(
                         color: Color(0xFF1A1A1A),
@@ -355,7 +349,7 @@ class _RelatoriosYearsState extends State<RelatoriosYears> {
                         Icon(Icons.save),
                         SizedBox(width: 8),
                         Text(
-                          'Salvar Relatório',
+                          'Exportar Relatório',
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 16,
