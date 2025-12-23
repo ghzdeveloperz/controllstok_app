@@ -1,9 +1,9 @@
-// lib/screens/estoque_screen.dart
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../firebase/firestore/products_firestore.dart';
 import '../firebase/firestore/categories_firestore.dart';
+import 'novo_produto_screen.dart';
 
 import 'widgets/product_card.dart';
 import 'models/product.dart';
@@ -25,7 +25,7 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey.shade50, // Fundo sutilmente cinza para elegância e contraste premium
       body: SafeArea(
         child: Column(
           children: [
@@ -42,7 +42,7 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
   // ================= HEADER =================
   Widget _buildHeader() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 12), // Padding maior para respiro visual
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -52,20 +52,86 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
               Text(
                 'Estoque',
                 style: GoogleFonts.poppins(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 28, // Tamanho maior para impacto forte
+                  fontWeight: FontWeight.w700, // Peso mais pesado para sofisticação
+                  color: Colors.black87, // Cinza escuro para contraste elegante
+                  letterSpacing: 0.5, // Espaçamento para tipografia premium
                 ),
               ),
+              const SizedBox(height: 4), // Espaço sutil entre título e subtítulo
               Text(
                 widget.userLogin,
                 style: GoogleFonts.poppins(
                   fontSize: 14,
-                  color: Colors.grey.shade600,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.grey.shade600, // Tom discreto, como solicitado
                 ),
               ),
             ],
           ),
-          const Icon(Icons.inventory_2_outlined, size: 28),
+
+          // Botão Novo Produto Premium (mantido e refinado para consistência)
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) =>
+                      NovoProdutoScreen(userLogin: widget.userLogin),
+                ),
+              );
+            },
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              width: 52,
+              height: 52,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [
+                    Color(0xFF0F0F0F), // Preto quase absoluto
+                    Color(0xFF1E1E1E), // Transição sutil
+                    Color(0xFF2A2A2A), // Leve highlight
+                    Color(0xFF141414), // Volta ao escuro
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  stops: [0.0, 0.35, 0.7, 1.0],
+                ),
+                borderRadius: BorderRadius.circular(18),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withAlpha(150), // Sombra forte e limpa
+                    blurRadius: 18,
+                    offset: const Offset(0, 9),
+                  ),
+                  BoxShadow(
+                    color: Colors.white.withAlpha(18), // Brilho interno sutil
+                    blurRadius: 8,
+                    offset: const Offset(0, -4),
+                  ),
+                ],
+                border: Border.all(
+                  color: Colors.white.withAlpha(32), // Borda quase imperceptível
+                  width: 1.2,
+                ),
+              ),
+              alignment: Alignment.center,
+              child: ShaderMask(
+                shaderCallback: (Rect bounds) {
+                  return const LinearGradient(
+                    colors: [Colors.white, Color(0xFFE0E0E0)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ).createShader(bounds);
+                },
+                child: const Icon(
+                  Icons.add_business_outlined,
+                  size: 26,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -74,7 +140,7 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
   // ================= SEARCH =================
   Widget _buildSearch() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8), // Padding consistente
       child: TextField(
         onChanged: (value) {
           setState(() {
@@ -83,23 +149,27 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
         },
         decoration: InputDecoration(
           hintText: 'Buscar produto...',
-          prefixIcon: const Icon(Icons.search),
-          filled: true,
-          fillColor: Colors.grey.shade100,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none,
+          hintStyle: TextStyle(color: Colors.grey.shade500), // Hint discreto
+          prefixIcon: Icon(
+            Icons.search,
+            color: Colors.grey.shade600, // Ícone discreto
           ),
+          filled: true,
+          fillColor: Colors.grey.shade100, // Fundo levemente contrastante, sem agressividade
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16), // Cantos arredondados suaves
+            borderSide: BorderSide.none, // Sem bordas agressivas
+          ),
+          contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16), // Padding interno para amplitude
         ),
       ),
     );
   }
 
   // ================= CATEGORIES =================
-  // ================= CATEGORIES =================
   Widget _buildCategories() {
     return SizedBox(
-      height: 44,
+      height: 48, // Altura ligeiramente maior para toque confortável
       child: StreamBuilder<List<Category>>(
         stream: CategoriesFirestore.streamCategories(widget.userLogin),
         builder: (context, snapshot) {
@@ -113,10 +183,10 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
           ];
 
           return ListView.separated(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 20), // Padding consistente
             scrollDirection: Axis.horizontal,
             itemCount: categories.length,
-            separatorBuilder: (_, _) => const SizedBox(width: 8),
+            separatorBuilder: (_, _) => const SizedBox(width: 10), // Espaço maior para respiro
             itemBuilder: (context, index) {
               final category = categories[index];
               final isSelected = category.name == _selectedCategory;
@@ -128,25 +198,23 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
                   });
                 },
                 child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  duration: const Duration(milliseconds: 300), // Transições suaves
+                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12), // Padding interno generoso
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: isSelected
-                        ? Colors.black
-                        : Colors.transparent, // transparente
-                    borderRadius: BorderRadius.circular(20),
+                    color: isSelected ? Colors.black : Colors.transparent, // Fundo sólido escuro para ativa
+                    borderRadius: BorderRadius.circular(24), // Raio maior para elegância
                     border: Border.all(
-                      color: isSelected
-                          ? Colors.black
-                          : Colors.grey.shade400, // apenas contorno sutil
+                      color: isSelected ? Colors.black : Colors.grey.shade300, // Contorno sutil para inativas
+                      width: 1.5,
                     ),
                   ),
                   child: Text(
                     category.name,
-                    style: TextStyle(
-                      color: isSelected ? Colors.white : Colors.black,
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
                       fontWeight: FontWeight.w500,
+                      color: isSelected ? Colors.white : Colors.black87, // Contraste elegante
                     ),
                   ),
                 ),
@@ -172,6 +240,7 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
             child: Text(
               'Erro ao carregar produtos\n${snapshot.error}',
               textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.grey.shade700),
             ),
           );
         }
@@ -191,31 +260,31 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
         }).toList();
 
         if (filteredProducts.isEmpty) {
-          return const Center(
+          return  Center(
             child: Text(
               'Nenhum produto encontrado',
-              style: TextStyle(color: Colors.grey),
+              style: TextStyle(color: Colors.grey.shade600),
             ),
           );
         }
 
- return GridView.builder(
-  padding: const EdgeInsets.all(16),
-  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-    maxCrossAxisExtent: 250,
-    childAspectRatio: 0.80,
-    crossAxisSpacing: 12,
-    mainAxisSpacing: 12,
-  ),
-  itemCount: filteredProducts.length,
-  itemBuilder: (context, index) {
-    return ProductCard(
-      product: filteredProducts[index],
-      userLogin: widget.userLogin,
-      userCategories: snapshot.data?.map((c) => c.name).toList() ?? [], // 🔥 PASSA A LISTA DE CATEGORIAS
-    );
-  },
-);
+        return GridView.builder(
+          padding: const EdgeInsets.all(20), // Padding generoso para respiro
+          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+            maxCrossAxisExtent: 250,
+            childAspectRatio: 0.85, // Aspecto ajustado para hierarquia clara nos cards
+            crossAxisSpacing: 16, // Espaçamento maior para separação visual
+            mainAxisSpacing: 16,
+          ),
+          itemCount: filteredProducts.length,
+          itemBuilder: (context, index) {
+            return ProductCard(
+              product: filteredProducts[index],
+              userLogin: widget.userLogin,
+              userCategories: products.map((p) => p.category).toSet().toList(),
+            );
+          },
+        );
       },
     );
   }

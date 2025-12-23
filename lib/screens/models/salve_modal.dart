@@ -15,7 +15,7 @@ class SalveModal extends StatefulWidget {
       barrierLabel: 'Fechar',
       barrierColor: Colors.black.withValues(alpha: 0.8), // Fundo ainda mais escuro para foco intenso
       transitionDuration: const Duration(milliseconds: 100), // Ultra-rápida para máxima fluidez
-      pageBuilder: (context, _, __) => const SalveModal(),
+      pageBuilder: (context, _, _) => const SalveModal(),
       transitionBuilder: (context, anim, _, child) {
         final curvedAnim = CurvedAnimation(parent: anim, curve: Curves.fastOutSlowIn); // Curva premium e rápida
         return FadeTransition(

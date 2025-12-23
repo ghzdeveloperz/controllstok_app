@@ -1,3 +1,4 @@
+// lib/firebase/firestore/categories_firestore.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../screens/models/category.dart'; // ✅ IMPORT OBRIGATÓRIO
