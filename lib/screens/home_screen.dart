@@ -3,19 +3,16 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 
 import 'estoque_screen.dart';
-import 'relatorios_screen.dart';
+import 'novo_produto_screen.dart';
 import 'scanner_screen.dart';
-import 'alertas_screen.dart';
+import 'relatorios_screen.dart';
 import 'config_screen.dart';
 import '../notifications/notification_service.dart';
 
 class HomeScreen extends StatefulWidget {
   final String userLogin;
 
-  const HomeScreen({
-    super.key,
-    required this.userLogin,
-  });
+  const HomeScreen({super.key, required this.userLogin});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -30,47 +27,38 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
 
+    // === Lista de telas na ordem correta ===
     _screens = [
-      EstoqueScreen(userLogin: widget.userLogin),
-      const RelatoriosScreen(),
-      const SizedBox(), // placeholder do scanner
-      AlertasScreen(userLogin: widget.userLogin),
-      ConfigScreen(userLogin: widget.userLogin),
+      EstoqueScreen(userLogin: widget.userLogin),      // 0 Stock
+      NovoProdutoScreen(userLogin: widget.userLogin),  // 1 Novo Produto
+      const SizedBox(),                                // 2 Sites de Box (abrirá via Navigator)
+      RelatoriosScreen(),                              // 3 Relatórios
+      ConfigScreen(userLogin: widget.userLogin),     // 4 Confira
     ];
 
     _initNotifications();
-
-    // 🔔 TESTE TEMPORÁRIO — REMOVE DEPOIS
-    //Future.delayed(const Duration(seconds: 2), () {
-    //NotificationService.instance.showTestNotification();
-    //});
   }
 
   Future<void> _initNotifications() async {
     if (_notificationsStarted) return;
-
     _notificationsStarted = true;
-
     await NotificationService.instance.init();
-
     if (!mounted) return;
-
-    NotificationService.instance
-        .startListeningStockAlerts(widget.userLogin);
+    NotificationService.instance.startListeningStockAlerts(widget.userLogin);
   }
 
   void _onTap(int index) {
+    // === Botão Sites de Box / Scanner abre via Navigator ===
     if (index == 2) {
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (_) => ScannerScreen(
-            userLogin: widget.userLogin,
-          ),
+          builder: (_) => ScannerScreen(userLogin: widget.userLogin),
         ),
       );
       return;
     }
 
+    // === Outros índices atualizam o IndexedStack ===
     setState(() {
       _currentIndex = index;
     });
@@ -90,11 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             AnimatedContainer(
               duration: const Duration(milliseconds: 200),
-              transform: Matrix4.translationValues(
-                0,
-                isActive ? -4 : 0,
-                0,
-              ),
+              transform: Matrix4.translationValues(0, isActive ? -4 : 0, 0),
               child: Icon(
                 icon,
                 size: 26,
@@ -128,14 +112,14 @@ class _HomeScreenState extends State<HomeScreen> {
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.25),
+              color: Colors.black.withOpacity(0.25),
               blurRadius: 12,
               offset: const Offset(0, 6),
             ),
           ],
         ),
         child: const Icon(
-          Icons.qr_code_scanner,
+          Icons.document_scanner,
           color: Colors.white,
           size: 28,
         ),
@@ -165,13 +149,10 @@ class _HomeScreenState extends State<HomeScreen> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(28),
                 child: BackdropFilter(
-                  filter: ImageFilter.blur(
-                    sigmaX: 6,
-                    sigmaY: 6,
-                  ),
+                  filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.transparent,
+                      color: const Color.fromARGB(0, 212, 31, 31),
                       borderRadius: BorderRadius.circular(28),
                     ),
                   ),
@@ -180,23 +161,11 @@ class _HomeScreenState extends State<HomeScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _navItem(
-                    icon: Icons.inventory_2_outlined,
-                    index: 0,
-                  ),
-                  _navItem(
-                    icon: Icons.bar_chart,
-                    index: 1,
-                  ),
-                  _scannerButton(),
-                  _navItem(
-                    icon: Icons.notifications,
-                    index: 3,
-                  ),
-                  _navItem(
-                    icon: Icons.settings,
-                    index: 4,
-                  ),
+                  _navItem(icon: Icons.inventory_2_outlined, index: 0), // Stock
+                  _navItem(icon: Icons.add_business_outlined, index: 1), // Novo Produto
+                  _scannerButton(),                                         // Sites de Box
+                  _navItem(icon: Icons.bar_chart, index: 3),               // Relatórios
+                  _navItem(icon:Icons.settings, index: 4),    // Confira
                 ],
               ),
             ],
