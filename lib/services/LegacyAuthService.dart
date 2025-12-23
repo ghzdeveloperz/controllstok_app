@@ -34,7 +34,7 @@ class AuthService {
         if (!isActive) return 'Usuário desativado';
 
         if (passwordMatch) {
-          await SessionService.saveUserLogin(login);
+          await SessionService.saveuserId(login);
           return null; // sucesso
         }
       }

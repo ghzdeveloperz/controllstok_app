@@ -2,23 +2,23 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SessionService {
-  static const String _userLoginKey = 'user_login';
+  static const String _userIdKey = 'user_login';
 
   /// Salva o login do usuário
-  static Future<void> saveUserLogin(String login) async {
+  static Future<void> saveuserId(String login) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_userLoginKey, login);
+    await prefs.setString(_userIdKey, login);
   }
 
   /// Recupera o login salvo (ou null)
-  static Future<String?> getUserLogin() async {
+  static Future<String?> getuserId() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_userLoginKey);
+    return prefs.getString(_userIdKey);
   }
 
   /// Limpa a sessão do usuário
   static Future<void> clearSession() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_userLoginKey);
+    await prefs.remove(_userIdKey);
   }
 }

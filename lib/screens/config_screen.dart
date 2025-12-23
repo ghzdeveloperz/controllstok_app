@@ -7,9 +7,9 @@ import 'conf_options/sobre_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ConfigScreen extends StatelessWidget {
-  final String userLogin; // LOGIN REAL
+  final String userId; // LOGIN REAL
 
-  const ConfigScreen({super.key, required this.userLogin});
+  const ConfigScreen({super.key, required this.userId});
 
   void _logout(BuildContext context) {
     Navigator.of(context).pushAndRemoveUntil(
@@ -46,7 +46,7 @@ Widget build(BuildContext context) {
             icon: Icons.person_outline,
             title: 'Perfil',
             subtitle: 'Informações pessoais',
-            page: PerfilScreen(userLogin: userLogin),
+            page: PerfilScreen(userId: userId),
           ),
 
           const SizedBox(height: 16),
@@ -56,7 +56,7 @@ Widget build(BuildContext context) {
             icon: Icons.category_outlined,
             title: 'Categorias',
             subtitle: 'Categorias do Estoque',
-            page: CategoriasScreen(userLogin: userLogin),
+            page: CategoriasScreen(userId: userId),
           ),
 
           const SizedBox(height: 16),

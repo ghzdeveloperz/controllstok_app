@@ -1,26 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
-
 import '../services/firebase_auth_service.dart';
-import 'home_screen.dart';
-import 'register_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   final _loginController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _companyController = TextEditingController();
+
   final FirebaseAuthService _authService = FirebaseAuthService();
 
   String? error;
   bool isLoading = false;
 
-  Future<void> handleLogin() async {
+  Future<void> handleRegister() async {
     if (isLoading) return;
 
     setState(() {
@@ -30,25 +28,26 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final login = _loginController.text.trim();
     final password = _passwordController.text;
+    final company = _companyController.text.trim();
 
-    if (login.isEmpty || password.isEmpty) {
+    if (login.isEmpty || password.isEmpty || company.isEmpty) {
       setState(() {
-        error = "Preencha login e senha";
+        error = 'Preencha todos os campos';
         isLoading = false;
       });
       return;
     }
 
-    final result = await _authService.login(
+    final result = await _authService.register(
       login: login,
       password: password,
+      company: company,
     );
 
     if (!mounted) return;
 
-    if (result == null ||
-        result.startsWith('Erro') ||
-        result.contains('Usuário')) {
+    // ❌ erro → retorna string
+    if (result != null) {
       setState(() {
         error = result;
         isLoading = false;
@@ -56,29 +55,8 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) => HomeScreen(userId: result),
-      ),
-    );
-  }
-
-  Future<void> _openSupportEmail() async {
-    final login = _loginController.text.trim().isEmpty
-        ? '(INFORME SEU LOGIN)'
-        : _loginController.text.trim();
-
-    final subject =
-        Uri.encodeComponent('Redefinição de senha - usuário: $login');
-
-    final emailUri = Uri(
-      scheme: 'mailto',
-      path: 'contact@mystoreday.com',
-      query: 'subject=$subject',
-    );
-
-    await launchUrl(emailUri, mode: LaunchMode.externalApplication);
+    // ✅ sucesso
+    Navigator.pop(context);
   }
 
   InputDecoration _inputDecoration({
@@ -107,6 +85,14 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   @override
+  void dispose() {
+    _loginController.dispose();
+    _passwordController.dispose();
+    _companyController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF7F7F7),
@@ -131,15 +117,25 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.lock_outline, size: 42),
+                const Icon(Icons.person_add_alt_1,
+                    size: 42, color: Colors.black),
                 const SizedBox(height: 12),
+
                 const Text(
-                  "Painel de Controle",
+                  "Criar Conta",
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w900,
+                    letterSpacing: 0.5,
                   ),
                 ),
+                const SizedBox(height: 6),
+
+                const Text(
+                  "Cadastro de novo usuário",
+                  style: TextStyle(color: Colors.black54, fontSize: 14),
+                ),
+
                 const SizedBox(height: 28),
 
                 if (error != null)
@@ -174,6 +170,17 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 16),
 
                 TextField(
+                  controller: _companyController,
+                  enabled: !isLoading,
+                  decoration: _inputDecoration(
+                    hint: "Empresa",
+                    icon: Icons.storefront_outlined,
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+
+                TextField(
                   controller: _passwordController,
                   enabled: !isLoading,
                   obscureText: true,
@@ -183,66 +190,39 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
 
-                const SizedBox(height: 6),
-
-                GestureDetector(
-                  onTap: _openSupportEmail,
-                  child: const Text(
-                    "Esqueceu a senha?",
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      decoration: TextDecoration.underline,
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 24),
+                const SizedBox(height: 26),
 
                 SizedBox(
                   width: double.infinity,
                   height: 54,
                   child: ElevatedButton(
-                    onPressed: isLoading ? null : handleLogin,
+                    onPressed: isLoading ? null : handleRegister,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.black,
                       foregroundColor: Colors.white,
+                      disabledBackgroundColor: Colors.black38,
+                      elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),
                     ),
                     child: isLoading
-                        ? const CircularProgressIndicator(
-                            strokeWidth: 2.4,
-                            color: Colors.white,
+                        ? const SizedBox(
+                            width: 22,
+                            height: 22,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.4,
+                              color: Colors.white,
+                            ),
                           )
                         : const Text(
-                            "Entrar",
+                            "Criar conta",
                             style: TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.w700,
+                              letterSpacing: 0.4,
                             ),
                           ),
-                  ),
-                ),
-
-                const SizedBox(height: 16),
-
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const RegisterScreen(),
-                      ),
-                    );
-                  },
-                  child: const Text(
-                    "Criar conta",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      decoration: TextDecoration.underline,
-                    ),
                   ),
                 ),
               ],

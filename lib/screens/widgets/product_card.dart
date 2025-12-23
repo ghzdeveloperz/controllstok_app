@@ -5,13 +5,13 @@ import 'product_details_modal.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
-  final String userLogin;
+  final String userId;
   final List<String> userCategories;
 
   const ProductCard({
     super.key,
     required this.product,
-    required this.userLogin,
+    required this.userId,
     required this.userCategories,
   });
 
@@ -44,7 +44,7 @@ class ProductCard extends StatelessWidget {
           backgroundColor: Colors.transparent,
           builder: (_) => ProductDetailsModal(
             product: product,
-            userLogin: userLogin,
+            userId: userId,
           ),
         );
       },

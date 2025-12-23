@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../services/auth_service.dart';
+import '../../services/LegacyAuthService.dart';
 import '../login_screen.dart';
+import '../../firebase/firestore/users_firestore.dart';
 
 class PerfilScreen extends StatelessWidget {
-  final String userLogin;
+  final String userId;
 
-  const PerfilScreen({super.key, required this.userLogin});
+  const PerfilScreen({super.key, required this.userId});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +35,7 @@ class PerfilScreen extends StatelessWidget {
                   radius: 50,
                   backgroundColor: Colors.black87,
                   child: Text(
-                    userLogin.substring(0, 1).toUpperCase(),
+                    userId.substring(0, 1).toUpperCase(),
                     style: const TextStyle(
                       fontSize: 40,
                       color: Colors.white,
@@ -78,13 +79,29 @@ class PerfilScreen extends StatelessWidget {
                         const Icon(Icons.person_outline, color: Colors.black54),
                         const SizedBox(width: 12),
                         Expanded(
-                          child: Text(
-                            userLogin,
-                            style: GoogleFonts.poppins(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.black87,
-                            ),
+                          child: StreamBuilder<String?>(
+                            stream: UsersFirestore.streamLogin(userId),
+                            builder: (context, snapshot) {
+                              if (!snapshot.hasData) {
+                                return Text(
+                                  'Carregando...',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.grey.shade600,
+                                  ),
+                                );
+                              }
+
+                              return Text(
+                                snapshot.data!,
+                                style: GoogleFonts.poppins(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black87,
+                                ),
+                              );
+                            },
                           ),
                         ),
                       ],
@@ -106,9 +123,7 @@ class PerfilScreen extends StatelessWidget {
 
                     // 🔒 Remove toda a stack de navegação
                     Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(
-                        builder: (_) => const LoginScreen(),
-                      ),
+                      MaterialPageRoute(builder: (_) => const LoginScreen()),
                       (_) => false,
                     );
                   },

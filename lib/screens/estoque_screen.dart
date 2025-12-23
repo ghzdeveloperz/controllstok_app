@@ -1,19 +1,19 @@
-import 'package:controllstok_app/screens/alertas_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../firebase/firestore/products_firestore.dart';
 import '../firebase/firestore/categories_firestore.dart';
-
+import 'novo_produto_screen.dart';
 
 import 'widgets/product_card.dart';
 import 'models/product.dart';
 import 'models/category.dart';
+import '../firebase/firestore/users_firestore.dart';
 
 class EstoqueScreen extends StatefulWidget {
-  final String userLogin;
+  final String userId;
 
-  const EstoqueScreen({super.key, required this.userLogin});
+  const EstoqueScreen({super.key, required this.userId});
 
   @override
   State<EstoqueScreen> createState() => _EstoqueScreenState();
@@ -60,46 +60,99 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
               Text(
                 'Estoque',
                 style: GoogleFonts.poppins(
-                  fontSize: 28, // Tamanho maior para impacto forte
-                  fontWeight:
-                      FontWeight.w700, // Peso mais pesado para sofisticação
-                  color: Colors.black87, // Cinza escuro para contraste elegante
-                  letterSpacing: 0.5, // Espaçamento para tipografia premium
+                  fontSize: 28,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.black87,
+                  letterSpacing: 0.5,
                 ),
               ),
-              const SizedBox(
-                height: 4,
-              ), // Espaço sutil entre título e subtítulo
-              Text(
-                widget.userLogin,
-                style: GoogleFonts.poppins(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.grey.shade600, // Tom discreto, como solicitado
-                ),
+              const SizedBox(height: 4),
+              StreamBuilder<String?>(
+                stream: UsersFirestore.streamLogin(widget.userId),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Text(
+                      'Carregando...',
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.grey.shade500,
+                      ),
+                    );
+                  }
+
+                  return Text(
+                    snapshot.data!,
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.grey.shade600,
+                    ),
+                  );
+                },
               ),
             ],
           ),
 
-          // Botão Novo Produto (sem estilização)
+          // Botão Novo Produto Premium (mantido e refinado para consistência)
           GestureDetector(
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) =>
-                      AlertasScreen(userLogin: widget.userLogin),
+                  builder: (_) => NovoProdutoScreen(userId: widget.userId),
                 ),
               );
             },
-            child: SizedBox(
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
               width: 52,
               height: 52,
-              child: Center(
-                child: Icon(
-                  Icons.notifications,
-                  size: 30,
-                  color: Colors.black,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [
+                    Color(0xFF0F0F0F), // Preto quase absoluto
+                    Color(0xFF1E1E1E), // Transição sutil
+                    Color(0xFF2A2A2A), // Leve highlight
+                    Color(0xFF141414), // Volta ao escuro
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  stops: [0.0, 0.35, 0.7, 1.0],
+                ),
+                borderRadius: BorderRadius.circular(18),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withAlpha(150), // Sombra forte e limpa
+                    blurRadius: 18,
+                    offset: const Offset(0, 9),
+                  ),
+                  BoxShadow(
+                    color: Colors.white.withAlpha(18), // Brilho interno sutil
+                    blurRadius: 8,
+                    offset: const Offset(0, -4),
+                  ),
+                ],
+                border: Border.all(
+                  color: Colors.white.withAlpha(
+                    32,
+                  ), // Borda quase imperceptível
+                  width: 1.2,
+                ),
+              ),
+              alignment: Alignment.center,
+              child: ShaderMask(
+                shaderCallback: (Rect bounds) {
+                  return const LinearGradient(
+                    colors: [Colors.white, Color(0xFFE0E0E0)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ).createShader(bounds);
+                },
+                child: const Icon(
+                  Icons.add_business_outlined,
+                  size: 26,
+                  color: Colors.white,
                 ),
               ),
             ),
@@ -153,7 +206,7 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
     return SizedBox(
       height: 48, // Altura ligeiramente maior para toque confortável
       child: StreamBuilder<List<Category>>(
-        stream: CategoriesFirestore.streamCategories(widget.userLogin),
+        stream: CategoriesFirestore.streamCategories(widget.userId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -229,7 +282,7 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
   // ================= PRODUCTS =================
   Widget _buildProducts() {
     return StreamBuilder<List<Product>>(
-      stream: ProductsFirestore.streamProducts(widget.userLogin),
+      stream: ProductsFirestore.streamProducts(widget.userId),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -281,7 +334,7 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
           itemBuilder: (context, index) {
             return ProductCard(
               product: filteredProducts[index],
-              userLogin: widget.userLogin,
+              userId: widget.userId,
               userCategories: products.map((p) => p.category).toSet().toList(),
             );
           },

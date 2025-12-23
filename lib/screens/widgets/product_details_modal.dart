@@ -7,12 +7,12 @@
 
   class ProductDetailsModal extends StatefulWidget {
     final Product product;
-    final String userLogin;
+    final String userId;
 
     const ProductDetailsModal({
       super.key,
       required this.product,
-      required this.userLogin,
+      required this.userId,
     });
 
     @override
@@ -223,7 +223,7 @@
 
     Widget _categoryDropdown() {
       return StreamBuilder<List<Category>>(
-        stream: CategoriesFirestore.streamCategories(widget.userLogin),
+        stream: CategoriesFirestore.streamCategories(widget.userId),
         builder: (context, snapshot) {
           final categories =
               snapshot.data?.map((c) => c.name).toList() ?? [];
@@ -342,7 +342,7 @@
       setState(() => _saving = true);
 
       await ProductsFirestore.updateProduct(
-        userLogin: widget.userLogin,
+        userId: widget.userId,
         productId: widget.product.id,
         name: _nameController.text.trim(),
         category: _selectedCategory,

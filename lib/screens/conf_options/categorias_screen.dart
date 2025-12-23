@@ -5,9 +5,9 @@ import '../../firebase/firestore/categories_firestore.dart';
 import '../models/category.dart';
 
 class CategoriasScreen extends StatefulWidget {
-  final String userLogin;
+  final String userId;
 
-  const CategoriasScreen({super.key, required this.userLogin});
+  const CategoriasScreen({super.key, required this.userId});
 
   @override
   State<CategoriasScreen> createState() => _CategoriasScreenState();
@@ -45,7 +45,7 @@ class _CategoriasScreenState extends State<CategoriasScreen> {
               if (name.isEmpty) return;
 
               await CategoriesFirestore.addCategory(
-                userLogin: widget.userLogin,
+                userId: widget.userId,
                 name: name,
               );
 
@@ -110,7 +110,7 @@ class _CategoriasScreenState extends State<CategoriasScreen> {
             onPressed: () async {
               final deleted =
                   await CategoriesFirestore.deleteCategory(
-                userLogin: widget.userLogin,
+                userId: widget.userId,
                 categoryId: categoryId,
                 categoryName: categoryName,
               );
@@ -151,7 +151,7 @@ class _CategoriasScreenState extends State<CategoriasScreen> {
         child: const Icon(Icons.add, color: Colors.white),
       ),
       body: StreamBuilder<List<Category>>(
-        stream: CategoriesFirestore.streamCategories(widget.userLogin),
+        stream: CategoriesFirestore.streamCategories(widget.userId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());

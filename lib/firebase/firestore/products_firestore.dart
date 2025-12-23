@@ -8,13 +8,13 @@ class ProductsFirestore {
 
   // ================= GET PRODUCT BY BARCODE =================
 static Future<Product?> getProductByBarcode({
-  required String userLogin,
+  required String userId,
   required String barcode,
 }) async {
   try {
     final querySnapshot = await _db
         .collection('users')
-        .doc(userLogin)
+        .doc(userId)
         .collection('products')
         .where('barcode', isEqualTo: barcode)
         .get();
@@ -42,7 +42,7 @@ static Future<Product?> getProductByBarcode({
 
   // ================= UPDATE PRODUCT =================
   static Future<void> updateProduct({
-    required String userLogin,
+    required String userId,
     required String productId,
     required String name,
     required String category,
@@ -50,7 +50,7 @@ static Future<Product?> getProductByBarcode({
   }) async {
     await _db
         .collection('users')
-        .doc(userLogin)
+        .doc(userId)
         .collection('products')
         .doc(productId)
         .update({
@@ -62,10 +62,10 @@ static Future<Product?> getProductByBarcode({
   }
 
   // ================= STREAM PRODUCTS =================
-  static Stream<List<Product>> streamProducts(String userLogin) {
+  static Stream<List<Product>> streamProducts(String userId) {
     return _db
         .collection('users')
-        .doc(userLogin)
+        .doc(userId)
         .collection('products')
         .snapshots()
         .map((snapshot) {

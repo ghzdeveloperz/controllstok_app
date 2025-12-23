@@ -27,7 +27,7 @@ class _RelatoriosScreenState extends State<RelatoriosScreen> {
 
   Future<void> _loadUser() async {
     setState(() => _loading = true);
-    final login = await SessionService.getUserLogin();
+    final login = await SessionService.getuserId();
     if (login != null) {
       setState(() => _userId = login);
     }

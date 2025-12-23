@@ -9,9 +9,9 @@ import 'widgets/bottom_cart.dart';
 import 'widgets/finalize_modal.dart';
 
 class ScannerScreen extends StatefulWidget {
-  final String userLogin;
+  final String userId;
 
-  const ScannerScreen({super.key, required this.userLogin});
+  const ScannerScreen({super.key, required this.userId});
 
   @override
   State<ScannerScreen> createState() => _ScannerScreenState();
@@ -152,7 +152,7 @@ class _ScannerScreenState extends State<ScannerScreen>
     try {
       final snapshot = await _firestore
           .collection('users')
-          .doc(widget.userLogin)
+          .doc(widget.userId)
           .collection('products')
           .where('barcode', isEqualTo: barcode)
           .limit(1)
@@ -183,7 +183,7 @@ class _ScannerScreenState extends State<ScannerScreen>
       try {
         final snapshot = await _firestore
             .collection('users')
-            .doc(widget.userLogin)
+            .doc(widget.userId)
             .collection('products')
             .where('barcode', isEqualTo: item.barcode)
             .limit(1)
@@ -221,7 +221,7 @@ class _ScannerScreenState extends State<ScannerScreen>
         // 🔥 REGISTRA MOVIMENTAÇÃO COM A DATA DO MODAL
         await _firestore
             .collection('users')
-            .doc(widget.userLogin)
+            .doc(widget.userId)
             .collection('movements')
             .add({
           'productId': docRef.id,
@@ -278,7 +278,7 @@ class _ScannerScreenState extends State<ScannerScreen>
     try {
       final snapshot = await _firestore
           .collection('users')
-          .doc(widget.userLogin)
+          .doc(widget.userId)
           .collection('products')
           .where('barcode', isEqualTo: code)
           .limit(1)

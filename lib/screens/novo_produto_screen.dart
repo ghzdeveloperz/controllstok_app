@@ -12,9 +12,9 @@ import '../firebase/firestore/categories_firestore.dart';
 import '../../screens/models/category.dart';
 
 class NovoProdutoScreen extends StatefulWidget {
-  final String userLogin;
+  final String userId;
 
-  const NovoProdutoScreen({super.key, required this.userLogin});
+  const NovoProdutoScreen({super.key, required this.userId});
 
   @override
   State<NovoProdutoScreen> createState() => _NovoProdutoScreenState();
@@ -104,7 +104,7 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
     final ref = FirebaseStorage.instance
         .ref()
         .child('users')
-        .child(widget.userLogin)
+        .child(widget.userId)
         .child('products')
         .child(fileName);
 
@@ -133,7 +133,7 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
 
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(widget.userLogin)
+          .doc(widget.userId)
           .collection('products')
           .add({
         'name': _nameController.text.trim(),
@@ -328,7 +328,7 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
 
   Widget _categoryDropdown() {
     return StreamBuilder<List<Category>>(
-      stream: CategoriesFirestore.streamCategories(widget.userLogin),
+      stream: CategoriesFirestore.streamCategories(widget.userId),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());

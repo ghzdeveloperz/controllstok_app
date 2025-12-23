@@ -1,3 +1,4 @@
+// lib/screens/home_screen.dart
 import 'package:flutter/material.dart';
 import 'dart:ui';
 
@@ -9,9 +10,9 @@ import 'config_screen.dart';
 import '../notifications/notification_service.dart';
 
 class HomeScreen extends StatefulWidget {
-  final String userLogin;
+  final String userId;
 
-  const HomeScreen({super.key, required this.userLogin});
+  const HomeScreen({super.key, required this.userId});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -28,11 +29,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
     // === Lista de telas na ordem correta ===
     _screens = [
-      EstoqueScreen(userLogin: widget.userLogin),      // 0 Stock
-      NovoProdutoScreen(userLogin: widget.userLogin),  // 1 Novo Produto
+      EstoqueScreen(userId: widget.userId),      // 0 Stock
+      NovoProdutoScreen(userId: widget.userId),  // 1 Novo Produto
       const SizedBox(),                                // 2 Sites de Box (abrirá via Navigator)
       RelatoriosScreen(),                              // 3 Relatórios
-      ConfigScreen(userLogin: widget.userLogin),     // 4 Confira
+      ConfigScreen(userId: widget.userId),     // 4 Confira
     ];
 
     _initNotifications();
@@ -43,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _notificationsStarted = true;
     await NotificationService.instance.init();
     if (!mounted) return;
-    NotificationService.instance.startListeningStockAlerts(widget.userLogin);
+    NotificationService.instance.startListeningStockAlerts(widget.userId);
   }
 
   void _onTap(int index) {
@@ -51,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (index == 2) {
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (_) => ScannerScreen(userLogin: widget.userLogin),
+          builder: (_) => ScannerScreen(userId: widget.userId),
         ),
       );
       return;

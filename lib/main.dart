@@ -22,9 +22,9 @@ void main() async {
   await initializeDateFormatting('pt_BR', null);
 
   // Recupera login do usuário
-  final userLogin = await SessionService.getUserLogin();
+  final userId = await SessionService.getuserId();
 
-  runApp(MyApp(initialLogin: userLogin));
+  runApp(MyApp(initialLogin: userId));
 }
 
 class MyApp extends StatelessWidget {
@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
       ],
       home: initialLogin == null
           ? const LoginScreen()
-          : HomeScreen(userLogin: initialLogin!),
+          : HomeScreen(userId: initialLogin!),
     );
   }
 }

@@ -6,10 +6,10 @@ import '../../screens/models/category.dart'; // ✅ IMPORT OBRIGATÓRIO
 class CategoriesFirestore {
   static final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  static Stream<List<Category>> streamCategories(String userLogin) {
+  static Stream<List<Category>> streamCategories(String userId) {
     return _db
         .collection('users')
-        .doc(userLogin)
+        .doc(userId)
         .collection('categories')
         .snapshots()
         .map(
@@ -18,25 +18,25 @@ class CategoriesFirestore {
   }
 
   static Future<void> addCategory({
-    required String userLogin,
+    required String userId,
     required String name,
   }) async {
     await _db
         .collection('users')
-        .doc(userLogin)
+        .doc(userId)
         .collection('categories')
         .add({'name': name});
   }
 
   /// 🔥 RETORNA FALSE SE EXISTIREM PRODUTOS USANDO A CATEGORIA
   static Future<bool> deleteCategory({
-    required String userLogin,
+    required String userId,
     required String categoryId,
     required String categoryName,
   }) async {
     final products = await _db
         .collection('users')
-        .doc(userLogin)
+        .doc(userId)
         .collection('products')
         .where('category', isEqualTo: categoryName)
         .limit(1)
@@ -48,7 +48,7 @@ class CategoriesFirestore {
 
     await _db
         .collection('users')
-        .doc(userLogin)
+        .doc(userId)
         .collection('categories')
         .doc(categoryId)
         .delete();
