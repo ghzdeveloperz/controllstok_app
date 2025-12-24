@@ -1,9 +1,12 @@
 // lib/screens/login_screen.dart
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../services/auth_service.dart';
 import 'home_screen.dart';
 import 'register_screen.dart';
 import 'package:flutter/gestures.dart';
+import '../screens/widgets/desactive_acount.dart'; // CustomAlertDialog import
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -67,11 +70,72 @@ class _LoginScreenState extends State<LoginScreen>
       return;
     }
 
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      setState(() {
+        error = "Erro ao obter usuário";
+        isLoading = false;
+      });
+      _showError();
+      return;
+    }
+
+    // Verificar se o usuário está ativo
+    final activeMessage = await checkUserActive(user);
+    if (activeMessage != null) {
+      setState(() {
+        error = activeMessage;
+        isLoading = false;
+      });
+      _showError();
+      return;
+    }
+
     if (!mounted) return;
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (_) => const HomeScreen()),
     );
+  }
+
+  /// Checa se o usuário está ativo no Firestore
+  Future<String?> checkUserActive(User user) async {
+    try {
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+
+      if (!doc.exists) return "Usuário não encontrado";
+
+      final data = doc.data()!;
+      if (data['active'] == false) {
+        await FirebaseAuth.instance.signOut();
+
+        if (!mounted) return "Sua conta está desativada.";
+
+        // Chama o CustomAlertDialog
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (_) => CustomAlertDialog(
+            title: "Conta desativada",
+            message:
+                "Sua conta está desativada. Entre em contato com o suporte.",
+            buttonText: "OK",
+            onPressed: () {
+              Navigator.of(context).popUntil((route) => route.isFirst);
+            },
+          ),
+        );
+
+        return "Sua conta está desativada.";
+      }
+
+      return null; // Usuário ativo
+    } catch (e) {
+      return "Erro ao verificar usuário";
+    }
   }
 
   void _showError() {
