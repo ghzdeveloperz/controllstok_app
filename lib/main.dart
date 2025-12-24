@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'services/firebase_service.dart';
-import 'services/session_service.dart';
 import 'screens/login_screen.dart';
 import 'screens/home_screen.dart';
 import 'notifications/notification_service.dart';
@@ -16,18 +16,13 @@ void main() async {
 
   await FirebaseService.init();
   await NotificationService.instance.init();
-
   await initializeDateFormatting('pt_BR', null);
 
-  final userLogin = await SessionService.getUserLogin();
-
-  runApp(MyApp(initialLogin: userLogin));
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  final String? initialLogin;
-
-  const MyApp({super.key, required this.initialLogin});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -46,9 +41,31 @@ class MyApp extends StatelessWidget {
       supportedLocales: const [
         Locale('pt', 'BR'),
       ],
-      home: initialLogin == null
-          ? const LoginScreen()
-          : const HomeScreen(),
+      home: const AuthGate(),
+    );
+  }
+}
+
+class AuthGate extends StatelessWidget {
+  const AuthGate({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        if (snapshot.hasData) {
+          return const HomeScreen();
+        }
+
+        return const LoginScreen();
+      },
     );
   }
 }

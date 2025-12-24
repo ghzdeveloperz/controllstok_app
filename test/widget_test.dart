@@ -6,7 +6,8 @@ import 'package:controllstok_app/main.dart';
 void main() {
   testWidgets('App inicia sem crash', (WidgetTester tester) async {
     await tester.pumpWidget(
-      const MyApp(initialLogin: null),
+      const MyApp()
+
     );
 
     // Apenas verifica se o app construiu sem erro

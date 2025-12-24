@@ -61,16 +61,16 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
               ),
               const SizedBox(height: 4),
 
-              /// 🔹 Login vindo do Firestore (users/{uid}.login)
+              /// 🔹 company vindo do Firestore (users/{uid}.company)
               StreamBuilder<String?>(
                 stream: UsersFirestore.streamLogin(widget.uid)
-                    .map((snapshot) => snapshot.data()?['login'] as String?),
+                    .map((snapshot) => snapshot.data()?['company'] as String?),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Text(
                       'Carregando...',
                       style: GoogleFonts.poppins(
-                        fontSize: 14,
+                        fontSize: 18,
                         color: Colors.grey.shade500,
                       ),
                     );
