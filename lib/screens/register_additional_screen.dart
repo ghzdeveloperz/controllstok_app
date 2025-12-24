@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'home_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RegisterAdditionalScreen extends StatefulWidget {
   final User user;
@@ -47,9 +48,18 @@ class _RegisterAdditionalScreenState extends State<RegisterAdditionalScreen>
     });
 
     // Salvar empresa no Firestore (exemplo)
-    // await FirebaseFirestore.instance.collection('users').doc(widget.user.uid).update({
-    //   'company': _companyController.text.trim(),
-    // });
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.user.uid)
+        .set({
+          'email': widget.user.email,
+          'company': _companyController.text.trim(),
+          'active': true,
+          'createdAt': FieldValue.serverTimestamp(),
+          'emailVerified': widget.user.emailVerified,
+          'role': 'user',
+          'settings': {'notifications': true, 'theme': 'light'},
+        });
 
     if (!mounted) return;
 
@@ -125,7 +135,9 @@ class _RegisterAdditionalScreenState extends State<RegisterAdditionalScreen>
                 Container(
                   width: 380,
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 28, vertical: 32),
+                    horizontal: 28,
+                    vertical: 32,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(28),
@@ -165,7 +177,9 @@ class _RegisterAdditionalScreenState extends State<RegisterAdditionalScreen>
                         child: Container(
                           width: double.infinity,
                           padding: const EdgeInsets.symmetric(
-                              vertical: 12, horizontal: 16),
+                            vertical: 12,
+                            horizontal: 16,
+                          ),
                           decoration: BoxDecoration(
                             color: const Color(0xFFE0E0E0),
                             borderRadius: BorderRadius.circular(12),

@@ -186,7 +186,7 @@ class _RegisterScreenState extends State<RegisterScreen>
 
   void _startDeleteAccountTimer() {
     _deleteAccountTimer?.cancel();
-    int countdown = 86400; // ajuste em produção
+    int countdown = 60; // ajuste em produção
     _deleteAccountTimer = Timer.periodic(const Duration(seconds: 1), (
       timer,
     ) async {
