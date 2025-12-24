@@ -1,52 +1,96 @@
 // lib/services/auth_service.dart
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:bcrypt/bcrypt.dart';
-import 'session_service.dart';
 
 class AuthService {
-  final _db = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  /// Retorna null se login OK ou mensagem de erro
+  // ================= LOGIN =================
   Future<String?> login({
     required String login,
     required String password,
   }) async {
     try {
-      final query = await _db
+      // Buscar usuário pelo login na coleção 'users'
+      final query = await _firestore
           .collection('users')
-          .where('login', isEqualTo: login.toLowerCase())
+          .where('login', isEqualTo: login)
+          .limit(1)
           .get();
 
       if (query.docs.isEmpty) {
-        return 'Login ou senha incorretos';
+        return 'Usuário não encontrado';
       }
 
-      for (final doc in query.docs) {
-        final data = doc.data();
+      final userDoc = query.docs.first;
+      final email = userDoc['email'];
 
-        final bool isActive = data['active'] ?? true;
-        final hash = data['passwordHash'] as String?;
+      // Login com Firebase Auth usando email
+      await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-        if (hash == null) continue;
-
-        final passwordMatch = BCrypt.checkpw(password, hash);
-
-        if (!isActive) return 'Usuário desativado';
-
-        if (passwordMatch) {
-          await SessionService.saveUserLogin(login);
-          return null; // sucesso
-        }
-      }
-
-      return 'Login ou senha incorretos';
+      return null; // Login bem-sucedido
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'wrong-password') return 'Senha incorreta';
+      if (e.code == 'user-not-found') return 'Usuário não encontrado';
+      return 'Erro ao autenticar';
     } catch (e) {
-      return 'Erro ao conectar com o servidor';
+      return e.toString();
     }
   }
 
-  /// Logout real
-  Future<void> logout() async {
-    await SessionService.clearSession();
+  // ================= REGISTER =================
+  Future<String?> register({
+    required String login,
+    required String email,
+    required String password,
+  }) async {
+    try {
+      // Verifica se já existe usuário com mesmo login
+      final query = await _firestore
+          .collection('users')
+          .where('login', isEqualTo: login)
+          .limit(1)
+          .get();
+
+      if (query.docs.isNotEmpty) {
+        return 'Login já está em uso';
+      }
+
+      // Cria usuário no Firebase Auth
+      final credential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      final user = credential.user;
+      if (user == null) return 'Erro ao criar usuário';
+
+      // Salva informações adicionais no Firestore
+      await _firestore.collection('users').doc(user.uid).set({
+        'login': login,
+        'email': email,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
+      return null; // Cadastro bem-sucedido
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') return 'Email já está em uso';
+      if (e.code == 'weak-password') return 'Senha muito fraca';
+      return 'Erro ao cadastrar usuário';
+    } catch (e) {
+      return e.toString();
+    }
   }
+
+  // ================= LOGOUT =================
+  Future<void> logout() async {
+    await _auth.signOut();
+  }
+
+  // Usuário atual
+  User? get currentUser => _auth.currentUser;
 }

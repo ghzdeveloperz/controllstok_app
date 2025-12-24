@@ -1,4 +1,3 @@
-// lib/screens/scanner_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -9,9 +8,9 @@ import 'widgets/bottom_cart.dart';
 import 'widgets/finalize_modal.dart';
 
 class ScannerScreen extends StatefulWidget {
-  final String userLogin;
+  final String uid;
 
-  const ScannerScreen({super.key, required this.userLogin});
+  const ScannerScreen({super.key, required this.uid});
 
   @override
   State<ScannerScreen> createState() => _ScannerScreenState();
@@ -152,14 +151,17 @@ class _ScannerScreenState extends State<ScannerScreen>
     try {
       final snapshot = await _firestore
           .collection('users')
-          .doc(widget.userLogin)
+          .doc(widget.uid)
           .collection('products')
           .where('barcode', isEqualTo: barcode)
           .limit(1)
           .get();
 
       if (snapshot.docs.isNotEmpty) {
-        await snapshot.docs.first.reference.update({'unitPrice': newPrice});
+        await snapshot.docs.first.reference.update({
+          'unitPrice': newPrice,
+          'updatedAt': FieldValue.serverTimestamp(),
+        });
       }
 
       if (!mounted) return;
@@ -183,7 +185,7 @@ class _ScannerScreenState extends State<ScannerScreen>
       try {
         final snapshot = await _firestore
             .collection('users')
-            .doc(widget.userLogin)
+            .doc(widget.uid)
             .collection('products')
             .where('barcode', isEqualTo: item.barcode)
             .limit(1)
@@ -210,18 +212,16 @@ class _ScannerScreenState extends State<ScannerScreen>
               ((oldQty * oldCost) + (item.quantity * item.unitPrice)) / newQty;
         }
 
-        // Atualiza produto
         await docRef.update({
           'quantity': newQty,
           'cost': newCost,
           'unitPrice': item.unitPrice,
-          'updatedAt': DateTime.now(),
+          'updatedAt': FieldValue.serverTimestamp(),
         });
 
-        // 🔥 REGISTRA MOVIMENTAÇÃO COM A DATA DO MODAL
         await _firestore
             .collection('users')
-            .doc(widget.userLogin)
+            .doc(widget.uid)
             .collection('movements')
             .add({
           'productId': docRef.id,
@@ -278,7 +278,7 @@ class _ScannerScreenState extends State<ScannerScreen>
     try {
       final snapshot = await _firestore
           .collection('users')
-          .doc(widget.userLogin)
+          .doc(widget.uid)
           .collection('products')
           .where('barcode', isEqualTo: code)
           .limit(1)

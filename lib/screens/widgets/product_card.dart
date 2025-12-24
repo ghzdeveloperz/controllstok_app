@@ -1,21 +1,22 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+
 import '../models/product.dart';
 import 'product_details_modal.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
-  final String userLogin;
+  final String uid;
   final List<String> userCategories;
 
   const ProductCard({
     super.key,
     required this.product,
-    required this.userLogin,
+    required this.uid,
     required this.userCategories,
   });
 
-  // ===== STATUS =====
+  // ================= STATUS =================
   String get statusLabel {
     if (product.quantity == 0) return 'Indisponível';
     if (product.quantity <= product.minStock) return 'Estoque Crítico';
@@ -30,9 +31,10 @@ class ProductCard extends StatelessWidget {
     return Colors.green.shade600;
   }
 
-  double get totalValue =>
-      (product.price != 0 ? product.price : product.cost) *
-      product.quantity;
+  double get unitValue =>
+      product.price != 0 ? product.price : product.cost;
+
+  double get totalValue => unitValue * product.quantity;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +46,7 @@ class ProductCard extends StatelessWidget {
           backgroundColor: Colors.transparent,
           builder: (_) => ProductDetailsModal(
             product: product,
-            userLogin: userLogin,
+            uid: uid,
           ),
         );
       },
@@ -60,11 +62,11 @@ class ProductCard extends StatelessWidget {
           ],
         ),
         child: Container(
+          clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(14),
           ),
-          clipBehavior: Clip.antiAlias,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -109,6 +111,7 @@ class ProductCard extends StatelessWidget {
                         ),
                       ],
                     ),
+
                     const SizedBox(height: 6),
 
                     // ===== ESTOQUE + TOTAL =====
@@ -124,7 +127,7 @@ class ProductCard extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          'R\$ ${(product.price != 0 ? product.price : product.cost * product.quantity).toStringAsFixed(2)}',
+                          'R\$ ${totalValue.toStringAsFixed(2)}',
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w700,
@@ -133,6 +136,7 @@ class ProductCard extends StatelessWidget {
                         ),
                       ],
                     ),
+
                     const SizedBox(height: 4),
 
                     // ===== STATUS =====
@@ -167,7 +171,7 @@ class ProductCard extends StatelessWidget {
     );
   }
 
-  // ===== IMAGEM =====
+  // ================= IMAGEM =================
   Widget _buildImage() {
     if (product.image.isEmpty) return _imagePlaceholder();
 

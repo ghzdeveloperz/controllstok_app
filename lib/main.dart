@@ -14,14 +14,11 @@ import 'notifications/notification_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Inicializa Firebase e notificações
   await FirebaseService.init();
   await NotificationService.instance.init();
 
-  // Inicializa locale pt_BR
   await initializeDateFormatting('pt_BR', null);
 
-  // Recupera login do usuário
   final userLogin = await SessionService.getUserLogin();
 
   runApp(MyApp(initialLogin: userLogin));
@@ -51,7 +48,7 @@ class MyApp extends StatelessWidget {
       ],
       home: initialLogin == null
           ? const LoginScreen()
-          : HomeScreen(userLogin: initialLogin!),
+          : const HomeScreen(),
     );
   }
 }

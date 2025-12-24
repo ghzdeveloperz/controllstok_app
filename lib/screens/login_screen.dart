@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../services/auth_service.dart';
 import 'home_screen.dart';
+import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -12,13 +13,30 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen>
+    with SingleTickerProviderStateMixin {
   final _loginController = TextEditingController();
   final _passwordController = TextEditingController();
   final AuthService _authService = AuthService();
 
-  String? error;
   bool isLoading = false;
+  String? error;
+
+  // Controller para animação do alerta
+  late AnimationController _animationController;
+  late Animation<double> _offsetAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
+    _offsetAnimation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
+  }
 
   Future<void> handleLogin() async {
     if (isLoading) return;
@@ -36,6 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
         error = "Preencha login e senha";
         isLoading = false;
       });
+      _showError();
       return;
     }
 
@@ -47,16 +66,35 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!mounted) return;
 
     if (loginError == null) {
+      final user = _authService.currentUser;
+      if (user == null) {
+        setState(() {
+          error = 'Erro ao recuperar usuário autenticado';
+          isLoading = false;
+        });
+        _showError();
+        return;
+      }
+
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => HomeScreen(userLogin: login)),
+        MaterialPageRoute(builder: (_) => const HomeScreen()),
       );
     } else {
       setState(() {
         error = loginError;
         isLoading = false;
       });
+      _showError();
     }
+  }
+
+  void _showError() {
+    _animationController.forward();
+    Future.delayed(const Duration(seconds: 3), () {
+      if (!mounted) return;
+      _animationController.reverse();
+    });
   }
 
   Future<void> _openSupportEmail() async {
@@ -70,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final emailUri = Uri(
       scheme: 'mailto',
-      path: 'contact@mystoreday.com', // <-- troque aqui
+      path: 'contact@mystoreday.com',
       query: 'subject=$subject',
     );
 
@@ -83,6 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void dispose() {
     _loginController.dispose();
     _passwordController.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
@@ -113,139 +152,164 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F7),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: Container(
-            width: 380,
-            padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 32),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(28),
-              border: Border.all(color: Colors.black12),
-              boxShadow: const [
-                BoxShadow(
-                  color: Color.fromARGB(25, 0, 0, 0),
-                  blurRadius: 24,
-                  offset: Offset(0, 12),
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.lock_outline, size: 42, color: Colors.black),
-                const SizedBox(height: 12),
-                const Text(
-                  "Painel de Controle",
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 0.5,
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        backgroundColor: const Color(0xFFF7F7F7),
+        body: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: Container(
+              width: 380,
+              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 32),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(28),
+                border: Border.all(color: Colors.black12),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color.fromARGB(25, 0, 0, 0),
+                    blurRadius: 24,
+                    offset: Offset(0, 12),
                   ),
-                ),
-                const SizedBox(height: 6),
-                const Text(
-                  "Acesse seu estoque",
-                  style: TextStyle(color: Colors.black54, fontSize: 14),
-                ),
-                const SizedBox(height: 28),
-
-                if (error != null)
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    decoration: BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      error!,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-
-                if (error != null) const SizedBox(height: 18),
-
-                TextField(
-                  controller: _loginController,
-                  enabled: !isLoading,
-                  decoration: _inputDecoration(
-                    hint: "Login",
-                    icon: Icons.person_outline,
-                  ),
-                ),
-
-                const SizedBox(height: 16),
-
-                TextField(
-                  controller: _passwordController,
-                  enabled: !isLoading,
-                  obscureText: true,
-                  decoration: _inputDecoration(
-                    hint: "Senha",
-                    icon: Icons.lock_outline,
-                  ),
-                ),
-
-                const SizedBox(height: 26),
-
-                SizedBox(
-                  width: double.infinity,
-                  height: 54,
-                  child: ElevatedButton(
-                    onPressed: isLoading ? null : handleLogin,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      foregroundColor: Colors.white,
-                      disabledBackgroundColor: Colors.black38,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                    child: isLoading
-                        ? const SizedBox(
-                            width: 22,
-                            height: 22,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2.4,
-                              color: Colors.white,
-                            ),
-                          )
-                        : const Text(
-                            "Entrar",
-                            style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 0.4,
-                            ),
-                          ),
-                  ),
-                ),
-
-                const SizedBox(height: 18),
-
-                GestureDetector(
-                  onTap: _openSupportEmail,
-                  child: const Text(
-                    "Esqueceu a senha? Consulte o administrador.",
-                    textAlign: TextAlign.center,
+                ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.lock_outline, size: 42, color: Colors.black),
+                  const SizedBox(height: 12),
+                  const Text(
+                    "Painel de Controle",
                     style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      decoration: TextDecoration.underline,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 0.5,
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 6),
+                  const Text(
+                    "Acesse seu estoque",
+                    style: TextStyle(color: Colors.black54, fontSize: 14),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // ALERTA ANIMADO PRETO E BRANCO
+                  SizeTransition(
+                    sizeFactor: _offsetAnimation,
+                    axisAlignment: -1.0,
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.black12,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        error ?? "",
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  TextField(
+                    controller: _loginController,
+                    enabled: !isLoading,
+                    decoration: _inputDecoration(
+                      hint: "Login",
+                      icon: Icons.person_outline,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: _passwordController,
+                    enabled: !isLoading,
+                    obscureText: true,
+                    decoration: _inputDecoration(
+                      hint: "Senha",
+                      icon: Icons.lock_outline,
+                    ),
+                  ),
+
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: _openSupportEmail,
+                      child: const Text(
+                        "Esqueceu a senha?",
+                        style: TextStyle(
+                          color: Colors.black87,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  SizedBox(
+                    width: double.infinity,
+                    height: 54,
+                    child: ElevatedButton(
+                      onPressed: isLoading ? null : handleLogin,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.black,
+                        foregroundColor: Colors.white,
+                        disabledBackgroundColor: Colors.black38,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                      child: isLoading
+                          ? const SizedBox(
+                              width: 22,
+                              height: 22,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.4,
+                                color: Colors.white,
+                              ),
+                            )
+                          : const Text(
+                              "Entrar",
+                              style: TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0.4,
+                              ),
+                            ),
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+
+                  GestureDetector(
+                    onTap: () {
+                      FocusScope.of(context).unfocus();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const RegisterScreen(),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      "Ainda não possui uma conta? Crie uma",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

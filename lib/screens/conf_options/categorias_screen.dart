@@ -1,21 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../firebase/firestore/categories_firestore.dart';
 import '../models/category.dart';
+import '../login_screen.dart';
 
 class CategoriasScreen extends StatefulWidget {
-  final String userLogin;
-
-  const CategoriasScreen({super.key, required this.userLogin});
+  const CategoriasScreen({super.key});
 
   @override
   State<CategoriasScreen> createState() => _CategoriasScreenState();
 }
 
 class _CategoriasScreenState extends State<CategoriasScreen> {
-  // ================= ADD CATEGORY =================
+  late final String _uid;
 
+  @override
+  void initState() {
+    super.initState();
+
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      Future.microtask(() {
+        if (mounted) {
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (_) => const LoginScreen()),
+            (_) => false,
+          );
+        }
+      });
+      return;
+    }
+
+    _uid = user.uid;
+  }
+
+  // ================= ADD CATEGORY =================
   void _showAddCategoryDialog() {
     final controller = TextEditingController();
 
@@ -45,12 +66,11 @@ class _CategoriasScreenState extends State<CategoriasScreen> {
               if (name.isEmpty) return;
 
               await CategoriesFirestore.addCategory(
-                userLogin: widget.userLogin,
+                userLogin: _uid,
                 name: name,
               );
 
               if (!mounted) return;
-              // ignore: use_build_context_synchronously
               Navigator.pop(dialogContext);
             },
             child: const Text('Salvar'),
@@ -61,11 +81,10 @@ class _CategoriasScreenState extends State<CategoriasScreen> {
   }
 
   // ================= ALERT =================
-
   void _showCategoryInUseAlert(String categoryName) {
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: const Text('Não é possível excluir'),
         content: Text(
           'A categoria "$categoryName" não pode ser excluída porque existem produtos vinculados a ela.',
@@ -76,7 +95,7 @@ class _CategoriasScreenState extends State<CategoriasScreen> {
               backgroundColor: Colors.black,
               foregroundColor: Colors.white,
             ),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogContext),
             child: const Text('Entendi'),
           ),
         ],
@@ -85,7 +104,6 @@ class _CategoriasScreenState extends State<CategoriasScreen> {
   }
 
   // ================= DELETE =================
-
   void _confirmDelete({
     required String categoryId,
     required String categoryName,
@@ -108,15 +126,13 @@ class _CategoriasScreenState extends State<CategoriasScreen> {
               foregroundColor: Colors.white,
             ),
             onPressed: () async {
-              final deleted =
-                  await CategoriesFirestore.deleteCategory(
-                userLogin: widget.userLogin,
+              final deleted = await CategoriesFirestore.deleteCategory(
+                userLogin: _uid,
                 categoryId: categoryId,
                 categoryName: categoryName,
               );
 
               if (!mounted) return;
-              // ignore: use_build_context_synchronously
               Navigator.pop(dialogContext, deleted);
             },
             child: const Text('Excluir'),
@@ -133,7 +149,6 @@ class _CategoriasScreenState extends State<CategoriasScreen> {
   }
 
   // ================= UI =================
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -151,7 +166,7 @@ class _CategoriasScreenState extends State<CategoriasScreen> {
         child: const Icon(Icons.add, color: Colors.white),
       ),
       body: StreamBuilder<List<Category>>(
-        stream: CategoriesFirestore.streamCategories(widget.userLogin),
+        stream: CategoriesFirestore.streamCategories(_uid),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());

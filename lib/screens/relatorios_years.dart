@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/date_symbol_data_local.dart';
+
 import '../firebase/movements_days.dart';
 import '../screens/models/salve_modal.dart';
 
@@ -16,7 +17,11 @@ class Legend {
 
 class LegendsListWidget extends StatelessWidget {
   final List<Legend> legends;
-  const LegendsListWidget({super.key, required this.legends});
+
+  const LegendsListWidget({
+    super.key,
+    required this.legends,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,19 +33,19 @@ class LegendsListWidget extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: 16,
-                  height: 16,
+                  width: 14,
+                  height: 14,
                   decoration: BoxDecoration(
                     color: e.color,
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
-                const SizedBox(width: 4),
+                const SizedBox(width: 6),
                 Text(
                   e.name,
                   style: const TextStyle(
                     fontSize: 12,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ],
@@ -56,29 +61,36 @@ class LegendsListWidget extends StatelessWidget {
 /// =======================
 class RelatoriosYears extends StatefulWidget {
   final String userId;
-  const RelatoriosYears({super.key, required this.userId});
+
+  const RelatoriosYears({
+    super.key,
+    required this.userId,
+  });
 
   @override
   State<RelatoriosYears> createState() => _RelatoriosYearsState();
 }
 
 class _RelatoriosYearsState extends State<RelatoriosYears> {
-  bool _localeReady = false;
   final MovementsDaysFirestore _movementsService = MovementsDaysFirestore();
+
+  bool _localeReady = false;
   late int _displayYear;
   List<Movement> _movements = [];
 
   @override
   void initState() {
     super.initState();
-    _initializeLocale();
     _displayYear = DateTime.now().year;
-    _fetchMovements();
+    _initializeLocale();
   }
 
   Future<void> _initializeLocale() async {
     await initializeDateFormatting('pt_BR', null);
+    if (!mounted) return;
+
     setState(() => _localeReady = true);
+    await _fetchMovements();
   }
 
   Future<void> _pickYear() async {
@@ -86,6 +98,7 @@ class _RelatoriosYearsState extends State<RelatoriosYears> {
       context: context,
       builder: (context) {
         int selectedYear = _displayYear;
+
         return AlertDialog(
           title: const Text('Selecione o ano'),
           content: SizedBox(
@@ -104,21 +117,25 @@ class _RelatoriosYearsState extends State<RelatoriosYears> {
       },
     );
 
-    if (picked != null) {
+    if (picked != null && picked != _displayYear) {
       setState(() => _displayYear = picked);
-      _fetchMovements();
+      await _fetchMovements();
     }
   }
 
   Future<void> _fetchMovements() async {
     final data = await _movementsService.getYearlyMovements(
-      userId: widget.userId,
       year: _displayYear,
+      uid: widget.userId, // ✅ CONTRATO CORRETO
     );
+
+    if (!mounted) return;
     setState(() => _movements = data);
   }
 
-
+  /// =======================
+  /// CHART
+  /// =======================
   Widget _buildBarChart() {
     final Map<int, int> addByMonth = {};
     final Map<int, int> removeByMonth = {};
@@ -145,7 +162,7 @@ class _RelatoriosYearsState extends State<RelatoriosYears> {
             fromY: 0,
             toY: add,
             width: 14,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
+            borderRadius: BorderRadius.circular(6),
             gradient: const LinearGradient(
               colors: [Color(0xFF00E676), Color(0xFF1B5E20)],
               begin: Alignment.bottomCenter,
@@ -156,7 +173,7 @@ class _RelatoriosYearsState extends State<RelatoriosYears> {
             fromY: add,
             toY: add + remove,
             width: 14,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
+            borderRadius: BorderRadius.circular(6),
             gradient: const LinearGradient(
               colors: [Color(0xFFFF5252), Color(0xFFB71C1C)],
               begin: Alignment.bottomCenter,
@@ -167,33 +184,11 @@ class _RelatoriosYearsState extends State<RelatoriosYears> {
       );
     });
 
-    final maxY =
-        [
-          ...barGroups.expand((e) => e.barRods).map((e) => e.toY),
-        ].fold<double>(0, (p, c) => c > p ? c : p) +
+    final maxY = barGroups
+            .expand((e) => e.barRods)
+            .map((e) => e.toY)
+            .fold<double>(0, (p, c) => c > p ? c : p) +
         5;
-
-    Widget bottomTitles(double value, TitleMeta meta) {
-      const style = TextStyle(fontSize: 10, fontWeight: FontWeight.bold);
-      const monthNames = [
-        'JAN',
-        'FEB',
-        'MAR',
-        'APR',
-        'MAY',
-        'JUN',
-        'JUL',
-        'AUG',
-        'SEP',
-        'OCT',
-        'NOV',
-        'DEC',
-      ];
-      return SideTitleWidget(
-        meta: meta,
-        child: Text(monthNames[value.toInt()], style: style),
-      );
-    }
 
     return Padding(
       padding: const EdgeInsets.all(24),
@@ -203,7 +198,6 @@ class _RelatoriosYearsState extends State<RelatoriosYears> {
           const Text(
             'Movimentações Anuais',
             style: TextStyle(
-              color: Color(0xFF1A1A1A),
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
@@ -211,8 +205,8 @@ class _RelatoriosYearsState extends State<RelatoriosYears> {
           const SizedBox(height: 8),
           LegendsListWidget(
             legends: [
-              Legend('Entradas', const Color(0xFF00E676)),
-              Legend('Saídas', const Color(0xFFFF5252)),
+              Legend('Entradas', Color(0xFF00E676)),
+              Legend('Saídas', Color(0xFFFF5252)),
             ],
           ),
           const SizedBox(height: 16),
@@ -220,50 +214,48 @@ class _RelatoriosYearsState extends State<RelatoriosYears> {
             aspectRatio: 2,
             child: BarChart(
               BarChartData(
-                alignment: BarChartAlignment.spaceAround,
                 maxY: maxY,
                 barGroups: barGroups,
+                gridData: const FlGridData(show: false),
+                borderData: FlBorderData(show: false),
                 titlesData: FlTitlesData(
+                  topTitles: const AxisTitles(),
+                  rightTitles: const AxisTitles(),
                   leftTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
+                      reservedSize: 36,
                       interval: 5,
-                      reservedSize: 40,
-                      getTitlesWidget: (value, meta) {
-                        return Text(
-                          value.toInt().toString(),
-                          style: const TextStyle(fontSize: 12),
-                        );
-                      },
+                      getTitlesWidget: (value, _) => Text(
+                        value.toInt().toString(),
+                        style: const TextStyle(fontSize: 11),
+                      ),
                     ),
                   ),
-                  rightTitles: const AxisTitles(),
-                  topTitles: const AxisTitles(),
                   bottomTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
-                      getTitlesWidget: bottomTitles,
-                      reservedSize: 20,
+                      getTitlesWidget: (value, _) {
+                        const months = [
+                          'JAN',
+                          'FEV',
+                          'MAR',
+                          'ABR',
+                          'MAI',
+                          'JUN',
+                          'JUL',
+                          'AGO',
+                          'SET',
+                          'OUT',
+                          'NOV',
+                          'DEZ',
+                        ];
+                        return Text(
+                          months[value.toInt()],
+                          style: const TextStyle(fontSize: 10),
+                        );
+                      },
                     ),
-                  ),
-                ),
-                gridData: const FlGridData(show: false),
-                borderData: FlBorderData(show: false),
-                barTouchData: BarTouchData(
-                  enabled: true,
-                  touchTooltipData: BarTouchTooltipData(
-                    getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                      final month = group.x + 1;
-                      final add = addByMonth[month] ?? 0;
-                      final remove = removeByMonth[month] ?? 0;
-                      return BarTooltipItem(
-                        'Entradas: $add\nSaídas: $remove',
-                        const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      );
-                    },
                   ),
                 ),
               ),
@@ -276,14 +268,16 @@ class _RelatoriosYearsState extends State<RelatoriosYears> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_localeReady) return const Center(child: CircularProgressIndicator());
+    if (!_localeReady) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
     return Scaffold(
       backgroundColor: const Color(0xFFFAFAFA),
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: const EdgeInsets.all(12),
             child: Row(
               children: [
                 Expanded(
@@ -296,25 +290,18 @@ class _RelatoriosYearsState extends State<RelatoriosYears> {
                           colors: [Color(0xFF1A1A1A), Color(0xFF424242)],
                         ),
                         borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.2),
-                            blurRadius: 8,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.calendar_today, color: Colors.white),
+                          const Icon(Icons.calendar_today,
+                              color: Colors.white),
                           const SizedBox(width: 8),
                           Text(
                             _displayYear.toString(),
                             style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w600,
-                              fontSize: 16,
                             ),
                           ),
                         ],
@@ -324,39 +311,10 @@ class _RelatoriosYearsState extends State<RelatoriosYears> {
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: OutlinedButton(
-                    onPressed: () {
-                      // Aqui você chama o modal
-                      SalveModal.show(context);
-                    },
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(
-                        color: Color(0xFF1A1A1A),
-                        width: 2,
-                      ),
-                      backgroundColor: Colors.white,
-                      foregroundColor: const Color(0xFF1A1A1A),
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 2,
-                      shadowColor: Colors.black.withValues(alpha: 0.1),
-                    ),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.save),
-                        SizedBox(width: 8),
-                        Text(
-                          'Exportar Relatório',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
-                    ),
+                  child: OutlinedButton.icon(
+                    onPressed: () => SalveModal.show(context),
+                    icon: const Icon(Icons.save),
+                    label: const Text('Exportar Relatório'),
                   ),
                 ),
               ],
@@ -367,25 +325,11 @@ class _RelatoriosYearsState extends State<RelatoriosYears> {
                 ? Center(
                     child: Text(
                       'Nenhuma movimentação em $_displayYear',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        color: Colors.black54,
-                      ),
+                      style: const TextStyle(fontSize: 16),
                     ),
                   )
                 : ListView(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Text(
-                          'Relatório Anual $_displayYear',
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF1A1A1A),
-                          ),
-                        ),
-                      ),
                       _buildBarChart(),
                       const SizedBox(height: 24),
                     ],

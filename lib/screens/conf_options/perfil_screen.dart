@@ -1,17 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-import '../../services/auth_service.dart';
 import '../login_screen.dart';
 
 class PerfilScreen extends StatelessWidget {
-  final String userLogin;
-
-  const PerfilScreen({super.key, required this.userLogin});
+  const PerfilScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final AuthService authService = AuthService();
+    final user = FirebaseAuth.instance.currentUser;
+
+    // Segurança: se não tiver usuário logado
+    if (user == null) {
+      Future.microtask(() {
+        if (context.mounted) {
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (_) => const LoginScreen()),
+            (_) => false,
+          );
+        }
+      });
+
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    final String uid = user.uid;
+    final String email = user.email ?? 'Sem email';
 
     return Scaffold(
       backgroundColor: Colors.grey[100],
@@ -28,13 +45,13 @@ class PerfilScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Avatar do usuário
+              // ================= AVATAR =================
               Center(
                 child: CircleAvatar(
                   radius: 50,
                   backgroundColor: Colors.black87,
                   child: Text(
-                    userLogin.substring(0, 1).toUpperCase(),
+                    email.isNotEmpty ? email[0].toUpperCase() : 'U',
                     style: const TextStyle(
                       fontSize: 40,
                       color: Colors.white,
@@ -46,7 +63,7 @@ class PerfilScreen extends StatelessWidget {
 
               const SizedBox(height: 24),
 
-              // Cartão de informações
+              // ================= CARD INFO =================
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
@@ -55,7 +72,7 @@ class PerfilScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 13),
+                      color: Colors.black.withOpacity(0.13),
                       blurRadius: 12,
                       offset: const Offset(0, 6),
                     ),
@@ -72,18 +89,42 @@ class PerfilScreen extends StatelessWidget {
                         color: Colors.grey.shade800,
                       ),
                     ),
-                    const SizedBox(height: 12),
+
+                    const SizedBox(height: 16),
+
+                    // EMAIL
                     Row(
                       children: [
-                        const Icon(Icons.person_outline, color: Colors.black54),
+                        const Icon(Icons.email_outlined, color: Colors.black54),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
-                            userLogin,
+                            email,
                             style: GoogleFonts.poppins(
-                              fontSize: 18,
+                              fontSize: 16,
                               fontWeight: FontWeight.w500,
                               color: Colors.black87,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    // UID
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(Icons.key, color: Colors.black54),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            uid,
+                            style: GoogleFonts.poppins(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.grey.shade700,
                             ),
                           ),
                         ),
@@ -95,16 +136,14 @@ class PerfilScreen extends StatelessWidget {
 
               const SizedBox(height: 32),
 
-              // Botão de Logout (REAL)
+              // ================= LOGOUT =================
               Center(
                 child: ElevatedButton.icon(
                   onPressed: () async {
-                    // 🔥 Limpa sessão salva
-                    await authService.logout();
+                    await FirebaseAuth.instance.signOut();
 
                     if (!context.mounted) return;
 
-                    // 🔒 Remove toda a stack de navegação
                     Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(
                         builder: (_) => const LoginScreen(),

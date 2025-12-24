@@ -1,6 +1,7 @@
-// lib/screens/home_screen.dart
-import 'package:flutter/material.dart';
 import 'dart:ui';
+
+import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'estoque_screen.dart';
 import 'novo_produto_screen.dart';
@@ -10,9 +11,7 @@ import 'config_screen.dart';
 import '../notifications/notification_service.dart';
 
 class HomeScreen extends StatefulWidget {
-  final String userLogin;
-
-  const HomeScreen({super.key, required this.userLogin});
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -20,45 +19,64 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
-  late final List<Widget> _screens;
+
+  List<Widget>? _screens;
   bool _notificationsStarted = false;
+  String? _uid;
 
   @override
   void initState() {
     super.initState();
+    _initUserAndScreens();
+  }
 
-    // === Lista de telas na ordem correta ===
+  Future<void> _initUserAndScreens() async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
+      return;
+    }
+
+    _uid = user.uid;
+
     _screens = [
-      EstoqueScreen(userLogin: widget.userLogin),      // 0 Stock
-      NovoProdutoScreen(userLogin: widget.userLogin),  // 1 Novo Produto
-      const SizedBox(),                                // 2 Sites de Box (abrirá via Navigator)
-      RelatoriosScreen(),                              // 3 Relatórios
-      ConfigScreen(userLogin: widget.userLogin),     // 4 Confira
+      EstoqueScreen(uid: _uid!),        // 0 Estoque
+      NovoProdutoScreen(uid: _uid!),    // 1 Novo Produto
+      const SizedBox(),                 // 2 Scanner (abre modal)
+      const RelatoriosDays(),         // 3 Relatórios
+      const ConfigScreen(),             // 4 Configurações
     ];
 
-    _initNotifications();
+    await _initNotifications();
+
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   Future<void> _initNotifications() async {
-    if (_notificationsStarted) return;
+    if (_notificationsStarted || _uid == null) return;
     _notificationsStarted = true;
+
     await NotificationService.instance.init();
     if (!mounted) return;
-    NotificationService.instance.startListeningStockAlerts(widget.userLogin);
+
+    NotificationService.instance.startListeningStockAlerts(_uid!);
   }
 
   void _onTap(int index) {
-    // === Botão Sites de Box / Scanner abre via Navigator ===
     if (index == 2) {
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (_) => ScannerScreen(userLogin: widget.userLogin),
+          builder: (_) => ScannerScreen(uid: _uid!),
         ),
       );
       return;
     }
 
-    // === Outros índices atualizam o IndexedStack ===
     setState(() {
       _currentIndex = index;
     });
@@ -112,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.25),
+              color: Colors.black.withValues(alpha: 0.25),
               blurRadius: 12,
               offset: const Offset(0, 6),
             ),
@@ -135,11 +153,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Enquanto carrega UID / telas
+    if (_screens == null) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: IndexedStack(
         index: _currentIndex,
-        children: _screens,
+        children: _screens!,
       ),
       bottomNavigationBar: SafeArea(
         child: SizedBox(
@@ -161,11 +188,11 @@ class _HomeScreenState extends State<HomeScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _navItem(icon: Icons.inventory_2_outlined, index: 0), // Stock
-                  _navItem(icon: Icons.add_business_outlined, index: 1), // Novo Produto
-                  _scannerButton(),                                         // Sites de Box
-                  _navItem(icon: Icons.bar_chart, index: 3),               // Relatórios
-                  _navItem(icon:Icons.settings, index: 4),    // Confira
+                  _navItem(icon: Icons.inventory_2_outlined, index: 0),
+                  _navItem(icon: Icons.add_business_outlined, index: 1),
+                  _scannerButton(),
+                  _navItem(icon: Icons.bar_chart, index: 3),
+                  _navItem(icon: Icons.settings, index: 4),
                 ],
               ),
             ],
