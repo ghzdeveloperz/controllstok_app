@@ -24,21 +24,32 @@ class AuthService {
       }
 
       final userDoc = query.docs.first;
-      final email = userDoc['email'];
+      final email = userDoc['email'] as String;
 
       // Login com Firebase Auth usando email
-      await _auth.signInWithEmailAndPassword(
+      final credential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
+
+      final user = credential.user;
+      if (user == null) return 'Erro ao autenticar usuário';
+
+      // Checa se o email está verificado
+      await user.reload();
+      final updatedUser = _auth.currentUser;
+      if (updatedUser != null && !updatedUser.emailVerified) {
+        await updatedUser.sendEmailVerification();
+        return 'Email não verificado. Um link de verificação foi enviado para seu email.';
+      }
 
       return null; // Login bem-sucedido
     } on FirebaseAuthException catch (e) {
       if (e.code == 'wrong-password') return 'Senha incorreta';
       if (e.code == 'user-not-found') return 'Usuário não encontrado';
-      return 'Erro ao autenticar';
+      return 'Erro ao autenticar: ${e.message}';
     } catch (e) {
-      return e.toString();
+      return 'Erro ao autenticar: $e';
     }
   }
 
@@ -69,6 +80,9 @@ class AuthService {
       final user = credential.user;
       if (user == null) return 'Erro ao criar usuário';
 
+      // Envia email de verificação
+      await user.sendEmailVerification();
+
       // Salva informações adicionais no Firestore
       await _firestore.collection('users').doc(user.uid).set({
         'login': login,
@@ -80,9 +94,24 @@ class AuthService {
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') return 'Email já está em uso';
       if (e.code == 'weak-password') return 'Senha muito fraca';
-      return 'Erro ao cadastrar usuário';
+      return 'Erro ao cadastrar usuário: ${e.message}';
     } catch (e) {
-      return e.toString();
+      return 'Erro ao cadastrar usuário: $e';
+    }
+  }
+
+  // ================= VERIFICA EMAIL =================
+  Future<bool> checkEmailVerified() async {
+    try {
+      User? user = _auth.currentUser;
+      if (user == null) return false;
+
+      await user.reload(); // Atualiza info do Firebase
+      user = _auth.currentUser;
+
+      return user?.emailVerified ?? false;
+    } catch (_) {
+      return false;
     }
   }
 
@@ -91,6 +120,6 @@ class AuthService {
     await _auth.signOut();
   }
 
-  // Usuário atual
+  // ================= USUÁRIO ATUAL =================
   User? get currentUser => _auth.currentUser;
 }

@@ -1,8 +1,8 @@
 // lib/screens/login_screen.dart
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../services/auth_service.dart';
 import 'home_screen.dart';
 import 'register_screen.dart';
 
@@ -15,14 +15,12 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen>
     with SingleTickerProviderStateMixin {
-  final _loginController = TextEditingController();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final AuthService _authService = AuthService();
 
   bool isLoading = false;
   String? error;
 
-  // Controller para animação do alerta
   late AnimationController _animationController;
   late Animation<double> _offsetAnimation;
 
@@ -46,43 +44,40 @@ class _LoginScreenState extends State<LoginScreen>
       isLoading = true;
     });
 
-    final login = _loginController.text.trim();
+    final email = _emailController.text.trim();
     final password = _passwordController.text;
 
-    if (login.isEmpty || password.isEmpty) {
+    if (email.isEmpty || password.isEmpty) {
       setState(() {
-        error = "Preencha login e senha";
+        error = "Preencha email e senha";
         isLoading = false;
       });
       _showError();
       return;
     }
 
-    final loginError = await _authService.login(
-      login: login,
-      password: password,
-    );
+    try {
+      // Login usando FirebaseAuth
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-    if (!mounted) return;
-
-    if (loginError == null) {
-      final user = _authService.currentUser;
-      if (user == null) {
-        setState(() {
-          error = 'Erro ao recuperar usuário autenticado';
-          isLoading = false;
-        });
-        _showError();
-        return;
-      }
+      if (!mounted) return;
 
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const HomeScreen()),
       );
-    } else {
+    } on FirebaseAuthException catch (e) {
       setState(() {
-        error = loginError;
+        if (e.code == 'user-not-found') {
+          error = "Usuário não encontrado";
+        } else if (e.code == 'wrong-password') {
+          error = "Senha incorreta";
+        } else {
+          error = e.message ?? "Erro ao fazer login";
+        }
         isLoading = false;
       });
       _showError();
@@ -98,12 +93,12 @@ class _LoginScreenState extends State<LoginScreen>
   }
 
   Future<void> _openSupportEmail() async {
-    final login = _loginController.text.trim().isEmpty
-        ? '(INFORME SEU LOGIN)'
-        : _loginController.text.trim();
+    final email = _emailController.text.trim().isEmpty
+        ? '(INFORME SEU EMAIL)'
+        : _emailController.text.trim();
 
     final subject = Uri.encodeComponent(
-      'Redefinição de senha - usuário: $login',
+      'Redefinição de senha - usuário: $email',
     );
 
     final emailUri = Uri(
@@ -119,7 +114,7 @@ class _LoginScreenState extends State<LoginScreen>
 
   @override
   void dispose() {
-    _loginController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
     _animationController.dispose();
     super.dispose();
@@ -159,157 +154,176 @@ class _LoginScreenState extends State<LoginScreen>
         body: Center(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(24),
-            child: Container(
-              width: 380,
-              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 32),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(28),
-                border: Border.all(color: Colors.black12),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Color.fromARGB(25, 0, 0, 0),
-                    blurRadius: 24,
-                    offset: Offset(0, 12),
-                  ),
-                ],
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.lock_outline, size: 42, color: Colors.black),
-                  const SizedBox(height: 12),
-                  const Text(
-                    "Painel de Controle",
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  const Text(
-                    "Acesse seu estoque",
-                    style: TextStyle(color: Colors.black54, fontSize: 14),
-                  ),
-                  const SizedBox(height: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // ➤ Logo da empresa
+                Image.asset(
+                  'lib/assets/images/logo-controllstok.png',
+                  width: 120,
+                  height: 120,
+                  fit: BoxFit.contain,
+                ),
 
-                  // ALERTA ANIMADO PRETO E BRANCO
-                  SizeTransition(
-                    sizeFactor: _offsetAnimation,
-                    axisAlignment: -1.0,
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      decoration: BoxDecoration(
-                        color: Colors.black12,
-                        borderRadius: BorderRadius.circular(12),
+                const SizedBox(height: 0),
+
+                // ➤ Card central com campos de login
+                Container(
+                  width: 380,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 28, vertical: 32),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(28),
+                    border: Border.all(color: Colors.black12),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color.fromARGB(25, 0, 0, 0),
+                        blurRadius: 24,
+                        offset: Offset(0, 12),
                       ),
-                      child: Text(
-                        error ?? "",
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
+                    ],
                   ),
-                  const SizedBox(height: 16),
-
-                  TextField(
-                    controller: _loginController,
-                    enabled: !isLoading,
-                    decoration: _inputDecoration(
-                      hint: "Login",
-                      icon: Icons.person_outline,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    controller: _passwordController,
-                    enabled: !isLoading,
-                    obscureText: true,
-                    decoration: _inputDecoration(
-                      hint: "Senha",
-                      icon: Icons.lock_outline,
-                    ),
-                  ),
-
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: _openSupportEmail,
-                      child: const Text(
-                        "Esqueceu a senha?",
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.lock_outline,
+                          size: 42, color: Colors.black),
+                      const SizedBox(height: 12),
+                      const Text(
+                        "Painel de Controle",
                         style: TextStyle(
-                          color: Colors.black87,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 13,
+                          fontSize: 24,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 0.5,
                         ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
+                      const SizedBox(height: 6),
+                      const Text(
+                        "Acesse seu estoque",
+                        style: TextStyle(color: Colors.black54, fontSize: 14),
+                      ),
+                      const SizedBox(height: 16),
 
-                  SizedBox(
-                    width: double.infinity,
-                    height: 54,
-                    child: ElevatedButton(
-                      onPressed: isLoading ? null : handleLogin,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.black,
-                        foregroundColor: Colors.white,
-                        disabledBackgroundColor: Colors.black38,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                      ),
-                      child: isLoading
-                          ? const SizedBox(
-                              width: 22,
-                              height: 22,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2.4,
-                                color: Colors.white,
-                              ),
-                            )
-                          : const Text(
-                              "Entrar",
-                              style: TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: 0.4,
-                              ),
+                      // ALERTA ANIMADO
+                      SizeTransition(
+                        sizeFactor: _offsetAnimation,
+                        axisAlignment: -1.0,
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          decoration: BoxDecoration(
+                            color: Colors.black12,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            error ?? "",
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w700,
                             ),
-                    ),
-                  ),
-                  const SizedBox(height: 18),
-
-                  GestureDetector(
-                    onTap: () {
-                      FocusScope.of(context).unfocus();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const RegisterScreen(),
+                          ),
                         ),
-                      );
-                    },
-                    child: const Text(
-                      "Ainda não possui uma conta? Crie uma",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        decoration: TextDecoration.underline,
                       ),
-                    ),
+                      const SizedBox(height: 16),
+
+                      TextField(
+                        controller: _emailController,
+                        enabled: !isLoading,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: _inputDecoration(
+                          hint: "Email",
+                          icon: Icons.email_outlined,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: _passwordController,
+                        enabled: !isLoading,
+                        obscureText: true,
+                        decoration: _inputDecoration(
+                          hint: "Senha",
+                          icon: Icons.lock_outline,
+                        ),
+                      ),
+
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: _openSupportEmail,
+                          child: const Text(
+                            "Esqueceu a senha?",
+                            style: TextStyle(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+
+                      SizedBox(
+                        width: double.infinity,
+                        height: 54,
+                        child: ElevatedButton(
+                          onPressed: isLoading ? null : handleLogin,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.black,
+                            foregroundColor: Colors.white,
+                            disabledBackgroundColor: Colors.black38,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                          ),
+                          child: isLoading
+                              ? const SizedBox(
+                                  width: 22,
+                                  height: 22,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2.4,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : const Text(
+                                  "Entrar",
+                                  style: TextStyle(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w700,
+                                    letterSpacing: 0.4,
+                                  ),
+                                ),
+                        ),
+                      ),
+                      const SizedBox(height: 18),
+
+                      GestureDetector(
+                        onTap: () {
+                          FocusScope.of(context).unfocus();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const RegisterScreen(),
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          "Ainda não possui uma conta? Crie uma",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
