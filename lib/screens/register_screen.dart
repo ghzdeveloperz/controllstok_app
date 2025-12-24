@@ -1,4 +1,5 @@
 // lib/screens/register_screen.dart
+import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -29,6 +30,14 @@ class _RegisterScreenState extends State<RegisterScreen>
 
   int _passwordStrength = 0;
   User? _tempUser;
+  Timer? _emailCheckTimer;
+
+  // Para animação dos pontinhos
+  int _dotsCount = 0;
+  Timer? _dotsTimer;
+
+  // Timer para exclusão da conta temporária
+  Timer? _deleteAccountTimer;
 
   @override
   void initState() {
@@ -41,7 +50,16 @@ class _RegisterScreenState extends State<RegisterScreen>
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
 
-    _passwordController.addListener(_checkPasswordStrength);
+    _passwordController.addListener(_updateState);
+    _confirmPasswordController.addListener(_updateState);
+    _emailController.addListener(() {
+      setState(() {}); // Atualiza botão de enviar email em tempo real
+    });
+  }
+
+  void _updateState() {
+    _checkPasswordStrength();
+    setState(() {});
   }
 
   void _checkPasswordStrength() {
@@ -53,25 +71,19 @@ class _RegisterScreenState extends State<RegisterScreen>
     if (RegExp(r'(?=.*\d)').hasMatch(password)) strength++;
     if (RegExp(r'(?=.*[!@#\$&*~]).').hasMatch(password)) strength++;
 
-    setState(() {
-      _passwordStrength = min(strength, 3);
-    });
+    _passwordStrength = min(strength, 3);
   }
 
-  bool get _isEmailValid {
-    return RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-        .hasMatch(_emailController.text.trim());
-  }
+  bool get _isEmailValid => RegExp(
+        r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+      ).hasMatch(_emailController.text.trim());
 
-  bool get _isPasswordValid {
-    return _passwordController.text == _confirmPasswordController.text &&
-        _passwordController.text.isNotEmpty &&
-        _passwordStrength >= 2;
-  }
+  bool get _isPasswordValid =>
+      _passwordController.text == _confirmPasswordController.text &&
+      _passwordController.text.isNotEmpty &&
+      _passwordStrength == 3; // senha forte
 
-  bool get _canContinue {
-    return _isPasswordValid && emailVerified;
-  }
+  bool get _canContinue => _isPasswordValid && emailVerified;
 
   Future<void> _sendVerificationEmail() async {
     if (!_isEmailValid) {
@@ -101,35 +113,20 @@ class _RegisterScreenState extends State<RegisterScreen>
         emailSent = true;
       });
 
+      _startEmailCheckTimer();
+      _startDotsTimer();
+      _startDeleteAccountTimer(); // inicia o timer de exclusão da conta
+
       debugPrint('Email de verificação enviado para ${_emailController.text}');
     } on FirebaseAuthException catch (e) {
       setState(() {
-        error = e.message ?? 'Erro ao enviar email';
+        error = _firebaseErrorToPortuguese(e);
       });
       _showError();
     } finally {
       setState(() {
         isLoading = false;
       });
-    }
-  }
-
-  Future<void> _checkEmailVerified() async {
-    if (_tempUser == null) return;
-
-    await _tempUser!.reload();
-    _tempUser = FirebaseAuth.instance.currentUser;
-
-    if (_tempUser!.emailVerified) {
-      setState(() {
-        emailVerified = true;
-        error = null;
-      });
-    } else {
-      setState(() {
-        error = 'Email ainda não verificado. Verifique sua caixa de entrada.';
-      });
-      _showError();
     }
   }
 
@@ -148,6 +145,10 @@ class _RegisterScreenState extends State<RegisterScreen>
 
     try {
       await _tempUser!.updatePassword(_passwordController.text);
+
+      // Cancelar o timer de exclusão se o usuário completar o cadastro
+      _deleteAccountTimer?.cancel();
+
       if (!mounted) return;
 
       Navigator.pushReplacement(
@@ -158,7 +159,7 @@ class _RegisterScreenState extends State<RegisterScreen>
       );
     } on FirebaseAuthException catch (e) {
       setState(() {
-        error = e.message ?? 'Erro ao registrar usuário';
+        error = _firebaseErrorToPortuguese(e);
       });
       _showError();
     } finally {
@@ -166,6 +167,70 @@ class _RegisterScreenState extends State<RegisterScreen>
         isLoading = false;
       });
     }
+  }
+
+  void _startDeleteAccountTimer() {
+    _deleteAccountTimer?.cancel();
+    int countdown = 86400; // 10 segundos para teste
+    debugPrint("Timer de exclusão iniciado: $countdown segundos");
+    _deleteAccountTimer = Timer.periodic(const Duration(seconds: 1), (timer) async {
+      countdown--;
+      debugPrint("Exclusão em $countdown segundos");
+      if (countdown <= 0) {
+        timer.cancel();
+        if (_tempUser != null && !_canContinue) {
+          try {
+            await _tempUser!.delete();
+            debugPrint("Conta excluída automaticamente por não completar cadastro");
+            _resetEmail();
+          } catch (e) {
+            debugPrint("Erro ao excluir conta temporária: $e");
+          }
+        }
+      }
+    });
+  }
+
+  String _firebaseErrorToPortuguese(FirebaseAuthException e) {
+    switch (e.code) {
+      case 'email-already-in-use':
+        return 'Este email já está em uso por outra conta';
+      case 'invalid-email':
+        return 'Email inválido';
+      case 'weak-password':
+        return 'Senha muito fraca';
+      case 'operation-not-allowed':
+        return 'Operação não permitida';
+      default:
+        return e.message ?? 'Erro ao processar a solicitação';
+    }
+  }
+
+  void _startEmailCheckTimer() {
+    _emailCheckTimer?.cancel();
+    _emailCheckTimer = Timer.periodic(const Duration(seconds: 3), (_) async {
+      if (_tempUser == null) return;
+      await _tempUser!.reload();
+      _tempUser = FirebaseAuth.instance.currentUser;
+      if (_tempUser!.emailVerified) {
+        setState(() {
+          emailVerified = true;
+          error = null;
+        });
+        _emailCheckTimer?.cancel();
+        _dotsTimer?.cancel();
+      }
+    });
+  }
+
+  void _startDotsTimer() {
+    _dotsTimer?.cancel();
+    _dotsCount = 0;
+    _dotsTimer = Timer.periodic(const Duration(milliseconds: 500), (_) {
+      setState(() {
+        _dotsCount = (_dotsCount + 1) % 4;
+      });
+    });
   }
 
   void _showError() {
@@ -176,8 +241,26 @@ class _RegisterScreenState extends State<RegisterScreen>
     });
   }
 
+  void _resetEmail() {
+    setState(() {
+      emailSent = false;
+      emailVerified = false;
+      _tempUser = null;
+      error = null;
+    });
+    _emailController.clear();
+    _passwordController.clear();
+    _confirmPasswordController.clear();
+    _emailCheckTimer?.cancel();
+    _dotsTimer?.cancel();
+    _deleteAccountTimer?.cancel();
+  }
+
   @override
   void dispose() {
+    _emailCheckTimer?.cancel();
+    _dotsTimer?.cancel();
+    _deleteAccountTimer?.cancel();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
@@ -214,6 +297,7 @@ class _RegisterScreenState extends State<RegisterScreen>
 
   @override
   Widget build(BuildContext context) {
+    final dots = '.' * _dotsCount;
     return Scaffold(
       backgroundColor: const Color(0xFFF7F7F7),
       body: Center(
@@ -239,7 +323,9 @@ class _RegisterScreenState extends State<RegisterScreen>
                 child: Container(
                   width: 380,
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 28, vertical: 32),
+                    horizontal: 28,
+                    vertical: 32,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(28),
@@ -304,15 +390,70 @@ class _RegisterScreenState extends State<RegisterScreen>
                             TextField(
                               controller: _emailController,
                               keyboardType: TextInputType.emailAddress,
-                              enabled: !isLoading && !emailSent,
+                              enabled: !isLoading && !emailVerified,
                               decoration: _inputDecoration(
                                 hint: "Email",
                                 icon: Icons.email_outlined,
+                                suffixIcon: emailVerified
+                                    ? const Icon(
+                                        Icons.check_circle,
+                                        color: Colors.green,
+                                      )
+                                    : null,
                               ),
                               onChanged: (_) {
                                 setState(() {});
                               },
                             ),
+                            const SizedBox(height: 4),
+                            if (emailVerified)
+                              const Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  "Email verificado",
+                                  style: TextStyle(
+                                    color: Colors.green,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                            if (emailSent && !emailVerified)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 4),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Aguardando confirmação de email$dots",
+                                      style: const TextStyle(
+                                        color: Colors.black54,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                    TextButton(
+                                      onPressed: _resetEmail,
+                                      style: TextButton.styleFrom(
+                                        padding: EdgeInsets.zero,
+                                        minimumSize: const Size(50, 20),
+                                        tapTargetSize:
+                                            MaterialTapTargetSize.shrinkWrap,
+                                      ),
+                                      child: const Text(
+                                        "Não é esse e-mail?",
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                          decoration: TextDecoration.underline,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
                             const SizedBox(height: 16),
                             if (_isEmailValid && !emailSent)
                               SizedBox(
@@ -331,28 +472,9 @@ class _RegisterScreenState extends State<RegisterScreen>
                                     ),
                                   ),
                                   child: const Text(
-                                      "Enviar email de verificação"),
+                                    "Enviar email de verificação",
+                                  ),
                                 ),
-                              ),
-                            const SizedBox(height: 8),
-                            if (emailSent && !emailVerified)
-                              Column(
-                                children: [
-                                  ElevatedButton(
-                                    onPressed: _checkEmailVerified,
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.black,
-                                      foregroundColor: Colors.white,
-                                    ),
-                                    child: const Text(
-                                        "Já verifiquei meu email"),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  const Text(
-                                    "Verifique seu email antes de continuar",
-                                    style: TextStyle(color: Colors.black54),
-                                  ),
-                                ],
                               ),
                           ],
                         ),
@@ -468,14 +590,16 @@ class _RegisterScreenState extends State<RegisterScreen>
                               ),
                             ],
                             const SizedBox(height: 16),
-                            // Botão para voltar pro login
                             TextButton(
                               onPressed: () {
                                 Navigator.pop(context);
                               },
                               child: const Text(
                                 "Já possui conta? Fazer login",
-                                style: TextStyle(color: Colors.black54),
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  decoration: TextDecoration.underline,
+                                ),
                               ),
                             ),
                           ],
