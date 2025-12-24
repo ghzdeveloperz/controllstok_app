@@ -1,10 +1,9 @@
 // lib/screens/login_screen.dart
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:url_launcher/url_launcher.dart';
-
+import '../services/auth_service.dart';
 import 'home_screen.dart';
 import 'register_screen.dart';
+import 'package:flutter/gestures.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,6 +16,7 @@ class _LoginScreenState extends State<LoginScreen>
     with SingleTickerProviderStateMixin {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final AuthService _authService = AuthService();
 
   bool isLoading = false;
   String? error;
@@ -56,32 +56,22 @@ class _LoginScreenState extends State<LoginScreen>
       return;
     }
 
-    try {
-      // Login usando FirebaseAuth
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+    final message = await _authService.login(email: email, password: password);
 
-      if (!mounted) return;
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const HomeScreen()),
-      );
-    } on FirebaseAuthException catch (e) {
+    if (message != null) {
       setState(() {
-        if (e.code == 'user-not-found') {
-          error = "Usuário não encontrado";
-        } else if (e.code == 'wrong-password') {
-          error = "Senha incorreta";
-        } else {
-          error = e.message ?? "Erro ao fazer login";
-        }
+        error = message;
         isLoading = false;
       });
       _showError();
+      return;
     }
+
+    if (!mounted) return;
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const HomeScreen()),
+    );
   }
 
   void _showError() {
@@ -92,41 +82,14 @@ class _LoginScreenState extends State<LoginScreen>
     });
   }
 
-  Future<void> _openSupportEmail() async {
-    final email = _emailController.text.trim().isEmpty
-        ? '(INFORME SEU EMAIL)'
-        : _emailController.text.trim();
-
-    final subject = Uri.encodeComponent(
-      'Redefinição de senha - usuário: $email',
-    );
-
-    final emailUri = Uri(
-      scheme: 'mailto',
-      path: 'contact@mystoreday.com',
-      query: 'subject=$subject',
-    );
-
-    if (!await launchUrl(emailUri, mode: LaunchMode.externalApplication)) {
-      debugPrint('Não foi possível abrir o app de e-mail');
-    }
-  }
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    _animationController.dispose();
-    super.dispose();
-  }
-
   InputDecoration _inputDecoration({
     required String hint,
     required IconData icon,
   }) {
     return InputDecoration(
       hintText: hint,
-      prefixIcon: Icon(icon, color: Colors.black87),
+      hintStyle: const TextStyle(color: Colors.black38),
+      prefixIcon: Icon(icon, color: Colors.black54),
       filled: true,
       fillColor: Colors.white,
       contentPadding: const EdgeInsets.symmetric(vertical: 18),
@@ -140,9 +103,17 @@ class _LoginScreenState extends State<LoginScreen>
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(color: Colors.black, width: 1.6),
+        borderSide: const BorderSide(color: Colors.black87, width: 1.6),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _animationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -157,21 +128,19 @@ class _LoginScreenState extends State<LoginScreen>
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // ➤ Logo da empresa
                 Image.asset(
                   'lib/assets/images/logo-controllstok.png',
                   width: 120,
                   height: 120,
                   fit: BoxFit.contain,
                 ),
-
                 const SizedBox(height: 0),
-
-                // ➤ Card central com campos de login
                 Container(
                   width: 380,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 28, vertical: 32),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 28,
+                    vertical: 32,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(28),
@@ -187,21 +156,36 @@ class _LoginScreenState extends State<LoginScreen>
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.lock_outline,
-                          size: 42, color: Colors.black),
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.black12,
+                        ),
+                        child: const Icon(
+                          Icons.lock_outline,
+                          size: 36,
+                          color: Colors.black87,
+                        ),
+                      ),
                       const SizedBox(height: 12),
                       const Text(
                         "Painel de Controle",
                         style: TextStyle(
                           fontSize: 24,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 0.5,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                          letterSpacing: 0.3,
                         ),
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: 4),
                       const Text(
                         "Acesse seu estoque",
-                        style: TextStyle(color: Colors.black54, fontSize: 14),
+                        style: TextStyle(
+                          color: Colors.black54,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                       const SizedBox(height: 16),
 
@@ -211,18 +195,35 @@ class _LoginScreenState extends State<LoginScreen>
                         axisAlignment: -1.0,
                         child: Container(
                           width: double.infinity,
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          decoration: BoxDecoration(
-                            color: Colors.black12,
-                            borderRadius: BorderRadius.circular(12),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 12,
+                            horizontal: 16,
                           ),
-                          child: Text(
-                            error ?? "",
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                            ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFE0E0E0),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.black12),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Color.fromARGB(15, 0, 0, 0),
+                                blurRadius: 4,
+                                offset: Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            children: [
+                              const SizedBox(height: 4),
+                              Text(
+                                error ?? "",
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -251,7 +252,27 @@ class _LoginScreenState extends State<LoginScreen>
                       Align(
                         alignment: Alignment.centerRight,
                         child: TextButton(
-                          onPressed: _openSupportEmail,
+                          onPressed: () async {
+                            final email = _emailController.text.trim();
+
+                            if (email.isEmpty) {
+                              setState(() {
+                                error =
+                                    "Informe seu email para redefinir a senha";
+                              });
+                              _showError();
+                              return;
+                            }
+
+                            final message = await _authService.resetPassword(
+                              email: email,
+                            );
+
+                            setState(() {
+                              error = message;
+                            });
+                            _showError();
+                          },
                           child: const Text(
                             "Esqueceu a senha?",
                             style: TextStyle(
@@ -299,25 +320,60 @@ class _LoginScreenState extends State<LoginScreen>
                       ),
                       const SizedBox(height: 18),
 
-                      GestureDetector(
-                        onTap: () {
-                          FocusScope.of(context).unfocus();
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const RegisterScreen(),
-                            ),
-                          );
-                        },
-                        child: const Text(
-                          "Ainda não possui uma conta? Crie uma",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.black,
+                      RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                          text: "Não possui conta? ",
+                          style: const TextStyle(
+                            color: Colors.black54,
                             fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                            decoration: TextDecoration.underline,
                           ),
+                          children: [
+                            TextSpan(
+                              text: "Crie uma",
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.underline,
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  FocusScope.of(context).unfocus();
+                                  Navigator.pushReplacement(
+                                    context,
+                                    PageRouteBuilder(
+                                      pageBuilder:
+                                          (_, animation, secondaryAnimation) =>
+                                              const RegisterScreen(),
+                                      transitionsBuilder:
+                                          (_, animation, secondaryAnimation, child) {
+                                        const beginOffset = Offset(0.3, 0.0);
+                                        const endOffset = Offset.zero;
+                                        const curve = Curves.easeInOut;
+
+                                        final offsetTween = Tween<Offset>(
+                                          begin: beginOffset,
+                                          end: endOffset,
+                                        ).chain(CurveTween(curve: curve));
+
+                                        final fadeTween = Tween<double>(
+                                          begin: 0.0,
+                                          end: 1.0,
+                                        ).chain(CurveTween(curve: curve));
+
+                                        return FadeTransition(
+                                          opacity: animation.drive(fadeTween),
+                                          child: SlideTransition(
+                                            position: animation.drive(offsetTween),
+                                            child: child,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  );
+                                },
+                            ),
+                          ],
                         ),
                       ),
                     ],

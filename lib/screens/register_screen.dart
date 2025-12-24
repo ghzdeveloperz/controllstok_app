@@ -3,7 +3,9 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart'; // necessário para TapGestureRecognizer
 import 'register_additional_screen.dart';
+import 'login_screen.dart'; // para navegação
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -31,12 +33,8 @@ class _RegisterScreenState extends State<RegisterScreen>
   int _passwordStrength = 0;
   User? _tempUser;
   Timer? _emailCheckTimer;
-
-  // Para animação dos pontinhos
   int _dotsCount = 0;
   Timer? _dotsTimer;
-
-  // Timer para exclusão da conta temporária
   Timer? _deleteAccountTimer;
 
   @override
@@ -52,9 +50,7 @@ class _RegisterScreenState extends State<RegisterScreen>
 
     _passwordController.addListener(_updateState);
     _confirmPasswordController.addListener(_updateState);
-    _emailController.addListener(() {
-      setState(() {}); // Atualiza botão de enviar email em tempo real
-    });
+    _emailController.addListener(() => setState(() {}));
   }
 
   void _updateState() {
@@ -75,13 +71,13 @@ class _RegisterScreenState extends State<RegisterScreen>
   }
 
   bool get _isEmailValid => RegExp(
-        r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-      ).hasMatch(_emailController.text.trim());
+    r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+  ).hasMatch(_emailController.text.trim());
 
   bool get _isPasswordValid =>
       _passwordController.text == _confirmPasswordController.text &&
       _passwordController.text.isNotEmpty &&
-      _passwordStrength == 3; // senha forte
+      _passwordStrength == 3;
 
   bool get _canContinue => _isPasswordValid && emailVerified;
 
@@ -94,6 +90,10 @@ class _RegisterScreenState extends State<RegisterScreen>
       return;
     }
 
+    if (_tempUser != null && _tempUser!.email != null) {
+      await deleteTempUser(_tempUser!);
+    }
+
     setState(() {
       isLoading = true;
       error = null;
@@ -102,9 +102,9 @@ class _RegisterScreenState extends State<RegisterScreen>
     try {
       final userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: 'Temporary123!',
-      );
+            email: _emailController.text.trim(),
+            password: 'Temporary123!',
+          );
 
       _tempUser = userCredential.user;
       await _tempUser?.sendEmailVerification();
@@ -115,9 +115,7 @@ class _RegisterScreenState extends State<RegisterScreen>
 
       _startEmailCheckTimer();
       _startDotsTimer();
-      _startDeleteAccountTimer(); // inicia o timer de exclusão da conta
-
-      debugPrint('Email de verificação enviado para ${_emailController.text}');
+      _startDeleteAccountTimer();
     } on FirebaseAuthException catch (e) {
       setState(() {
         error = _firebaseErrorToPortuguese(e);
@@ -139,14 +137,18 @@ class _RegisterScreenState extends State<RegisterScreen>
       return;
     }
 
+    if (_passwordController.text == 'Temporary123!') {
+      await deleteTempUser(_tempUser!);
+      _resetEmail();
+      return;
+    }
+
     setState(() {
       isLoading = true;
     });
 
     try {
       await _tempUser!.updatePassword(_passwordController.text);
-
-      // Cancelar o timer de exclusão se o usuário completar o cadastro
       _deleteAccountTimer?.cancel();
 
       if (!mounted) return;
@@ -169,23 +171,31 @@ class _RegisterScreenState extends State<RegisterScreen>
     }
   }
 
+  Future<void> deleteTempUser(User user) async {
+    try {
+      final credential = EmailAuthProvider.credential(
+        email: user.email!,
+        password: 'Temporary123!',
+      );
+      await user.reauthenticateWithCredential(credential);
+      await user.delete();
+    } catch (e) {
+      debugPrint("Erro ao deletar conta temporária: $e");
+    }
+  }
+
   void _startDeleteAccountTimer() {
     _deleteAccountTimer?.cancel();
-    int countdown = 86400; // 10 segundos para teste
-    debugPrint("Timer de exclusão iniciado: $countdown segundos");
-    _deleteAccountTimer = Timer.periodic(const Duration(seconds: 1), (timer) async {
+    int countdown = 86400; // ajuste em produção
+    _deleteAccountTimer = Timer.periodic(const Duration(seconds: 1), (
+      timer,
+    ) async {
       countdown--;
-      debugPrint("Exclusão em $countdown segundos");
       if (countdown <= 0) {
         timer.cancel();
         if (_tempUser != null && !_canContinue) {
-          try {
-            await _tempUser!.delete();
-            debugPrint("Conta excluída automaticamente por não completar cadastro");
-            _resetEmail();
-          } catch (e) {
-            debugPrint("Erro ao excluir conta temporária: $e");
-          }
+          await deleteTempUser(_tempUser!);
+          _resetEmail();
         }
       }
     });
@@ -314,9 +324,11 @@ class _RegisterScreenState extends State<RegisterScreen>
                   width: 120,
                   height: 120,
                   fit: BoxFit.contain,
+                  
                 ),
+      
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 0),
               AnimatedOpacity(
                 duration: const Duration(milliseconds: 500),
                 opacity: 1,
@@ -361,6 +373,8 @@ class _RegisterScreenState extends State<RegisterScreen>
                         style: TextStyle(color: Colors.black54, fontSize: 14),
                       ),
                       const SizedBox(height: 16),
+
+                      // ALERTA
                       SizeTransition(
                         sizeFactor: _offsetAnimation,
                         axisAlignment: -1.0,
@@ -381,7 +395,10 @@ class _RegisterScreenState extends State<RegisterScreen>
                           ),
                         ),
                       ),
+
                       const SizedBox(height: 16),
+
+                      // CAMPO EMAIL
                       AnimatedSize(
                         duration: const Duration(milliseconds: 200),
                         curve: Curves.easeInOut,
@@ -401,9 +418,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                                       )
                                     : null,
                               ),
-                              onChanged: (_) {
-                                setState(() {});
-                              },
+                              onChanged: (_) => setState(() {}),
                             ),
                             const SizedBox(height: 4),
                             if (emailVerified)
@@ -453,7 +468,6 @@ class _RegisterScreenState extends State<RegisterScreen>
                                   ],
                                 ),
                               ),
-
                             const SizedBox(height: 16),
                             if (_isEmailValid && !emailSent)
                               SizedBox(
@@ -479,6 +493,8 @@ class _RegisterScreenState extends State<RegisterScreen>
                           ],
                         ),
                       ),
+
+                      // CAMPOS SENHA
                       AnimatedSize(
                         duration: const Duration(milliseconds: 200),
                         curve: Curves.easeInOut,
@@ -499,11 +515,9 @@ class _RegisterScreenState extends State<RegisterScreen>
                                           : Icons.visibility_off,
                                       color: Colors.black54,
                                     ),
-                                    onPressed: () {
-                                      setState(() {
-                                        showPassword = !showPassword;
-                                      });
-                                    },
+                                    onPressed: () => setState(
+                                      () => showPassword = !showPassword,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -543,12 +557,10 @@ class _RegisterScreenState extends State<RegisterScreen>
                                           : Icons.visibility_off,
                                       color: Colors.black54,
                                     ),
-                                    onPressed: () {
-                                      setState(() {
-                                        showConfirmPassword =
-                                            !showConfirmPassword;
-                                      });
-                                    },
+                                    onPressed: () => setState(
+                                      () => showConfirmPassword =
+                                          !showConfirmPassword,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -590,16 +602,85 @@ class _RegisterScreenState extends State<RegisterScreen>
                               ),
                             ],
                             const SizedBox(height: 16),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Text(
-                                "Já possui conta? Fazer login",
-                                style: TextStyle(
+                            // RICHTEXT PARA LOGIN
+                            RichText(
+                              text: TextSpan(
+                                text: "Já possui conta? ",
+                                style: const TextStyle(
                                   color: Colors.black54,
-                                  decoration: TextDecoration.underline,
+                                  fontSize: 14,
                                 ),
+                                children: [
+                                  TextSpan(
+                                    text: "Fazer login",
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        FocusScope.of(context).unfocus();
+                                        Navigator.pushReplacement(
+                                          context,
+                                          PageRouteBuilder(
+                                            pageBuilder:
+                                                (
+                                                  _,
+                                                  animation,
+                                                  secondaryAnimation,
+                                                ) => const LoginScreen(),
+                                            transitionsBuilder:
+                                                (
+                                                  _,
+                                                  animation,
+                                                  secondaryAnimation,
+                                                  child,
+                                                ) {
+                                                  const beginOffset = Offset(
+                                                    -0.3,
+                                                    0,
+                                                  ); // começa levemente à esquerda
+                                                  const endOffset = Offset.zero;
+                                                  const curve =
+                                                      Curves.easeInOut;
+
+                                                  final offsetTween =
+                                                      Tween(
+                                                        begin: beginOffset,
+                                                        end: endOffset,
+                                                      ).chain(
+                                                        CurveTween(
+                                                          curve: curve,
+                                                        ),
+                                                      );
+                                                  final fadeTween =
+                                                      Tween(
+                                                        begin: 0.0,
+                                                        end: 1.0,
+                                                      ).chain(
+                                                        CurveTween(
+                                                          curve: curve,
+                                                        ),
+                                                      );
+
+                                                  return FadeTransition(
+                                                    opacity: animation.drive(
+                                                      fadeTween,
+                                                    ),
+                                                    child: SlideTransition(
+                                                      position: animation.drive(
+                                                        offsetTween,
+                                                      ),
+                                                      child: child,
+                                                    ),
+                                                  );
+                                                },
+                                          ),
+                                        );
+                                      },
+                                  ),
+                                ],
                               ),
                             ),
                           ],
