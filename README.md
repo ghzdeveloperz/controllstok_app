@@ -1,1 +1,2 @@
-1. Products Cards Premium versão 2
+1. removi animação do icone de notificações
+2. diminui a latência ao abrir e fechar alertasScreen

@@ -29,7 +29,6 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
   int _selectedCategoryIndex = 0;
   int _slideDirection = 1;
 
-  /// Armazena as imagens pré-carregadas e decodificadas
   final Map<String, CachedNetworkImageProvider> _cachedImages = {};
 
   @override
@@ -72,7 +71,7 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
                       color: Colors.black87,
                       shadows: [
                         Shadow(
-                          color: Colors.black.withValues(alpha: 0.15),
+                          color: Colors.black.withOpacity(0.15),
                           offset: const Offset(0, 3),
                           blurRadius: 6,
                         ),
@@ -91,7 +90,8 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
               );
             },
           ),
-          AnimatedNotificationIcon(
+          // Ícone de notificações sem pulsar
+          GestureDetector(
             onTap: () {
               showGeneralDialog(
                 context: context,
@@ -152,6 +152,11 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
                 transitionBuilder: (_, __, ___, child) => child,
               );
             },
+            child: const Icon(
+              Icons.notifications_none_outlined,
+              size: 28,
+              color: Colors.black87,
+            ),
           ),
         ],
       ),
@@ -253,7 +258,6 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
       builder: (context, snapshot) {
         final products = snapshot.data ?? [];
 
-        // Pré-carrega imagens e decodifica
         for (var product in products) {
           if (!_cachedImages.containsKey(product.id)) {
             final provider = CachedNetworkImageProvider(product.image);
@@ -331,52 +335,19 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
   }
 }
 
-class AnimatedNotificationIcon extends StatefulWidget {
+// Ícone de notificações simples, sem pulsar
+class AnimatedNotificationIcon extends StatelessWidget {
   final VoidCallback onTap;
-
   const AnimatedNotificationIcon({super.key, required this.onTap});
-
-  @override
-  State<AnimatedNotificationIcon> createState() =>
-      _AnimatedNotificationIconState();
-}
-
-class _AnimatedNotificationIconState extends State<AnimatedNotificationIcon>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scale;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1600),
-    )..repeat(reverse: true);
-
-    _scale = Tween<double>(
-      begin: 1.0,
-      end: 1.08,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: widget.onTap,
-      child: ScaleTransition(
-        scale: _scale,
-        child: const Icon(
-          Icons.notifications_none_outlined,
-          size: 28,
-          color: Colors.black87,
-        ),
+      onTap: onTap,
+      child: const Icon(
+        Icons.notifications_none_outlined,
+        size: 28,
+        color: Colors.black87,
       ),
     );
   }
