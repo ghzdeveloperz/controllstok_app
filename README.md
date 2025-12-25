@@ -1,1 +1,1 @@
-1. Deixei mais estilizado a tela de Configurações
+1. Tela de Relatório estilizada, agora aparece as opções de dia, mes e ano

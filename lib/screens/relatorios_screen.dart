@@ -1,383 +1,324 @@
-import 'dart:async';
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:intl/date_symbol_data_local.dart';
+import 'dart:ui'; // Para BackdropFilter
+import 'package:google_fonts/google_fonts.dart';
 
-import '../firebase/movements_days.dart';
-import '../screens/models/salve_modal.dart';
+/// =======================
+/// ENUM DE PERÍODO
+/// =======================
+enum PeriodType { daily, monthly, yearly }
 
-class RelatoriosDays extends StatefulWidget {
-  const RelatoriosDays({super.key});
+/// =======================
+/// TELA DE RELATÓRIOS
+/// =======================
+class RelatoriosScreen extends StatefulWidget {
+  const RelatoriosScreen({super.key});
 
   @override
-  State<RelatoriosDays> createState() => _RelatoriosDaysState();
+  State<RelatoriosScreen> createState() => _RelatoriosScreenState();
 }
 
-class _RelatoriosDaysState extends State<RelatoriosDays> {
-  final MovementsDaysFirestore _movementsService =
-      MovementsDaysFirestore();
-
-  bool _localeReady = false;
-  late DateTime _displayDate;
-  Timer? _timer;
+class _RelatoriosScreenState extends State<RelatoriosScreen>
+    with TickerProviderStateMixin {
+  PeriodType _selectedPeriod = PeriodType.daily;
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
 
   @override
   void initState() {
     super.initState();
-    _displayDate = DateTime.now();
-    _initializeLocale();
-
-    // mantém "Hoje" atualizado
-    _timer = Timer.periodic(const Duration(minutes: 1), (_) {
-      if (mounted) setState(() {});
-    });
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 600),
+      vsync: this,
+    );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
+    _animationController.forward();
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
+    _animationController.dispose();
     super.dispose();
-  }
-
-  Future<void> _initializeLocale() async {
-    await initializeDateFormatting('pt_BR', null);
-    if (!mounted) return;
-    setState(() => _localeReady = true);
-  }
-
-  Future<void> _pickDate() async {
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: _displayDate,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-      locale: const Locale('pt', 'BR'),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: Color(0xFF1A1A1A),
-              onPrimary: Colors.white,
-              onSurface: Color(0xFF1A1A1A),
-            ),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                foregroundColor: const Color(0xFF1A1A1A),
-              ),
-            ),
-          ),
-          child: child!,
-        );
-      },
-    );
-
-    if (picked != null) {
-      setState(() => _displayDate = picked);
-    }
-  }
-
-  String get _displayDateText {
-    final now = DateTime.now();
-    if (_displayDate.year == now.year &&
-        _displayDate.month == now.month &&
-        _displayDate.day == now.day) {
-      return 'Hoje';
-    }
-    return DateFormat('dd/MM/yyyy').format(_displayDate);
-  }
-
-  String _formatDateTitle(DateTime date) {
-    final weekday = DateFormat('EEEE', 'pt_BR').format(date);
-    final day = DateFormat('dd', 'pt_BR').format(date);
-    final month = DateFormat('MMMM', 'pt_BR').format(date);
-
-    return '${weekday[0].toUpperCase()}${weekday.substring(1)}, '
-        '$day de ${month[0].toUpperCase()}${month.substring(1)} de ${date.year}';
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!_localeReady) {
-      return const Center(
-        child: CircularProgressIndicator(
-          valueColor:
-              AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
-        ),
-      );
-    }
-
     return Scaffold(
-      backgroundColor: const Color(0xFFFAFAFA),
-      body: Column(
-        children: [
-          _buildTopActions(),
-          Expanded(child: _buildReport()),
-        ],
-      ),
-    );
-  }
-
-  // ================= TOP ACTIONS =================
-  Widget _buildTopActions() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      child: Row(
-        children: [
-          Expanded(
-            child: GestureDetector(
-              onTap: _pickDate,
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF1A1A1A), Color(0xFF424242)],
-                  ),
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
+      backgroundColor: const Color(0xFFF6F6F6),
+      body: SafeArea(
+        child: Column(
+          children: [
+            /// ---------- HEADER PREMIUM COM GLASSMORPHISM ----------
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                bottom: Radius.circular(24),
+              ),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.white.withValues(alpha: 0.9),
+                        Colors.white.withValues(alpha: 0.7),
+                        Colors.grey.shade50.withValues(alpha: 0.5),
+                      ],
                     ),
-                  ],
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.calendar_today,
-                        size: 20, color: Colors.white),
-                    const SizedBox(width: 8),
-                    Text(
-                      _displayDateText,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
+                    borderRadius: const BorderRadius.vertical(
+                      bottom: Radius.circular(24),
+                    ),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.3),
+                      width: 1.5,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.1),
+                        blurRadius: 20,
+                        offset: const Offset(0, 8),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: OutlinedButton(
-              onPressed: () => SalveModal.show(context),
-              style: OutlinedButton.styleFrom(
-                side: const BorderSide(
-                    color: Color(0xFF1A1A1A), width: 2),
-                foregroundColor: const Color(0xFF1A1A1A),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.save, size: 20),
-                  SizedBox(width: 8),
-                  Text(
-                    'Exportar Relatório',
-                    style: TextStyle(
-                        fontWeight: FontWeight.w600, fontSize: 16),
+                    ],
                   ),
-                ],
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Relatórios',
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 28,
+                          color: Colors.black87,
+                          shadows: [
+                            Shadow(
+                              color: Colors.black.withValues(alpha: 0.15),
+                              offset: const Offset(0, 3),
+                              blurRadius: 6,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+
+                      /// ---------- SELETOR DE PERÍODO PREMIUM ----------
+                      _PeriodSelector(
+                        selected: _selectedPeriod,
+                        onChange: (value) {
+                          setState(() => _selectedPeriod = value);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
-          ),
-        ],
+
+            const SizedBox(height: 20),
+
+            /// ---------- CONTEÚDO COM ANIMAÇÃO ----------
+            Expanded(
+              child: FadeTransition(
+                opacity: _fadeAnimation,
+                child: _buildContent(),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  // ================= REPORT =================
-  Widget _buildReport() {
-    return StreamBuilder<List<Movement>>(
-      stream: _movementsService.getDailyMovementsStream(
-        day: _displayDate, // ✅ SEM uid
-      ),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return const Center(
-            child: CircularProgressIndicator(
-              valueColor:
-                  AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
+  /// =======================
+  /// RENDERIZA POR PERÍODO
+  /// =======================
+  Widget _buildContent() {
+    switch (_selectedPeriod) {
+      case PeriodType.daily:
+        return _buildDailyView();
+      case PeriodType.monthly:
+        return _buildMonthlyView();
+      case PeriodType.yearly:
+        return _buildYearlyView();
+    }
+  }
+
+  /// =======================
+  /// VIEWS ESTILIZADAS (GRÁFICOS PLACEHOLDER)
+  /// =======================
+  Widget _buildDailyView() {
+    return _buildStyledCard('Gráficos Diários');
+  }
+
+  Widget _buildMonthlyView() {
+    return _buildStyledCard('Gráficos Mensais');
+  }
+
+  Widget _buildYearlyView() {
+    return _buildStyledCard('Gráficos Anuais');
+  }
+
+  Widget _buildStyledCard(String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Colors.white.withValues(alpha: 0.95),
+              Colors.grey.shade50.withValues(alpha: 0.8),
+              Colors.white.withValues(alpha: 0.7),
+            ],
+          ),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.4),
+            width: 1.5,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.08),
+              blurRadius: 16,
+              offset: const Offset(0, 6),
             ),
-          );
-        }
+            BoxShadow(
+              color: Colors.white.withValues(alpha: 0.6),
+              blurRadius: 12,
+              offset: const Offset(-4, -4),
+            ),
+          ],
+        ),
+        child: Center(
+          child: Text(
+            title,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: Colors.black87,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
 
-        final movements = snapshot.data!;
-        if (movements.isEmpty) {
-          return _buildEmptyState();
-        }
+/// =======================
+/// SELETOR PREMIUM COM ANIMAÇÃO
+/// =======================
+class _PeriodSelector extends StatefulWidget {
+  final PeriodType selected;
+  final ValueChanged<PeriodType> onChange;
 
-        return _buildGroupedList(movements);
+  const _PeriodSelector({required this.selected, required this.onChange});
+
+  @override
+  State<_PeriodSelector> createState() => _PeriodSelectorState();
+}
+
+class _PeriodSelectorState extends State<_PeriodSelector>
+    with TickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+    _animation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (context, child) {
+        return Container(
+          height: 50,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Colors.grey.shade200.withValues(alpha: 0.8),
+                Colors.grey.shade300.withValues(alpha: 0.6),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.1),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              _buildItem('Dia', PeriodType.daily),
+              _buildItem('Mês', PeriodType.monthly),
+              _buildItem('Ano', PeriodType.yearly),
+            ],
+          ),
+        );
       },
     );
   }
 
-  Widget _buildEmptyState() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.bar_chart, size: 64, color: Colors.grey.shade400),
-          const SizedBox(height: 16),
-          Text(
-            'Nenhuma movimentação em ${DateFormat('dd/MM/yyyy').format(_displayDate)}',
-            style: const TextStyle(
-              fontSize: 18,
-              color: Color(0xFF757575),
-              fontWeight: FontWeight.w500,
+  Widget _buildItem(String label, PeriodType value) {
+    final isSelected = widget.selected == value;
+
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => widget.onChange(value),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          margin: const EdgeInsets.all(4),
+          decoration: BoxDecoration(
+            gradient: isSelected
+                ? LinearGradient(
+                    colors: [
+                      Colors.white.withValues(alpha: 0.9),
+                      Colors.grey.shade100.withValues(alpha: 0.7),
+                    ],
+                  )
+                : null,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: isSelected
+                ? [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.15),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ]
+                : null,
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            label,
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              fontSize: 16,
+              color: isSelected ? Colors.black : Colors.black54,
             ),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildGroupedList(List<Movement> movements) {
-    final Map<String, List<Movement>> grouped = {};
-
-    for (final m in movements) {
-      grouped.putIfAbsent(m.productId, () => []).add(m);
-    }
-
-    final children = <Widget>[
-      Padding(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-        child: Text(
-          _formatDateTitle(_displayDate),
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF1A1A1A),
-          ),
         ),
-      ),
-    ];
-
-    for (final entry in grouped.values) {
-      children.add(_buildProductCard(entry));
-    }
-
-    return ListView(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      children: children,
-    );
-  }
-
-  Widget _buildProductCard(List<Movement> movements) {
-    final product = movements.first;
-
-    final add = movements
-        .where((e) => e.type == 'add')
-        .fold<int>(0, (p, e) => p + e.quantity);
-
-    final remove = movements
-        .where((e) => e.type == 'remove')
-        .fold<int>(0, (p, e) => p + e.quantity);
-
-    return Card(
-      margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      elevation: 4,
-      shadowColor: Colors.black12,
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Row(
-          children: [
-            _buildProductImage(product.image),
-            const SizedBox(width: 12),
-            Expanded(
-              child: _buildProductInfo(
-                  product.productName, add, remove),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildProductImage(String? image) {
-    if (image == null || image.isEmpty) {
-      return _imagePlaceholder();
-    }
-
-    try {
-      final base64 =
-          image.contains(',') ? image.split(',').last : image;
-
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Image.memory(
-          base64Decode(base64),
-          width: 60,
-          height: 60,
-          fit: BoxFit.cover,
-        ),
-      );
-    } catch (_) {
-      return _imagePlaceholder();
-    }
-  }
-
-  Widget _imagePlaceholder() {
-    return Container(
-      width: 60,
-      height: 60,
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: const Icon(Icons.image_not_supported,
-          color: Colors.grey),
-    );
-  }
-
-  Widget _buildProductInfo(String name, int add, int remove) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          name,
-          style: const TextStyle(
-              fontWeight: FontWeight.w700, fontSize: 16),
-        ),
-        const SizedBox(height: 6),
-        Row(
-          children: [
-            if (add > 0)
-              _tag('Entrada: $add',
-                  Colors.green.shade50, Colors.green.shade700),
-            if (remove > 0)
-              Padding(
-                padding: const EdgeInsets.only(left: 8),
-                child: _tag('Saída: $remove',
-                    Colors.red.shade50, Colors.red.shade700),
-              ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _tag(String text, Color bg, Color fg) {
-    return Container(
-      padding:
-          const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-          color: bg, borderRadius: BorderRadius.circular(8)),
-      child: Text(
-        text,
-        style: TextStyle(
-            fontSize: 12,
-            color: fg,
-            fontWeight: FontWeight.w600),
       ),
     );
   }

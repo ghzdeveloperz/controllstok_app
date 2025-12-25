@@ -56,8 +56,9 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           StreamBuilder<String?>(
-            stream: UsersFirestore.streamLogin(widget.uid)
-                .map((snapshot) => snapshot.data()?['company'] as String?),
+            stream: UsersFirestore.streamLogin(
+              widget.uid,
+            ).map((snapshot) => snapshot.data()?['company'] as String?),
             builder: (context, snapshot) {
               final company = snapshot.data;
               return Column(
@@ -66,9 +67,16 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
                   Text(
                     company == null ? 'Olá' : 'Olá, $company.',
                     style: GoogleFonts.poppins(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w700,
                       color: Colors.black87,
+                      shadows: [
+                        Shadow(
+                          color: Colors.black.withValues(alpha: 0.15),
+                          offset: const Offset(0, 3),
+                          blurRadius: 6,
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -92,14 +100,20 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
                 barrierColor: Colors.transparent,
                 transitionDuration: const Duration(milliseconds: 260),
                 pageBuilder: (context, animation, secondaryAnimation) {
-                  final fadeAnimation =
-                      CurvedAnimation(parent: animation, curve: Curves.easeOutQuad);
-                  final slideAnimation = Tween<Offset>(
-                    begin: const Offset(0.9, 0),
-                    end: Offset.zero,
-                  ).animate(
-                    CurvedAnimation(parent: animation, curve: Curves.easeOutQuart),
+                  final fadeAnimation = CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeOutQuad,
                   );
+                  final slideAnimation =
+                      Tween<Offset>(
+                        begin: const Offset(0.9, 0),
+                        end: Offset.zero,
+                      ).animate(
+                        CurvedAnimation(
+                          parent: animation,
+                          curve: Curves.easeOutQuart,
+                        ),
+                      );
 
                   return Stack(
                     children: [
@@ -159,7 +173,10 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
             borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide.none,
           ),
-          contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 14,
+            horizontal: 16,
+          ),
         ),
       ),
     );
@@ -175,7 +192,10 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
           builder: (context, snapshot) {
             if (!snapshot.hasData) return const SizedBox();
 
-            final categories = [Category(id: 'todos', name: 'Todos'), ...(snapshot.data ?? [])];
+            final categories = [
+              Category(id: 'todos', name: 'Todos'),
+              ...(snapshot.data ?? []),
+            ];
 
             return ListView.separated(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -197,7 +217,10 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
                   },
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 250),
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 10,
+                    ),
                     decoration: BoxDecoration(
                       color: isSelected ? Colors.black : Colors.transparent,
                       borderRadius: BorderRadius.circular(22),
@@ -235,9 +258,9 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
           if (!_cachedImages.containsKey(product.id)) {
             final provider = CachedNetworkImageProvider(product.image);
             _cachedImages[product.id] = provider;
-            provider.resolve(const ImageConfiguration()).addListener(
-              ImageStreamListener((_, __) {}),
-            );
+            provider
+                .resolve(const ImageConfiguration())
+                .addListener(ImageStreamListener((_, __) {}));
           }
         }
 
@@ -248,9 +271,12 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
         }
 
         final filteredProducts = products.where((product) {
-          final matchesSearch = product.name.toLowerCase().contains(_searchText);
+          final matchesSearch = product.name.toLowerCase().contains(
+            _searchText,
+          );
           final matchesCategory =
-              _selectedCategory == 'Todos' || product.category == _selectedCategory;
+              _selectedCategory == 'Todos' ||
+              product.category == _selectedCategory;
           return matchesSearch && matchesCategory;
         }).toList();
 
@@ -291,7 +317,10 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
                     return ProductCard(
                       product: product,
                       uid: widget.uid,
-                      userCategories: products.map((p) => p.category).toSet().toList(),
+                      userCategories: products
+                          .map((p) => p.category)
+                          .toSet()
+                          .toList(),
                       imageProvider: _cachedImages[product.id],
                     );
                   },
@@ -308,7 +337,8 @@ class AnimatedNotificationIcon extends StatefulWidget {
   const AnimatedNotificationIcon({super.key, required this.onTap});
 
   @override
-  State<AnimatedNotificationIcon> createState() => _AnimatedNotificationIconState();
+  State<AnimatedNotificationIcon> createState() =>
+      _AnimatedNotificationIconState();
 }
 
 class _AnimatedNotificationIconState extends State<AnimatedNotificationIcon>
@@ -324,8 +354,10 @@ class _AnimatedNotificationIconState extends State<AnimatedNotificationIcon>
       duration: const Duration(milliseconds: 1600),
     )..repeat(reverse: true);
 
-    _scale = Tween<double>(begin: 1.0, end: 1.08)
-        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+    _scale = Tween<double>(
+      begin: 1.0,
+      end: 1.08,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override

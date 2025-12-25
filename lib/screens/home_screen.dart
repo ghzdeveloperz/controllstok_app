@@ -80,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       ), // 1 Novo Produto
       const SizedBox(), // 2 Scanner (abre modal)
-      const RelatoriosDays(), // 3 Relatórios
+      const RelatoriosScreen(), // 3 Relatórios
       const ConfigScreen(), // 4 Configurações
     ];
 
