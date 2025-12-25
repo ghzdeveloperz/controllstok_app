@@ -104,7 +104,7 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
               ),
             ],
           ),
-          backgroundColor: Colors.red.shade700,
+          backgroundColor: Colors.black87,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
@@ -191,7 +191,7 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
               ),
             ],
           ),
-          backgroundColor: Colors.red.shade700,
+          backgroundColor: Colors.black87,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
@@ -227,7 +227,6 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
             'barcode': _barcodeController.text.trim(),
             'image': imageUrl,
             'createdAt': FieldValue.serverTimestamp(),
-  
           });
 
       if (!mounted) return;
@@ -261,7 +260,7 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
               ),
             ],
           ),
-          backgroundColor: Colors.red.shade700,
+          backgroundColor: Colors.black87,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
@@ -302,12 +301,23 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
         title: Text(
           'Novo Produto',
           style: GoogleFonts.poppins(
-            fontWeight: FontWeight.w600,
-            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            fontSize: 28,
             color: Colors.black,
+            shadows: [
+              Shadow(
+                color: Colors.black.withValues(alpha: 0.30),
+                offset: const Offset(0, 3),
+                blurRadius: 10,
+              ),
+            ],
+            
           ),
+          
         ),
+        
       ),
+      
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(22),
@@ -323,7 +333,7 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
                 _input(
                   controller: _nameController,
                   label: 'Nome do produto',
-                  hint: 'Ex: Coca-Cola 2L',
+                  hint: 'Ex: Arroz 5kg',
                 ),
                 const SizedBox(height: 16),
                 _barcodeInput(), // campo com scanner modal
@@ -362,6 +372,7 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
       ),
     );
   }
+  
 
   // ================= COMPONENTES =================
 
@@ -467,7 +478,7 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
                 validator: (v) =>
                     v == null || v.trim().isEmpty ? 'Campo obrigatório' : null,
                 decoration: InputDecoration(
-                  hintText: '7894900011517',
+                  hintText: 'Ex: 7894900011517',
                   filled: true,
                   fillColor: Colors.white,
                   border: OutlineInputBorder(

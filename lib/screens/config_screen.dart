@@ -91,7 +91,7 @@ class _ConfigScreenState extends State<ConfigScreen>
                   'Configurações',
                   style: GoogleFonts.poppins(
                     fontWeight: FontWeight.w700,
-                    fontSize: 30,
+                    fontSize: 28,
                     color: Colors.black87,
                     shadows: [
                       Shadow(
