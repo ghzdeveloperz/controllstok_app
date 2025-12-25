@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path/path.dart' as path;
 
 import '../firebase/firestore/categories_firestore.dart';
@@ -76,6 +77,7 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
     );
   }
 
+  // =================== _handleImagePick ===================
   Future<void> _handleImagePick(ImageSource source) async {
     Navigator.of(context).pop(true);
 
@@ -117,10 +119,36 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
     final picked = await _picker.pickImage(source: source, imageQuality: 85);
 
     if (picked != null && mounted) {
-      setState(() => _selectedImage = File(picked.path));
+      // ====== Compressão da imagem ======
+      final compressedImage = await _compressImage(File(picked.path));
+      setState(() => _selectedImage = compressedImage);
     }
   }
 
+  // =================== Compressão ===================
+  Future<File> _compressImage(File file) async {
+    final filePath = file.absolute.path;
+
+    // Caminho temporário para salvar a imagem comprimida
+    final lastIndex = filePath.lastIndexOf(RegExp(r'.jp|.png|.heic'));
+    final outPath =
+        '${filePath.substring(0, lastIndex)}_compressed${filePath.substring(lastIndex)}';
+
+    final result = await FlutterImageCompress.compressAndGetFile(
+      file.absolute.path,
+      outPath,
+      minWidth: 400, // <-- Largura máxima (ajustável)
+      quality: 85, // <-- Qualidade da compressão (ajustável)
+    );
+
+    if (result != null) {
+      return File(result.path); // garante que é File
+    } else {
+      return file; // fallback caso falhe a compressão
+    }
+  }
+
+  // =================== _uploadImage ===================
   Future<String> _uploadImage(File image) async {
     final fileName =
         '${DateTime.now().millisecondsSinceEpoch}_${path.basename(image.path)}';
@@ -132,7 +160,11 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
         .child('products')
         .child(fileName);
 
-    final snapshot = await ref.putFile(image);
+    // Upload em background
+    final uploadTask = ref.putFile(image);
+
+    // Opcional: você pode mostrar progresso usando uploadTask.snapshotEvents
+    final snapshot = await uploadTask;
     return snapshot.ref.getDownloadURL();
   }
 
@@ -464,8 +496,6 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
       ],
     );
   }
-
-  // ================= CATEGORIA COM BOTAO + =================
 
   // ================= CATEGORIA COM BOTAO + =================
 
