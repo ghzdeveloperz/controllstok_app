@@ -124,7 +124,7 @@ class _RegisterAdditionalScreenState extends State<RegisterAdditionalScreen>
               children: [
                 // LOGO
                 Image.asset(
-                  'lib/assets/images/logo-controllstok.png',
+                  'assets/images/logo-controllstok-bac.png',
                   width: 120,
                   height: 120,
                   fit: BoxFit.contain,

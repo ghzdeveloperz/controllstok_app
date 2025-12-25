@@ -178,20 +178,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
-  void dispose() {
-    NotificationService.instance.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    if (_screens == null) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
-
     return Scaffold(
       backgroundColor: Colors.white,
-      body: IndexedStack(index: _currentIndex, children: _screens!),
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _screens ?? const [SizedBox()],
+      ),
       bottomNavigationBar: SafeArea(
         child: SizedBox(
           height: 72,

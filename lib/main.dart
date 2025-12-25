@@ -14,9 +14,27 @@ import 'notifications/notification_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await FirebaseService.init();
-  await NotificationService.instance.init();
-  await initializeDateFormatting('pt_BR', null);
+  // 🔹 Try/catch para evitar travamento na inicialização
+  try {
+    await FirebaseService.init();
+  } catch (e, st) {
+    debugPrint('Erro ao inicializar Firebase: $e');
+    debugPrint('$st');
+  }
+
+  try {
+    await NotificationService.instance.init();
+  } catch (e, st) {
+    debugPrint('Erro ao inicializar NotificationService: $e');
+    debugPrint('$st');
+  }
+
+  try {
+    await initializeDateFormatting('pt_BR', null);
+  } catch (e, st) {
+    debugPrint('Erro ao inicializar DateFormatting: $e');
+    debugPrint('$st');
+  }
 
   runApp(const MyApp());
 }
@@ -26,12 +44,21 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final baseTextTheme = GoogleFonts.poppinsTextTheme();
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'ControlStok',
       theme: ThemeData(
-        textTheme: GoogleFonts.poppinsTextTheme(),
         scaffoldBackgroundColor: Colors.white,
+        textTheme: baseTextTheme.copyWith(
+          bodyLarge: baseTextTheme.bodyLarge?.copyWith(decoration: TextDecoration.none),
+          bodyMedium: baseTextTheme.bodyMedium?.copyWith(decoration: TextDecoration.none),
+          bodySmall: baseTextTheme.bodySmall?.copyWith(decoration: TextDecoration.none),
+          titleLarge: baseTextTheme.titleLarge?.copyWith(decoration: TextDecoration.none),
+          titleMedium: baseTextTheme.titleMedium?.copyWith(decoration: TextDecoration.none),
+          titleSmall: baseTextTheme.titleSmall?.copyWith(decoration: TextDecoration.none),
+        ),
       ),
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
@@ -54,16 +81,32 @@ class AuthGate extends StatelessWidget {
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
+        // 🔹 Tela de loading com timeout visual
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
         }
 
+        // 🔹 Mostra erro caso algo falhe na stream
+        if (snapshot.hasError) {
+          return Scaffold(
+            body: Center(
+              child: Text(
+                'Erro ao autenticar: ${snapshot.error}',
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.red),
+              ),
+            ),
+          );
+        }
+
+        // 🔹 Usuário logado
         if (snapshot.hasData) {
           return const HomeScreen();
         }
 
+        // 🔹 Usuário não logado
         return const LoginScreen();
       },
     );

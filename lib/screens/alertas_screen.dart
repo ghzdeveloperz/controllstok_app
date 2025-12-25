@@ -6,185 +6,193 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AlertasScreen extends StatelessWidget {
-  final String userLogin;
+  final String uid;
 
-  const AlertasScreen({super.key, required this.userLogin});
+  const AlertasScreen({super.key, required this.uid});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        title: Text(
-          'Alertas de Estoque',
-          style: GoogleFonts.poppins(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
+    final width = MediaQuery.of(context).size.width;
+
+    return Align(
+      alignment: Alignment.centerRight,
+      child: Container(
+        width: width * 0.85,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: const BorderRadius.horizontal(
+            left: Radius.circular(28),
           ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.12),
+              blurRadius: 24,
+              offset: const Offset(-8, 0),
+            ),
+          ],
         ),
-      ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('users')
-            .doc(userLogin)
-            .collection('products')
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text('Nenhum produto encontrado'));
-          }
-
-          final docs = snapshot.data!.docs;
-
-          // 🔴 Estoque zerado
-          final zeroStock = docs.where((doc) {
-            final data = doc.data() as Map<String, dynamic>;
-            return (data['quantity'] ?? 0) == 0;
-          }).toList();
-
-          // 🟠 Estoque crítico
-          final criticalStock = docs.where((doc) {
-            final data = doc.data() as Map<String, dynamic>;
-
-            final int quantity = data['quantity'] is int
-                ? data['quantity']
-                : int.tryParse(data['quantity']?.toString() ?? '0') ?? 0;
-
-            final int minStock = data['minStock'] is int
-                ? data['minStock']
-                : int.tryParse(data['minStock']?.toString() ?? '0') ?? 0;
-
-            return quantity > 0 && quantity <= minStock;
-          }).toList();
-
-          return Padding(
-            padding: const EdgeInsets.all(16),
-            child: ListView(
-              children: [
-                if (zeroStock.isNotEmpty) ...[
-                  const _SectionHeader(
-                    title: 'Estoque Zerado',
-                    backgroundColor: Colors.red,
-                  ),
-                  const SizedBox(height: 12),
-                  ...zeroStock.map((doc) {
-                    final data = doc.data() as Map<String, dynamic>? ?? {};
-
-                    final String name =
-                        (data['name'] is String &&
-                                data['name'].toString().isNotEmpty)
-                            ? data['name']
-                            : 'Produto sem nome';
-
-                    // ✅ CAMPO CORRETO: image
-                    final String? imageBase64 =
-                        data['image'] is String ? data['image'] : null;
-
-                    return _AlertCard(
-                      name: name,
-                      quantity: 0,
-                      color: Colors.red,
-                      icon: Icons.cancel_outlined,
-                      imageBase64: imageBase64,
-                    );
-                  }),
-                  const SizedBox(height: 28),
-                ],
-                if (criticalStock.isNotEmpty) ...[
-                  const _SectionHeader(
-                    title: 'Estoque Crítico',
-                    backgroundColor: Colors.orange,
-                  ),
-                  const SizedBox(height: 12),
-                  ...criticalStock.map((doc) {
-                    final data = doc.data() as Map<String, dynamic>? ?? {};
-
-                    final String name =
-                        (data['name'] is String &&
-                                data['name'].toString().isNotEmpty)
-                            ? data['name']
-                            : 'Produto sem nome';
-
-                    final int quantity = data['quantity'] is int
-                        ? data['quantity']
-                        : int.tryParse(
-                                data['quantity']?.toString() ?? '0') ??
-                            0;
-
-                    // ✅ CAMPO CORRETO: image
-                    final String? imageBase64 =
-                        data['image'] is String ? data['image'] : null;
-
-                    return _AlertCard(
-                      name: name,
-                      quantity: quantity,
-                      color: Colors.orange,
-                      icon: Icons.warning_amber_rounded,
-                      imageBase64: imageBase64,
-                    );
-                  }),
-                ],
-                if (zeroStock.isEmpty && criticalStock.isEmpty)
-                  const Padding(
-                    padding: EdgeInsets.only(top: 40),
-                    child: Center(
-                      child: Text(
-                        'Nenhum alerta de estoque no momento',
-                        style: TextStyle(fontSize: 16),
-                      ),
+        child: Column(
+          children: [
+            // ───────── HEADER ─────────
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 36, 16, 20),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    'Alertas de Estoque',
+                    style: GoogleFonts.poppins(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: -0.4,
+                      color: Colors.black, // 🔥 título preto (paleta base)
                     ),
                   ),
-              ],
+                  const Spacer(),
+                  IconButton(
+                    icon: const Icon(Icons.close_rounded, color: Colors.black),
+                    splashRadius: 22,
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
             ),
-          );
-        },
-      ),
-    );
-  }
-}
 
-/// ============================
-/// 🧩 HEADER DE SEÇÃO
-/// ============================
-class _SectionHeader extends StatelessWidget {
-  final String title;
-  final Color backgroundColor;
+            // ───────── CONTEÚDO ─────────
+            Expanded(
+              child: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(uid)
+                    .collection('products')
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    );
+                  }
 
-  const _SectionHeader({
-    required this.title,
-    required this.backgroundColor,
-  });
+                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                    return _EmptyState();
+                  }
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Text(
-        title,
-        style: GoogleFonts.poppins(
-          color: Colors.white,
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
+                  final docs = snapshot.data!.docs;
+
+                  final zeroStock = docs.where((doc) {
+                    final data = doc.data() as Map<String, dynamic>;
+                    return (data['quantity'] ?? 0) == 0;
+                  }).toList();
+
+                  final criticalStock = docs.where((doc) {
+                    final data = doc.data() as Map<String, dynamic>;
+
+                    final quantity =
+                        int.tryParse(data['quantity']?.toString() ?? '0') ?? 0;
+
+                    final minStock =
+                        int.tryParse(data['minStock']?.toString() ?? '0') ?? 0;
+
+                    return quantity > 0 && quantity <= minStock;
+                  }).toList();
+
+                  return ListView(
+                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
+                    children: [
+                      if (zeroStock.isNotEmpty) ...[
+                        const _SectionHeader(
+                          title: 'Estoque zerado',
+                          color: Colors.red,
+                        ),
+                        const SizedBox(height: 12),
+                        ...zeroStock.map((doc) {
+                          final data =
+                              doc.data() as Map<String, dynamic>? ?? {};
+
+                          return _AlertCard(
+                            name: data['name'] ?? 'Produto sem nome',
+                            quantity: 0,
+                            color: Colors.red,
+                            icon: Icons.cancel_outlined,
+                            imageBase64: data['image'],
+                          );
+                        }),
+                        const SizedBox(height: 28),
+                      ],
+                      if (criticalStock.isNotEmpty) ...[
+                        const _SectionHeader(
+                          title: 'Estoque crítico',
+                          color: Colors.orange,
+                        ),
+                        const SizedBox(height: 12),
+                        ...criticalStock.map((doc) {
+                          final data =
+                              doc.data() as Map<String, dynamic>? ?? {};
+
+                          final quantity =
+                              int.tryParse(
+                                data['quantity']?.toString() ?? '0',
+                              ) ??
+                              0;
+
+                          return _AlertCard(
+                            name: data['name'] ?? 'Produto sem nome',
+                            quantity: quantity,
+                            color: Colors.orange,
+                            icon: Icons.warning_amber_rounded,
+                            imageBase64: data['image'],
+                          );
+                        }),
+                      ],
+                      if (zeroStock.isEmpty && criticalStock.isEmpty)
+                        const _EmptyState(),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
-/// ============================
-/// 🧩 CARD DE ALERTA (BASE64 REAL)
-/// ============================
+/// ─────────────────────────────
+/// HEADER DE SEÇÃO
+/// ─────────────────────────────
+class _SectionHeader extends StatelessWidget {
+  final String title;
+  final Color color;
+
+  const _SectionHeader({required this.title, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          width: 6,
+          height: 22,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(3),
+          ),
+        ),
+        const SizedBox(width: 10),
+        Text(
+          title,
+          style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w600),
+        ),
+      ],
+    );
+  }
+}
+
+/// ─────────────────────────────
+/// CARD DE ALERTA
+/// ─────────────────────────────
 class _AlertCard extends StatelessWidget {
   final String name;
   final int quantity;
@@ -206,41 +214,101 @@ class _AlertCard extends StatelessWidget {
 
     if (imageBase64 != null && imageBase64!.isNotEmpty) {
       try {
-        // 🧹 Remove "data:image/png;base64,"
-        final String cleanedBase64 = imageBase64!.contains(',')
-            ? imageBase64!.split(',').last
-            : imageBase64!;
-
-        imageBytes = base64Decode(cleanedBase64);
-      } catch (_) {
-        imageBytes = null;
-      }
+        imageBytes = base64Decode(
+          imageBase64!.contains(',')
+              ? imageBase64!.split(',').last
+              : imageBase64!,
+        );
+      } catch (_) {}
     }
 
-    return Card(
-      elevation: 2,
+    return Container(
       margin: const EdgeInsets.symmetric(vertical: 6),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: ListTile(
-        leading: imageBytes != null
-            ? ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.memory(
-                  imageBytes,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: color.withValues(alpha: 0.25)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          imageBytes != null
+              ? ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.memory(
+                    imageBytes,
+                    width: 48,
+                    height: 48,
+                    fit: BoxFit.cover,
+                  ),
+                )
+              : Container(
                   width: 48,
                   height: 48,
-                  fit: BoxFit.cover,
+                  decoration: BoxDecoration(
+                    color: color.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(icon, color: color),
                 ),
-              )
-            : Icon(icon, color: color, size: 32),
-        title: Text(
-          name,
-          style: const TextStyle(fontWeight: FontWeight.w600),
-        ),
-        subtitle: Text(
-          'Quantidade: $quantity',
-          style: TextStyle(color: color),
-        ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Quantidade: $quantity',
+                  style: GoogleFonts.poppins(fontSize: 13, color: color),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// ─────────────────────────────
+/// ESTADO VAZIO
+/// ─────────────────────────────
+class _EmptyState extends StatelessWidget {
+  const _EmptyState();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 80),
+      child: Column(
+        children: [
+          Icon(
+            Icons.notifications_none_rounded,
+            size: 56,
+            color: Colors.black.withValues(alpha: 0.25),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'Nenhum alerta no momento',
+            style: GoogleFonts.poppins(
+              fontSize: 15,
+              color: Colors.black.withValues(alpha: 0.5),
+            ),
+          ),
+        ],
       ),
     );
   }

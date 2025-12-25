@@ -18,7 +18,7 @@ class NotificationService {
   /// 🔔 Inicializa notificações locais + cria canal Android
   Future<void> init() async {
     const androidSettings =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings('@mipmap/logo_controllstok');
 
     const settings = InitializationSettings(android: androidSettings);
 
@@ -143,3 +143,4 @@ class NotificationService {
     _subscription?.cancel();
   }
 }
+

@@ -193,7 +193,7 @@ class _LoginScreenState extends State<LoginScreen>
               mainAxisSize: MainAxisSize.min,
               children: [
                 Image.asset(
-                  'lib/assets/images/logo-controllstok.png',
+                  'assets/images/logo-controllstok-bac.png',
                   width: 120,
                   height: 120,
                   fit: BoxFit.contain,

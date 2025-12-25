@@ -320,7 +320,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                 duration: const Duration(milliseconds: 500),
                 opacity: 1,
                 child: Image.asset(
-                  'lib/assets/images/logo-controllstok.png',
+                  'assets/images/logo-controllstok-bac.png',
                   width: 120,
                   height: 120,
                   fit: BoxFit.contain,
