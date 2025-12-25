@@ -220,13 +220,14 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
             'name': _nameController.text.trim(),
             'category': _selectedCategory,
             'quantity': quantity,
-            'minStock': 0,
+            'minStock': 10,
             'cost': price,
             'unitPrice': price,
             'price': price,
             'barcode': _barcodeController.text.trim(),
             'image': imageUrl,
             'createdAt': FieldValue.serverTimestamp(),
+  
           });
 
       if (!mounted) return;

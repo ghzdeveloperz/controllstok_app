@@ -1,2 +1,1 @@
-1. desfoque nas informações
-2. imagem se adequa ao card
+1. ajuste estoque mínimo padrão definido para: 10
