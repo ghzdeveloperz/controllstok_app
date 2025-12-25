@@ -1,4 +1,3 @@
-// lib/screens/novo_produto_screen.dart
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,10 +10,12 @@ import 'package:path/path.dart' as path;
 
 import '../firebase/firestore/categories_firestore.dart';
 import '../../screens/models/category.dart';
+import '../screens/widgets/barcode_scanner_screen.dart'; // <- scanner como modal
+import '../screens/widgets/add_category.dart';
 
 class NovoProdutoScreen extends StatefulWidget {
   final String uid;
-  final VoidCallback? onProductSaved; // callback para informar HomeScreen
+  final VoidCallback? onProductSaved;
 
   const NovoProdutoScreen({super.key, required this.uid, this.onProductSaved});
 
@@ -84,9 +85,7 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
 
     if (!permission.isGranted) {
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Row(
             children: [
@@ -143,9 +142,7 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
     if (!_formKey.currentState!.validate() ||
         _selectedCategory == null ||
         _selectedImage == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Row(
             children: [
@@ -188,24 +185,22 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
           .doc(widget.uid)
           .collection('products')
           .add({
-        'name': _nameController.text.trim(),
-        'category': _selectedCategory,
-        'quantity': quantity,
-        'minStock': 0,
-        'cost': price,
-        'unitPrice': price,
-        'price': price,
-        'barcode': _barcodeController.text.trim(),
-        'image': imageUrl,
-        'createdAt': FieldValue.serverTimestamp(),
-      });
+            'name': _nameController.text.trim(),
+            'category': _selectedCategory,
+            'quantity': quantity,
+            'minStock': 0,
+            'cost': price,
+            'unitPrice': price,
+            'price': price,
+            'barcode': _barcodeController.text.trim(),
+            'image': imageUrl,
+            'createdAt': FieldValue.serverTimestamp(),
+          });
 
       if (!mounted) return;
 
-      // Chama callback para HomeScreen atualizar IndexedStack
       widget.onProductSaved?.call();
 
-      // Limpa campos
       _nameController.clear();
       _barcodeController.clear();
       _quantityController.clear();
@@ -216,9 +211,7 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
       });
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Row(
             children: [
@@ -246,6 +239,20 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
       );
     } finally {
       if (mounted) setState(() => _isSaving = false);
+    }
+  }
+
+  // ================= ABRIR SCANNER =================
+
+  void _openBarcodeScanner() async {
+    final scannedCode = await showDialog<String>(
+      context: context,
+      builder: (_) => const BarcodeScannerModal(),
+    );
+    if (scannedCode != null && scannedCode.isNotEmpty) {
+      setState(() {
+        _barcodeController.text = scannedCode;
+      });
     }
   }
 
@@ -286,11 +293,7 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
                   hint: 'Ex: Coca-Cola 2L',
                 ),
                 const SizedBox(height: 16),
-                _input(
-                  controller: _barcodeController,
-                  label: 'Código de barras',
-                  hint: '7894900011517',
-                ),
+                _barcodeInput(), // campo com scanner modal
                 const SizedBox(height: 16),
                 _categoryDropdown(),
                 const SizedBox(height: 16),
@@ -334,8 +337,8 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
       child: GestureDetector(
         onTap: _pickImage,
         child: Container(
-          width: 150,
-          height: 150,
+          width: 250,
+          height: 250,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(28),
@@ -416,33 +419,199 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
     );
   }
 
-  Widget _categoryDropdown() {
-    return StreamBuilder<List<Category>>(
-      stream: CategoriesFirestore.streamCategories(widget.uid),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        return DropdownButtonFormField<String>(
-          value: _selectedCategory,
-          hint: const Text('Selecione a categoria'),
-          items: snapshot.data!
-              .map((c) => DropdownMenuItem(value: c.name, child: Text(c.name)))
-              .toList(),
-          onChanged: (v) => setState(() => _selectedCategory = v),
-          validator: (v) => v == null ? 'Selecione uma categoria' : null,
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: Colors.white,
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
-            contentPadding: const EdgeInsets.symmetric(
-              vertical: 14,
-              horizontal: 16,
+  Widget _barcodeInput() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Código de barras', style: GoogleFonts.poppins(fontSize: 14)),
+        const SizedBox(height: 6),
+        Row(
+          children: [
+            Expanded(
+              child: TextFormField(
+                controller: _barcodeController,
+                keyboardType: TextInputType.number,
+                validator: (v) =>
+                    v == null || v.trim().isEmpty ? 'Campo obrigatório' : null,
+                decoration: InputDecoration(
+                  hintText: '7894900011517',
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 14,
+                    horizontal: 16,
+                  ),
+                ),
+              ),
             ),
-          ),
-        );
-      },
+            const SizedBox(width: 8),
+            GestureDetector(
+              onTap: _openBarcodeScanner,
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: const Icon(Icons.qr_code_scanner, color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  // ================= CATEGORIA COM BOTAO + =================
+
+  // ================= CATEGORIA COM BOTAO + =================
+
+  Widget _categoryDropdown() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Categoria', style: GoogleFonts.poppins(fontSize: 14)),
+        const SizedBox(height: 6),
+        StreamBuilder<List<Category>>(
+          stream: CategoriesFirestore.streamCategories(widget.uid),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Container(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 14,
+                  horizontal: 16,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: const Row(
+                  children: [
+                    SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                    SizedBox(width: 12),
+                    Text('Carregando categorias...'),
+                  ],
+                ),
+              );
+            }
+
+            return Row(
+              children: [
+                Expanded(
+                  flex: 4,
+                  child: Container(
+                    height:
+                        52, // Altura ajustada para ficar alinhado com código de barras
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color.fromRGBO(0, 0, 0, 0.05),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: DropdownButtonFormField<String>(
+                      value: _selectedCategory,
+                      hint: Row(
+                        children: [
+                          Icon(
+                            Icons.category_outlined,
+                            color: Colors.grey.shade600,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Selecione a categoria',
+                            style: GoogleFonts.poppins(
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                        ],
+                      ),
+                      items: snapshot.data!
+                          .map(
+                            (c) => DropdownMenuItem(
+                              value: c.name,
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.label_outline,
+                                    color: Colors.black87,
+                                    size: 18,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    c.name,
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (v) => setState(() => _selectedCategory = v),
+                      validator: (v) =>
+                          v == null ? 'Selecione uma categoria' : null,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.transparent,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide.none,
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 14,
+                          horizontal: 16,
+                        ),
+                        suffixIcon: Icon(
+                          Icons.arrow_drop_down,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                      dropdownColor: Colors.white,
+                      style: GoogleFonts.poppins(color: Colors.black87),
+                      icon: const SizedBox.shrink(),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                GestureDetector(
+                  onTap: _showAddCategoryDialog,
+                  child: Container(
+                    height: 50, // um pouco menor que o dropdown
+                    width: 50, // quadrado proporcional
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: const Icon(Icons.add, color: Colors.white),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  void _showAddCategoryDialog() {
+    showDialog(
+      context: context,
+      builder: (_) => AddCategoryDialog(uid: widget.uid),
     );
   }
 
@@ -454,6 +623,7 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
         onPressed: _saveProduct,
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.black,
+          foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
