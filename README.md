@@ -1,1 +1,1 @@
-1. ajuste estoque mínimo padrão definido para: 10
+1. troquei cor fundo e texto da bolha de categoria dentro do product card

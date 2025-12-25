@@ -139,7 +139,7 @@ class _ProductCardState extends State<ProductCard> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade100.withValues(alpha: 0.6), // Substituído withOpacity por withValues
+                        color: Colors.black87.withAlpha(200),// Substituído withOpacity por withValues
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
@@ -147,7 +147,7 @@ class _ProductCardState extends State<ProductCard> {
                         style: TextStyle(
                           fontSize: 11.5,
                           fontWeight: FontWeight.w500,
-                          color: Colors.grey.shade700,
+                          color: Colors.white,
                         ),
                       ),
                     ),
