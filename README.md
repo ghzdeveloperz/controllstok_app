@@ -1,1 +1,1 @@
-1. troquei cor fundo e texto da bolha de categoria dentro do product card
+1. Deixei mais estilizado a tela de Configurações
