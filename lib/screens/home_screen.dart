@@ -11,6 +11,7 @@ import 'config_screen.dart';
 import '../notifications/notification_service.dart';
 import 'login_screen.dart';
 import '../screens/widgets/desactive_acount.dart'; // CustomAlertDialog
+import '../screens/models/product.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -25,6 +26,9 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _notificationsStarted = false;
   String? _uid;
   Stream<DocumentSnapshot<Map<String, dynamic>>>? _userStream;
+
+  // Lista de produtos para pré-carregamento das imagens
+  List<Product> _products = [];
 
   @override
   void initState() {
@@ -42,8 +46,39 @@ class _HomeScreenState extends State<HomeScreen> {
     _uid = user.uid;
 
     _screens = [
-      EstoqueScreen(uid: _uid!), // 0 Estoque
-      NovoProdutoScreen(uid: _uid!), // 1 Novo Produto
+      EstoqueScreen(
+        uid: _uid!,
+        onProductsLoaded: _onProductsLoaded, // Callback para receber produtos
+      ), // 0 Estoque
+      NovoProdutoScreen(
+        uid: _uid!,
+        onProductSaved: () {
+          // Volta para Estoque
+          setState(() {
+            _currentIndex = 0;
+          });
+
+          // Mostra SnackBar de sucesso
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Row(
+                children: const [
+                  Icon(Icons.check_circle_outline, color: Colors.white),
+                  SizedBox(width: 12),
+                  Expanded(child: Text('Produto salvo com sucesso')),
+                ],
+              ),
+              backgroundColor: Colors.black,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              margin: const EdgeInsets.all(16),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        },
+      ), // 1 Novo Produto
       const SizedBox(), // 2 Scanner (abre modal)
       const RelatoriosDays(), // 3 Relatórios
       const ConfigScreen(), // 4 Configurações
@@ -53,6 +88,18 @@ class _HomeScreenState extends State<HomeScreen> {
     _listenUserActiveStatus();
 
     if (mounted) setState(() {});
+  }
+
+  // Callback chamada quando os produtos são carregados no EstoqueScreen
+  void _onProductsLoaded(List<Product> products) {
+    _products = products;
+
+    // Pré-carrega todas as imagens
+    for (var product in _products) {
+      if (product.image.isNotEmpty) {
+        precacheImage(NetworkImage(product.image), context);
+      }
+    }
   }
 
   void _listenUserActiveStatus() {
@@ -80,7 +127,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   "Sua conta foi desativada. Entre em contato com o suporte.",
               buttonText: "OK",
               onPressed: () {
-                // Fecha todas as telas e envia para LoginScreen
                 Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (_) => const LoginScreen()),
                   (route) => false,
@@ -110,6 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ).push(MaterialPageRoute(builder: (_) => ScannerScreen(uid: _uid!)));
       return;
     }
+
     setState(() {
       _currentIndex = index;
     });

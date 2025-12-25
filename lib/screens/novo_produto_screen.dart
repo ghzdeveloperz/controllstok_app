@@ -1,3 +1,4 @@
+// lib/screens/novo_produto_screen.dart
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,8 +14,9 @@ import '../../screens/models/category.dart';
 
 class NovoProdutoScreen extends StatefulWidget {
   final String uid;
+  final VoidCallback? onProductSaved; // callback para informar HomeScreen
 
-  const NovoProdutoScreen({super.key, required this.uid});
+  const NovoProdutoScreen({super.key, required this.uid, this.onProductSaved});
 
   @override
   State<NovoProdutoScreen> createState() => _NovoProdutoScreenState();
@@ -30,6 +32,7 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
 
   String? _selectedCategory;
   File? _selectedImage;
+  bool _isSaving = false;
 
   final ImagePicker _picker = ImagePicker();
 
@@ -73,7 +76,7 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
   }
 
   Future<void> _handleImagePick(ImageSource source) async {
-    Navigator.pop(context);
+    Navigator.of(context).pop(true);
 
     final permission = source == ImageSource.camera
         ? await Permission.camera.request()
@@ -81,16 +84,38 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
 
     if (!permission.isGranted) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Permissão negada')),
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.error_outline, color: Colors.white),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Permissão negada',
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          backgroundColor: Colors.red.shade700,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          margin: const EdgeInsets.all(16),
+          duration: const Duration(seconds: 2),
+        ),
       );
       return;
     }
 
-    final picked = await _picker.pickImage(
-      source: source,
-      imageQuality: 85,
-    );
+    final picked = await _picker.pickImage(source: source, imageQuality: 85);
 
     if (picked != null && mounted) {
       setState(() => _selectedImage = File(picked.path));
@@ -118,11 +143,38 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
     if (!_formKey.currentState!.validate() ||
         _selectedCategory == null ||
         _selectedImage == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Preencha todos os campos')),
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.error_outline, color: Colors.white),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Preencha todos os campos',
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          backgroundColor: Colors.red.shade700,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          margin: const EdgeInsets.all(16),
+          duration: const Duration(seconds: 2),
+        ),
       );
       return;
     }
+
+    setState(() => _isSaving = true);
 
     try {
       final imageUrl = await _uploadImage(_selectedImage!);
@@ -150,16 +202,50 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('✅ Produto salvo com sucesso')),
-      );
+      // Chama callback para HomeScreen atualizar IndexedStack
+      widget.onProductSaved?.call();
 
-      Navigator.pop(context);
+      // Limpa campos
+      _nameController.clear();
+      _barcodeController.clear();
+      _quantityController.clear();
+      _priceController.clear();
+      setState(() {
+        _selectedCategory = null;
+        _selectedImage = null;
+      });
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro ao salvar: $e')),
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.error_outline, color: Colors.white),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Erro ao salvar: $e',
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          backgroundColor: Colors.red.shade700,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          margin: const EdgeInsets.all(16),
+          duration: const Duration(seconds: 3),
+        ),
       );
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
     }
   }
 
@@ -230,7 +316,9 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
                   ],
                 ),
                 const SizedBox(height: 40),
-                _saveButton(),
+                _isSaving
+                    ? const Center(child: CircularProgressIndicator())
+                    : _saveButton(),
               ],
             ),
           ),
@@ -253,7 +341,7 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
             borderRadius: BorderRadius.circular(28),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.1),
+                color: Colors.black.withOpacity(0.08),
                 blurRadius: 15,
                 offset: const Offset(0, 5),
               ),
@@ -269,8 +357,11 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
               ? Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.camera_alt_outlined,
-                        size: 38, color: Colors.grey.shade600),
+                    Icon(
+                      Icons.camera_alt_outlined,
+                      size: 38,
+                      color: Colors.grey.shade600,
+                    ),
                     const SizedBox(height: 8),
                     Text(
                       'Adicionar imagem',
@@ -290,10 +381,7 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
   Widget _sectionTitle(String title) {
     return Text(
       title,
-      style: GoogleFonts.poppins(
-        fontSize: 17,
-        fontWeight: FontWeight.w600,
-      ),
+      style: GoogleFonts.poppins(fontSize: 17, fontWeight: FontWeight.w600),
     );
   }
 
@@ -317,8 +405,10 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
             hintText: hint,
             filled: true,
             fillColor: Colors.white,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+            contentPadding: const EdgeInsets.symmetric(
+              vertical: 14,
+              horizontal: 16,
             ),
           ),
         ),
@@ -335,23 +425,20 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
         }
 
         return DropdownButtonFormField<String>(
-          initialValue: _selectedCategory,
+          value: _selectedCategory,
           hint: const Text('Selecione a categoria'),
           items: snapshot.data!
-              .map(
-                (c) => DropdownMenuItem(
-                  value: c.name,
-                  child: Text(c.name),
-                ),
-              )
+              .map((c) => DropdownMenuItem(value: c.name, child: Text(c.name)))
               .toList(),
           onChanged: (v) => setState(() => _selectedCategory = v),
           validator: (v) => v == null ? 'Selecione uma categoria' : null,
           decoration: InputDecoration(
             filled: true,
             fillColor: Colors.white,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+            contentPadding: const EdgeInsets.symmetric(
+              vertical: 14,
+              horizontal: 16,
             ),
           ),
         );
@@ -365,6 +452,16 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
       height: 56,
       child: ElevatedButton(
         onPressed: _saveProduct,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.black,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          textStyle: GoogleFonts.poppins(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         child: const Text('Salvar Produto'),
       ),
     );

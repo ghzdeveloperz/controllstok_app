@@ -14,25 +14,30 @@ import 'notifications/notification_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 🔹 Try/catch para evitar travamento na inicialização
+  // 🔹 Inicialização do Firebase
   try {
     await FirebaseService.init();
+    print('✅ Firebase inicializado com sucesso');
   } catch (e, st) {
-    debugPrint('Erro ao inicializar Firebase: $e');
+    debugPrint('❌ Erro ao inicializar Firebase: $e');
     debugPrint('$st');
   }
 
+  // 🔹 Inicialização do NotificationService
   try {
     await NotificationService.instance.init();
+    print('✅ NotificationService inicializado com sucesso');
   } catch (e, st) {
-    debugPrint('Erro ao inicializar NotificationService: $e');
+    debugPrint('❌ Erro ao inicializar NotificationService: $e');
     debugPrint('$st');
   }
 
+  // 🔹 Inicialização de DateFormatting
   try {
     await initializeDateFormatting('pt_BR', null);
+    print('✅ DateFormatting inicializado com sucesso');
   } catch (e, st) {
-    debugPrint('Erro ao inicializar DateFormatting: $e');
+    debugPrint('❌ Erro ao inicializar DateFormatting: $e');
     debugPrint('$st');
   }
 
@@ -81,14 +86,14 @@ class AuthGate extends StatelessWidget {
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
-        // 🔹 Tela de loading com timeout visual
+        // 🔹 Tela de loading
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
         }
 
-        // 🔹 Mostra erro caso algo falhe na stream
+        // 🔹 Erro na autenticação
         if (snapshot.hasError) {
           return Scaffold(
             body: Center(

@@ -1,16 +1,15 @@
+// lib/firebase/firestore/products_firestore.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:developer' as developer;
 import '../../screens/models/product.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class ProductsFirestore {
   static final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   // ================= COLLECTION REF =================
   static CollectionReference<Map<String, dynamic>> _productsRef(String uid) {
-    return _db
-        .collection('users')
-        .doc(uid)
-        .collection('products');
+    return _db.collection('users').doc(uid).collection('products');
   }
 
   // ================= GET PRODUCT BY BARCODE =================
@@ -19,10 +18,9 @@ class ProductsFirestore {
     required String barcode,
   }) async {
     try {
-      final querySnapshot = await _productsRef(uid)
-          .where('barcode', isEqualTo: barcode)
-          .limit(1)
-          .get();
+      final querySnapshot = await _productsRef(
+        uid,
+      ).where('barcode', isEqualTo: barcode).limit(1).get();
 
       if (querySnapshot.docs.isEmpty) {
         developer.log(
@@ -87,17 +85,22 @@ class ProductsFirestore {
     return _productsRef(uid)
         .orderBy('createdAt', descending: true)
         .snapshots()
-        .map((snapshot) {
-      return snapshot.docs.map((doc) {
-        final data = doc.data();
+        .asyncMap((snapshot) async {
+          final products = <Product>[];
+          for (var doc in snapshot.docs) {
+            final data = doc.data();
+            String imageUrl = data['image'] ?? '';
 
-        developer.log(
-          'Produto stream → id: ${doc.id}, image: ${data['image'] ?? "NULL"}',
-          name: 'ProductsFirestore',
-        );
+            // Se image é o path no Storage, gera a URL
+            if (imageUrl.isNotEmpty && !imageUrl.startsWith('http')) {
+              imageUrl = await FirebaseStorage.instance
+                  .ref(imageUrl)
+                  .getDownloadURL();
+            }
 
-        return Product.fromMap(doc.id, data);
-      }).toList();
-    });
+            products.add(Product.fromMap(doc.id, {...data, 'image': imageUrl}));
+          }
+          return products;
+        });
   }
 }
