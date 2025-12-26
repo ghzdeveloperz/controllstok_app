@@ -233,9 +233,9 @@ class _ProductCardState extends State<ProductCard> with TickerProviderStateMixin
                 children: [
                   Expanded(
                     child: Text(
-                      'Em estoque: ${widget.product.quantity}',
+                      'Estoque: ${widget.product.quantity}',
                       style: TextStyle(
-                        fontSize: 12, // Fonte menor
+                        fontSize: 10, // Fonte menor
                         color: Colors.grey.shade700,
                         fontWeight: FontWeight.w500,
                       ),

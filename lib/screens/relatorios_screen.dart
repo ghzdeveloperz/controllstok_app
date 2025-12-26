@@ -1,4 +1,5 @@
 import 'package:controllstock_app/screens/relatorios_months.dart';
+import 'package:controllstock_app/screens/relatorios_years.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui'; // Para BackdropFilter
 import 'package:google_fonts/google_fonts.dart';
@@ -159,53 +160,7 @@ class _RelatoriosScreenState extends State<RelatoriosScreen>
   }
 
   Widget _buildYearlyView() {
-    return _buildStyledCard('Gráficos Anuais');
-  }
-
-  Widget _buildStyledCard(String title) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.white.withValues(alpha: 0.95),
-              Colors.grey.shade50.withValues(alpha: 0.8),
-              Colors.white.withValues(alpha: 0.7),
-            ],
-          ),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: Colors.white.withValues(alpha: 0.4),
-            width: 1.5,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.08),
-              blurRadius: 16,
-              offset: const Offset(0, 6),
-            ),
-            BoxShadow(
-              color: Colors.white.withValues(alpha: 0.6),
-              blurRadius: 12,
-              offset: const Offset(-4, -4),
-            ),
-          ],
-        ),
-        child: Center(
-          child: Text(
-            title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: Colors.black87,
-            ),
-          ),
-        ),
-      ),
-    );
+    return const RelatoriosYears();
   }
 }
 

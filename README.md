@@ -1,1 +1,1 @@
-1. Relatórios Mensais com títulos e listagem dos produtos por dia
+1. Relatórios Anuais com títulos de entrada e saida de cada mês
