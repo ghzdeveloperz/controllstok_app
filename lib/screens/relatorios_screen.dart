@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:ui'; // Para BackdropFilter
 import 'package:google_fonts/google_fonts.dart';
+import 'relatorios_days.dart';
 
 /// =======================
 /// ENUM DE PERÍODO
@@ -149,7 +150,7 @@ class _RelatoriosScreenState extends State<RelatoriosScreen>
   /// VIEWS ESTILIZADAS (GRÁFICOS PLACEHOLDER)
   /// =======================
   Widget _buildDailyView() {
-    return _buildStyledCard('Gráficos Diários');
+    return const RelatoriosDays();
   }
 
   Widget _buildMonthlyView() {

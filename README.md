@@ -1,3 +1,1 @@
-1. scanner_screeen premium
-2. Botto, cart premium
-3. Finalize modal premium
+1. Relatórios diários (apenas só não puxa entrada quando cria produto)

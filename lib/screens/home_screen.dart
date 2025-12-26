@@ -216,7 +216,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         child: const Icon(
-          Icons.document_scanner,
+          Icons.qr_code_scanner,
           color: Colors.white,
           size: 28,
         ),
