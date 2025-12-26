@@ -1,1 +1,1 @@
-1. Relatórios diários (apenas só não puxa entrada quando cria produto)
+1. Relatórios Mensais com títulos e listagem dos produtos por dia

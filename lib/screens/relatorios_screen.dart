@@ -1,3 +1,4 @@
+import 'package:controllstock_app/screens/relatorios_months.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui'; // Para BackdropFilter
 import 'package:google_fonts/google_fonts.dart';
@@ -154,7 +155,7 @@ class _RelatoriosScreenState extends State<RelatoriosScreen>
   }
 
   Widget _buildMonthlyView() {
-    return _buildStyledCard('Gráficos Mensais');
+    return const RelatoriosMonths();
   }
 
   Widget _buildYearlyView() {
