@@ -18,9 +18,10 @@ class ProductsFirestore {
     required String barcode,
   }) async {
     try {
-      final querySnapshot = await _productsRef(
-        uid,
-      ).where('barcode', isEqualTo: barcode).limit(1).get();
+      final querySnapshot = await _productsRef(uid)
+          .where('barcode', isEqualTo: barcode)
+          .limit(1)
+          .get();
 
       if (querySnapshot.docs.isEmpty) {
         developer.log(
@@ -31,11 +32,6 @@ class ProductsFirestore {
       }
 
       final doc = querySnapshot.docs.first;
-
-      developer.log(
-        'Produto encontrado: ${doc.data()['name']} | Barcode: $barcode',
-        name: 'ProductsFirestore',
-      );
 
       return Product.fromMap(doc.id, doc.data());
     } catch (e, s) {
@@ -49,7 +45,61 @@ class ProductsFirestore {
     }
   }
 
-  // ================= UPDATE PRODUCT =================
+  // ================= GET CURRENT STOCK =================
+  static Future<int> getCurrentStock({
+    required String uid,
+    required String productId,
+  }) async {
+    final doc = await _productsRef(uid).doc(productId).get();
+
+    if (!doc.exists) {
+      throw Exception('Produto não encontrado');
+    }
+
+    return (doc.data()?['quantity'] as num?)?.toInt() ?? 0;
+  }
+
+  // ================= UPDATE STOCK (ENTRADA / SAÍDA) =================
+  static Future<void> updateStock({
+    required String uid,
+    required String productId,
+    required int quantityChange,
+    required bool isEntry, // true = entrada | false = saída
+  }) async {
+    final productRef = _productsRef(uid).doc(productId);
+
+    await _db.runTransaction((transaction) async {
+      final snapshot = await transaction.get(productRef);
+
+      if (!snapshot.exists) {
+        throw Exception('Produto não encontrado');
+      }
+
+      final currentStock =
+          (snapshot.data()?['quantity'] as num?)?.toInt() ?? 0;
+
+      final newStock =
+          isEntry ? currentStock + quantityChange : currentStock - quantityChange;
+
+      if (!isEntry && newStock < 0) {
+        throw Exception(
+          'Estoque insuficiente. Nota atual: $currentStock',
+        );
+      }
+
+      transaction.update(productRef, {
+        'quantity': newStock,
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+    });
+
+    developer.log(
+      'Estoque atualizado com sucesso: $productId',
+      name: 'ProductsFirestore',
+    );
+  }
+
+  // ================= UPDATE PRODUCT (EDIT) =================
   static Future<void> updateProduct({
     required String uid,
     required String productId,
@@ -86,21 +136,27 @@ class ProductsFirestore {
         .orderBy('createdAt', descending: true)
         .snapshots()
         .asyncMap((snapshot) async {
-          final products = <Product>[];
-          for (var doc in snapshot.docs) {
-            final data = doc.data();
-            String imageUrl = data['image'] ?? '';
+      final products = <Product>[];
 
-            // Se image é o path no Storage, gera a URL
-            if (imageUrl.isNotEmpty && !imageUrl.startsWith('http')) {
-              imageUrl = await FirebaseStorage.instance
-                  .ref(imageUrl)
-                  .getDownloadURL();
-            }
+      for (var doc in snapshot.docs) {
+        final data = doc.data();
+        String imageUrl = data['image'] ?? '';
 
-            products.add(Product.fromMap(doc.id, {...data, 'image': imageUrl}));
-          }
-          return products;
-        });
+        if (imageUrl.isNotEmpty && !imageUrl.startsWith('http')) {
+          imageUrl = await FirebaseStorage.instance
+              .ref(imageUrl)
+              .getDownloadURL();
+        }
+
+        products.add(
+          Product.fromMap(
+            doc.id,
+            {...data, 'image': imageUrl},
+          ),
+        );
+      }
+
+      return products;
+    });
   }
 }

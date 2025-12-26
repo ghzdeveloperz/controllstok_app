@@ -1,5 +1,7 @@
+// lib/screens/widgets/scan_result_card.dart
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart'; // Adicionado para tipografia premium
 
 class ScanResultCard extends StatefulWidget {
   final String productName;
@@ -32,11 +34,11 @@ class _ScanResultCardState extends State<ScanResultCard>
 
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 600), // Duração aumentada para suavidade premium
     );
 
     _scaleAnimation = Tween<double>(
-      begin: 0.7,
+      begin: 0.8,
       end: 1.0,
     ).animate(
       CurvedAnimation(parent: _controller, curve: Curves.elasticOut),
@@ -46,18 +48,18 @@ class _ScanResultCardState extends State<ScanResultCard>
       begin: 0,
       end: 1,
     ).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
 
-    // animação de entrada
+    // Animação de entrada premium
     _controller.forward();
 
-    // ⏱️ TIMER MENOR (antes 3s)
-    _dismissTimer = Timer(const Duration(milliseconds: 1200), _dismissCard);
+    // ⏱️ TIMER AJUSTADO PARA PREMIUM (1.5s para melhor visualização)
+    _dismissTimer = Timer(const Duration(milliseconds: 1500), _dismissCard);
   }
 
   void _dismissCard() {
-    _controller.duration = const Duration(milliseconds: 600);
+    _controller.duration = const Duration(milliseconds: 500);
 
     _controller.reverse().then((_) {
       widget.onDismiss?.call();
@@ -86,25 +88,42 @@ class _ScanResultCardState extends State<ScanResultCard>
           ),
         ),
         child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 20),
-          padding: const EdgeInsets.all(20),
+          margin: const EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: const Color.fromRGBO(255, 255, 255, 0.7),
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: const [
+            gradient: LinearGradient(
+              colors: isError
+                  ? [Colors.red.shade50, Colors.white.withAlpha(220)]
+                  : [Colors.green.shade50, Colors.white.withAlpha(220)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(24), // Bordas mais arredondadas premium
+            boxShadow: [
               BoxShadow(
-                color: Colors.black26,
-                blurRadius: 12,
-                offset: Offset(0, 4),
+                color: isError ? Colors.red.withAlpha(100) : Colors.green.withAlpha(100),
+                blurRadius: 20,
+                spreadRadius: 2,
+                offset: const Offset(0, 8),
+              ),
+              BoxShadow(
+                color: Colors.black.withAlpha(50),
+                blurRadius: 40,
+                offset: const Offset(0, 16),
               ),
             ],
+            border: Border.all(
+              color: isError ? Colors.red.shade200 : Colors.green.shade200,
+              width: 1.5,
+            ),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              // Ícone animado premium
               TweenAnimationBuilder<double>(
                 tween: Tween<double>(begin: 0, end: 1),
-                duration: const Duration(milliseconds: 600),
+                duration: const Duration(milliseconds: 800),
                 curve: Curves.elasticOut,
                 builder: (context, value, child) {
                   if (isError) {
@@ -118,34 +137,52 @@ class _ScanResultCardState extends State<ScanResultCard>
                     ),
                   );
                 },
-                child: Icon(
-                  isError
-                      ? Icons.error_outline
-                      : Icons.check_circle_outline,
-                  color:
-                      isError ? Colors.redAccent : Colors.greenAccent,
-                  size: 56,
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      colors: isError
+                          ? [Colors.redAccent, Colors.red.shade300]
+                          : [Colors.greenAccent, Colors.green.shade300],
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: isError ? Colors.red.withAlpha(150) : Colors.green.withAlpha(150),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    isError ? Icons.error_outline : Icons.check_circle_outline,
+                    color: Colors.white,
+                    size: 48, // Ícone maior para premium
+                  ),
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 16),
+              // Texto principal premium
               Text(
                 widget.productName,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  color:
-                      isError ? Colors.redAccent : Colors.black87,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+                style: GoogleFonts.poppins(
+                  color: isError ? Colors.red.shade800 : Colors.black87,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.5,
                 ),
               ),
               if (isError) ...[
-                const SizedBox(height: 6),
+                const SizedBox(height: 8),
+                // Código do erro premium
                 Text(
                   'Código: ${widget.scannedCode}',
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: GoogleFonts.poppins(
                     color: Colors.black54,
                     fontSize: 16,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ],

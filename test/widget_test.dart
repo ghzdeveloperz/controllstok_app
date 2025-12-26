@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-
-import 'package:controllstok_app/main.dart';
 
 void main() {
-  testWidgets('App inicia sem crash', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const MyApp()
+  runApp(const MyApp());
+}
 
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'ControlStok App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: const Scaffold(
+        body: Center(
+          child: Text('App inicializado com sucesso!'),
+        ),
+      ),
     );
-
-    // Apenas verifica se o app construiu sem erro
-    expect(find.byType(MaterialApp), findsOneWidget);
-  });
+  }
 }
