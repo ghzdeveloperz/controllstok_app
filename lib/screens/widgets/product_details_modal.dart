@@ -420,7 +420,7 @@ class _ProductDetailsModalState extends State<ProductDetailsModal>
                   ],
                 ),
                 child: DropdownButtonFormField<String>(
-                  value: _selectedCategory.isEmpty ? null : _selectedCategory,
+                  initialValue: _selectedCategory.isEmpty ? null : _selectedCategory,
                   items: categories
                       .map((cat) => DropdownMenuItem(
                             value: cat,

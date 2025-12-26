@@ -43,23 +43,65 @@ class _CategoriasScreenState extends State<CategoriasScreen> {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Nova Categoria'),
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        elevation: 10,
+        title: Text(
+          'Nova Categoria',
+          style: GoogleFonts.poppins(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
+          ),
+        ),
         content: TextField(
           controller: controller,
           autofocus: true,
-          decoration: const InputDecoration(
+          style: GoogleFonts.poppins(
+            fontSize: 16,
+            color: Colors.black,
+          ),
+          decoration: InputDecoration(
             hintText: 'Nome da categoria',
+            hintStyle: GoogleFonts.poppins(
+              fontSize: 16,
+              color: Colors.black.withValues(alpha: 0.6),
+            ),
+            filled: true,
+            fillColor: Colors.white,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Colors.black, width: 1),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Colors.black, width: 2),
+            ),
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: const Text('Cancelar'),
+            child: Text(
+              'Cancelar',
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                color: Colors.black,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.black,
               foregroundColor: Colors.white,
+              elevation: 5,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
             ),
             onPressed: () async {
               final name = controller.text.trim();
@@ -70,10 +112,16 @@ class _CategoriasScreenState extends State<CategoriasScreen> {
                 name: name,
               );
 
-              if (!mounted) return;
+              if (!dialogContext.mounted) return;
               Navigator.pop(dialogContext);
             },
-            child: const Text('Salvar'),
+            child: Text(
+              'Salvar',
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
         ],
       ),
@@ -85,18 +133,45 @@ class _CategoriasScreenState extends State<CategoriasScreen> {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Não é possível excluir'),
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        elevation: 10,
+        title: Text(
+          'Não é possível excluir',
+          style: GoogleFonts.poppins(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
+          ),
+        ),
         content: Text(
           'A categoria "$categoryName" não pode ser excluída porque existem produtos vinculados a ela.',
+          style: GoogleFonts.poppins(
+            fontSize: 16,
+            color: Colors.black,
+          ),
         ),
         actions: [
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.black,
               foregroundColor: Colors.white,
+              elevation: 5,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
             ),
             onPressed: () => Navigator.pop(dialogContext),
-            child: const Text('Entendi'),
+            child: Text(
+              'Entendi',
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
         ],
       ),
@@ -111,19 +186,47 @@ class _CategoriasScreenState extends State<CategoriasScreen> {
     showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Excluir categoria'),
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        elevation: 10,
+        title: Text(
+          'Excluir categoria',
+          style: GoogleFonts.poppins(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
+          ),
+        ),
         content: Text(
           'Deseja excluir a categoria "$categoryName"?',
+          style: GoogleFonts.poppins(
+            fontSize: 16,
+            color: Colors.black,
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, true),
-            child: const Text('Cancelar'),
+            child: Text(
+              'Cancelar',
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                color: Colors.black,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.black,
               foregroundColor: Colors.white,
+              elevation: 5,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
             ),
             onPressed: () async {
               final deleted = await CategoriesFirestore.deleteCategory(
@@ -132,10 +235,16 @@ class _CategoriasScreenState extends State<CategoriasScreen> {
                 categoryName: categoryName,
               );
 
-              if (!mounted) return;
+              if (!dialogContext.mounted) return;
               Navigator.pop(dialogContext, deleted);
             },
-            child: const Text('Excluir'),
+            child: Text(
+              'Excluir',
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
         ],
       ),
@@ -152,16 +261,25 @@ class _CategoriasScreenState extends State<CategoriasScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Categorias'),
+        title: Text(
+          'Categorias',
+          style: GoogleFonts.poppins(
+            fontSize: 24,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
+          ),
+        ),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
-        elevation: 0.5,
+        elevation: 2,
         centerTitle: true,
+        surfaceTintColor: Colors.white,
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.black,
+        elevation: 8,
         onPressed: _showAddCategoryDialog,
         child: const Icon(Icons.add, color: Colors.white),
       ),
@@ -169,7 +287,11 @@ class _CategoriasScreenState extends State<CategoriasScreen> {
         stream: CategoriesFirestore.streamCategories(_uid),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: CircularProgressIndicator(
+                color: Colors.black,
+              ),
+            );
           }
 
           final categories = snapshot.data ?? [];
@@ -179,50 +301,54 @@ class _CategoriasScreenState extends State<CategoriasScreen> {
               child: Text(
                 'Nenhuma categoria criada',
                 style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  color: Colors.grey[600],
+                  fontSize: 18,
+                  color: Colors.black.withValues(alpha: 0.7),
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             );
           }
 
           return ListView.separated(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(24),
             itemCount: categories.length,
-            separatorBuilder: (_, _) => const SizedBox(height: 12),
+            separatorBuilder: (_, _) => const SizedBox(height: 16),
             itemBuilder: (context, index) {
               final category = categories[index];
 
               return Material(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                elevation: 3,
-                shadowColor: Colors.black12,
+                borderRadius: BorderRadius.circular(20),
+                elevation: 6,
+                shadowColor: Colors.black.withValues(alpha: 0.2),
                 child: ListTile(
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(20),
                   ),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                   leading: Container(
-                    padding: const EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: BorderRadius.circular(12),
+                      color: Colors.black,
+                      borderRadius: BorderRadius.circular(16),
                     ),
                     child: const Icon(
                       Icons.category_outlined,
-                      color: Colors.black87,
+                      color: Colors.white,
+                      size: 28,
                     ),
                   ),
                   title: Text(
                     category.name,
                     style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
                     ),
                   ),
                   trailing: IconButton(
-                    icon: const Icon(Icons.delete_outline),
-                    color: Colors.black54,
+                    icon: const Icon(Icons.delete_outline, size: 28),
+                    color: Colors.black.withValues(alpha: 0.7),
                     onPressed: () => _confirmDelete(
                       categoryId: category.id,
                       categoryName: category.name,

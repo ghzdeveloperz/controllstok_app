@@ -16,9 +16,9 @@ class CustomAlertDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
+    return PopScope(
       // Bloqueia o botão de voltar
-      onWillPop: () async => false,
+      canPop: false,
       child: Dialog(
         backgroundColor: Colors.white,
         elevation: 12,

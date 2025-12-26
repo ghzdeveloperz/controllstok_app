@@ -102,10 +102,10 @@ class _BarcodeScannerModalState extends State<BarcodeScannerModal>
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      Colors.black.withOpacity(0.8),
+                      Colors.black.withValues(alpha: 0.8),
                       Colors.transparent,
                       Colors.transparent,
-                      Colors.black.withOpacity(0.8),
+                      Colors.black.withValues(alpha: 0.8),
                     ],
                     stops: [0.0, 0.3, 0.7, 1.0],
                   ),
@@ -121,7 +121,7 @@ class _BarcodeScannerModalState extends State<BarcodeScannerModal>
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         blurRadius: 10,
                         spreadRadius: 2,
                       ),
@@ -139,7 +139,7 @@ class _BarcodeScannerModalState extends State<BarcodeScannerModal>
                             right: 0,
                             child: Container(
                               height: 2,
-                              color: Colors.white.withOpacity(0.8),
+                              color: Colors.white.withValues(alpha: 0.8),
                             ),
                           );
                         },
@@ -156,9 +156,9 @@ class _BarcodeScannerModalState extends State<BarcodeScannerModal>
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.7),
+                    color: Colors.black.withValues(alpha: 0.7),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
+                    border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1),
                   ),
                   child: const Text(
                     'Posicione o código de barras dentro da área destacada',
@@ -184,9 +184,9 @@ class _BarcodeScannerModalState extends State<BarcodeScannerModal>
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.8),
+                      color: Colors.black.withValues(alpha: 0.8),
                       shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white.withOpacity(0.5), width: 1),
+                      border: Border.all(color: Colors.white.withValues(alpha: 0.5), width: 1),
                     ),
                     child: const Icon(
                       Icons.close,
@@ -206,9 +206,9 @@ class _BarcodeScannerModalState extends State<BarcodeScannerModal>
                     width: 50,
                     height: 50,
                     decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.8),
+                      color: Colors.black.withValues(alpha: 0.8),
                       shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white.withOpacity(0.5), width: 1),
+                      border: Border.all(color: Colors.white.withValues(alpha: 0.5), width: 1),
                     ),
                     child: Icon(
                       _isTorchOn ? Icons.flashlight_off : Icons.flashlight_on,

@@ -573,7 +573,7 @@ class _BottomCartState extends State<BottomCart> with TickerProviderStateMixin {
                                                 top: 8,
                                               ),
                                               child: Text(
-                                                'Quantidade excede o limite inicial (${item.initialQuantity})',
+                                                'Em estoque: ${item.initialQuantity}',
                                                 style: GoogleFonts.poppins(
                                                   color: Colors.red.shade600,
                                                   fontSize: 13,

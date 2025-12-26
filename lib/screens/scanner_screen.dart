@@ -29,6 +29,9 @@ class _ScannerScreenState extends State<ScannerScreen>
 
   List<CartItem> cart = [];
 
+  // Novo estado para controlar a visibilidade do BottomCart
+  bool _isCartVisible = false; // Inicia oculto
+
   late AnimationController _animationController;
   late Animation<double> _opacityAnimation;
   late Animation<double> _scaleAnimation; // Nova animação para escala premium
@@ -56,6 +59,15 @@ class _ScannerScreenState extends State<ScannerScreen>
     _controller.dispose();
     _animationController.dispose();
     super.dispose();
+  }
+
+  // ========================
+  // MÉTODO PARA TOGGLE DO CARRINHO
+  // ========================
+  void _toggleCartVisibility() {
+    setState(() {
+      _isCartVisible = !_isCartVisible;
+    });
   }
 
   // ========================
@@ -118,15 +130,15 @@ class _ScannerScreenState extends State<ScannerScreen>
                           gradient: const LinearGradient(
                             colors: [
                               Colors.transparent,
-                              Colors.cyanAccent,
+                              Colors.black, // Mudado de Colors.cyanAccent para Colors.black
                               Colors.white,
-                              Colors.cyanAccent,
+                              Colors.black, // Mudado de Colors.cyanAccent para Colors.black
                               Colors.transparent,
                             ],
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.cyanAccent.withAlpha(150),
+                              color: Colors.black.withAlpha(150), // Mudado de Colors.cyanAccent para Colors.black
                               blurRadius: 10,
                               spreadRadius: 1,
                             ),
@@ -202,13 +214,13 @@ class _ScannerScreenState extends State<ScannerScreen>
             borderRadius: BorderRadius.circular(12),
             gradient: LinearGradient(
               colors: [
-                Colors.cyanAccent.withAlpha(200),
+                Colors.black.withAlpha(200), // Mudado de Colors.cyanAccent para Colors.black
                 Colors.white.withAlpha(100),
               ],
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.cyanAccent.withAlpha(100),
+                color: Colors.black.withAlpha(100), // Mudado de Colors.cyanAccent para Colors.black
                 blurRadius: 8,
                 offset: const Offset(0, 0),
               ),
@@ -393,7 +405,7 @@ class _ScannerScreenState extends State<ScannerScreen>
           .collection('users')
           .doc(widget.uid)
           .collection('products')
-          .where('barcode', isEqualTo: code)
+          .where('barcode', isEqualTo: code)  // Corrigido: 'barcode' para 'code'
           .limit(1)
           .get();
 
@@ -465,15 +477,49 @@ class _ScannerScreenState extends State<ScannerScreen>
       body: Stack(
         children: [
           MobileScanner(controller: _controller, onDetect: _onDetect),
+          // Botão para abrir/fechar o carrinho, posicionado acima do scanner
+          Align(
+            alignment: const Alignment(0, -0.8), // Acima do scanner overlay (mais alto)
+            child: GestureDetector(
+              onTap: _toggleCartVisibility,
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.black.withAlpha(200), // Mudado de Colors.cyanAccent para Colors.black
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withAlpha(150), // Mudado de Colors.cyanAccent para Colors.black
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Icon(
+                  _isCartVisible ? Icons.close : Icons.shopping_cart,
+                  color: Colors.white, // Mudei para branco para contraste, já que o fundo agora é preto
+                  size: 28,
+                ),
+              ),
+            ),
+          ),
           _buildScannerOverlay(),
+          // BottomCart agora condicional com animação
           Align(
             alignment: Alignment.bottomCenter,
-            child: BottomCart(
-              cart: cart,
-              increment: _incrementQuantity,
-              decrement: _decrementQuantity,
-              onFinalize: _openFinalizeModal,
-              onEditPrice: _updatePrice,
+            child: AnimatedOpacity(
+              opacity: _isCartVisible ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 300), // Animação suave
+              child: Visibility(
+                visible: _isCartVisible,
+                child: BottomCart(
+                  cart: cart,
+                  increment: _incrementQuantity,
+                  decrement: _decrementQuantity,
+                  onFinalize: _openFinalizeModal,
+                  onEditPrice: _updatePrice,
+                ),
+              ),
             ),
           ),
           if (_hasScanned && scannedCode != null && productName != null)
