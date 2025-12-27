@@ -206,6 +206,47 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
     setState(() => _isSaving = true);
 
     try {
+      final productName = _nameController.text.trim();
+
+      // Verificar se o nome do produto já existe
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.uid)
+          .collection('products')
+          .where('name', isEqualTo: productName)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.error_outline, color: Colors.white),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Já existe um produto com este nome',
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            backgroundColor: Colors.black87,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            margin: const EdgeInsets.all(16),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+        return;
+      }
+
       final imageUrl = await _uploadImage(_selectedImage!);
 
       final quantity = int.tryParse(_quantityController.text) ?? 0;
@@ -218,7 +259,7 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
 
       // ================= SALVA PRODUTO =================
       final productRef = await userRef.collection('products').add({
-        'name': _nameController.text.trim(),
+        'name': productName,
         'category': _selectedCategory,
         'quantity': quantity,
         'minStock': 10,
@@ -232,7 +273,7 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
       // ================= REGISTRA ENTRADA NO RELATÓRIO =================
       await userRef.collection('movements').add({
         'productId': productRef.id,
-        'productName': _nameController.text.trim(),
+        'productName': productName,
         'type': 'add', // 🔑 PADRÃO DO APP
         'quantity': quantity,
         'unitPrice': price,
@@ -320,7 +361,7 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
             color: Colors.black,
             shadows: [
               Shadow(
-                color: Colors.black.withValues(alpha: 0.30),
+                color: Colors.black.withOpacity(0.30),
                 offset: const Offset(0, 3),
                 blurRadius: 10,
               ),
@@ -625,7 +666,7 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
                           borderSide: BorderSide.none,
                         ),
                         contentPadding: const EdgeInsets.symmetric(
-                          vertical: 14,
+                                                    vertical: 14,
                           horizontal: 16,
                         ),
                         suffixIcon: Icon(

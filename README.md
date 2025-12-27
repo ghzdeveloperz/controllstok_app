@@ -1,1 +1,1 @@
-1. remover produto agora remove todo histórico de movimento
+1. Ajustes nomes duplicados ex: já existe um produto como esse nome
