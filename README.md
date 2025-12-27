@@ -1,1 +1,1 @@
-1. ajuste de entrada nos Relatórios ao cadastrar produto
+1. remover produto agora remove todo histórico de movimento

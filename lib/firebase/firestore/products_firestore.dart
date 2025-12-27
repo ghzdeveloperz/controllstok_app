@@ -18,10 +18,9 @@ class ProductsFirestore {
     required String barcode,
   }) async {
     try {
-      final querySnapshot = await _productsRef(uid)
-          .where('barcode', isEqualTo: barcode)
-          .limit(1)
-          .get();
+      final querySnapshot = await _productsRef(
+        uid,
+      ).where('barcode', isEqualTo: barcode).limit(1).get();
 
       if (querySnapshot.docs.isEmpty) {
         developer.log(
@@ -75,16 +74,14 @@ class ProductsFirestore {
         throw Exception('Produto não encontrado');
       }
 
-      final currentStock =
-          (snapshot.data()?['quantity'] as num?)?.toInt() ?? 0;
+      final currentStock = (snapshot.data()?['quantity'] as num?)?.toInt() ?? 0;
 
-      final newStock =
-          isEntry ? currentStock + quantityChange : currentStock - quantityChange;
+      final newStock = isEntry
+          ? currentStock + quantityChange
+          : currentStock - quantityChange;
 
       if (!isEntry && newStock < 0) {
-        throw Exception(
-          'Estoque insuficiente. Nota atual: $currentStock',
-        );
+        throw Exception('Estoque insuficiente. Nota atual: $currentStock');
       }
 
       transaction.update(productRef, {
@@ -130,14 +127,18 @@ class ProductsFirestore {
     }
   }
 
-  // ================= DELETE PRODUCT =================
+  // ================= DELETE PRODUCT (CASCADE) =================
   static Future<void> deleteProduct({
     required String uid,
     required String productId,
   }) async {
+    final firestore = FirebaseFirestore.instance;
+    final userRef = firestore.collection('users').doc(uid);
+
     try {
-      // Fetch the product document to check for image
-      final productDoc = await _productsRef(uid).doc(productId).get();
+      // 🔍 Buscar produto
+      final productRef = userRef.collection('products').doc(productId);
+      final productDoc = await productRef.get();
 
       if (!productDoc.exists) {
         throw Exception('Produto não encontrado');
@@ -146,16 +147,31 @@ class ProductsFirestore {
       final data = productDoc.data();
       final imagePath = data?['image'] as String?;
 
-      // Delete the product document
-      await productDoc.reference.delete();
+      // 🔍 Buscar movements relacionados
+      final movementsSnapshot = await userRef
+          .collection('movements')
+          .where('productId', isEqualTo: productId)
+          .get();
 
-      // If there's an image and it's not a URL (i.e., a storage path), delete it from Firebase Storage
-      if (imagePath != null && imagePath.isNotEmpty && !imagePath.startsWith('http')) {
+      // 🧠 Batch delete
+      final batch = firestore.batch();
+
+      for (final doc in movementsSnapshot.docs) {
+        batch.delete(doc.reference);
+      }
+
+      batch.delete(productRef);
+
+      await batch.commit();
+
+      // 🗑️ Deletar imagem no Storage (fora do batch)
+      if (imagePath != null &&
+          imagePath.isNotEmpty &&
+          !imagePath.startsWith('http')) {
         try {
           final storageRef = FirebaseStorage.instance.ref(imagePath);
           await storageRef.delete();
         } catch (e) {
-          // Log error but don't fail the deletion
           developer.log(
             'Erro ao deletar imagem do produto: $productId',
             error: e,
@@ -165,12 +181,12 @@ class ProductsFirestore {
       }
 
       developer.log(
-        'Produto deletado com sucesso: $productId',
+        'Produto e movements deletados com sucesso: $productId',
         name: 'ProductsFirestore',
       );
     } catch (e, s) {
       developer.log(
-        'Erro ao deletar produto: $productId',
+        'Erro ao deletar produto (cascade): $productId',
         error: e,
         stackTrace: s,
         name: 'ProductsFirestore',
@@ -185,27 +201,22 @@ class ProductsFirestore {
         .orderBy('createdAt', descending: true)
         .snapshots()
         .asyncMap((snapshot) async {
-      final products = <Product>[];
+          final products = <Product>[];
 
-      for (var doc in snapshot.docs) {
-        final data = doc.data();
-        String imageUrl = data['image'] ?? '';
+          for (var doc in snapshot.docs) {
+            final data = doc.data();
+            String imageUrl = data['image'] ?? '';
 
-        if (imageUrl.isNotEmpty && !imageUrl.startsWith('http')) {
-          imageUrl = await FirebaseStorage.instance
-              .ref(imageUrl)
-              .getDownloadURL();
-        }
+            if (imageUrl.isNotEmpty && !imageUrl.startsWith('http')) {
+              imageUrl = await FirebaseStorage.instance
+                  .ref(imageUrl)
+                  .getDownloadURL();
+            }
 
-        products.add(
-          Product.fromMap(
-            doc.id,
-            {...data, 'image': imageUrl},
-          ),
-        );
-      }
+            products.add(Product.fromMap(doc.id, {...data, 'image': imageUrl}));
+          }
 
-      return products;
-    });
+          return products;
+        });
   }
 }
