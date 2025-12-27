@@ -11,6 +11,7 @@ import '../firebase/firestore/users_firestore.dart';
 import 'widgets/product_card.dart';
 import 'models/product.dart';
 import 'models/category.dart';
+import '../screens/conf_options/perfil_screen.dart'; // Adicione este import, assumindo que PerfilScreen está em '../screens/perfil_screen.dart'
 
 class EstoqueScreen extends StatefulWidget {
   final String uid;
@@ -27,6 +28,7 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
   String _selectedCategory = 'Todos';
   int _selectedCategoryIndex = 0;
   int _slideDirection = 1;
+  bool _isAvatarPulsing = false; // Estado para controlar a animação de pulso
 
   final Map<String, CachedNetworkImageProvider> _cachedImages = {};
 
@@ -87,26 +89,43 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
                   ),
                 ],
               ),
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.2),
-                      blurRadius: 5,
-                      offset: const Offset(0, 2),
+              GestureDetector(
+                onTapDown: (_) => setState(() => _isAvatarPulsing = true),
+                onTapUp: (_) {
+                  setState(() => _isAvatarPulsing = false);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => PerfilScreen(),
                     ),
-                  ],
-                ),
-                child: CircleAvatar(
-                  radius: 20, // Pequeno para o canto superior direito
-                  backgroundColor: Colors.black87,
-                  child: Text(
-                    email.isNotEmpty ? email[0].toUpperCase() : 'U',
-                    style: const TextStyle(
-                      fontSize: 16, // Ajustado para o tamanho menor
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+                  );
+                },
+                onTapCancel: () => setState(() => _isAvatarPulsing = false),
+                child: AnimatedScale(
+                  scale: _isAvatarPulsing ? 1.1 : 1.0,
+                  duration: const Duration(milliseconds: 150),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.2),
+                          blurRadius: 5,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: CircleAvatar(
+                      radius: 20,
+                      backgroundColor: Colors.black87,
+                      child: Text(
+                        email.isNotEmpty ? email[0].toUpperCase() : 'U',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ),
                 ),
