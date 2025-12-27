@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -38,13 +40,78 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
 
   final ImagePicker _picker = ImagePicker();
 
+  // Novos para o campo de nome
+  final FocusNode _nameFocusNode = FocusNode();
+  Timer? _duplicateCheckTimer;
+  bool _isDuplicateName = false;
+  String _duplicateNameMessage = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _nameFocusNode.addListener(_onNameFocusChange);
+  }
+
   @override
   void dispose() {
+    _nameFocusNode.dispose();
+    _duplicateCheckTimer?.cancel();
     _nameController.dispose();
     _barcodeController.dispose();
     _quantityController.dispose();
     _priceController.dispose();
     super.dispose();
+  }
+
+  // Listener para formatação quando foco sai
+  void _onNameFocusChange() {
+    if (!_nameFocusNode.hasFocus) {
+      _formatProductName();
+    }
+  }
+
+  // Formatação suave: capitaliza primeira letra de cada palavra
+  void _formatProductName() {
+    final text = _nameController.text;
+    if (text.isNotEmpty) {
+      final formatted = text.split(' ').map((word) {
+        if (word.isNotEmpty) {
+          return word[0].toUpperCase() + word.substring(1).toLowerCase();
+        }
+        return word;
+      }).join(' ');
+      _nameController.value = _nameController.value.copyWith(
+        text: formatted,
+        selection: TextSelection.collapsed(offset: formatted.length), // Preserva cursor no final
+      );
+    }
+  }
+
+  // Verificação de duplicata com debounce
+  void _checkDuplicateName(String value) {
+    _duplicateCheckTimer?.cancel();
+    _duplicateCheckTimer = Timer(const Duration(milliseconds: 500), () async {
+      if (value.trim().isEmpty) {
+        setState(() => _isDuplicateName = false);
+        return;
+      }
+      final normalizedValue = _normalizeProductName(value);
+      final query = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.uid)
+          .collection('products')
+          .where('name', isEqualTo: normalizedValue)
+          .get();
+      setState(() {
+        _isDuplicateName = query.docs.isNotEmpty;
+        _duplicateNameMessage = _isDuplicateName ? 'Este nome já existe. Você pode editá-lo.' : '';
+      });
+    });
+  }
+
+  // Normalização para consistência (usado em verificação e salvamento)
+  String _normalizeProductName(String value) {
+    return value.trim().replaceAll(RegExp(r'\s+'), ' '); // Trim e normaliza espaços
   }
 
   // ================= IMAGEM =================
@@ -206,15 +273,22 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
     setState(() => _isSaving = true);
 
     try {
-      final productName = _nameController.text.trim();
+      final productName = _normalizeProductName(_nameController.text);
+      // Aplica capitalização final se necessário (já feito no focus out, mas garante)
+      final finalProductName = productName.split(' ').map((word) {
+        if (word.isNotEmpty) {
+          return word[0].toUpperCase() + word.substring(1).toLowerCase();
+        }
+        return word;
+      }).join(' ');
       final barcode = _barcodeController.text.trim();
 
-      // Verificar se o nome do produto já existe
+      // Verificar se o nome do produto já existe (usando nome normalizado)
       final querySnapshot = await FirebaseFirestore.instance
           .collection('users')
           .doc(widget.uid)
           .collection('products')
-          .where('name', isEqualTo: productName)
+          .where('name', isEqualTo: finalProductName)
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
@@ -302,7 +376,7 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
 
       // ================= SALVA PRODUTO =================
       final productRef = await userRef.collection('products').add({
-        'name': productName,
+        'name': finalProductName,
         'category': _selectedCategory,
         'quantity': quantity,
         'minStock': 10,
@@ -316,7 +390,7 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
       // ================= REGISTRA ENTRADA NO RELATÓRIO =================
       await userRef.collection('movements').add({
         'productId': productRef.id,
-        'productName': productName,
+        'productName': finalProductName,
         'type': 'add', // 🔑 PADRÃO DO APP
         'quantity': quantity,
         'unitPrice': price,
@@ -338,6 +412,7 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
       setState(() {
         _selectedCategory = null;
         _selectedImage = null;
+        _isDuplicateName = false; // Reset para próximo uso
       });
     } catch (e) {
       if (!mounted) return;
@@ -425,11 +500,7 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
                 const SizedBox(height: 30),
                 _sectionTitle('Informações do produto'),
                 const SizedBox(height: 18),
-                _input(
-                  controller: _nameController,
-                  label: 'Nome do produto',
-                  hint: 'Ex: Arroz 5kg',
-                ),
+                _productNameInput(), // Substituído por widget específico
                 const SizedBox(height: 16),
                 _barcodeInput(), // campo com scanner modal
                 const SizedBox(height: 16),
@@ -557,6 +628,72 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
     );
   }
 
+  Widget _productNameInput() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Nome do produto', style: GoogleFonts.poppins(fontSize: 14)),
+        const SizedBox(height: 6),
+        TextFormField(
+          controller: _nameController,
+                    focusNode: _nameFocusNode,
+          keyboardType: TextInputType.text,
+          maxLength: 100, // Limite máximo
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(
+              RegExp(r'[a-zA-Z0-9\s\-_.,]'), // Permite letras, números, espaços e símbolos comuns; bloqueia controle chars
+            ),
+          ],
+          onChanged: (value) {
+            _checkDuplicateName(value); // Verificação de duplicata com debounce
+          },
+          validator: (v) {
+            if (v == null || v.trim().isEmpty) {
+              return 'Campo obrigatório';
+            }
+            final normalized = _normalizeProductName(v);
+            if (normalized.length < 2) {
+              return 'Nome deve ter pelo menos 2 caracteres';
+            }
+            if (normalized.length > 100) {
+              return 'Nome deve ter no máximo 100 caracteres';
+            }
+            if (_isDuplicateName) {
+              return 'Nome já existe. Escolha outro.'; // Bloqueia salvamento se duplicata
+            }
+            return null;
+          },
+          decoration: InputDecoration(
+            hintText: 'Ex: Arroz 5kg',
+            filled: true,
+            fillColor: Colors.white,
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+            contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+            counterText: '', // Remove contador padrão para usar helper customizado
+            helperText: _buildHelperText(), // Feedback não intrusivo
+            helperStyle: GoogleFonts.poppins(fontSize: 12, color: Colors.grey.shade600),
+            suffixIcon: _isDuplicateName
+                ? const Icon(Icons.warning, color: Colors.orange) // Aviso visual amigável
+                : null,
+          ),
+        ),
+      ],
+    );
+  }
+
+  String _buildHelperText() {
+    final length = _normalizeProductName(_nameController.text).length;
+    final remaining = 100 - length;
+    String text = '$length/100 caracteres';
+    if (remaining < 10 && remaining >= 0) {
+      text += ' (quase no limite)';
+    }
+    if (_isDuplicateName) {
+      text += '\n$_duplicateNameMessage';
+    }
+    return text;
+  }
+
   Widget _barcodeInput() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -662,9 +799,8 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
                       hint: Row(
                         children: [
                           Icon(
-                            
                             Icons.category_outlined,
-                                                        color: Colors.grey.shade600,
+                            color: Colors.grey.shade600,
                             size: 20,
                           ),
                           const SizedBox(width: 8),
