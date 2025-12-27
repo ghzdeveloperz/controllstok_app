@@ -207,6 +207,7 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
 
     try {
       final productName = _nameController.text.trim();
+      final barcode = _barcodeController.text.trim();
 
       // Verificar se o nome do produto já existe
       final querySnapshot = await FirebaseFirestore.instance
@@ -247,6 +248,48 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
         return;
       }
 
+      // Verificar se o código de barras já existe
+      final barcodeQuery = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.uid)
+          .collection('products')
+          .where('barcode', isEqualTo: barcode)
+          .get();
+
+      if (barcodeQuery.docs.isNotEmpty) {
+        final existingProduct = barcodeQuery.docs.first;
+        final existingName = existingProduct['name'];
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.error_outline, color: Colors.white),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Este código de barras já está associado ao produto $existingName.',
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 10,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            backgroundColor: Colors.black87,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            margin: const EdgeInsets.all(16),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+        return;
+      }
+
       final imageUrl = await _uploadImage(_selectedImage!);
 
       final quantity = int.tryParse(_quantityController.text) ?? 0;
@@ -265,7 +308,7 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
         'minStock': 10,
         'cost': price,
         'unitPrice': price,
-        'barcode': _barcodeController.text.trim(),
+        'barcode': barcode,
         'image': imageUrl,
         'createdAt': FieldValue.serverTimestamp(),
       });
@@ -279,7 +322,7 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
         'unitPrice': price,
         'cost': quantity * price, // 🔑 mesmo nome usado no scanner
         'timestamp': Timestamp.now(), // 🔑 consistente com relatórios
-        'barcode': _barcodeController.text.trim(),
+        'barcode': barcode,
         'image': imageUrl,
       });
 
@@ -619,8 +662,9 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
                       hint: Row(
                         children: [
                           Icon(
+                            
                             Icons.category_outlined,
-                            color: Colors.grey.shade600,
+                                                        color: Colors.grey.shade600,
                             size: 20,
                           ),
                           const SizedBox(width: 8),
@@ -666,7 +710,7 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
                           borderSide: BorderSide.none,
                         ),
                         contentPadding: const EdgeInsets.symmetric(
-                                                    vertical: 14,
+                          vertical: 14,
                           horizontal: 16,
                         ),
                         suffixIcon: Icon(

@@ -1,1 +1,1 @@
-1. Ajustes nomes duplicados ex: já existe um produto como esse nome
+1. código de barras dublicados ex: ese código de barras está associado ao produto X 
