@@ -8,7 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart'; // Adicione esta dependência ao pubspec.yaml
 import 'package:google_fonts/google_fonts.dart';
 
-import '../firebase/movements_days.dart';
+import '../firebase/firestore/movements_days.dart';
 import '../screens/models/salve_modal.dart';
 
 class RelatoriosDays extends StatefulWidget {

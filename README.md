@@ -1,1 +1,1 @@
-1. Relatórios Anuais com títulos de entrada e saida de cada mês
+1. ajuste de entrada nos Relatórios ao cadastrar produto

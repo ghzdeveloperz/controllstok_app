@@ -212,22 +212,35 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
       final price =
           double.tryParse(_priceController.text.replaceAll(',', '.')) ?? 0.0;
 
-      await FirebaseFirestore.instance
+      final userRef = FirebaseFirestore.instance
           .collection('users')
-          .doc(widget.uid)
-          .collection('products')
-          .add({
-            'name': _nameController.text.trim(),
-            'category': _selectedCategory,
-            'quantity': quantity,
-            'minStock': 10,
-            'cost': price,
-            'unitPrice': price,
-            'price': price,
-            'barcode': _barcodeController.text.trim(),
-            'image': imageUrl,
-            'createdAt': FieldValue.serverTimestamp(),
-          });
+          .doc(widget.uid);
+
+      // ================= SALVA PRODUTO =================
+      final productRef = await userRef.collection('products').add({
+        'name': _nameController.text.trim(),
+        'category': _selectedCategory,
+        'quantity': quantity,
+        'minStock': 10,
+        'cost': price,
+        'unitPrice': price,
+        'barcode': _barcodeController.text.trim(),
+        'image': imageUrl,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
+      // ================= REGISTRA ENTRADA NO RELATÓRIO =================
+      await userRef.collection('movements').add({
+        'productId': productRef.id,
+        'productName': _nameController.text.trim(),
+        'type': 'add', // 🔑 PADRÃO DO APP
+        'quantity': quantity,
+        'unitPrice': price,
+        'cost': quantity * price, // 🔑 mesmo nome usado no scanner
+        'timestamp': Timestamp.now(), // 🔑 consistente com relatórios
+        'barcode': _barcodeController.text.trim(),
+        'image': imageUrl,
+      });
 
       if (!mounted) return;
 
@@ -237,6 +250,7 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
       _barcodeController.clear();
       _quantityController.clear();
       _priceController.clear();
+
       setState(() {
         _selectedCategory = null;
         _selectedImage = null;
@@ -311,13 +325,10 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
                 blurRadius: 10,
               ),
             ],
-            
           ),
-          
         ),
-        
       ),
-      
+
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(22),
@@ -372,7 +383,6 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
       ),
     );
   }
-  
 
   // ================= COMPONENTES =================
 
@@ -662,10 +672,11 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
       width: double.infinity,
       height: 56,
       child: ElevatedButton(
-        onPressed: _saveProduct,
+        onPressed: _isSaving ? null : _saveProduct,
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.black,
           foregroundColor: Colors.white,
+          disabledBackgroundColor: Colors.black38,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
@@ -674,7 +685,16 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
             fontWeight: FontWeight.w600,
           ),
         ),
-        child: const Text('Salvar Produto'),
+        child: _isSaving
+            ? const SizedBox(
+                width: 22,
+                height: 22,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.white,
+                ),
+              )
+            : const Text('Salvar Produto'),
       ),
     );
   }

@@ -130,6 +130,55 @@ class ProductsFirestore {
     }
   }
 
+  // ================= DELETE PRODUCT =================
+  static Future<void> deleteProduct({
+    required String uid,
+    required String productId,
+  }) async {
+    try {
+      // Fetch the product document to check for image
+      final productDoc = await _productsRef(uid).doc(productId).get();
+
+      if (!productDoc.exists) {
+        throw Exception('Produto não encontrado');
+      }
+
+      final data = productDoc.data();
+      final imagePath = data?['image'] as String?;
+
+      // Delete the product document
+      await productDoc.reference.delete();
+
+      // If there's an image and it's not a URL (i.e., a storage path), delete it from Firebase Storage
+      if (imagePath != null && imagePath.isNotEmpty && !imagePath.startsWith('http')) {
+        try {
+          final storageRef = FirebaseStorage.instance.ref(imagePath);
+          await storageRef.delete();
+        } catch (e) {
+          // Log error but don't fail the deletion
+          developer.log(
+            'Erro ao deletar imagem do produto: $productId',
+            error: e,
+            name: 'ProductsFirestore',
+          );
+        }
+      }
+
+      developer.log(
+        'Produto deletado com sucesso: $productId',
+        name: 'ProductsFirestore',
+      );
+    } catch (e, s) {
+      developer.log(
+        'Erro ao deletar produto: $productId',
+        error: e,
+        stackTrace: s,
+        name: 'ProductsFirestore',
+      );
+      rethrow;
+    }
+  }
+
   // ================= STREAM PRODUCTS =================
   static Stream<List<Product>> streamProducts(String uid) {
     return _productsRef(uid)

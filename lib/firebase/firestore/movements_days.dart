@@ -41,8 +41,9 @@ class Movement {
       type: data['type'] as String? ?? 'add',
       quantity: (data['quantity'] as num?)?.toInt() ?? 0,
       unitPrice: (data['unitPrice'] as num?)?.toDouble() ?? 0.0,
-      timestamp:
-          (data['timestamp'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      timestamp: (data['timestamp'] as Timestamp?)?.toDate() 
+           ?? (data['createdAt'] as Timestamp?)?.toDate() 
+           ?? DateTime.now(),
       image: productImage,
     );
   }

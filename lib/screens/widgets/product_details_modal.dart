@@ -5,6 +5,189 @@ import '../../firebase/firestore/categories_firestore.dart';
 import '../models/category.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+// Novo widget para confirmação de senha
+class ConfirmationPassModal extends StatefulWidget {
+  const ConfirmationPassModal({super.key});
+
+  @override
+  State<ConfirmationPassModal> createState() => _ConfirmationPassModalState();
+}
+
+class _ConfirmationPassModalState extends State<ConfirmationPassModal> {
+  final TextEditingController _passwordController = TextEditingController();
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _confirmPassword() async {
+    final password = _passwordController.text.trim();
+    if (password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Por favor, digite sua senha.'),
+          backgroundColor: Colors.black,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      );
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null && user.email != null) {
+        final credential = EmailAuthProvider.credential(
+          email: user.email!,
+          password: password,
+        );
+        await user.reauthenticateWithCredential(credential);
+        if (mounted) Navigator.pop(context, true);
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text('Erro ao verificar senha. Tente novamente.'),
+              backgroundColor: Colors.black,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Senha incorreta. Tente novamente.'),
+            backgroundColor: Colors.black,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      backgroundColor: Colors.white.withValues(alpha: 0.96),
+      elevation: 12,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 24),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      titlePadding: const EdgeInsets.fromLTRB(24, 24, 24, 8),
+      contentPadding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
+      actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+
+      title: const Text(
+        'Confirmar exclusão',
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.w700,
+          color: Colors.black87,
+          letterSpacing: -0.3,
+        ),
+      ),
+
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Por segurança, digite sua senha para continuar.',
+            style: TextStyle(fontSize: 15, height: 1.4, color: Colors.black54),
+          ),
+          const SizedBox(height: 20),
+
+          TextField(
+            controller: _passwordController,
+            obscureText: true,
+            cursorColor: Colors.black,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            decoration: InputDecoration(
+              labelText: 'Senha',
+              floatingLabelBehavior: FloatingLabelBehavior.auto,
+              filled: true,
+              fillColor: Colors.grey.shade100,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 14,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide.none,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: const BorderSide(color: Colors.black87, width: 1.4),
+              ),
+            ),
+          ),
+        ],
+      ),
+
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context, false),
+          style: TextButton.styleFrom(
+            foregroundColor: Colors.black54,
+            textStyle: const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          child: const Text('Cancelar'),
+        ),
+
+        ElevatedButton(
+          onPressed: _isLoading ? null : _confirmPassword,
+          style: ElevatedButton.styleFrom(
+            elevation: 0,
+            backgroundColor: Colors.black,
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+          ),
+          child: _isLoading
+              ? const SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.white,
+                  ),
+                )
+              : const Text(
+                  'Confirmar',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.2,
+                  ),
+                ),
+        ),
+      ],
+    );
+  }
+}
 
 class ProductDetailsModal extends StatefulWidget {
   final Product product;
@@ -24,32 +207,26 @@ class _ProductDetailsModalState extends State<ProductDetailsModal>
     with TickerProviderStateMixin {
   late final TextEditingController _nameController;
   late final TextEditingController _minStockController;
-
   String _selectedCategory = '';
   bool _editName = false;
   bool _editMinStock = false;
   bool _hasChanges = false;
   bool _saving = false;
-
   String? _imageUrl;
   bool _loadingImage = true;
   bool _imageError = false;
-
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
 
   @override
   void initState() {
     super.initState();
-
     _nameController = TextEditingController(text: widget.product.name);
     _minStockController = TextEditingController(
       text: widget.product.minStock.toString(),
     );
-
     _nameController.addListener(_checkChanges);
     _minStockController.addListener(_checkChanges);
-
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
@@ -57,7 +234,6 @@ class _ProductDetailsModalState extends State<ProductDetailsModal>
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
-
     _loadImage();
     _animationController.forward();
   }
@@ -70,7 +246,6 @@ class _ProductDetailsModalState extends State<ProductDetailsModal>
       });
       return;
     }
-
     try {
       if (widget.product.image.startsWith('http')) {
         _imageUrl = widget.product.image;
@@ -78,7 +253,6 @@ class _ProductDetailsModalState extends State<ProductDetailsModal>
         final storageRef = FirebaseStorage.instance.ref(widget.product.image);
         _imageUrl = await storageRef.getDownloadURL();
       }
-
       setState(() {
         _loadingImage = false;
         _imageError = false;
@@ -96,7 +270,6 @@ class _ProductDetailsModalState extends State<ProductDetailsModal>
     final categoryChanged = _selectedCategory != widget.product.category;
     final minStockChanged =
         _minStockController.text.trim() != widget.product.minStock.toString();
-
     setState(() {
       _hasChanges = nameChanged || categoryChanged || minStockChanged;
     });
@@ -113,7 +286,6 @@ class _ProductDetailsModalState extends State<ProductDetailsModal>
   @override
   Widget build(BuildContext context) {
     final totalCost = widget.product.quantity * widget.product.cost;
-
     return FadeTransition(
       opacity: _fadeAnimation,
       child: DraggableScrollableSheet(
@@ -124,7 +296,9 @@ class _ProductDetailsModalState extends State<ProductDetailsModal>
           return Container(
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(28),
+              ),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.1),
@@ -184,6 +358,8 @@ class _ProductDetailsModalState extends State<ProductDetailsModal>
                       const Divider(height: 1, color: Color(0xFFE0E0E0)),
                       const SizedBox(height: 16),
                       _barcodeSection(),
+                      const SizedBox(height: 32),
+                      _deleteButtonScrollable(), // Moved here to be scrollable
                       const SizedBox(height: 32),
                     ],
                   ),
@@ -245,39 +421,39 @@ class _ProductDetailsModalState extends State<ProductDetailsModal>
                   ),
                 )
               : _imageError || _imageUrl == null
-                  ? Container(
-                      color: Colors.grey.shade100,
-                      child: const Center(
-                        child: Icon(
-                          Icons.inventory_2_outlined,
-                          size: 48,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    )
-                  : CachedNetworkImage(
-                      imageUrl: _imageUrl!,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Container(
-                        color: Colors.grey.shade100,
-                        child: const Center(
-                          child: CircularProgressIndicator(
-                            strokeWidth: 3,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ),
-                      errorWidget: (context, url, error) => Container(
-                        color: Colors.grey.shade100,
-                        child: const Center(
-                          child: Icon(
-                            Icons.broken_image,
-                            size: 48,
-                            color: Colors.redAccent,
-                          ),
-                        ),
+              ? Container(
+                  color: Colors.grey.shade100,
+                  child: const Center(
+                    child: Icon(
+                      Icons.inventory_2_outlined,
+                      size: 48,
+                      color: Colors.grey,
+                    ),
+                  ),
+                )
+              : CachedNetworkImage(
+                  imageUrl: _imageUrl!,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Container(
+                    color: Colors.grey.shade100,
+                    child: const Center(
+                      child: CircularProgressIndicator(
+                        strokeWidth: 3,
+                        color: Colors.grey,
                       ),
                     ),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    color: Colors.grey.shade100,
+                    child: const Center(
+                      child: Icon(
+                        Icons.broken_image,
+                        size: 48,
+                        color: Colors.redAccent,
+                      ),
+                    ),
+                  ),
+                ),
         ),
       ),
     );
@@ -363,7 +539,9 @@ class _ProductDetailsModalState extends State<ProductDetailsModal>
                     duration: const Duration(milliseconds: 200),
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: isEditing ? Colors.grey.shade100 : Colors.grey.shade100,
+                      color: isEditing
+                          ? Colors.grey.shade100
+                          : Colors.grey.shade100,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
@@ -386,13 +564,11 @@ class _ProductDetailsModalState extends State<ProductDetailsModal>
       stream: CategoriesFirestore.streamCategories(widget.uid),
       builder: (context, snapshot) {
         final categories = snapshot.data?.map((c) => c.name).toList() ?? [];
-
         if (_selectedCategory.isEmpty && categories.isNotEmpty) {
           _selectedCategory = categories.contains(widget.product.category)
               ? widget.product.category
               : categories.first;
         }
-
         return Padding(
           padding: const EdgeInsets.only(bottom: 20),
           child: Column(
@@ -420,18 +596,22 @@ class _ProductDetailsModalState extends State<ProductDetailsModal>
                   ],
                 ),
                 child: DropdownButtonFormField<String>(
-                  initialValue: _selectedCategory.isEmpty ? null : _selectedCategory,
+                  initialValue: _selectedCategory.isEmpty
+                      ? null
+                      : _selectedCategory,
                   items: categories
-                      .map((cat) => DropdownMenuItem(
-                            value: cat,
-                            child: Text(
-                              cat,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
+                      .map(
+                        (cat) => DropdownMenuItem(
+                          value: cat,
+                          child: Text(
+                            cat,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
                             ),
-                          ))
+                          ),
+                        ),
+                      )
                       .toList(),
                   onChanged: (val) {
                     if (val != null) {
@@ -442,13 +622,13 @@ class _ProductDetailsModalState extends State<ProductDetailsModal>
                     }
                   },
                   decoration: const InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
                     border: InputBorder.none,
                   ),
-                  icon: Icon(
-                    Icons.arrow_drop_down,
-                    color: Colors.black,
-                  ),
+                  icon: Icon(Icons.arrow_drop_down, color: Colors.black),
                 ),
               ),
             ],
@@ -535,11 +715,7 @@ class _ProductDetailsModalState extends State<ProductDetailsModal>
       children: [
         Row(
           children: [
-            Icon(
-              Icons.qr_code,
-              size: 20,
-              color: Colors.black,
-            ),
+            Icon(Icons.qr_code, size: 20, color: Colors.black),
             const SizedBox(width: 8),
             Text(
               'Código de barras',
@@ -594,12 +770,28 @@ class _ProductDetailsModalState extends State<ProductDetailsModal>
                 )
               : const Text(
                   'Salvar alterações',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                 ),
         ),
+      ),
+    ),
+  );
+
+  Widget _deleteButtonScrollable() => SizedBox(
+    width: double.infinity,
+    height: 56,
+    child: ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        elevation: 8,
+        shadowColor: Colors.black.withValues(alpha: 0.3),
+      ),
+      onPressed: _deleteProduct,
+      child: const Text(
+        'Excluir produto',
+        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
       ),
     ),
   );
@@ -610,7 +802,7 @@ class _ProductDetailsModalState extends State<ProductDetailsModal>
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Estoque mínimo inválido'),
-          backgroundColor: Colors.red.shade600,
+          backgroundColor: Colors.black, // Changed from red to black
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -619,9 +811,7 @@ class _ProductDetailsModalState extends State<ProductDetailsModal>
       );
       return;
     }
-
     setState(() => _saving = true);
-
     await ProductsFirestore.updateProduct(
       uid: widget.uid,
       productId: widget.product.id,
@@ -629,7 +819,47 @@ class _ProductDetailsModalState extends State<ProductDetailsModal>
       category: _selectedCategory,
       minStock: minStock,
     );
-
     if (mounted) Navigator.pop(context);
+  }
+
+  Future<void> _deleteProduct() async {
+    // Refatorado: Abrir diretamente o ConfirmationPassModal
+    final passwordConfirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => const ConfirmationPassModal(),
+    );
+    if (passwordConfirmed == true) {
+      await ProductsFirestore.deleteProduct(
+        uid: widget.uid,
+        productId: widget.product.id,
+      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                Icon(Icons.check_circle, color: Colors.white, size: 24),
+                const SizedBox(width: 12),
+                const Text(
+                  'Produto excluído com sucesso',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+            backgroundColor: Colors.black,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+        Navigator.pop(context);
+      }
+    }
   }
 }
