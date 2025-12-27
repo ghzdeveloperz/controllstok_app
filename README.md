@@ -1,2 +1,1 @@
-1. código de barras dublicados ex: ese código de barras está associado ao produto X 
-2. agora campo de nome tem primeira letra mauiscula e espçados no começo e final são removidos, máximo de 100 caracteres
+1. alterei toda interface UX/UI Premium

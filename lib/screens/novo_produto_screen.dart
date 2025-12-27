@@ -466,46 +466,39 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F8F8),
+      backgroundColor: Colors.white, // Fundo branco para minimalismo
       appBar: AppBar(
         backgroundColor: Colors.white,
-        elevation: 1,
+        elevation: 0, // Sem sombra para limpeza
         centerTitle: true,
         title: Text(
           'Novo Produto',
           style: GoogleFonts.poppins(
-            fontWeight: FontWeight.w700,
-            fontSize: 28,
+            fontWeight: FontWeight.w600, // Peso médio para hierarquia
+            fontSize: 20, // Tamanho reduzido para sutileza
             color: Colors.black,
-            shadows: [
-              Shadow(
-                color: Colors.black.withOpacity(0.30),
-                offset: const Offset(0, 3),
-                blurRadius: 10,
-              ),
-            ],
           ),
         ),
+        iconTheme: const IconThemeData(color: Colors.black), // Ícones pretos
       ),
-
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(22),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16), // Espaçamento generoso
           child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _imagePicker(),
-                const SizedBox(height: 30),
+                const SizedBox(height: 32), // Espaçamento aumentado
                 _sectionTitle('Informações do produto'),
-                const SizedBox(height: 18),
-                _productNameInput(), // Substituído por widget específico
-                const SizedBox(height: 16),
-                _barcodeInput(), // campo com scanner modal
-                const SizedBox(height: 16),
+                const SizedBox(height: 24),
+                _productNameInput(),
+                const SizedBox(height: 20),
+                _barcodeInput(),
+                const SizedBox(height: 20),
                 _categoryDropdown(),
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
                 Row(
                   children: [
                     Expanded(
@@ -527,10 +520,8 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 40),
-                _isSaving
-                    ? const Center(child: CircularProgressIndicator())
-                    : _saveButton(),
+                const SizedBox(height: 48), // Espaçamento maior antes do botão
+                _isSaving ? _loadingIndicator() : _saveButton(),
               ],
             ),
           ),
@@ -546,16 +537,16 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
       child: GestureDetector(
         onTap: _pickImage,
         child: Container(
-          width: 250,
-          height: 250,
+          width: 200, // Tamanho reduzido para minimalismo
+          height: 200,
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(28),
+            color: Colors.grey.shade50, // Cinza claro para profundidade
+            borderRadius: BorderRadius.circular(12), // Bordas suaves
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.08),
-                blurRadius: 15,
-                offset: const Offset(0, 5),
+                color: Colors.black.withOpacity(0.05), // Sombra sutil
+                blurRadius: 8,
+                offset: const Offset(0, 2),
               ),
             ],
             image: _selectedImage != null
@@ -571,15 +562,16 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
                   children: [
                     Icon(
                       Icons.camera_alt_outlined,
-                      size: 38,
-                      color: Colors.grey.shade600,
+                      size: 32, // Ícone menor
+                      color: Colors.grey.shade400, // Cinza neutro
                     ),
                     const SizedBox(height: 8),
                     Text(
                       'Adicionar imagem',
                       style: GoogleFonts.poppins(
-                        fontSize: 13,
+                        fontSize: 14,
                         color: Colors.grey.shade600,
+                        fontWeight: FontWeight.w400,
                       ),
                     ),
                   ],
@@ -593,7 +585,11 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
   Widget _sectionTitle(String title) {
     return Text(
       title,
-      style: GoogleFonts.poppins(fontSize: 17, fontWeight: FontWeight.w600),
+      style: GoogleFonts.poppins(
+        fontSize: 16,
+        fontWeight: FontWeight.w600, // Peso para hierarquia
+        color: Colors.black,
+      ),
     );
   }
 
@@ -606,8 +602,15 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: GoogleFonts.poppins(fontSize: 14)),
-        const SizedBox(height: 6),
+        Text(
+          label,
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: Colors.grey.shade700, // Cinza para subtítulos
+          ),
+        ),
+        const SizedBox(height: 8),
         TextFormField(
           controller: controller,
           keyboardType: keyboardType,
@@ -616,11 +619,23 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
           decoration: InputDecoration(
             hintText: hint,
             filled: true,
-            fillColor: Colors.white,
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
-            contentPadding: const EdgeInsets.symmetric(
-              vertical: 14,
-              horizontal: 16,
+            fillColor: Colors.grey.shade50, // Fundo cinza claro para profundidade
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8), // Bordas suaves
+              borderSide: BorderSide(color: Colors.grey.shade300, width: 1), // Borda sutil
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: Colors.black, width: 1.5), // Foco preto sutil
+            ),
+            contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+            hintStyle: GoogleFonts.poppins(
+              color: Colors.grey.shade500,
+              fontWeight: FontWeight.w400,
             ),
           ),
         ),
@@ -632,13 +647,20 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Nome do produto', style: GoogleFonts.poppins(fontSize: 14)),
-        const SizedBox(height: 6),
+        Text(
+          'Nome do produto',
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: Colors.grey.shade700,
+          ),
+        ),
+        const SizedBox(height: 8),
         TextFormField(
           controller: _nameController,
-                    focusNode: _nameFocusNode,
+          focusNode: _nameFocusNode,
           keyboardType: TextInputType.text,
-          maxLength: 100, // Limite máximo
+          maxLength: 50, // Limite máximo
           inputFormatters: [
             FilteringTextInputFormatter.allow(
               RegExp(r'[a-zA-Z0-9\s\-_.,]'), // Permite letras, números, espaços e símbolos comuns; bloqueia controle chars
@@ -655,8 +677,8 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
             if (normalized.length < 2) {
               return 'Nome deve ter pelo menos 2 caracteres';
             }
-            if (normalized.length > 100) {
-              return 'Nome deve ter no máximo 100 caracteres';
+            if (normalized.length > 50) {
+              return 'Nome deve ter no máximo 50 caracteres';
             }
             if (_isDuplicateName) {
               return 'Nome já existe. Escolha outro.'; // Bloqueia salvamento se duplicata
@@ -666,15 +688,30 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
           decoration: InputDecoration(
             hintText: 'Ex: Arroz 5kg',
             filled: true,
-            fillColor: Colors.white,
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
-            contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+            fillColor: Colors.grey.shade50,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: Colors.black, width: 1.5),
+            ),
+            contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
             counterText: '', // Remove contador padrão para usar helper customizado
             helperText: _buildHelperText(), // Feedback não intrusivo
             helperStyle: GoogleFonts.poppins(fontSize: 12, color: Colors.grey.shade600),
             suffixIcon: _isDuplicateName
-                ? const Icon(Icons.warning, color: Colors.orange) // Aviso visual amigável
+                ? Icon(Icons.warning, color: Colors.grey.shade600) // Ícone cinza para aviso sutil
                 : null,
+            hintStyle: GoogleFonts.poppins(
+              color: Colors.grey.shade500,
+              fontWeight: FontWeight.w400,
+            ),
           ),
         ),
       ],
@@ -683,10 +720,10 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
 
   String _buildHelperText() {
     final length = _normalizeProductName(_nameController.text).length;
-    final remaining = 100 - length;
-    String text = '$length/100 caracteres';
+    final remaining = 50 - length;
+    String text = '$length/50 caracteres';
     if (remaining < 10 && remaining >= 0) {
-      text += ' (quase no limite)';
+      text += ' (limite atingido)';
     }
     if (_isDuplicateName) {
       text += '\n$_duplicateNameMessage';
@@ -698,8 +735,15 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Código de barras', style: GoogleFonts.poppins(fontSize: 14)),
-        const SizedBox(height: 6),
+        Text(
+          'Código de barras',
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: Colors.grey.shade700,
+          ),
+        ),
+        const SizedBox(height: 8),
         Row(
           children: [
             Expanded(
@@ -711,27 +755,38 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
                 decoration: InputDecoration(
                   hintText: 'Ex: 7894900011517',
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: Colors.grey.shade50,
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
                   ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 14,
-                    horizontal: 16,
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.black, width: 1.5),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                  hintStyle: GoogleFonts.poppins(
+                    color: Colors.grey.shade500,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 12),
             GestureDetector(
               onTap: _openBarcodeScanner,
               child: Container(
-                padding: const EdgeInsets.all(12),
+                width: 48,
+                height: 48,
                 decoration: BoxDecoration(
                   color: Colors.black,
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Icon(Icons.qr_code_scanner, color: Colors.white),
+                child: const Icon(Icons.qr_code_scanner, color: Colors.white, size: 24),
               ),
             ),
           ],
@@ -746,31 +801,45 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Categoria', style: GoogleFonts.poppins(fontSize: 14)),
-        const SizedBox(height: 6),
+        Text(
+          'Categoria',
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: Colors.grey.shade700,
+          ),
+        ),
+        const SizedBox(height: 8),
         StreamBuilder<List<Category>>(
           stream: CategoriesFirestore.streamCategories(widget.uid),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 14,
-                  horizontal: 16,
-                ),
+                height: 56,
+                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Colors.grey.shade300),
+                  color: Colors.grey.shade50,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.grey.shade300, width: 1),
                 ),
-                child: const Row(
+                child: Row(
                   children: [
                     SizedBox(
                       width: 20,
                       height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.grey.shade600,
+                      ),
                     ),
-                    SizedBox(width: 12),
-                    Text('Carregando categorias...'),
+                    const SizedBox(width: 12),
+                    Text(
+                      'Carregando categorias...',
+                      style: GoogleFonts.poppins(
+                        color: Colors.grey.shade600,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
                   ],
                 ),
               );
@@ -781,16 +850,16 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
                 Expanded(
                   flex: 4,
                   child: Container(
-                    height:
-                        52, // Altura ajustada para ficar alinhado com código de barras
+                    height: 56,
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
+                      color: Colors.grey.shade50,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.grey.shade300, width: 1),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color.fromRGBO(0, 0, 0, 0.05),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
+                          color: Colors.black.withOpacity(0.02),
+                          blurRadius: 4,
+                          offset: const Offset(0, 1),
                         ),
                       ],
                     ),
@@ -800,14 +869,15 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
                         children: [
                           Icon(
                             Icons.category_outlined,
-                            color: Colors.grey.shade600,
+                            color: Colors.grey.shade500,
                             size: 20,
                           ),
                           const SizedBox(width: 8),
                           Text(
                             'Selecione a categoria',
                             style: GoogleFonts.poppins(
-                              color: Colors.grey.shade600,
+                              color: Colors.grey.shade500,
+                              fontWeight: FontWeight.w400,
                             ),
                           ),
                         ],
@@ -820,14 +890,15 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
                                 children: [
                                   Icon(
                                     Icons.label_outline,
-                                    color: Colors.black87,
+                                    color: Colors.black,
                                     size: 18,
                                   ),
                                   const SizedBox(width: 8),
                                   Text(
                                     c.name,
                                     style: GoogleFonts.poppins(
-                                      color: Colors.black87,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w400,
                                     ),
                                   ),
                                 ],
@@ -838,39 +909,32 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
                       onChanged: (v) => setState(() => _selectedCategory = v),
                       validator: (v) =>
                           v == null ? 'Selecione uma categoria' : null,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         filled: true,
                         fillColor: Colors.transparent,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: BorderSide.none,
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 14,
-                          horizontal: 16,
-                        ),
-                        suffixIcon: Icon(
-                          Icons.arrow_drop_down,
-                          color: Colors.grey.shade600,
-                        ),
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                       ),
                       dropdownColor: Colors.white,
-                      style: GoogleFonts.poppins(color: Colors.black87),
-                      icon: const SizedBox.shrink(),
+                      style: GoogleFonts.poppins(color: Colors.black, fontWeight: FontWeight.w400),
+                      icon: Icon(
+                        Icons.arrow_drop_down,
+                        color: Colors.grey.shade500,
+                      ),
                     ),
                   ),
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: 12),
                 GestureDetector(
                   onTap: _showAddCategoryDialog,
                   child: Container(
-                    height: 50, // um pouco menor que o dropdown
-                    width: 50, // quadrado proporcional
+                    width: 48,
+                    height: 48,
                     decoration: BoxDecoration(
                       color: Colors.black,
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Icon(Icons.add, color: Colors.white),
+                    child: const Icon(Icons.add, color: Colors.white, size: 24),
                   ),
                 ),
               ],
@@ -888,6 +952,19 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
     );
   }
 
+  Widget _loadingIndicator() {
+    return const Center(
+      child: SizedBox(
+        width: 24,
+        height: 24,
+        child: CircularProgressIndicator(
+          strokeWidth: 2,
+          color: Colors.black,
+        ),
+      ),
+    );
+  }
+
   Widget _saveButton() {
     return SizedBox(
       width: double.infinity,
@@ -897,25 +974,22 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.black,
           foregroundColor: Colors.white,
-          disabledBackgroundColor: Colors.black38,
+          disabledBackgroundColor: Colors.grey.shade400,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(8),
           ),
           textStyle: GoogleFonts.poppins(
             fontSize: 16,
             fontWeight: FontWeight.w600,
           ),
+          elevation: 0, // Sem sombra para minimalismo
         ),
-        child: _isSaving
-            ? const SizedBox(
-                width: 22,
-                height: 22,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: Colors.white,
-                ),
-              )
-            : const Text('Salvar Produto'),
+        child: Text(
+          'Salvar Produto',
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
       ),
     );
   }
