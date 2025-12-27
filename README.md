@@ -1,3 +1,3 @@
-1. alterei toda interface UX/UI Premium
-2. campos mais esilizados e mais quadradinhos mais com bordas arredondadas ainda
-3. limite de caracteres mais estilizados em Nome do Produto
+1. excluir conta
+2. modal adicionar senha pra colocar senha do usuário
+3. caso não for, dá senha inválida, caso contrário exclui a conta
