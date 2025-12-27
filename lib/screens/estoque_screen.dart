@@ -1,8 +1,8 @@
 // lib/screens/estoque_screen.dart
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../firebase/firestore/products_firestore.dart';
 import '../firebase/firestore/categories_firestore.dart';
@@ -11,7 +11,6 @@ import '../firebase/firestore/users_firestore.dart';
 import 'widgets/product_card.dart';
 import 'models/product.dart';
 import 'models/category.dart';
-import 'alertas_screen.dart';
 
 class EstoqueScreen extends StatefulWidget {
   final String uid;
@@ -51,16 +50,16 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
   Widget _buildHeader() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          StreamBuilder<String?>(
-            stream: UsersFirestore.streamLogin(
-              widget.uid,
-            ).map((snapshot) => snapshot.data()?['company'] as String?),
-            builder: (context, snapshot) {
-              final company = snapshot.data;
-              return Column(
+      child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+        stream: UsersFirestore.streamLogin(widget.uid),
+        builder: (context, snapshot) {
+          final data = snapshot.data?.data();
+          final company = data?['company'] as String?;
+          final email = data?['email'] as String? ?? '';
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
@@ -71,7 +70,7 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
                       color: Colors.black87,
                       shadows: [
                         Shadow(
-                          color: Colors.black.withOpacity(0.15),
+                          color: Colors.black.withValues(alpha: 0.15),
                           offset: const Offset(0, 3),
                           blurRadius: 6,
                         ),
@@ -87,78 +86,34 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
                     ),
                   ),
                 ],
-              );
-            },
-          ),
-          // Ícone de notificações sem pulsar
-          GestureDetector(
-            onTap: () {
-              showGeneralDialog(
-                context: context,
-                barrierDismissible: false,
-                barrierLabel: 'Alertas',
-                barrierColor: Colors.transparent,
-                transitionDuration: const Duration(milliseconds: 260),
-                pageBuilder: (context, animation, secondaryAnimation) {
-                  final fadeAnimation = CurvedAnimation(
-                    parent: animation,
-                    curve: Curves.easeOutQuad,
-                  );
-                  final slideAnimation =
-                      Tween<Offset>(
-                        begin: const Offset(0.9, 0),
-                        end: Offset.zero,
-                      ).animate(
-                        CurvedAnimation(
-                          parent: animation,
-                          curve: Curves.easeOutQuart,
-                        ),
-                      );
-
-                  return Stack(
-                    children: [
-                      FadeTransition(
-                        opacity: fadeAnimation,
-                        child: GestureDetector(
-                          onTap: () => Navigator.pop(context),
-                          child: BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-                            child: Container(
-                              color: const Color.fromRGBO(0, 0, 0, 0.32),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: SlideTransition(
-                          position: slideAnimation,
-                          child: SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.85,
-                            child: DefaultTextStyle(
-                              style: const TextStyle(
-                                decoration: TextDecoration.none,
-                                color: Colors.black,
-                                fontSize: 14,
-                              ),
-                              child: AlertasScreen(uid: widget.uid),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                },
-                transitionBuilder: (_, __, ___, child) => child,
-              );
-            },
-            child: const Icon(
-              Icons.notifications_none_outlined,
-              size: 28,
-              color: Colors.black87,
-            ),
-          ),
-        ],
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.2),
+                      blurRadius: 5,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: CircleAvatar(
+                  radius: 20, // Pequeno para o canto superior direito
+                  backgroundColor: Colors.black87,
+                  child: Text(
+                    email.isNotEmpty ? email[0].toUpperCase() : 'U',
+                    style: const TextStyle(
+                      fontSize: 16, // Ajustado para o tamanho menor
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -206,7 +161,7 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               scrollDirection: Axis.horizontal,
               itemCount: categories.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 10),
+              separatorBuilder: (_, _) => const SizedBox(width: 10),
               itemBuilder: (context, index) {
                 final category = categories[index];
                 final isSelected = category.name == _selectedCategory;
@@ -264,7 +219,7 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
             _cachedImages[product.id] = provider;
             provider
                 .resolve(const ImageConfiguration())
-                .addListener(ImageStreamListener((_, __) {}));
+                .addListener(ImageStreamListener((_, _) {}));
           }
         }
 
