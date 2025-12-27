@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart'; // For copying to clipboard
 import 'package:intl/intl.dart'; // For date formatting
+import 'package:cloud_firestore/cloud_firestore.dart'; // Adicionado para Firestore
 
 import '../login_screen.dart';
 
@@ -136,7 +137,7 @@ class _PerfilScreenState extends State<PerfilScreen>
             borderRadius: BorderRadius.circular(16),
           ),
           title: Text(
-            'Excluir Conta',
+            'Desativar Conta',
             style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
           ),
           content: Form(
@@ -145,7 +146,7 @@ class _PerfilScreenState extends State<PerfilScreen>
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Para excluir sua conta, confirme sua senha. Esta ação é irreversível.',
+                  'Para desativar sua conta, confirme sua senha. Esta ação é irreversível.',
                   style: GoogleFonts.poppins(),
                 ),
                 const SizedBox(height: 16),
@@ -205,15 +206,15 @@ class _PerfilScreenState extends State<PerfilScreen>
                           password: passwordController.text,
                         );
                         await _user!.reauthenticateWithCredential(credential);
-                        await _user!.delete();
 
-                        if (!mounted) return;
-                        Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(
-                            builder: (_) => const LoginScreen(),
-                          ),
-                          (_) => false,
-                        );
+                        // Atualizar Firestore para marcar a conta como inativa
+                        await FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(_user!.uid)
+                            .update({'active': false});
+
+                        // Fazer logout após desativar a conta
+                        await _logout();
                       } catch (e) {
                         if (!mounted) return;
                         String message;
@@ -222,16 +223,14 @@ class _PerfilScreenState extends State<PerfilScreen>
                           message =
                               'Senha incorreta. Verifique e tente novamente.';
                         } else {
-                          message = 'Erro ao excluir a conta. Senha incorreta.';
+                          message = 'Erro ao desativar a conta.';
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(message),
                               backgroundColor: Colors.black87,
                             ),
                           );
-                          Navigator.of(
-                            context,
-                          ).pop(); // Close dialog on other errors
+                          Navigator.of(context).pop(); // Close dialog on other errors
                           return;
                         }
                         setState(() {
@@ -256,7 +255,7 @@ class _PerfilScreenState extends State<PerfilScreen>
                       ),
                     )
                   : Text(
-                      'Excluir',
+                      'Desativar',
                       style: GoogleFonts.poppins(color: Colors.white),
                     ),
             ),
@@ -700,7 +699,7 @@ class _PerfilScreenState extends State<PerfilScreen>
     );
   }
 
-  Widget _buildSecuritySection() {
+    Widget _buildSecuritySection() {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -739,7 +738,7 @@ class _PerfilScreenState extends State<PerfilScreen>
           const SizedBox(height: 12),
           _buildSecurityButton(
             Icons.delete_forever,
-            'Excluir Conta',
+            'Desativar Conta',
             Colors.red.shade800,
             _showDeleteAccountDialog,
           ),
@@ -784,3 +783,5 @@ class _PerfilScreenState extends State<PerfilScreen>
     );
   }
 }
+
+ 
