@@ -11,11 +11,13 @@ import '../screens/models/salve_modal.dart';
 class RelatoriosForProducts extends StatefulWidget {
   final String productId;
   final String uid;
+  final DateTime date; // ✅ DATA DO RELATÓRIO
 
   const RelatoriosForProducts({
     super.key,
     required this.productId,
     required this.uid,
+    required this.date, // ✅ RECEBE A DATA
   });
 
   @override
@@ -37,7 +39,9 @@ class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
 
     _uid = widget.uid;
     _productId = widget.productId;
-    _displayDate = DateTime.now();
+
+    // ✅ USA DIRETO A DATA VINDO DA TELA ANTERIOR
+    _displayDate = widget.date;
 
     _initializeLocale();
 
@@ -45,6 +49,8 @@ class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
       if (mounted) setState(() {});
     });
   }
+
+
 
   @override
   void dispose() {
