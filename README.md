@@ -1,3 +1,3 @@
 Mudanças: 
-1. Gráfico pizza porcentual
-2. gerador de cor
+1. adicionei alertas na home
+2. estilizei mais Alertas

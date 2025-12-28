@@ -7,7 +7,7 @@ import 'estoque_screen.dart';
 import 'novo_produto_screen.dart';
 import 'scanner_screen.dart';
 import 'relatorios_screen.dart';
-import 'config_screen.dart';
+import 'alertas_screen.dart';
 import '../notifications/notification_service.dart';
 import 'login_screen.dart';
 import '../screens/widgets/desactive_acount.dart'; // CustomAlertDialog
@@ -81,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ), // 1 Novo Produto
       const SizedBox(), // 2 Scanner (abre modal)
       const RelatoriosScreen(), // 3 Relatórios
-      const ConfigScreen(), // 4 Configurações
+      AlertasScreen(uid: user.uid), // 4 Alertas
     ];
 
     await _initNotifications();
@@ -215,11 +215,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-        child: const Icon(
-          Icons.qr_code_scanner,
-          color: Colors.white,
-          size: 28,
-        ),
+        child: const Icon(Icons.qr_code_scanner, color: Colors.white, size: 28),
       ),
     );
   }
@@ -256,7 +252,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   _navItem(icon: Icons.add_business_outlined, index: 1),
                   _scannerButton(),
                   _navItem(icon: Icons.bar_chart, index: 3),
-                  _navItem(icon: Icons.settings, index: 4),
+                  _navItem(icon: Icons.notifications, index: 4),
                 ],
               ),
             ],

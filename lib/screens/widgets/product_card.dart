@@ -161,7 +161,7 @@ class _ProductCardState extends State<ProductCard> with TickerProviderStateMixin
         bottomRight: Radius.circular(24),
       ),
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8), // Blur aumentado para efeito glassmorphism mais premium
+        filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1), // Blur aumentado para efeito glassmorphism mais premium
         child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
