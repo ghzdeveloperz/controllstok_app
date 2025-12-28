@@ -2,36 +2,41 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../firebase/firestore/movements_days.dart';
 import '../screens/models/salve_modal.dart';
-import 'relatorios_for_products.dart';
 
-class RelatoriosDays extends StatefulWidget {
-  const RelatoriosDays({super.key});
+class RelatoriosForProducts extends StatefulWidget {
+  final String productId;
+  final String uid;
+
+  const RelatoriosForProducts({
+    super.key,
+    required this.productId,
+    required this.uid,
+  });
 
   @override
-  State<RelatoriosDays> createState() => _RelatoriosDaysState();
+  State<RelatoriosForProducts> createState() => _RelatoriosForProductsState();
 }
 
-class _RelatoriosDaysState extends State<RelatoriosDays> {
+class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
   final MovementsDaysFirestore _movementsService = MovementsDaysFirestore();
 
   bool _localeReady = false;
   late DateTime _displayDate;
   late String _uid;
+  late String _productId;
   Timer? _timer;
-  String?
-  _selectedProductId; // Para controlar qual card mostrar ao pressionar um ponto
 
   @override
   void initState() {
     super.initState();
 
-    _uid = FirebaseAuth.instance.currentUser!.uid;
+    _uid = widget.uid;
+    _productId = widget.productId;
     _displayDate = DateTime.now();
 
     _initializeLocale();
@@ -115,6 +120,23 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFFAFAFA),
+      appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+        title: Text(
+          'Relatório do Produto',
+          style: GoogleFonts.poppins(
+            color: const Color.fromARGB(255, 0, 0, 0),
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Color.fromARGB(255, 0, 0, 0),
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
       body: Column(
         children: [
           _buildTopActions(),
@@ -216,12 +238,16 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
           );
         }
 
-        final movements = snapshot.data!;
+        final allMovements = snapshot.data!;
+        final movements = allMovements
+            .where((m) => m.productId == _productId)
+            .toList();
+
         if (movements.isEmpty) {
           return _buildEmptyState();
         }
 
-        return _buildGroupedList(movements);
+        return _buildProductReport(movements);
       },
     );
   }
@@ -295,14 +321,9 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
     );
   }
 
-  Widget _buildGroupedList(List<Movement> movements) {
-    final Map<String, List<Movement>> grouped = {};
+  Widget _buildProductReport(List<Movement> movements) {
+    final product = movements.first;
 
-    for (final m in movements) {
-      grouped.putIfAbsent(m.productId, () => []).add(m);
-    }
-
-    // Calcular totais para o gráfico
     final totalAdd = movements
         .where((e) => e.type == 'add')
         .fold<int>(0, (p, e) => p + e.quantity);
@@ -310,9 +331,14 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
         .where((e) => e.type == 'remove')
         .fold<int>(0, (p, e) => p + e.quantity);
 
-    // Preparar dados para o gráfico de linha (quantidade cumulativa ao longo do tempo para Entrada e Saída separadamente)
+    final currentStock = totalAdd - totalRemove;
+    final availability = currentStock > 0 ? 'Disponível' : 'Indisponível';
+
+    // Preparar dados para o gráfico de linha (quantidade cumulativa ao longo do tempo)
     final sortedMovements = movements
-      ..sort((a, b) => a.timestamp.compareTo(b.timestamp));
+      ..sort(
+        (a, b) => a.timestamp.compareTo(b.timestamp),
+      ); // Do antigo ao atual para o gráfico
     int cumulativeAdd = 0;
     int cumulativeRemove = 0;
     final List<FlSpot> spotsAdd = [];
@@ -329,7 +355,11 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
       }
     }
 
-    // Coletar todos os valores X únicos para ajustar o zoom e os títulos
+    // Lista detalhada ordenada do mais recente ao antigo
+    final detailedMovements = List<Movement>.from(movements)
+      ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+
+    // Coletar valores X únicos
     final Set<double> allX = {};
     for (final spot in spotsAdd) {
       allX.add(spot.x);
@@ -339,13 +369,11 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
     }
     final List<double> sortedX = allX.toList()..sort();
 
-    // Determinar minX e maxX para zoom nos dados (com padding de 1 hora)
     double minX = sortedX.isNotEmpty ? sortedX.first - 1 : 0;
     double maxX = sortedX.isNotEmpty ? sortedX.last + 1 : 24;
     minX = minX < 0 ? 0 : minX;
     maxX = maxX > 24 ? 24 : maxX;
 
-    // Determinar maxY automaticamente baseado no maior valor cumulativo
     final maxCumulative = [
       cumulativeAdd,
       cumulativeRemove,
@@ -365,22 +393,122 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
           textAlign: TextAlign.center,
         ),
       ),
-      // Gráfico de linha profissional com estilo premium aprimorado e responsivo
+      // Informações do Produto
       Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 8,
-          vertical: 8,
-        ), // Reduzido para mais espaço horizontal
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFFFFFFFF), Color(0xFFF0F4F8)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+              color: const Color(0xFFE8ECF2).withValues(alpha: 0.8),
+              width: 1.5,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.08),
+                blurRadius: 20,
+                offset: const Offset(0, 8),
+              ),
+              BoxShadow(
+                color: Colors.white.withValues(alpha: 0.9),
+                blurRadius: 15,
+                offset: const Offset(-4, -4),
+              ),
+              BoxShadow(
+                color: const Color(0xFF4A90E2).withValues(alpha: 0.05),
+                blurRadius: 25,
+                offset: const Offset(0, 12),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              // Imagem do produto com efeito premium
+              Container(
+                width: 70,
+                height: 70,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(14),
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF4A90E2), Color(0xFF357ABD)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.15),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(14),
+                  child: _buildProductImage(product.image),
+                ),
+              ),
+
+              const SizedBox(width: 20),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      product.productName,
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.w800,
+                        fontSize: 20,
+                        color: const Color(0xFF1A1A1A),
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        _premiumTag(
+                          'Estoque Atual: $currentStock',
+                          const Color(0xFFE8F5E8),
+                          const Color(0xFF2E7D32),
+                          Icons.inventory,
+                        ),
+                        const SizedBox(width: 12),
+                        _premiumTag(
+                          availability,
+                          availability == 'Disponível'
+                              ? const Color(0xFFE8F5E8)
+                              : const Color(0xFFFCE4EC),
+                          availability == 'Disponível'
+                              ? const Color(0xFF2E7D32)
+                              : const Color(0xFFD32F2F),
+                          availability == 'Disponível'
+                              ? Icons.check_circle
+                              : Icons.cancel,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      // Gráfico
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         child: LayoutBuilder(
           builder: (context, constraints) {
             final screenHeight = MediaQuery.of(context).size.height;
-            final chartHeight =
-                screenHeight *
-                0.4; // Ocupa 60% da altura da tela para mais espaço vertical
+            final chartHeight = screenHeight * 0.4;
             return Container(
               height: chartHeight,
-              width: constraints
-                  .maxWidth, // Usa largura máxima disponível para mais espaço horizontal
+              width: constraints.maxWidth,
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
                   colors: [Colors.white, Color(0xFFF8F9FA)],
@@ -403,14 +531,11 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
                 ],
               ),
               child: Padding(
-                padding: const EdgeInsets.all(
-                  16,
-                ), // Reduzido para otimizar espaço
+                padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
-                    // Título do gráfico
                     Text(
-                      'Movimentações Cumulativas ao Longo do Dia',
+                      'Movimentações Cumulativas de ${product.productName}',
                       style: GoogleFonts.poppins(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
@@ -418,22 +543,20 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 12), // Reduzido
-                    // Legenda
+                    const SizedBox(height: 12),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         _buildLegendItem('Entradas', const Color(0xFF27AE60)),
-                        const SizedBox(width: 20), // Reduzido
+                        const SizedBox(width: 20),
                         _buildLegendItem('Saídas', const Color(0xFFE74C3C)),
                       ],
                     ),
-                    const SizedBox(height: 12), // Reduzido
+                    const SizedBox(height: 12),
                     Expanded(
                       child: LineChart(
                         LineChartData(
                           lineBarsData: [
-                            // Linha para Entrada (verde sofisticado)
                             LineChartBarData(
                               spots: spotsAdd,
                               isCurved: true,
@@ -461,14 +584,13 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
                                 getDotPainter:
                                     (spot, percent, barData, index) =>
                                         FlDotCirclePainter(
-                                          radius: 6, // Reduzido para densidade
+                                          radius: 6,
                                           color: const Color(0xFF27AE60),
-                                          strokeWidth: 2, // Reduzido
+                                          strokeWidth: 2,
                                           strokeColor: Colors.white,
                                         ),
                               ),
                             ),
-                            // Linha para Saída (vermelho sofisticado)
                             LineChartBarData(
                               spots: spotsRemove,
                               isCurved: true,
@@ -496,9 +618,9 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
                                 getDotPainter:
                                     (spot, percent, barData, index) =>
                                         FlDotCirclePainter(
-                                          radius: 6, // Reduzido para densidade
+                                          radius: 6,
                                           color: const Color(0xFFE74C3C),
-                                          strokeWidth: 2, // Reduzido
+                                          strokeWidth: 2,
                                           strokeColor: Colors.white,
                                         ),
                               ),
@@ -517,8 +639,7 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
                               ),
                               sideTitles: SideTitles(
                                 showTitles: true,
-                                reservedSize:
-                                    40, // Otimizado para clareza sem excesso
+                                reservedSize: 40,
                                 interval: 2,
                                 getTitlesWidget: (value, meta) {
                                   if (value % 2 == 0 &&
@@ -538,13 +659,10 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
                               ),
                             ),
                             leftTitles: AxisTitles(
-                              // Removido axisNameWidget para eliminar título do eixo Y
                               sideTitles: SideTitles(
                                 showTitles: true,
-                                reservedSize: 50, // Otimizado
-                                interval:
-                                    maxY /
-                                    10, // Reduzido para densidade (mais linhas)
+                                reservedSize: 50,
+                                interval: maxY / 10,
                                 getTitlesWidget: (value, meta) {
                                   return Text(
                                     value.toInt().toString(),
@@ -569,19 +687,17 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
                             drawVerticalLine: true,
                             drawHorizontalLine: true,
                             verticalInterval: 2,
-                            horizontalInterval:
-                                maxY /
-                                10, // Reduzido para densidade (linhas mais próximas)
+                            horizontalInterval: maxY / 10,
                             getDrawingHorizontalLine: (value) {
                               return FlLine(
                                 color: const Color(0xFFECF0F1),
-                                strokeWidth: 0.5, // Reduzido para sutileza
+                                strokeWidth: 0.5,
                               );
                             },
                             getDrawingVerticalLine: (value) {
                               return FlLine(
                                 color: const Color(0xFFECF0F1),
-                                strokeWidth: 0.5, // Reduzido para sutileza
+                                strokeWidth: 0.5,
                               );
                             },
                           ),
@@ -614,9 +730,6 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
                                         )
                                         .toList();
                                     final movement = movementsForType[index];
-                                    setState(() {
-                                      _selectedProductId = movement.productId;
-                                    });
                                     final timeStr = DateFormat(
                                       'HH:mm',
                                     ).format(movement.timestamp);
@@ -656,8 +769,8 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
           },
         ),
       ),
-      const SizedBox(height: 16), // Reduzido para compactar
-      // Resumo aprimorado
+      const SizedBox(height: 16),
+      // Resumo Executivo do Produto
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Container(
@@ -668,35 +781,33 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
-            borderRadius: BorderRadius.circular(22),
+            borderRadius: BorderRadius.circular(20),
             border: Border.all(color: const Color(0xFFE0E0E0), width: 1.5),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.06),
-                blurRadius: 18,
-                offset: const Offset(0, 8),
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 15,
+                offset: const Offset(0, 6),
               ),
               BoxShadow(
-                color: Colors.white.withValues(alpha: 0.9),
-                blurRadius: 12,
-                offset: const Offset(-4, -4),
+                color: Colors.white.withValues(alpha: 0.8),
+                blurRadius: 10,
+                offset: const Offset(-3, -3),
               ),
             ],
           ),
           child: Column(
             children: [
               Text(
-                'Resumo Executivo do Dia',
+                'Resumo Executivo do Produto',
                 style: GoogleFonts.poppins(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
                   color: const Color(0xFF2C3E50),
-                  letterSpacing: 0.2,
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 20),
-
+              const SizedBox(height: 16),
               Row(
                 children: [
                   Expanded(
@@ -706,9 +817,7 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
                       const Color(0xFF27AE60),
                     ),
                   ),
-
                   _verticalDivider(),
-
                   Expanded(
                     child: _buildSummaryItem(
                       'Saídas',
@@ -716,9 +825,7 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
                       const Color(0xFFE74C3C),
                     ),
                   ),
-
                   _verticalDivider(),
-
                   Expanded(
                     child: _buildSummaryItem(
                       'Saldo Líquido',
@@ -732,13 +839,8 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
           ),
         ),
       ),
-
       const SizedBox(height: 16),
-      // Lista de produtos que entraram e saíram
-      // Lista de produtos que entraram e saíram
-      // Lista de produtos que entraram e saíram
-      // Lista de produtos que entraram e saíram
-      // Lista de produtos que entraram e saíram
+      // Lista de Movimentações Detalhadas
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Container(
@@ -768,7 +870,7 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Produtos Movimentados',
+                'Movimentações Detalhadas',
                 style: GoogleFonts.poppins(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
@@ -776,115 +878,56 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
                 ),
               ),
               const SizedBox(height: 16),
-              ...grouped.entries.map((entry) {
-                final productId = entry.key;
-                final productMovements = entry.value;
-                final product = productMovements.first;
-                final add = productMovements
-                    .where((e) => e.type == 'add')
-                    .fold<int>(0, (p, e) => p + e.quantity);
-                final remove = productMovements
-                    .where((e) => e.type == 'remove')
-                    .fold<int>(0, (p, e) => p + e.quantity);
+              ...detailedMovements.map((movement) {
+                final timeStr = DateFormat('HH:mm').format(movement.timestamp);
+                final type = movement.type == 'add' ? 'Entrada' : 'Saída';
+                final color = movement.type == 'add'
+                    ? const Color(0xFF27AE60)
+                    : const Color(0xFFE74C3C);
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 12),
                   child: Row(
                     children: [
-                      _buildProductImage(product.image),
-                      const SizedBox(width: 16),
+                      Container(
+                        width: 12,
+                        height: 12,
+                        decoration: BoxDecoration(
+                          color: color,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              product.productName,
+                              '$type: ${movement.quantity}',
                               style: GoogleFonts.poppins(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
                                 color: const Color(0xFF2C3E50),
                               ),
                             ),
-                            const SizedBox(height: 8),
-                            Row(
-                              children: [
-                                if (add > 0)
-                                  _tag(
-                                    'Entradas: $add',
-                                    const Color(0xFFD5F4E6),
-                                    const Color(0xFF27AE60),
-                                  ),
-                                if (remove > 0)
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 8),
-                                    child: _tag(
-                                      'Saídas: $remove',
-                                      const Color(0xFFFADBD8),
-                                      const Color(0xFFE74C3C),
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      // Ícone de redirecionamento como botão premium na paleta preto e branco
-                      Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [Color(0xFF1A1A1A), Color(0xFF424242)],
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.1),
-                              blurRadius: 6,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: IconButton(
-                          icon: const Icon(
-                            Icons.arrow_forward,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                          onPressed: () {
-                            // Navegar para a página de relatórios do produto
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => RelatoriosForProducts(
-                                  productId: productId,
-                                  uid: _uid,
-                                ),
+                            Text(
+                              'Horário: $timeStr',
+                              style: GoogleFonts.poppins(
+                                fontSize: 14,
+                                color: const Color(0xFF7F8C8D),
                               ),
-                            );
-                          },
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
                 );
-              }).toList(),
+              }),
             ],
           ),
         ),
       ),
-      const SizedBox(height: 16),
     ];
-
-    // Adicionar card apenas se um produto estiver selecionado
-    if (_selectedProductId != null) {
-      final selectedMovements = grouped[_selectedProductId];
-      if (selectedMovements != null) {
-        children.add(_buildProductCard(selectedMovements));
-      }
-    }
 
     return ListView(
       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -940,55 +983,6 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
     );
   }
 
-  Widget _buildProductCard(List<Movement> movements) {
-    final product = movements.first;
-
-    final add = movements
-        .where((e) => e.type == 'add')
-        .fold<int>(0, (p, e) => p + e.quantity);
-
-    final remove = movements
-        .where((e) => e.type == 'remove')
-        .fold<int>(0, (p, e) => p + e.quantity);
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Colors.white, Color(0xFFF8F9FA)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: const Color(0xFFE0E0E0), width: 1.5),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 15,
-              offset: const Offset(0, 6),
-            ),
-            BoxShadow(
-              color: Colors.white.withValues(alpha: 0.8),
-              blurRadius: 10,
-              offset: const Offset(-3, -3),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            _buildProductImage(product.image),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _buildProductInfo(product.productName, add, remove),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildProductImage(String? imageUrl) {
     if (imageUrl == null || imageUrl.isEmpty) {
       return _imagePlaceholder();
@@ -1039,59 +1033,37 @@ class _RelatoriosDaysState extends State<RelatoriosDays> {
       ),
     );
   }
-
-  Widget _buildProductInfo(String name, int add, int remove) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          name,
-          style: GoogleFonts.poppins(
-            fontWeight: FontWeight.w700,
-            fontSize: 16,
-            color: const Color(0xFF2C3E50),
-          ),
-        ),
-        const SizedBox(height: 8),
-        Row(
-          children: [
-            if (add > 0)
-              _tag(
-                'Entrada: $add',
-                const Color(0xFFD5F4E6),
-                const Color(0xFF27AE60),
-              ),
-            if (remove > 0)
-              Padding(
-                padding: const EdgeInsets.only(left: 8),
-                child: _tag(
-                  'Saída: $remove',
-                  const Color(0xFFFADBD8),
-                  const Color(0xFFE74C3C),
-                ),
-              ),
-          ],
-        ),
-      ],
-    );
-  }
 }
 
-Widget _tag(String text, Color bg, Color fg) {
+Widget _premiumTag(String text, Color bg, Color fg, IconData icon) {
   return Container(
-    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
     decoration: BoxDecoration(
       color: bg,
-      borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: fg.withValues(alpha: 0.3)),
+      borderRadius: BorderRadius.circular(10),
+      border: Border.all(color: fg.withValues(alpha: 0.2), width: 1),
+      boxShadow: [
+        BoxShadow(
+          color: fg.withValues(alpha: 0.1),
+          blurRadius: 6,
+          offset: const Offset(0, 2),
+        ),
+      ],
     ),
-    child: Text(
-      text,
-      style: GoogleFonts.poppins(
-        fontSize: 12,
-        color: fg,
-        fontWeight: FontWeight.w600,
-      ),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 16, color: fg),
+        const SizedBox(width: 6),
+        Text(
+          text,
+          style: GoogleFonts.poppins(
+            fontSize: 12,
+            color: fg,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
     ),
   );
 }
