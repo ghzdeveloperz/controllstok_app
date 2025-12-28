@@ -84,17 +84,17 @@ class _ProductCardState extends State<ProductCard> with TickerProviderStateMixin
               opacity: _fadeAnimation.value,
               child: Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.15),
-                      blurRadius: 24,
-                      offset: const Offset(0, 10),
+                      color: Colors.black.withValues(alpha: 0.12),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8),
                     ),
                     BoxShadow(
                       color: Colors.white.withValues(alpha: 0.9),
-                      blurRadius: 20,
-                      offset: const Offset(-6, -6),
+                      blurRadius: 16,
+                      offset: const Offset(-4, -4),
                     ),
                   ],
                   border: Border.all(
@@ -103,14 +103,14 @@ class _ProductCardState extends State<ProductCard> with TickerProviderStateMixin
                   ),
                 ),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(20),
                   child: Stack(
                     children: [
-                      // Imagem preenchendo o card com gradiente overlay mais sutil para maior visibilidade
+                      // Imagem preenchendo o card
                       Positioned.fill(
                         child: _buildImage(),
                       ),
-                      // Gradiente sutil sobre a imagem, reduzido para manter imagem visível
+                      // Gradiente overlay mais sutil para maior visibilidade da imagem
                       Positioned.fill(
                         child: Container(
                           decoration: BoxDecoration(
@@ -119,13 +119,13 @@ class _ProductCardState extends State<ProductCard> with TickerProviderStateMixin
                               end: Alignment.bottomCenter,
                               colors: [
                                 Colors.transparent,
-                                Colors.black.withValues(alpha: 0.15), // Reduzido para 0.15 para mais visibilidade
+                                Colors.black.withValues(alpha: 0.08),
                               ],
                             ),
                           ),
                         ),
                       ),
-                      // Informações sobrepostas na parte inferior com glassmorphism aprimorado
+                      // Informações comprimidas na parte inferior com glassmorphism refinado e profundidade
                       Positioned(
                         bottom: 0,
                         left: 0,
@@ -157,39 +157,39 @@ class _ProductCardState extends State<ProductCard> with TickerProviderStateMixin
   Widget _buildInfoBlock() {
     return ClipRRect(
       borderRadius: const BorderRadius.only(
-        bottomLeft: Radius.circular(24),
-        bottomRight: Radius.circular(24),
+        bottomLeft: Radius.circular(20),
+        bottomRight: Radius.circular(20),
       ),
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1), // Blur aumentado para efeito glassmorphism mais premium
+        filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2), // Aumentado para 3 para mais profundidade
         child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Colors.white.withValues(alpha: 0.95), // Mais opaco para contraste premium
-                Colors.white.withValues(alpha: 0.8),
-                Colors.grey.shade100.withValues(alpha: 0.6),
+                Colors.black.withValues(alpha: 0.1), // Fundo muito sutil, quase transparente
+                Colors.black.withValues(alpha: 0.05),
+                Colors.transparent,
               ],
             ),
             border: Border.all(
-              color: Colors.white.withValues(alpha: 0.5), // Borda mais visível
-              width: 1.5,
+              color: Colors.white.withValues(alpha: 0.2), // Borda sutil
+              width: 1,
             ),
             borderRadius: const BorderRadius.only(
-              bottomLeft: Radius.circular(24),
-              bottomRight: Radius.circular(24),
+              bottomLeft: Radius.circular(20),
+              bottomRight: Radius.circular(20),
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.1),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
+                color: Colors.black.withValues(alpha: 0.15), // Sombra interna para profundidade
+                blurRadius: 15,
+                offset: const Offset(0, -5), // Offset negativo para efeito de profundidade ascendente
               ),
             ],
           ),
-          padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+          padding: const EdgeInsets.fromLTRB(8, 6, 8, 6),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -200,65 +200,48 @@ class _ProductCardState extends State<ProductCard> with TickerProviderStateMixin
                       widget.product.name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 16,
+                      style: TextStyle(
+                        fontSize: 14,
                         fontWeight: FontWeight.w700,
-                        color: Colors.black87,
-                        letterSpacing: 0.5,
+                        color: Colors.white, // Texto branco para contraste com fundo escuro/sutil
+                        letterSpacing: 0.3,
+                        shadows: [
+                          Shadow(
+                            color: const Color.fromARGB(0, 0, 0, 0).withValues(alpha: 0.5),
+                            blurRadius: 4,
+                            offset: Offset(0, 1),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 6),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          Colors.black.withValues(alpha: 0.9),
-                          Colors.black.withValues(alpha: 0.7),
+                          Colors.white.withValues(alpha: 0.9),
+                          Colors.white.withValues(alpha: 0.7),
                         ],
                       ),
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.3),
-                          blurRadius: 8,
-                          offset: const Offset(0, 3),
+                          color: Colors.black.withValues(alpha: 0.2),
+                          blurRadius: 6,
+                          offset: const Offset(0, 2),
                         ),
                       ],
                     ),
                     child: Text(
                       widget.product.category,
                       style: const TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                        letterSpacing: 0.3,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 4),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      'Estoque: ${widget.product.quantity}',
-                      style: TextStyle(
                         fontSize: 10,
-                        color: Colors.grey.shade700,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                        letterSpacing: 0.2,
                       ),
-                    ),
-                  ),
-                  Text(
-                    'R\$ ${totalValue.toStringAsFixed(2)}',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w800,
-                      color: Colors.green.shade600,
-                      letterSpacing: 0.5,
                     ),
                   ),
                 ],
@@ -266,29 +249,74 @@ class _ProductCardState extends State<ProductCard> with TickerProviderStateMixin
               const SizedBox(height: 2),
               Row(
                 children: [
+                  Expanded(
+                    child: Text(
+                      'Estoque: ${widget.product.quantity}',
+                      style: TextStyle(
+                        fontSize: 9,
+                        color: Colors.white.withValues(alpha: 0.9), // Branco com alpha para sutileza
+                        fontWeight: FontWeight.w500,
+                        shadows: [
+                          Shadow(
+                            color: Colors.black.withValues(alpha: 0.5),
+                            blurRadius: 3,
+                            offset: Offset(0, 1),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Text(
+                    'R\$ ${totalValue.toStringAsFixed(2)}',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.green.shade300, // Verde mais claro para contraste
+                      letterSpacing: 0.3,
+                      shadows: [
+                        Shadow(
+                          color: Colors.black.withValues(alpha: 0.5),
+                          blurRadius: 4,
+                          offset: Offset(0, 1),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 1),
+              Row(
+                children: [
                   Container(
-                    width: 7,
-                    height: 7,
+                    width: 6,
+                    height: 6,
                     decoration: BoxDecoration(
                       color: statusColor,
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: statusColor.withValues(alpha: 0.5),
+                          color: statusColor.withValues(alpha: 0.6),
                           blurRadius: 6,
                           offset: const Offset(0, 2),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(width: 6),
+                  const SizedBox(width: 4),
                   Text(
                     statusLabel,
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: 11,
                       fontWeight: FontWeight.w600,
-                      color: statusColor,
-                      letterSpacing: 0.3,
+                      color: statusColor.withValues(alpha: 0.9), // Cor do status com alpha
+                      letterSpacing: 0.2,
+                      shadows: [
+                        Shadow(
+                          color: Colors.black.withValues(alpha: 0.5),
+                          blurRadius: 3,
+                          offset: Offset(0, 1),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -313,7 +341,7 @@ class _ProductCardState extends State<ProductCard> with TickerProviderStateMixin
       child: const Center(
         child: Icon(
           Icons.inventory_2_outlined,
-          size: 48,
+          size: 40,
           color: Colors.grey,
         ),
       ),

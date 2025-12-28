@@ -1,3 +1,2 @@
 Mudanças: 
-1. adicionei alertas na home
-2. estilizei mais Alertas
+1. Product Card | Premium
