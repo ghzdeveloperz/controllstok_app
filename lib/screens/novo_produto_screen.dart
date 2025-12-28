@@ -154,64 +154,60 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
     );
   }
 
-// =================== _handleImagePick ===================
-Future<void> _handleImagePick(ImageSource source) async {
-  Navigator.of(context).pop(true);
+  // =================== _handleImagePick ===================
+  Future<void> _handleImagePick(ImageSource source) async {
+    Navigator.of(context).pop(true);
 
-  try {
-    final picked = await _picker.pickImage(
-      source: source,
-      imageQuality: 85,
-    );
+    try {
+      final picked = await _picker.pickImage(source: source, imageQuality: 85);
 
-    if (picked == null || !mounted) return;
+      if (picked == null || !mounted) return;
 
-    final compressedImage = await _compressImage(File(picked.path));
-    setState(() => _selectedImage = compressedImage);
-  } catch (_) {
-    if (!mounted) return;
+      final compressedImage = await _compressImage(File(picked.path));
+      setState(() => _selectedImage = compressedImage);
+    } catch (_) {
+      if (!mounted) return;
 
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        title: Text(
-          'Permissão necessária',
-          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
-        ),
-        content: Text(
-          'Para selecionar imagens, permita o acesso à galeria nas configurações do aplicativo.',
-          style: GoogleFonts.poppins(),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              'Cancelar',
-              style: GoogleFonts.poppins(color: Colors.grey),
-            ),
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
           ),
-          TextButton(
-            onPressed: () {
-              openAppSettings();
-              Navigator.pop(context);
-            },
-            child: Text(
-              'Abrir configurações',
-              style: GoogleFonts.poppins(
-                fontWeight: FontWeight.w600,
-                color: Colors.black,
+          title: Text(
+            'Permissão necessária',
+            style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+          ),
+          content: Text(
+            'Para selecionar imagens, permita o acesso à galeria nas configurações do aplicativo.',
+            style: GoogleFonts.poppins(),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(
+                'Cancelar',
+                style: GoogleFonts.poppins(color: Colors.grey),
               ),
             ),
-          ),
-        ],
-      ),
-    );
+            TextButton(
+              onPressed: () {
+                openAppSettings();
+                Navigator.pop(context);
+              },
+              child: Text(
+                'Abrir configurações',
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
   }
-}
-
 
   // =================== Compressão ===================
   Future<File> _compressImage(File file) async {
@@ -699,11 +695,7 @@ Future<void> _handleImagePick(ImageSource source) async {
           keyboardType: TextInputType.text,
           maxLength: 50, // Limite máximo
           inputFormatters: [
-            FilteringTextInputFormatter.allow(
-              RegExp(
-                r'[a-zA-Z0-9\s\-_.,]',
-              ), // Permite letras, números, espaços e símbolos comuns; bloqueia controle chars
-            ),
+            FilteringTextInputFormatter.allow(RegExp(r"[a-zA-ZÀ-ÿ0-9\s\-_.,]")),
           ],
           onChanged: (value) {
             _checkDuplicateName(value); // Verificação de duplicata com debounce
