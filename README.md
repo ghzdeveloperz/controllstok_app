@@ -1,2 +1,2 @@
 Mudanças: 
-1. overlay de criação de produto
+1. juste aparecer alerta de que são aceitas imagens em jpg ou png se cliente tentar colocar outro

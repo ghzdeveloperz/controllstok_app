@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
+
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path/path.dart' as path;
 
@@ -165,49 +165,33 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
 
       if (picked == null || !mounted) return;
 
+      // Verificar se a extensão é PNG ou JPG
+      final extension = picked.path.split('.').last.toLowerCase();
+      if (extension != 'png' && extension != 'jpg' && extension != 'jpeg') {
+        // Mostrar alerta embaixo do quadro de imagens (usando SnackBar)
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Apenas fotos em PNG e JPG são aceitas.',
+              style: GoogleFonts.poppins(),
+            ),
+            backgroundColor: Colors.black87,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            margin: const EdgeInsets.all(16),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+        return; // Não processar a imagem
+      }
+
       final compressedImage = await _compressImage(File(picked.path));
       setState(() => _selectedImage = compressedImage);
     } catch (_) {
-      if (!mounted) return;
-
-      showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          title: Text(
-            'Permissão necessária',
-            style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
-          ),
-          content: Text(
-            'Para selecionar imagens, permita o acesso à galeria nas configurações do aplicativo.',
-            style: GoogleFonts.poppins(),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(
-                'Cancelar',
-                style: GoogleFonts.poppins(color: Colors.grey),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                openAppSettings();
-                Navigator.pop(context);
-              },
-              child: Text(
-                'Abrir configurações',
-                style: GoogleFonts.poppins(
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
+      // Modal de permissão removido conforme solicitado
+      // O erro é ignorado silenciosamente
     }
   }
 
@@ -500,7 +484,7 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
           'Novo Produto',
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w600, // Peso médio para hierarquia
-                        fontSize: 20, // Tamanho reduzido para sutileza
+            fontSize: 20, // Tamanho reduzido para sutileza
             color: Colors.black,
           ),
         ),
@@ -551,7 +535,9 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 48), // Espaçamento maior antes do botão
+                    const SizedBox(
+                      height: 48,
+                    ), // Espaçamento maior antes do botão
                     _saveButton(), // Botão sempre visível, mas desabilitado durante loading
                   ],
                 ),
