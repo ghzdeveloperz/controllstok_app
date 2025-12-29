@@ -1,3 +1,4 @@
+// NovoProdutoScreen.dart (arquivo completo ajustado)
 import 'dart:async';
 import 'dart:io';
 
@@ -15,6 +16,7 @@ import '../firebase/firestore/categories_firestore.dart';
 import '../../screens/models/category.dart';
 import '../screens/widgets/barcode_scanner_screen.dart'; // <- scanner como modal
 import '../screens/widgets/add_category.dart';
+import 'product_overlay.dart'; // <- Adicione este import para o overlay
 
 class NovoProdutoScreen extends StatefulWidget {
   final String uid;
@@ -289,6 +291,9 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
 
     setState(() => _isSaving = true);
 
+    // Simulação do processo de salvamento (remova em produção e coloque o código real aqui)
+    await Future.delayed(const Duration(seconds: 3));
+
     try {
       final productName = _normalizeProductName(_nameController.text);
       // Aplica capitalização final se necessário (já feito no focus out, mas garante)
@@ -495,59 +500,72 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
           'Novo Produto',
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w600, // Peso médio para hierarquia
-            fontSize: 20, // Tamanho reduzido para sutileza
+                        fontSize: 20, // Tamanho reduzido para sutileza
             color: Colors.black,
           ),
         ),
         iconTheme: const IconThemeData(color: Colors.black), // Ícones pretos
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 24,
-            vertical: 16,
-          ), // Espaçamento generoso
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _imagePicker(),
-                const SizedBox(height: 32), // Espaçamento aumentado
-                _sectionTitle('Informações do produto'),
-                const SizedBox(height: 24),
-                _productNameInput(),
-                const SizedBox(height: 20),
-                _barcodeInput(),
-                const SizedBox(height: 20),
-                _categoryDropdown(),
-                const SizedBox(height: 20),
-                Row(
+        child: Stack(
+          children: [
+            // Camada base: UI normal
+            SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24,
+                vertical: 16,
+              ), // Espaçamento generoso
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: _input(
-                        controller: _quantityController,
-                        label: 'Quantidade',
-                        hint: '0',
-                        keyboardType: TextInputType.number,
-                      ),
+                    _imagePicker(),
+                    const SizedBox(height: 32), // Espaçamento aumentado
+                    _sectionTitle('Informações do produto'),
+                    const SizedBox(height: 24),
+                    _productNameInput(),
+                    const SizedBox(height: 20),
+                    _barcodeInput(),
+                    const SizedBox(height: 20),
+                    _categoryDropdown(),
+                    const SizedBox(height: 20),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _input(
+                            controller: _quantityController,
+                            label: 'Quantidade',
+                            hint: '0',
+                            keyboardType: TextInputType.number,
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: _input(
+                            controller: _priceController,
+                            label: 'Preço (R\$)',
+                            hint: '0,00',
+                            keyboardType: TextInputType.number,
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: _input(
-                        controller: _priceController,
-                        label: 'Preço (R\$)',
-                        hint: '0,00',
-                        keyboardType: TextInputType.number,
-                      ),
-                    ),
+                    const SizedBox(height: 48), // Espaçamento maior antes do botão
+                    _saveButton(), // Botão sempre visível, mas desabilitado durante loading
                   ],
                 ),
-                const SizedBox(height: 48), // Espaçamento maior antes do botão
-                _isSaving ? _loadingIndicator() : _saveButton(),
-              ],
+              ),
             ),
-          ),
+            // Camada superior: Overlay
+            if (_isSaving)
+              Positioned.fill(
+                child: ProductOverlay(
+                  isVisible: _isSaving,
+                  productName: _nameController.text,
+                ),
+              ),
+          ],
         ),
       ),
     );
@@ -1016,16 +1034,6 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
     showDialog(
       context: context,
       builder: (_) => AddCategoryDialog(uid: widget.uid),
-    );
-  }
-
-  Widget _loadingIndicator() {
-    return const Center(
-      child: SizedBox(
-        width: 24,
-        height: 24,
-        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black),
-      ),
     );
   }
 
