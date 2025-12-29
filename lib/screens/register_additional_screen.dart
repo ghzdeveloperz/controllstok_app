@@ -55,6 +55,7 @@ class _RegisterAdditionalScreenState extends State<RegisterAdditionalScreen>
           'email': widget.user.email,
           'company': _companyController.text.trim(),
           'active': true,
+          'plan': 'Grátis',
           'createdAt': FieldValue.serverTimestamp(),
           'emailVerified': widget.user.emailVerified,
           'role': 'user',

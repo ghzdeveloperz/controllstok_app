@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:controllstock_app/screens/config_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -110,9 +111,9 @@ class _PerfilScreenState extends State<PerfilScreen>
     switch (p) {
       case 'pro':
       case 'pró':
-        return 'Pró';
+        return 'PRÓ';
       case 'max':
-        return 'Max';
+        return 'MAX';
       case 'free':
       case 'gratis':
       case 'grátis':
@@ -526,10 +527,14 @@ class _PerfilScreenState extends State<PerfilScreen>
         actions: [
           IconButton(
             icon: const Icon(Icons.settings, color: Colors.black),
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Configurações em breve')),
-              );
+            onPressed: () async {
+              final result = await Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (_) => const ConfigScreen()));
+
+              if (result != null) {
+                // reage ao que veio da tela de configurações
+              }
             },
           ),
         ],
