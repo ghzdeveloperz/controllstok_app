@@ -1,2 +1,2 @@
 Mudanças: 
-1. Relatórios Anuais com Trimestres
+1. foto perfil sincronizados

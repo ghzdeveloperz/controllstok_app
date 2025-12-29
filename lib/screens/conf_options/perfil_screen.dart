@@ -1,10 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/services.dart'; // For copying to clipboard
-import 'package:intl/intl.dart'; // For date formatting
-import 'package:cloud_firestore/cloud_firestore.dart'; // Adicionado para Firestore
-import 'package:shimmer/shimmer.dart'; // Adicionado para efeito shimmer
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../login_screen.dart';
 
@@ -18,8 +22,16 @@ class PerfilScreen extends StatefulWidget {
 class _PerfilScreenState extends State<PerfilScreen>
     with TickerProviderStateMixin {
   User? _user;
+
   bool _isLoading = true;
   String? _errorMessage;
+
+  // Firestore fields
+  String? _companyName;
+  String? _plan; // free|pro|max  (ou "Grátis"/"Pró"/"Max")
+  String? _photoUrl;
+
+  bool _isUploadingAvatar = false;
 
   late AnimationController _avatarAnimationController;
   late Animation<double> _avatarScaleAnimation;
@@ -47,20 +59,42 @@ class _PerfilScreenState extends State<PerfilScreen>
     super.dispose();
   }
 
+  // =========================
+  // LOAD USER + FIRESTORE DATA
+  // =========================
   Future<void> _loadUserData() async {
     try {
-      await Future.delayed(
-        const Duration(milliseconds: 500),
-      ); // Simulate loading
+      await Future.delayed(const Duration(milliseconds: 500));
+
       final user = FirebaseAuth.instance.currentUser;
-      if (user == null) {
-        throw Exception('Usuário não encontrado');
-      }
+      if (user == null) throw Exception('Usuário não encontrado');
+
+      await user.reload();
+      final freshUser = FirebaseAuth.instance.currentUser!;
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(freshUser.uid)
+          .get();
+
+      final data = doc.data();
+
+      final company = (data?['company'] ?? data?['companyName']) as String?;
+      final plan = (data?['plan'] ?? data?['plano']) as String?;
+      final photoUrl =
+          (data?['photoUrl'] ?? data?['avatarUrl'] ?? data?['photoURL'])
+              as String?;
+
+      if (!mounted) return;
       setState(() {
-        _user = user;
+        _user = freshUser;
+        _companyName = company;
+        _plan = plan;
+        _photoUrl = photoUrl;
         _isLoading = false;
+        _errorMessage = null;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _errorMessage = 'Erro ao carregar dados: $e';
         _isLoading = false;
@@ -68,6 +102,187 @@ class _PerfilScreenState extends State<PerfilScreen>
     }
   }
 
+  // =========
+  // PLAN CHIP
+  // =========
+  String _planLabel(String? plan) {
+    final p = (plan ?? '').trim().toLowerCase();
+    switch (p) {
+      case 'pro':
+      case 'pró':
+        return 'Pró';
+      case 'max':
+        return 'Max';
+      case 'free':
+      case 'gratis':
+      case 'grátis':
+      case '':
+      default:
+        return 'Grátis';
+    }
+  }
+
+  Color _planColor(String? plan) {
+    final p = (plan ?? '').trim().toLowerCase();
+    switch (p) {
+      case 'pro':
+      case 'pró':
+        return const Color(0xFF1565C0);
+      case 'max':
+        return const Color(0xFF6A1B9A);
+      case 'free':
+      case 'gratis':
+      case 'grátis':
+      case '':
+      default:
+        return const Color(0xFF2E7D32);
+    }
+  }
+
+  Widget _buildPlanChip(String? plan) {
+    final label = _planLabel(plan);
+    final color = _planColor(plan);
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.10),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withOpacity(0.25)),
+      ),
+      child: Text(
+        '$label',
+        style: GoogleFonts.poppins(
+          fontSize: 12,
+          color: color,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+
+  // =====================
+  // EDIT COMPANY (DIALOG)
+  // =====================
+  void _showEditCompanyDialog() {
+    if (_user == null) return;
+
+    final controller = TextEditingController(text: _companyName ?? '');
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text(
+          'Editar empresa',
+          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+        ),
+        content: TextField(
+          controller: controller,
+          decoration: InputDecoration(
+            labelText: 'Nome da empresa',
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(
+              'Cancelar',
+              style: GoogleFonts.poppins(color: Colors.grey),
+            ),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.black,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            onPressed: () async {
+              final newName = controller.text.trim();
+              if (newName.isEmpty) return;
+
+              await FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(_user!.uid)
+                  .set({'company': newName}, SetOptions(merge: true));
+
+              if (!mounted) return;
+              setState(() => _companyName = newName);
+              Navigator.of(context).pop();
+            },
+            child: Text(
+              'Salvar',
+              style: GoogleFonts.poppins(color: Colors.white),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // =====================
+  // AVATAR PICK + UPLOAD
+  // =====================
+  Future<void> _pickAndUploadAvatar() async {
+    if (_user == null) return;
+    if (_isUploadingAvatar) return;
+
+    try {
+      setState(() => _isUploadingAvatar = true);
+
+      final picker = ImagePicker();
+      final picked = await picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 80,
+      );
+
+      if (picked == null) {
+        if (!mounted) return;
+        setState(() => _isUploadingAvatar = false);
+        return;
+      }
+
+      final uid = _user!.uid;
+
+      // caminho fixo (substitui sempre)
+      final ref = FirebaseStorage.instance.ref('users/$uid/avatar.jpg');
+
+      await ref.putFile(File(picked.path));
+      final url = await ref.getDownloadURL();
+
+      await FirebaseFirestore.instance.collection('users').doc(uid).set({
+        'photoUrl': url,
+      }, SetOptions(merge: true));
+
+      if (!mounted) return;
+      setState(() {
+        _photoUrl = url;
+        _isUploadingAvatar = false;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Imagem atualizada com sucesso!'),
+          backgroundColor: Colors.black87,
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _isUploadingAvatar = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erro ao atualizar imagem: $e'),
+          backgroundColor: Colors.black87,
+        ),
+      );
+    }
+  }
+
+  // ==========
+  // UTILITIES
+  // ==========
   void _copyToClipboard(String text, String label) {
     Clipboard.setData(ClipboardData(text: text));
     ScaffoldMessenger.of(context).showSnackBar(
@@ -162,9 +377,8 @@ class _PerfilScreenState extends State<PerfilScreen>
                     errorText: errorMessage,
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
+                    if (value == null || value.isEmpty)
                       return 'Digite sua senha';
-                    }
                     return null;
                   },
                 ),
@@ -208,16 +422,15 @@ class _PerfilScreenState extends State<PerfilScreen>
                         );
                         await _user!.reauthenticateWithCredential(credential);
 
-                        // Atualizar Firestore para marcar a conta como inativa
                         await FirebaseFirestore.instance
                             .collection('users')
                             .doc(_user!.uid)
                             .update({'active': false});
 
-                        // Fazer logout após desativar a conta
                         await _logout();
                       } catch (e) {
                         if (!mounted) return;
+
                         String message;
                         if (e is FirebaseAuthException &&
                             e.code == 'wrong-password') {
@@ -231,9 +444,10 @@ class _PerfilScreenState extends State<PerfilScreen>
                               backgroundColor: Colors.black87,
                             ),
                           );
-                          Navigator.of(context).pop(); // Close dialog on other errors
+                          Navigator.of(context).pop();
                           return;
                         }
+
                         setState(() {
                           errorMessage = message;
                           isLoading = false;
@@ -275,24 +489,23 @@ class _PerfilScreenState extends State<PerfilScreen>
     );
   }
 
+  // =========
+  // BUILD UI
+  // =========
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
-      return _buildLoadingScreen();
-    }
-
-    if (_errorMessage != null) {
-      return _buildErrorScreen();
-    }
-
-    if (_user == null) {
-      return _buildEmptyScreen();
-    }
+    if (_isLoading) return _buildLoadingScreen();
+    if (_errorMessage != null) return _buildErrorScreen();
+    if (_user == null) return _buildEmptyScreen();
 
     final String displayName =
-        _user!.displayName ?? _user!.email?.split('@').first ?? 'Usuário';
+        (_companyName != null && _companyName!.trim().isNotEmpty)
+        ? _companyName!.trim()
+        : (_user!.email?.split('@').first ?? 'Usuário');
+
     final String email = _user!.email ?? 'Sem email';
     final String uid = _user!.uid;
+
     final DateTime? creationTime = _user!.metadata.creationTime;
     final DateTime? lastSignInTime = _user!.metadata.lastSignInTime;
 
@@ -314,7 +527,6 @@ class _PerfilScreenState extends State<PerfilScreen>
           IconButton(
             icon: const Icon(Icons.settings, color: Colors.black),
             onPressed: () {
-              // Placeholder for settings
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Configurações em breve')),
               );
@@ -328,27 +540,17 @@ class _PerfilScreenState extends State<PerfilScreen>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header / Identity
               _buildHeader(displayName, email),
-
               const SizedBox(height: 32),
-
-              // Account Info
               _buildAccountInfoSection(
                 email,
                 uid,
                 creationTime,
                 lastSignInTime,
               ),
-
               const SizedBox(height: 32),
-
-              // User Actions
               _buildActionsSection(),
-
               const SizedBox(height: 32),
-
-              // Security
               _buildSecuritySection(),
             ],
           ),
@@ -357,6 +559,9 @@ class _PerfilScreenState extends State<PerfilScreen>
     );
   }
 
+  // ==========================
+  // LOADING / ERROR / EMPTY UI
+  // ==========================
   Widget _buildLoadingScreen() {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F8F8),
@@ -366,11 +571,9 @@ class _PerfilScreenState extends State<PerfilScreen>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Skeleton Header
               Center(
                 child: Column(
                   children: [
-                    // Avatar Skeleton
                     Shimmer.fromColors(
                       baseColor: Colors.grey.shade300,
                       highlightColor: Colors.grey.shade100,
@@ -391,7 +594,6 @@ class _PerfilScreenState extends State<PerfilScreen>
                       ),
                     ),
                     const SizedBox(height: 16),
-                    // Name Skeleton
                     Shimmer.fromColors(
                       baseColor: Colors.grey.shade300,
                       highlightColor: Colors.grey.shade100,
@@ -405,7 +607,6 @@ class _PerfilScreenState extends State<PerfilScreen>
                       ),
                     ),
                     const SizedBox(height: 8),
-                    // Email Skeleton
                     Shimmer.fromColors(
                       baseColor: Colors.grey.shade300,
                       highlightColor: Colors.grey.shade100,
@@ -419,12 +620,11 @@ class _PerfilScreenState extends State<PerfilScreen>
                       ),
                     ),
                     const SizedBox(height: 12),
-                    // Account Status Skeleton
                     Shimmer.fromColors(
                       baseColor: Colors.grey.shade300,
                       highlightColor: Colors.grey.shade100,
                       child: Container(
-                        width: 80,
+                        width: 110,
                         height: 20,
                         decoration: BoxDecoration(
                           color: Colors.grey.shade300,
@@ -436,7 +636,6 @@ class _PerfilScreenState extends State<PerfilScreen>
                 ),
               ),
               const SizedBox(height: 32),
-              // Account Info Skeleton
               Shimmer.fromColors(
                 baseColor: Colors.grey.shade300,
                 highlightColor: Colors.grey.shade100,
@@ -457,7 +656,6 @@ class _PerfilScreenState extends State<PerfilScreen>
                 ),
               ),
               const SizedBox(height: 32),
-              // Actions Skeleton
               Shimmer.fromColors(
                 baseColor: Colors.grey.shade300,
                 highlightColor: Colors.grey.shade100,
@@ -478,7 +676,6 @@ class _PerfilScreenState extends State<PerfilScreen>
                 ),
               ),
               const SizedBox(height: 32),
-              // Security Skeleton
               Shimmer.fromColors(
                 baseColor: Colors.grey.shade300,
                 highlightColor: Colors.grey.shade100,
@@ -558,6 +755,9 @@ class _PerfilScreenState extends State<PerfilScreen>
     );
   }
 
+  // ======================
+  // HEADER (company + plan + avatar com foto)
+  // ======================
   Widget _buildHeader(String displayName, String email) {
     return Center(
       child: Column(
@@ -571,54 +771,123 @@ class _PerfilScreenState extends State<PerfilScreen>
               builder: (context, child) {
                 return Transform.scale(
                   scale: _avatarScaleAnimation.value,
-                  child: CircleAvatar(
-                    radius: 60,
-                    backgroundColor: Colors.black,
-                    child: Text(
-                      displayName.isNotEmpty
-                          ? displayName[0].toUpperCase()
-                          : 'U',
-                      style: GoogleFonts.poppins(
-                        fontSize: 48,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+                  child: Stack(
+                    alignment: Alignment.bottomRight,
+                    children: [
+                      CircleAvatar(
+                        radius: 60,
+                        backgroundColor: Colors.black,
+                        backgroundImage:
+                            (_photoUrl != null && _photoUrl!.isNotEmpty)
+                            ? NetworkImage(_photoUrl!)
+                            : null,
+                        child: (_photoUrl == null || _photoUrl!.isEmpty)
+                            ? Text(
+                                displayName.isNotEmpty
+                                    ? displayName[0].toUpperCase()
+                                    : 'U',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 48,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              )
+                            : null,
                       ),
-                    ),
+
+                      // Botão de câmera + estado de upload
+                      InkWell(
+                        onTap: _isUploadingAvatar ? null : _pickAndUploadAvatar,
+                        borderRadius: BorderRadius.circular(999),
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.black12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.12),
+                                blurRadius: 8,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: _isUploadingAvatar
+                              ? const SizedBox(
+                                  width: 18,
+                                  height: 18,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : const Icon(
+                                  Icons.camera_alt,
+                                  size: 18,
+                                  color: Colors.black87,
+                                ),
+                        ),
+                      ),
+                    ],
                   ),
                 );
               },
             ),
           ),
           const SizedBox(height: 16),
-          Text(
-            displayName,
-            style: GoogleFonts.poppins(
-              fontSize: 24,
-              fontWeight: FontWeight.w600,
-              color: Colors.black,
+
+          // ✅ Nome da empresa + lápis sempre colado e centralizado
+          SizedBox(
+            width: double.infinity,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                // Texto ocupa toda a largura e fica realmente centralizado
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 48),
+                  child: Text(
+                    displayName,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.poppins(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+
+                // Lápis sempre colado ao texto, sem deslocar o centro
+                Positioned(
+                  right: 60,
+                  child: IconButton(
+                    onPressed: _showEditCompanyDialog,
+                    icon: const Icon(
+                      Icons.edit,
+                      size: 20,
+                      color: Colors.black54,
+                    ),
+                    tooltip: 'Editar empresa',
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    visualDensity: VisualDensity.compact,
+                  ),
+                ),
+              ],
             ),
           ),
+
           const SizedBox(height: 4),
           Text(
             email,
             style: GoogleFonts.poppins(fontSize: 16, color: Colors.grey),
           ),
+
           const SizedBox(height: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: Colors.green.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Text(
-              'Conta ativa',
-              style: GoogleFonts.poppins(
-                fontSize: 12,
-                color: Colors.green,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
+
+          // ✅ Plano
+          _buildPlanChip(_plan),
         ],
       ),
     );
@@ -658,10 +927,8 @@ class _PerfilScreenState extends State<PerfilScreen>
             ),
           ),
           const SizedBox(height: 16),
-
           _buildInfoRow(Icons.email, 'Email', email),
           const Divider(height: 20),
-
           _buildInfoRow(
             Icons.key,
             'UID',
@@ -670,7 +937,6 @@ class _PerfilScreenState extends State<PerfilScreen>
             copyLabel: 'UID',
           ),
           const Divider(height: 20),
-
           _buildInfoRow(
             Icons.calendar_today,
             'Criado em',
@@ -679,7 +945,6 @@ class _PerfilScreenState extends State<PerfilScreen>
                 : 'N/A',
           ),
           const Divider(height: 20),
-
           _buildInfoRow(
             Icons.access_time,
             'Último login',
@@ -763,7 +1028,6 @@ class _PerfilScreenState extends State<PerfilScreen>
           ),
           const SizedBox(height: 16),
           _buildActionButton(Icons.lock, 'Alterar Senha', () {
-            // Placeholder
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text('Funcionalidade em desenvolvimento'),
@@ -772,7 +1036,6 @@ class _PerfilScreenState extends State<PerfilScreen>
           }),
           const SizedBox(height: 12),
           _buildActionButton(Icons.manage_accounts, 'Gerenciar Conta', () {
-            // Placeholder
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text('Funcionalidade em desenvolvimento'),
@@ -781,7 +1044,6 @@ class _PerfilScreenState extends State<PerfilScreen>
           }),
           const SizedBox(height: 12),
           _buildActionButton(Icons.notifications, 'Preferências', () {
-            // Placeholder
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text('Funcionalidade em desenvolvimento'),
@@ -790,7 +1052,6 @@ class _PerfilScreenState extends State<PerfilScreen>
           }),
           const SizedBox(height: 12),
           _buildActionButton(Icons.help, 'Ajuda & Suporte', () {
-            // Placeholder
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text('Funcionalidade em desenvolvimento'),

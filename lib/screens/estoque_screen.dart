@@ -58,6 +58,7 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
           final data = snapshot.data?.data();
           final company = data?['company'] as String?;
           final email = data?['email'] as String? ?? '';
+          final photoUrl = data?['photoUrl'] as String?;
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -95,9 +96,7 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
                   setState(() => _isAvatarPulsing = false);
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (_) => PerfilScreen(),
-                    ),
+                    MaterialPageRoute(builder: (_) => PerfilScreen()),
                   );
                 },
                 onTapCancel: () => setState(() => _isAvatarPulsing = false),
@@ -118,14 +117,19 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
                     child: CircleAvatar(
                       radius: 20,
                       backgroundColor: Colors.black87,
-                      child: Text(
-                        email.isNotEmpty ? email[0].toUpperCase() : 'U',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      backgroundImage: (photoUrl != null && photoUrl.isNotEmpty)
+                          ? CachedNetworkImageProvider(photoUrl)
+                          : null,
+                      child: (photoUrl == null || photoUrl.isEmpty)
+                          ? Text(
+                              email.isNotEmpty ? email[0].toUpperCase() : 'U',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )
+                          : null,
                     ),
                   ),
                 ),
@@ -325,4 +329,28 @@ class AnimatedNotificationIcon extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget buildAvatar({
+  required String email,
+  String? photoUrl,
+  double radius = 20,
+}) {
+  final hasPhoto = photoUrl != null && photoUrl.isNotEmpty;
+
+  return CircleAvatar(
+    radius: radius,
+    backgroundColor: Colors.black87,
+    backgroundImage: hasPhoto ? CachedNetworkImageProvider(photoUrl) : null,
+    child: hasPhoto
+        ? null
+        : Text(
+            email.isNotEmpty ? email[0].toUpperCase() : 'U',
+            style: TextStyle(
+              fontSize: radius,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+  );
 }
