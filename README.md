@@ -1,2 +1,3 @@
 Mudanças: 
-1. acentuação em novo Produto antes estava bloqueado, agora consigo criar com acentuações
+1. Relatórios Mensais mesma interface que RelatóriosDays
+2. Relatórios de produtos mensais (ultimos 7, 14, 21, 28, mês inteiro)

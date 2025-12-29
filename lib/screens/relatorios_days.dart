@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../firebase/firestore/movements_days.dart';
 import '../screens/models/salve_modal.dart';
+import '../screens/models/report_period.dart';
 import 'relatorios_for_products.dart';
 
 class RelatoriosDays extends StatefulWidget {
@@ -141,7 +142,7 @@ class _RelatoriosDaysState extends State<RelatoriosDays>
       ),
     );
   }
-  
+
   Widget _buildChartTypeSelector() {
     return Material(
       color: Colors.transparent,
@@ -224,7 +225,6 @@ class _RelatoriosDaysState extends State<RelatoriosDays>
       ),
     );
   }
-
 
   // ================= TOP ACTIONS =================
   Widget _buildTopActions() {
@@ -736,16 +736,16 @@ class _RelatoriosDaysState extends State<RelatoriosDays>
                                 if (add > 0)
                                   _tag(
                                     'Entradas: $add',
-                                    const Color(0xFFE8F5EE),
-                                    const Color(0xFF2C3E50),
+                                    const Color(0xFFD5F4E6),
+                                    const Color(0xFF27AE60),
                                   ),
                                 if (remove > 0)
                                   Padding(
                                     padding: const EdgeInsets.only(left: 8),
                                     child: _tag(
                                       'Saídas: $remove',
-                                      const Color(0xFFF2F2F2),
-                                      const Color(0xFF2C3E50),
+                                      const Color(0xFFFADBD8),
+                                      const Color(0xFFE74C3C),
                                     ),
                                   ),
                               ],
@@ -781,14 +781,16 @@ class _RelatoriosDaysState extends State<RelatoriosDays>
                             size: 20,
                           ),
                           onPressed: () {
+                            // ✅ AGORA PASSA UM PERÍODO EXPLÍCITO (DIA ESPECÍFICO)
+                            final period = ReportPeriod.day(_displayDate);
+
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => RelatoriosForProducts(
                                   productId: productId,
                                   uid: _uid,
-                                  date:
-                                      _displayDate, // 👈 AQUI ESTÁ O PULO DO GATO
+                                  period: period,
                                 ),
                               ),
                             );
