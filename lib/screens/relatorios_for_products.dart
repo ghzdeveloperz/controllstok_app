@@ -54,10 +54,13 @@ class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
   late String _uid;
   late String _productId;
   Timer? _timer;
+  late ValueNotifier<List<Movement>> _movementsNotifier; // ValueNotifier para os movimentos
 
   @override
   void initState() {
     super.initState();
+
+    _movementsNotifier = ValueNotifier<List<Movement>>([]);
 
     _uid = widget.uid;
     _productId = widget.productId;
@@ -79,6 +82,7 @@ class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
   @override
   void dispose() {
     _timer?.cancel();
+    _movementsNotifier.dispose();
     super.dispose();
   }
 
@@ -184,77 +188,89 @@ class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
 
   // ================= TOP ACTIONS =================
   Widget _buildTopActions() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      child: Row(
-        children: [
-          Expanded(
-            child: GestureDetector(
-              onTap: _pickDate,
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF1A1A1A), Color(0xFF424242)],
-                  ),
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.2),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      Icons.calendar_today,
-                      size: 20,
-                      color: Colors.white,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      _displayDateText,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
+    return ValueListenableBuilder<List<Movement>>(
+      valueListenable: _movementsNotifier,
+      builder: (context, movements, child) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          child: Row(
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: _pickDate,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF1A1A1A), Color(0xFF424242)],
                       ),
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.2),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: OutlinedButton(
-              onPressed: () => SalveModal.show(context),
-              style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: Color(0xFF1A1A1A), width: 2),
-                foregroundColor: const Color(0xFF1A1A1A),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.save, size: 20),
-                  SizedBox(width: 8),
-                  Text(
-                    'Exportar Relatório',
-                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.calendar_today,
+                          size: 20,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          _displayDateText,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ],
+                ),
               ),
-            ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: movements.isNotEmpty
+                      ? () => SalveModal.show(
+                            context,
+                            days: [_displayDate],
+                            uid: _uid,
+                            movements: movements,
+                          )
+                      : null, // ✅ Desabilita se movements estiver vazio
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: Color(0xFF1A1A1A), width: 2),
+                    foregroundColor: const Color(0xFF1A1A1A),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.save, size: 20),
+                      SizedBox(width: 8),
+                      Text(
+                        'Exportar Relatório',
+                        style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -307,6 +323,9 @@ class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
                   widget.period.contains(m.timestamp),
             )
             .toList();
+
+        // Atualizar o notifier com os movimentos filtrados
+        _movementsNotifier.value = List.from(movements);
 
         if (movements.isEmpty) {
           return _buildEmptyState();
@@ -552,7 +571,7 @@ class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
                           availability == 'Disponível'
                               ? const Color(0xFFE8F5E8)
                               : const Color(0xFFFCE4EC),
-                          availability == 'Disponível'
+                                                    availability == 'Disponível'
                               ? const Color(0xFF2E7D32)
                               : const Color(0xFFD32F2F),
                           availability == 'Disponível'
@@ -570,7 +589,7 @@ class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
       ),
       // Gráfico
       Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: LayoutBuilder(
           builder: (context, constraints) {
             final screenHeight = MediaQuery.of(context).size.height;

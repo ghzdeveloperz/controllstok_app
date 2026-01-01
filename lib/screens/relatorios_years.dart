@@ -1,3 +1,4 @@
+// lib/screens/relatorios_years.dart
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -47,6 +48,9 @@ class _RelatoriosYearsState extends State<RelatoriosYears>
   // Animação
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
+
+  // Novo: Lista para armazenar os movimentos atuais
+  List<Movement> _currentMovements = [];
 
   @override
   void initState() {
@@ -317,7 +321,14 @@ class _RelatoriosYearsState extends State<RelatoriosYears>
               const SizedBox(width: 12),
               Expanded(
                 child: OutlinedButton(
-                  onPressed: () => SalveModal.show(context),
+                  onPressed: _currentMovements.isNotEmpty
+                      ? () => SalveModal.show(
+                            context,
+                            days: [DateTime(_displayYear)],
+                            uid: _uid,
+                            movements: _currentMovements,
+                          )
+                      : null,
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
                       vertical: 14,
@@ -370,6 +381,7 @@ class _RelatoriosYearsState extends State<RelatoriosYears>
         }
 
         final allMovements = snapshot.data!;
+        _currentMovements = allMovements; // Atualiza os movimentos atuais
         final movements = _filterMovementsByPeriod(allMovements);
 
         if (movements.isEmpty) {
@@ -566,12 +578,7 @@ class _RelatoriosYearsState extends State<RelatoriosYears>
                 borderRadius: BorderRadius.circular(24),
                 border: Border.all(color: const Color(0xFFE0E0E0), width: 1.5),
                 boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
-                    blurRadius: 20,
-                    offset: const Offset(0, 8),
-                  ),
-                  BoxShadow(
+                                    BoxShadow(
                     color: Colors.white.withValues(alpha: 0.8),
                     blurRadius: 15,
                     offset: const Offset(-5, -5),

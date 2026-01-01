@@ -7,9 +7,9 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../firebase/firestore/movements_days.dart';
-import '../screens/models/salve_modal.dart';
 import '../screens/models/report_period.dart';
 import 'relatorios_for_products.dart';
+import '../screens/models/salve_modal.dart';
 
 class RelatoriosDays extends StatefulWidget {
   const RelatoriosDays({super.key});
@@ -36,9 +36,14 @@ class _RelatoriosDaysState extends State<RelatoriosDays>
   String? _touchedLabel;
   String? _touchedImageUrl;
 
+  late ValueNotifier<List<Movement>>
+  _movementsNotifier; // ValueNotifier para os movimentos
+
   @override
   void initState() {
     super.initState();
+
+    _movementsNotifier = ValueNotifier<List<Movement>>([]);
 
     _uid = FirebaseAuth.instance.currentUser!.uid;
     _displayDate = DateTime.now();
@@ -63,7 +68,17 @@ class _RelatoriosDaysState extends State<RelatoriosDays>
   void dispose() {
     _timer?.cancel();
     _animationController.dispose();
+    _movementsNotifier.dispose();
     super.dispose();
+  }
+
+  void _openSaveModal(List<Movement> movements) {
+    SalveModal.show(
+      context,
+      days: [_displayDate], // relatório diário
+      uid: _uid,
+      movements: movements,
+    );
   }
 
   Future<void> _initializeLocale() async {
@@ -121,6 +136,8 @@ class _RelatoriosDaysState extends State<RelatoriosDays>
     return '${weekday[0].toUpperCase()}${weekday.substring(1)}, '
         '$day de ${month[0].toUpperCase()}${month.substring(1)} de ${date.year}';
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -228,101 +245,110 @@ class _RelatoriosDaysState extends State<RelatoriosDays>
 
   // ================= TOP ACTIONS =================
   Widget _buildTopActions() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      child: Row(
-        children: [
-          // 📅 SELETOR DE DATA
-          Expanded(
-            child: InkWell(
-              borderRadius: BorderRadius.circular(12),
-              onTap: _pickDate,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 14,
-                  horizontal: 12,
-                ),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xFF1A1A1A), Color(0xFF3A3A3A)],
-                  ),
+    return ValueListenableBuilder<List<Movement>>(
+      valueListenable: _movementsNotifier,
+      builder: (context, movements, child) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          child: Row(
+            children: [
+              // 📅 SELETOR DE DATA
+              Expanded(
+                child: InkWell(
                   borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.2),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
+                  onTap: _pickDate,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 14,
+                      horizontal: 12,
                     ),
-                  ],
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(
-                      Icons.calendar_today,
-                      size: 18,
-                      color: Colors.white,
-                    ),
-                    const SizedBox(width: 8),
-                    Flexible(
-                      child: Text(
-                        _displayDateText,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 15,
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [Color(0xFF1A1A1A), Color(0xFF3A3A3A)],
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.2),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-
-          const SizedBox(width: 12),
-
-          // 💾 EXPORTAR RELATÓRIO
-          Expanded(
-            child: OutlinedButton(
-              onPressed: () => SalveModal.show(context),
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 14,
-                  horizontal: 12,
-                ),
-                side: const BorderSide(color: Color(0xFF1A1A1A), width: 2),
-                foregroundColor: const Color(0xFF1A1A1A),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: const [
-                  Icon(Icons.save, size: 18),
-                  SizedBox(width: 8),
-                  Flexible(
-                    child: Text(
-                      'Exportar Relatório',
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 15,
-                      ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.calendar_today,
+                          size: 18,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: Text(
+                            _displayDateText,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 15,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
+                ),
               ),
-            ),
+
+              const SizedBox(width: 12),
+
+              // 💾 EXPORTAR RELATÓRIO
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: movements.isNotEmpty
+    ? () => _openSaveModal(movements)
+    : null,
+
+
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 14,
+                      horizontal: 12,
+                    ),
+                    side: const BorderSide(color: Color(0xFF1A1A1A), width: 2),
+                    foregroundColor: const Color(0xFF1A1A1A),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: const [
+                            Icon(Icons.save, size: 18),
+                            SizedBox(width: 8),
+                            Flexible(
+                              child: Text(
+                                'Exportar Relatório',
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 15,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -343,6 +369,9 @@ class _RelatoriosDaysState extends State<RelatoriosDays>
         }
 
         final movements = snapshot.data!;
+        // Atualizar o notifier com os novos movimentos
+        _movementsNotifier.value = List.from(movements);
+
         if (movements.isEmpty) {
           return _buildEmptyState();
         }
@@ -535,12 +564,14 @@ class _RelatoriosDaysState extends State<RelatoriosDays>
       ),
 
       // Gráfico baseado na seleção
+      // Gráfico baseado na seleção
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         child: LayoutBuilder(
           builder: (context, constraints) {
             final screenHeight = MediaQuery.of(context).size.height;
             final chartHeight = screenHeight * 0.4;
+
             return Container(
               height: chartHeight,
               width: constraints.maxWidth,
@@ -550,6 +581,7 @@ class _RelatoriosDaysState extends State<RelatoriosDays>
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
+
                 borderRadius: BorderRadius.circular(24),
                 border: Border.all(color: const Color(0xFFE0E0E0), width: 1.5),
                 boxShadow: [
@@ -1125,7 +1157,7 @@ class _RelatoriosDaysState extends State<RelatoriosDays>
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
+                          color: Colors.black.withValues(alpha: 0.2),
                           blurRadius: 10,
                           offset: const Offset(0, 4),
                         ),

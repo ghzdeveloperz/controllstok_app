@@ -38,6 +38,7 @@ class _RelatoriosForProdutoMounthState extends State<RelatoriosForProdutoMounth>
   late String _uid;
   late String _productId;
   Timer? _timer;
+  List<Movement> _currentMovements = []; // ✅ Adicionado para armazenar os movimentos atuais
 
   String get _selectedPeriod => MonthlyReportPeriodController.period.value;
 
@@ -207,7 +208,14 @@ class _RelatoriosForProdutoMounthState extends State<RelatoriosForProdutoMounth>
 
           Expanded(
             child: OutlinedButton(
-              onPressed: () => SalveModal.show(context),
+              onPressed: _currentMovements.isNotEmpty
+                  ? () => SalveModal.show(
+                        context,
+                        days: [_displayMonth], // ✅ Ajustado para passar o mês como lista de dias (ou ajustar conforme necessidade)
+                        uid: _uid,
+                        movements: _currentMovements,
+                      )
+                  : null, // ✅ Desabilita se _currentMovements estiver vazio
               style: OutlinedButton.styleFrom(
                 side: const BorderSide(color: Color(0xFF1A1A1A), width: 2),
                 foregroundColor: const Color(0xFF1A1A1A),
@@ -265,6 +273,13 @@ class _RelatoriosForProdutoMounthState extends State<RelatoriosForProdutoMounth>
 
         // 2) Filtra pelo período selecionado (últimos 7/14/21/28 ou mês inteiro)
         final productMovements = _filterBySelectedPeriod(productAll);
+
+        // ✅ Atualiza _currentMovements com a lista filtrada
+        if (mounted) {
+          setState(() {
+            _currentMovements = productMovements;
+          });
+        }
 
         if (productMovements.isEmpty) {
           return _buildEmptyState(productName: productName);
@@ -537,7 +552,7 @@ class _RelatoriosForProdutoMounthState extends State<RelatoriosForProdutoMounth>
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         child: LayoutBuilder(
           builder: (context, constraints) {
-            final screenHeight = MediaQuery.of(context).size.height;
+                        final screenHeight = MediaQuery.of(context).size.height;
             final chartHeight = screenHeight * 0.4;
 
             return Container(

@@ -1,4 +1,3 @@
-// lib/screens/relatorios_for_product_years.dart
 import 'dart:async';
 
 import 'package:fl_chart/fl_chart.dart';
@@ -42,6 +41,8 @@ class _RelatoriosForProductYearsState extends State<RelatoriosForProductYears> {
   Timer? _timer;
 
   String get _selectedPeriod => AnnualReportPeriodController.period.value;
+
+  List<Movement> _currentMovements = []; // Adicionado para armazenar os movimentos atuais
 
   @override
   void initState() {
@@ -216,7 +217,23 @@ class _RelatoriosForProductYearsState extends State<RelatoriosForProductYears> {
 
           Expanded(
             child: OutlinedButton(
-              onPressed: () => SalveModal.show(context),
+              onPressed: _currentMovements.isNotEmpty
+                  ? () => SalveModal.show(
+                        context,
+                        days: List.generate(
+                          _periodMonthRange().endMonth -
+                              _periodMonthRange().startMonth +
+                              1,
+                          (i) => DateTime(
+                            _displayYear,
+                            _periodMonthRange().startMonth + i,
+                            1,
+                          ),
+                        ),
+                        uid: _uid,
+                        movements: _currentMovements,
+                      )
+                  : null,
               style: OutlinedButton.styleFrom(
                 side: const BorderSide(color: Color(0xFF1A1A1A), width: 2),
                 foregroundColor: const Color(0xFF1A1A1A),
@@ -234,8 +251,10 @@ class _RelatoriosForProductYearsState extends State<RelatoriosForProductYears> {
                     child: Text(
                       'Exportar Relatório',
                       overflow: TextOverflow.ellipsis,
-                      style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
                     ),
                   ),
                 ],
@@ -264,19 +283,20 @@ class _RelatoriosForProductYearsState extends State<RelatoriosForProductYears> {
         }
 
         final allYearMovements = snapshot.data!;
-
-        // 1) filtra só do produto
-        final productAll =
-            allYearMovements.where((m) => m.productId == _productId).toList();
+        // Atualizado: _currentMovements agora armazena os movimentos filtrados para o produto e período
+        final productAll = allYearMovements
+            .where((m) => m.productId == _productId)
+            .toList();
+        final productMovements = _filterBySelectedPeriod(productAll);
+        _currentMovements = productMovements; // Atualizado para manter o estado sincronizado com os movimentos filtrados
 
         // dados base do produto
-        final productName =
-            productAll.isNotEmpty ? productAll.first.productName : 'Produto';
-        final productImage =
-            productAll.isNotEmpty ? productAll.first.image : null;
-
-        // 2) filtra pelo período anual selecionado
-        final productMovements = _filterBySelectedPeriod(productAll);
+        final productName = productAll.isNotEmpty
+            ? productAll.first.productName
+            : 'Produto';
+        final productImage = productAll.isNotEmpty
+            ? productAll.first.image
+            : null;
 
         if (productMovements.isEmpty) {
           return _buildEmptyState(productName: productName);
@@ -416,8 +436,10 @@ class _RelatoriosForProductYearsState extends State<RelatoriosForProductYears> {
     final minX = monthsInRange.first.toDouble();
     final maxX = monthsInRange.last.toDouble();
 
-    final maxCumulative = [cumulativeAdd, cumulativeRemove]
-        .reduce((a, b) => a > b ? a : b);
+    final maxCumulative = [
+      cumulativeAdd,
+      cumulativeRemove,
+    ].reduce((a, b) => a > b ? a : b);
     final maxY = (maxCumulative + 10).toDouble();
 
     // ======== Detalhamento (AGRUPADO: MÊS -> DIA) ========
@@ -439,10 +461,12 @@ class _RelatoriosForProductYearsState extends State<RelatoriosForProductYears> {
         groupedDays.putIfAbsent(dayKey, () => []).add(mv);
       }
 
-      final dayKeysDesc = groupedDays.keys.toList()..sort((a, b) => b.compareTo(a));
+      final dayKeysDesc = groupedDays.keys.toList()
+        ..sort((a, b) => b.compareTo(a));
       final ordered = <DateTime, List<Movement>>{};
       for (final day in dayKeysDesc) {
-        final list = groupedDays[day]!..sort((a, b) => b.date.compareTo(a.date));
+        final list = groupedDays[day]!
+          ..sort((a, b) => b.date.compareTo(a.date));
         ordered[day] = list;
       }
       byMonthByDay[month] = ordered;
@@ -508,7 +532,7 @@ class _RelatoriosForProductYearsState extends State<RelatoriosForProductYears> {
               BoxShadow(
                 color: const Color(0xFF4A90E2).withValues(alpha: 0.05),
                 blurRadius: 25,
-                offset: const Offset                (0, 12),
+                offset: const Offset(0, 12),
               ),
             ],
           ),
@@ -549,7 +573,7 @@ class _RelatoriosForProductYearsState extends State<RelatoriosForProductYears> {
                       productName,
                       style: GoogleFonts.poppins(
                         fontWeight: FontWeight.w800,
-                        fontSize: 20,
+                                                fontSize: 20,
                         color: const Color(0xFF1A1A1A),
                         letterSpacing: 0.5,
                       ),
@@ -604,10 +628,7 @@ class _RelatoriosForProductYearsState extends State<RelatoriosForProductYears> {
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(24),
-                border: Border.all(
-                  color: const Color(0xFFE0E0E0),
-                  width: 1.5,
-                ),
+                border: Border.all(color: const Color(0xFFE0E0E0), width: 1.5),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.05),
@@ -663,10 +684,12 @@ class _RelatoriosForProductYearsState extends State<RelatoriosForProductYears> {
                                 show: true,
                                 gradient: LinearGradient(
                                   colors: [
-                                    const Color(0xFF27AE60)
-                                        .withValues(alpha: 0.2),
-                                    const Color(0xFF2ECC71)
-                                        .withValues(alpha: 0.05),
+                                    const Color(
+                                      0xFF27AE60,
+                                    ).withValues(alpha: 0.2),
+                                    const Color(
+                                      0xFF2ECC71,
+                                    ).withValues(alpha: 0.05),
                                   ],
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
@@ -677,11 +700,11 @@ class _RelatoriosForProductYearsState extends State<RelatoriosForProductYears> {
                                 getDotPainter:
                                     (spot, percent, barData, index) =>
                                         FlDotCirclePainter(
-                                  radius: 6,
-                                  color: const Color(0xFF27AE60),
-                                  strokeWidth: 2,
-                                  strokeColor: Colors.white,
-                                ),
+                                          radius: 6,
+                                          color: const Color(0xFF27AE60),
+                                          strokeWidth: 2,
+                                          strokeColor: Colors.white,
+                                        ),
                               ),
                             ),
 
@@ -697,10 +720,12 @@ class _RelatoriosForProductYearsState extends State<RelatoriosForProductYears> {
                                 show: true,
                                 gradient: LinearGradient(
                                   colors: [
-                                    const Color(0xFFE74C3C)
-                                        .withValues(alpha: 0.2),
-                                    const Color(0xFFE74C3C)
-                                        .withValues(alpha: 0.05),
+                                    const Color(
+                                      0xFFE74C3C,
+                                    ).withValues(alpha: 0.2),
+                                    const Color(
+                                      0xFFE74C3C,
+                                    ).withValues(alpha: 0.05),
                                   ],
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
@@ -711,11 +736,11 @@ class _RelatoriosForProductYearsState extends State<RelatoriosForProductYears> {
                                 getDotPainter:
                                     (spot, percent, barData, index) =>
                                         FlDotCirclePainter(
-                                  radius: 6,
-                                  color: const Color(0xFFE74C3C),
-                                  strokeWidth: 2,
-                                  strokeColor: Colors.white,
-                                ),
+                                          radius: 6,
+                                          color: const Color(0xFFE74C3C),
+                                          strokeWidth: 2,
+                                          strokeColor: Colors.white,
+                                        ),
                               ),
                             ),
                           ],
@@ -736,10 +761,12 @@ class _RelatoriosForProductYearsState extends State<RelatoriosForProductYears> {
                                 interval: 1,
                                 getTitlesWidget: (value, meta) {
                                   final v = value.toInt();
-                                  if (v < minX || v > maxX) return const Text('');
+                                  if (v < minX || v > maxX)
+                                    return const Text('');
 
                                   // evita poluição em ranges grandes
-                                  final showLabel = monthsInRange.contains(v) &&
+                                  final showLabel =
+                                      monthsInRange.contains(v) &&
                                       (monthsInRange.length <= 6 || v % 2 == 0);
 
                                   if (!showLabel) return const Text('');
@@ -819,7 +846,7 @@ class _RelatoriosForProductYearsState extends State<RelatoriosForProductYears> {
                                   'Set',
                                   'Out',
                                   'Nov',
-                                  'Dez'
+                                  'Dez',
                                 ];
 
                                 return touchedSpots.map((spot) {
@@ -874,10 +901,7 @@ class _RelatoriosForProductYearsState extends State<RelatoriosForProductYears> {
               end: Alignment.bottomRight,
             ),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: const Color(0xFFE0E0E0),
-              width: 1.5,
-            ),
+            border: Border.all(color: const Color(0xFFE0E0E0), width: 1.5),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.05),
@@ -942,8 +966,10 @@ class _RelatoriosForProductYearsState extends State<RelatoriosForProductYears> {
       // =======================
       ...monthsSortedDesc.expand((month) {
         final monthDate = DateTime(_displayYear, month, 1);
-        final monthTitleRaw =
-            DateFormat('MMMM/yyyy', 'pt_BR').format(monthDate);
+        final monthTitleRaw = DateFormat(
+          'MMMM/yyyy',
+          'pt_BR',
+        ).format(monthDate);
         final monthTitle =
             '${monthTitleRaw[0].toUpperCase()}${monthTitleRaw.substring(1)}';
 
@@ -965,8 +991,7 @@ class _RelatoriosForProductYearsState extends State<RelatoriosForProductYears> {
           ),
 
           ...dayKeysDesc.expand((day) {
-            final dayTitleRaw =
-                DateFormat('EEEE, dd/MM', 'pt_BR').format(day);
+            final dayTitleRaw = DateFormat('EEEE, dd/MM', 'pt_BR').format(day);
             final dayTitle =
                 '${dayTitleRaw[0].toUpperCase()}${dayTitleRaw.substring(1)}';
 
@@ -981,8 +1006,10 @@ class _RelatoriosForProductYearsState extends State<RelatoriosForProductYears> {
 
             return <Widget>[
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
                 child: Text(
                   dayTitle,
                   style: GoogleFonts.poppins(
@@ -1054,10 +1081,12 @@ class _RelatoriosForProductYearsState extends State<RelatoriosForProductYears> {
                       ),
                       const SizedBox(height: 16),
                       ...dayMovements.map((movement) {
-                        final timeStr =
-                            DateFormat('HH:mm').format(movement.date);
-                        final type =
-                            movement.type == 'add' ? 'Entrada' : 'Saída';
+                        final timeStr = DateFormat(
+                          'HH:mm',
+                        ).format(movement.date);
+                        final type = movement.type == 'add'
+                            ? 'Entrada'
+                            : 'Saída';
                         final color = movement.type == 'add'
                             ? const Color(0xFF27AE60)
                             : const Color(0xFFE74C3C);
@@ -1142,7 +1171,7 @@ class _RelatoriosForProductYearsState extends State<RelatoriosForProductYears> {
           style: GoogleFonts.poppins(
             fontSize: 14,
             fontWeight: FontWeight.w500,
-                       color: const Color(0xFF34495E),
+            color: const Color(0xFF34495E),
           ),
         ),
       ],
@@ -1179,49 +1208,17 @@ class _RelatoriosForProductYearsState extends State<RelatoriosForProductYears> {
       decoration: BoxDecoration(
         color: bg,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: fg.withValues(alpha: 0.25)),
+        border: Border.all(
+          color: fg.withValues(alpha: 0.25),
+        ),
       ),
-      child: Text(
+            child: Text(
         text,
         style: GoogleFonts.poppins(
           fontSize: 12,
           color: fg,
           fontWeight: FontWeight.w600,
         ),
-      ),
-    );
-  }
-
-  Widget _buildProductImage(String? imageUrl) {
-    if (imageUrl == null || imageUrl.isEmpty) {
-      return _imagePlaceholder();
-    }
-
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(12),
-      child: Image.network(
-        imageUrl,
-        width: 60,
-        height: 60,
-        fit: BoxFit.cover,
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return Container(
-            width: 60,
-            height: 60,
-            decoration: BoxDecoration(
-              color: const Color(0xFFF8F9FA),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: const Center(
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF3498DB)),
-              ),
-            ),
-          );
-        },
-        errorBuilder: (context, error, stackTrace) => _imagePlaceholder(),
       ),
     );
   }
@@ -1233,7 +1230,9 @@ class _RelatoriosForProductYearsState extends State<RelatoriosForProductYears> {
       decoration: BoxDecoration(
         color: const Color(0xFFF8F9FA),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE0E0E0)),
+        border: Border.all(
+          color: const Color(0xFFE0E0E0),
+        ),
       ),
       child: const Icon(
         Icons.image_not_supported,
@@ -1242,38 +1241,57 @@ class _RelatoriosForProductYearsState extends State<RelatoriosForProductYears> {
       ),
     );
   }
-}
 
-// Mesmo helper “premiumTag” do mensal (pode ficar fora da classe)
-Widget _premiumTag(String text, Color bg, Color fg, IconData icon) {
-  return Container(
-    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-    decoration: BoxDecoration(
-      color: bg,
-      borderRadius: BorderRadius.circular(10),
-      border: Border.all(color: fg.withValues(alpha: 0.2), width: 1),
-      boxShadow: [
-        BoxShadow(
-          color: fg.withValues(alpha: 0.1),
-          blurRadius: 6,
-          offset: const Offset(0, 2),
+  Widget _buildProductImage(String? imageUrl) {
+    if (imageUrl != null && imageUrl.isNotEmpty) {
+      return Image.network(
+        imageUrl,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => _imagePlaceholder(),
+      );
+    } else {
+      return _imagePlaceholder();
+    }
+  }
+
+  Widget _premiumTag(
+    String text,
+    Color bg,
+    Color fg,
+    IconData icon,
+  ) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: fg.withValues(alpha: 0.2),
+          width: 1,
         ),
-      ],
-    ),
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 16, color: fg),
-        const SizedBox(width: 6),
-        Text(
-          text,
-          style: GoogleFonts.poppins(
-            fontSize: 12,
-            color: fg,
-            fontWeight: FontWeight.w600,
+        boxShadow: [
+          BoxShadow(
+            color: fg.withValues(alpha: 0.1),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
           ),
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 16, color: fg),
+          const SizedBox(width: 6),
+          Text(
+            text,
+            style: GoogleFonts.poppins(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: fg,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

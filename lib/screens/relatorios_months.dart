@@ -47,6 +47,9 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
   // ✅ Mesmas opções do controller (sincronizado)
   final List<String> _periodOptions = MonthlyReportPeriodController.options;
 
+  // Novo: Lista para armazenar os movimentos atuais
+  List<Movement> _currentMovements = [];
+
   @override
   void initState() {
     super.initState();
@@ -351,7 +354,14 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
               // 💾 EXPORTAR RELATÓRIO
               Expanded(
                 child: OutlinedButton(
-                  onPressed: () => SalveModal.show(context),
+                  onPressed: _currentMovements.isNotEmpty
+                      ? () => SalveModal.show(
+                            context,
+                            days: [_displayMonth],
+                            uid: _uid,
+                            movements: _currentMovements,
+                          )
+                      : null,
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
                       vertical: 14,
@@ -408,6 +418,7 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
         }
 
         final movements = snapshot.data!;
+        _currentMovements = movements; // Atualiza os movimentos atuais
         final filteredMovements = _filterMovementsByPeriod(movements);
 
         if (filteredMovements.isEmpty) {
@@ -559,7 +570,7 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
 
     // Coletar todos os valores X únicos
     final Set<double> allX = {};
-        for (final spot in spotsAdd) {
+    for (final spot in spotsAdd) {
       allX.add(spot.x);
     }
     for (final spot in spotsRemove) {
@@ -578,7 +589,7 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
 
     minX = minX < 1 ? 1 : minX;
 
-    final daysInMonth = DateUtils.getDaysInMonth(
+        final daysInMonth = DateUtils.getDaysInMonth(
       _displayMonth.year,
       _displayMonth.month,
     ).toDouble();
@@ -811,7 +822,7 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
     );
   }
 
-    Widget _buildLineChart(
+  Widget _buildLineChart(
     List<FlSpot> spotsAdd,
     List<FlSpot> spotsRemove,
     double minX,
@@ -1211,7 +1222,7 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
     );
   }
 
-  Widget _buildSummaryItem(String label, int value, Color color) {
+   Widget _buildSummaryItem(String label, int value, Color color) {
     return Column(
       children: [
         Text(
@@ -1452,7 +1463,7 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: fg.withValues(alpha: 0.3)),
       ),
-            child: Text(
+      child: Text(
         text,
         style: GoogleFonts.poppins(
           fontSize: 12,
