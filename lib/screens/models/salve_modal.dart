@@ -4,17 +4,20 @@ import 'package:open_filex/open_filex.dart';
 
 import '../../export/days/export_excel_days.dart';
 import '../../firebase/firestore/movements_days.dart';
+import '../widgets/custom_alert.dart';
 
 class SalveModal extends StatefulWidget {
   final List<DateTime> days;
   final String uid;
   final List<Movement> movements;
+  final BuildContext scaffoldContext; // contexto do Scaffold pai
 
   const SalveModal({
     super.key,
     required this.days,
     required this.uid,
     required this.movements,
+    required this.scaffoldContext,
   });
 
   static Future<void> show(
@@ -27,12 +30,13 @@ class SalveModal extends StatefulWidget {
       context: context,
       barrierDismissible: true,
       barrierLabel: 'Fechar',
-      barrierColor: Colors.black.withValues(alpha: 0.8),
+      barrierColor: Colors.black.withOpacity(0.8),
       transitionDuration: const Duration(milliseconds: 120),
-      pageBuilder: (context, _, _) => SalveModal(
+      pageBuilder: (context, _, __) => SalveModal(
         days: days,
         uid: uid,
         movements: movements,
+        scaffoldContext: context, // passa o Scaffold pai
       ),
       transitionBuilder: (context, anim, _, child) {
         return FadeTransition(
@@ -52,8 +56,7 @@ class SalveModal extends StatefulWidget {
   State<SalveModal> createState() => _SalveModalState();
 }
 
-class _SalveModalState extends State<SalveModal>
-    with TickerProviderStateMixin {
+class _SalveModalState extends State<SalveModal> with TickerProviderStateMixin {
   late final AnimationController _iconController;
 
   @override
@@ -71,26 +74,23 @@ class _SalveModalState extends State<SalveModal>
     super.dispose();
   }
 
-  DateTime _normalize(DateTime d) =>
-      DateTime(d.year, d.month, d.day);
+  DateTime _normalize(DateTime d) => DateTime(d.year, d.month, d.day);
 
-  /// ✅ EXPORTA E ABRE CORRETAMENTE
-  Future<void> _exportExcelAndOpen(BuildContext rootContext) async {
-    final messenger = ScaffoldMessenger.of(rootContext);
-
+  Future<void> _exportExcelAndOpen() async {
     if (widget.movements.isEmpty) {
-      messenger.showSnackBar(
-        const SnackBar(content: Text('Não há dados para exportar')),
+      CustomAlert.showSnack(
+        context: widget.scaffoldContext,
+        message: 'Não há dados para exportar',
+        icon: Icons.error_outline,
+        backgroundColor: Colors.black,
+        duration: const Duration(seconds: 2),
       );
       return;
     }
 
     final days = widget.days.isNotEmpty
         ? widget.days.map(_normalize).toSet().toList()
-        : widget.movements
-            .map((m) => _normalize(m.timestamp))
-            .toSet()
-            .toList()
+        : widget.movements.map((m) => _normalize(m.timestamp)).toSet().toList()
       ..sort();
 
     try {
@@ -100,35 +100,41 @@ class _SalveModalState extends State<SalveModal>
         movements: widget.movements,
       );
 
-      // ⏳ pequeno delay para o Android reassumir foco
       await Future.delayed(const Duration(milliseconds: 300));
 
       final result = await OpenFilex.open(file.path);
 
       if (result.type != ResultType.done) {
-        messenger.showSnackBar(
-          SnackBar(
-            content: Text(
-              'Arquivo salvo em:\n${file.path}',
-            ),
-          ),
+        CustomAlert.showSnack(
+          context: widget.scaffoldContext,
+          message:
+              'Nenhum aplicativo compatível com arquivos Excel foi encontrado no seu dispositivo.',
+          icon: Icons.error_outline,
+          backgroundColor: Colors.black,
+          duration: const Duration(seconds: 3),
         );
       } else {
-        messenger.showSnackBar(
-          const SnackBar(content: Text('Excel aberto com sucesso!')),
+        CustomAlert.showSnack(
+          context: widget.scaffoldContext,
+          message: 'Excel aberto com sucesso!',
+          icon: Icons.check_circle_outline,
+          backgroundColor: Colors.black,
+          duration: const Duration(seconds: 2),
         );
       }
     } catch (e) {
-      messenger.showSnackBar(
-        SnackBar(content: Text('Erro ao exportar Excel: $e')),
+      CustomAlert.showSnack(
+        context: widget.scaffoldContext,
+        message: 'Erro ao exportar Excel: $e',
+        icon: Icons.error_outline,
+        backgroundColor: Colors.black,
+        duration: const Duration(seconds: 3),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final rootContext = context;
-
     return Dialog(
       backgroundColor: Colors.transparent,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
@@ -160,20 +166,14 @@ class _SalveModalState extends State<SalveModal>
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 28),
-
             _UltraPremiumOptionButton(
               label: 'Exportar como Excel',
               icon: Icons.grid_on,
-              gradientColors: const [
-                Color(0xFF28A745),
-                Color(0xFF20C997),
-              ],
+              gradientColors: const [Color(0xFF28A745), Color(0xFF20C997)],
               onTap: () {
                 HapticFeedback.heavyImpact();
                 Navigator.of(context).pop();
-
-                // 🔥 exporta FORA do modal
-                _exportExcelAndOpen(rootContext);
+                _exportExcelAndOpen();
               },
             ),
           ],
@@ -182,8 +182,6 @@ class _SalveModalState extends State<SalveModal>
     );
   }
 }
-
-/* ========================================================= */
 
 class _UltraPremiumOptionButton extends StatelessWidget {
   final String label;

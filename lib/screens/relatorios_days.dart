@@ -35,7 +35,7 @@ class _RelatoriosDaysState extends State<RelatoriosDays>
   // add   = Entradas (padrão)
   // remove = Saídas
   //all    = Entradas + Saídas
-  String _percentualMode = 'add';
+  String _percentualMode = 'all';
 
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -587,9 +587,9 @@ class _RelatoriosDaysState extends State<RelatoriosDays>
             spacing: 8,
             alignment: WrapAlignment.center,
             children: [
+              _percentualChip('Todos', 'all'),
               _percentualChip('Entradas', 'add'),
               _percentualChip('Saídas', 'remove'),
-              _percentualChip('Todos', 'all'),
             ],
           ),
         ),
@@ -888,19 +888,37 @@ class _RelatoriosDaysState extends State<RelatoriosDays>
   Widget _percentualChip(String label, String mode) {
     final isSelected = _percentualMode == mode;
 
+    // Cor padrão preta para Todos, verde para Entradas, vermelho para Saídas
+    Color background;
+    if (mode == 'all') {
+      background = Colors.black; // sempre preto
+    } else if (mode == 'add') {
+      background = isSelected
+          ? Colors.green
+          : Colors.black; // verde quando selecionado, senão preto
+    } else if (mode == 'remove') {
+      background = isSelected
+          ? Colors.red
+          : Colors.black; // vermelho quando selecionado, senão preto
+    } else {
+      background = Colors.black; // fallback
+    }
+
     return ChoiceChip(
-      label: Text(label),
-      selected: isSelected,
-      onSelected: (_) {
-        setState(() => _percentualMode = mode);
-      },
-      selectedColor: const Color(0xFF1A1A1A),
-      labelStyle: GoogleFonts.poppins(
-        color: isSelected ? Colors.white : const Color(0xFF2C3E50),
-        fontWeight: FontWeight.w600,
+      label: Text(
+        label,
+        style: TextStyle(
+          color: Colors.white, // texto sempre branco
+          fontWeight: FontWeight.bold,
+        ),
       ),
+      selected: isSelected,
+      onSelected: (_) => setState(() => _percentualMode = mode),
+      backgroundColor: Colors.black, // fundo padrão preto
+      selectedColor: background, // cor do chip quando selecionado
     );
   }
+  
 
   Widget _buildLineChart(
     List<FlSpot> spotsAdd,
@@ -1133,16 +1151,27 @@ class _RelatoriosDaysState extends State<RelatoriosDays>
   ) {
     return Column(
       children: [
-        Text(
-          'Distribuição Percentual — ${_percentualMode == 'add'
-              ? 'Entradas'
-              : _percentualMode == 'remove'
-              ? 'Saídas'
-              : 'Total'}',
+        // ✅ TÍTULO DO GRÁFICO
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Text(
+            'Distribuição Percentual — ${_percentualMode == 'all'
+                ? 'Todos'
+                : _percentualMode == 'add'
+                ? 'Entradas'
+                : 'Saídas'}',
+            style: GoogleFonts.poppins(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFF2C3E50), // cor escura para legibilidade
+            ),
+            textAlign: TextAlign.center,
+          ),
         ),
 
         const SizedBox(height: 12),
 
+        // Gráfico
         Expanded(
           child: Stack(
             children: [
@@ -1183,6 +1212,7 @@ class _RelatoriosDaysState extends State<RelatoriosDays>
                       titleStyle: section.titleStyle?.copyWith(
                         fontSize: isTouched ? 14 : 12,
                         fontWeight: FontWeight.w600,
+                        color: Colors.white,
                       ),
                     );
                   }).toList(),
