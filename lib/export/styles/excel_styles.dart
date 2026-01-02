@@ -138,4 +138,16 @@ class ExcelStyles {
     leftBorder: Border(borderStyle: BorderStyle.Thin),
     rightBorder: Border(borderStyle: BorderStyle.Thin),
   );
+
+  static final CellStyle currency = CellStyle(
+  fontSize: 10,
+  horizontalAlign: HorizontalAlign.Center,
+  verticalAlign: VerticalAlign.Center,
+  numberFormat: NumFormat.custom(formatCode: r'"R$" #,##0.00'),
+  topBorder: Border(borderStyle: BorderStyle.Thin),
+  bottomBorder: Border(borderStyle: BorderStyle.Thin),
+  leftBorder: Border(borderStyle: BorderStyle.Thin),
+  rightBorder: Border(borderStyle: BorderStyle.Thin),
+);
+
 }

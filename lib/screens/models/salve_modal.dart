@@ -32,11 +32,11 @@ class SalveModal extends StatefulWidget {
       barrierLabel: 'Fechar',
       barrierColor: Colors.black.withOpacity(0.8),
       transitionDuration: const Duration(milliseconds: 120),
-      pageBuilder: (context, _, __) => SalveModal(
+      pageBuilder: (dialogContext, _, __) => SalveModal(
         days: days,
         uid: uid,
         movements: movements,
-        scaffoldContext: context, // passa o Scaffold pai
+        scaffoldContext: context, // ⚠️ contexto do Scaffold REAL
       ),
       transitionBuilder: (context, anim, _, child) {
         return FadeTransition(
@@ -56,7 +56,8 @@ class SalveModal extends StatefulWidget {
   State<SalveModal> createState() => _SalveModalState();
 }
 
-class _SalveModalState extends State<SalveModal> with TickerProviderStateMixin {
+class _SalveModalState extends State<SalveModal>
+    with TickerProviderStateMixin {
   late final AnimationController _iconController;
 
   @override
@@ -76,10 +77,11 @@ class _SalveModalState extends State<SalveModal> with TickerProviderStateMixin {
 
   DateTime _normalize(DateTime d) => DateTime(d.year, d.month, d.day);
 
-  Future<void> _exportExcelAndOpen() async {
+  /// 🚀 Exporta o Excel e mostra o SnackBar no Scaffold correto
+  Future<void> _exportExcelAndOpen(BuildContext scaffoldContext) async {
     if (widget.movements.isEmpty) {
       CustomAlert.showSnack(
-        context: widget.scaffoldContext,
+        context: scaffoldContext,
         message: 'Não há dados para exportar',
         icon: Icons.error_outline,
         backgroundColor: Colors.black,
@@ -88,10 +90,14 @@ class _SalveModalState extends State<SalveModal> with TickerProviderStateMixin {
       return;
     }
 
-    final days = widget.days.isNotEmpty
-        ? widget.days.map(_normalize).toSet().toList()
-        : widget.movements.map((m) => _normalize(m.timestamp)).toSet().toList()
-      ..sort();
+    final days =
+        widget.days.isNotEmpty
+            ? widget.days.map(_normalize).toSet().toList()
+            : widget.movements
+                .map((m) => _normalize(m.timestamp))
+                .toSet()
+                .toList()
+          ..sort();
 
     try {
       final file = await ExportExcelDays.export(
@@ -104,27 +110,20 @@ class _SalveModalState extends State<SalveModal> with TickerProviderStateMixin {
 
       final result = await OpenFilex.open(file.path);
 
-      if (result.type != ResultType.done) {
-        CustomAlert.showSnack(
-          context: widget.scaffoldContext,
-          message:
-              'Nenhum aplicativo compatível com arquivos Excel foi encontrado no seu dispositivo.',
-          icon: Icons.error_outline,
-          backgroundColor: Colors.black,
-          duration: const Duration(seconds: 3),
-        );
-      } else {
-        CustomAlert.showSnack(
-          context: widget.scaffoldContext,
-          message: 'Excel aberto com sucesso!',
-          icon: Icons.check_circle_outline,
-          backgroundColor: Colors.black,
-          duration: const Duration(seconds: 2),
-        );
-      }
+      CustomAlert.showSnack(
+        context: scaffoldContext,
+        message: result.type == ResultType.done
+            ? 'Excel aberto com sucesso!'
+            : 'Nenhum aplicativo compatível com Excel foi encontrado.',
+        icon: result.type == ResultType.done
+            ? Icons.check_circle_outline
+            : Icons.error_outline,
+        backgroundColor: Colors.black,
+        duration: const Duration(seconds: 2),
+      );
     } catch (e) {
       CustomAlert.showSnack(
-        context: widget.scaffoldContext,
+        context: scaffoldContext,
         message: 'Erro ao exportar Excel: $e',
         icon: Icons.error_outline,
         backgroundColor: Colors.black,
@@ -170,10 +169,18 @@ class _SalveModalState extends State<SalveModal> with TickerProviderStateMixin {
               label: 'Exportar como Excel',
               icon: Icons.grid_on,
               gradientColors: const [Color(0xFF28A745), Color(0xFF20C997)],
-              onTap: () {
+              onTap: () async {
                 HapticFeedback.heavyImpact();
+
+                // 🔑 captura o contexto do Scaffold antes de fechar o Dialog
+                final scaffoldContext = widget.scaffoldContext;
+
                 Navigator.of(context).pop();
-                _exportExcelAndOpen();
+
+                // pequeno respiro para o Navigator finalizar
+                await Future.delayed(const Duration(milliseconds: 100));
+
+                _exportExcelAndOpen(scaffoldContext);
               },
             ),
           ],
