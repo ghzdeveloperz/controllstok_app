@@ -28,8 +28,15 @@ class _RelatoriosDaysState extends State<RelatoriosDays>
   Timer? _timer;
   String?
   _selectedProductId; // Para controlar qual card mostrar ao pressionar um ponto
-  String _selectedChartType =
-      'Linha'; // Novo estado para o tipo de gráfico selecionado
+  // Tipo do gráfico (Linha / Percentual)
+  String _selectedChartType = 'Linha';
+
+  // 👉 MODO DO GRÁFICO PERCENTUAL
+  // add   = Entradas (padrão)
+  // remove = Saídas
+  //all    = Entradas + Saídas
+  String _percentualMode = 'add';
+
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   int _touchedIndex = -1;
@@ -137,8 +144,6 @@ class _RelatoriosDaysState extends State<RelatoriosDays>
         '$day de ${month[0].toUpperCase()}${month.substring(1)} de ${date.year}';
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     if (!_localeReady) {
@@ -191,7 +196,7 @@ class _RelatoriosDaysState extends State<RelatoriosDays>
             ),
             Expanded(
               child: _chartTypeItem(
-                label: 'Pizza',
+                label: 'Percentual',
                 icon: Icons.pie_chart,
                 isSelected: _selectedChartType == 'Pizza',
                 onTap: () {
@@ -310,9 +315,8 @@ class _RelatoriosDaysState extends State<RelatoriosDays>
               Expanded(
                 child: OutlinedButton(
                   onPressed: movements.isNotEmpty
-    ? () => _openSaveModal(movements)
-    : null,
-
+                      ? () => _openSaveModal(movements)
+                      : null,
 
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
@@ -326,23 +330,23 @@ class _RelatoriosDaysState extends State<RelatoriosDays>
                     ),
                   ),
                   child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: const [
-                            Icon(Icons.save, size: 18),
-                            SizedBox(width: 8),
-                            Flexible(
-                              child: Text(
-                                'Exportar Relatório',
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15,
-                                ),
-                              ),
-                            ),
-                          ],
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: const [
+                      Icon(Icons.save, size: 18),
+                      SizedBox(width: 8),
+                      Flexible(
+                        child: Text(
+                          'Exportar Relatório',
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 15,
+                          ),
                         ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -509,13 +513,25 @@ class _RelatoriosDaysState extends State<RelatoriosDays>
 
     // Preparar dados para o gráfico percentual (pie chart)
     final Map<String, int> productTotals = {};
+
     for (final entry in grouped.entries) {
       final productId = entry.key;
-      final productMovements = entry.value;
-      final total = productMovements.fold<int>(0, (p, e) => p + e.quantity);
-      productTotals[productId] = total;
+
+      final filteredMovements = entry.value.where((m) {
+        if (_percentualMode == 'add') return m.type == 'add';
+        if (_percentualMode == 'remove') return m.type == 'remove';
+        return true; // all
+      });
+
+      final total = filteredMovements.fold<int>(0, (p, e) => p + e.quantity);
+
+      if (total > 0) {
+        productTotals[productId] = total;
+      }
     }
+
     final totalMovements = productTotals.values.fold<int>(0, (p, e) => p + e);
+
     final List<PieChartSectionData> pieSections = [];
 
     int index = 0;
@@ -563,7 +579,21 @@ class _RelatoriosDaysState extends State<RelatoriosDays>
         child: _buildChartTypeSelector(),
       ),
 
-      // Gráfico baseado na seleção
+      // 👉 SELETOR DO PERCENTUAL (ENTRADAS / SAÍDAS / TODOS)
+      if (_selectedChartType == 'Pizza')
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Wrap(
+            spacing: 8,
+            alignment: WrapAlignment.center,
+            children: [
+              _percentualChip('Entradas', 'add'),
+              _percentualChip('Saídas', 'remove'),
+              _percentualChip('Todos', 'all'),
+            ],
+          ),
+        ),
+
       // Gráfico baseado na seleção
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
@@ -855,6 +885,23 @@ class _RelatoriosDaysState extends State<RelatoriosDays>
     );
   }
 
+  Widget _percentualChip(String label, String mode) {
+    final isSelected = _percentualMode == mode;
+
+    return ChoiceChip(
+      label: Text(label),
+      selected: isSelected,
+      onSelected: (_) {
+        setState(() => _percentualMode = mode);
+      },
+      selectedColor: const Color(0xFF1A1A1A),
+      labelStyle: GoogleFonts.poppins(
+        color: isSelected ? Colors.white : const Color(0xFF2C3E50),
+        fontWeight: FontWeight.w600,
+      ),
+    );
+  }
+
   Widget _buildLineChart(
     List<FlSpot> spotsAdd,
     List<FlSpot> spotsRemove,
@@ -1087,13 +1134,11 @@ class _RelatoriosDaysState extends State<RelatoriosDays>
     return Column(
       children: [
         Text(
-          'Distribuição de Produtos Movimentados',
-          style: GoogleFonts.poppins(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: const Color(0xFF2C3E50),
-          ),
-          textAlign: TextAlign.center,
+          'Distribuição Percentual — ${_percentualMode == 'add'
+              ? 'Entradas'
+              : _percentualMode == 'remove'
+              ? 'Saídas'
+              : 'Total'}',
         ),
 
         const SizedBox(height: 12),
