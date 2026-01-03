@@ -95,6 +95,22 @@ class ExcelStyles {
     fontColorHex: ExcelColor.white,
   );
 
+  // totais gerais | Resumo Total
+
+  static final CellStyle totalNumber = CellStyle(
+    bold: true,
+    fontSize: 12,
+    horizontalAlign: HorizontalAlign.Center,
+    verticalAlign: VerticalAlign.Center,
+    topBorder: Border(borderStyle: BorderStyle.Medium),
+    bottomBorder: Border(borderStyle: BorderStyle.Medium),
+    leftBorder: Border(borderStyle: BorderStyle.Medium),
+    rightBorder: Border(borderStyle: BorderStyle.Medium),
+    backgroundColorHex: ExcelColor.black,
+    fontColorHex: ExcelColor.white,
+    numberFormat: NumFormat.standard_0, // ← força inteiro, sem R$
+  );
+
   /* ===== NOVOS ESTILOS ===== */
 
   /// 🟢 Entradas — verde claro, elegante e não agressivo
@@ -125,7 +141,6 @@ class ExcelStyles {
     rightBorder: Border(borderStyle: BorderStyle.Thin),
   );
 
-
   // percentual
 
   static final CellStyle percent = CellStyle(
@@ -140,14 +155,13 @@ class ExcelStyles {
   );
 
   static final CellStyle currency = CellStyle(
-  fontSize: 10,
-  horizontalAlign: HorizontalAlign.Center,
-  verticalAlign: VerticalAlign.Center,
-  numberFormat: NumFormat.custom(formatCode: r'"R$" #,##0.00'),
-  topBorder: Border(borderStyle: BorderStyle.Thin),
-  bottomBorder: Border(borderStyle: BorderStyle.Thin),
-  leftBorder: Border(borderStyle: BorderStyle.Thin),
-  rightBorder: Border(borderStyle: BorderStyle.Thin),
-);
-
+    fontSize: 10,
+    horizontalAlign: HorizontalAlign.Center,
+    verticalAlign: VerticalAlign.Center,
+    numberFormat: NumFormat.custom(formatCode: r'"R$" #,##0.00'),
+    topBorder: Border(borderStyle: BorderStyle.Thin),
+    bottomBorder: Border(borderStyle: BorderStyle.Thin),
+    leftBorder: Border(borderStyle: BorderStyle.Thin),
+    rightBorder: Border(borderStyle: BorderStyle.Thin),
+  );
 }

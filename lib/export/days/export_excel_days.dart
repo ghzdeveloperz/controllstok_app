@@ -74,6 +74,7 @@ class ExportExcelDays {
         CellIndex.indexByString('A3'),
         CellIndex.indexByString('D3'),
       );
+
       summary.cell(CellIndex.indexByString('A3')).value = TextCellValue(
         'Relatório Consolidado',
       );
@@ -137,6 +138,7 @@ class ExportExcelDays {
       }
 
       summary.appendRow([]);
+
       summary.appendRow([
         TextCellValue('Totais Gerais'),
         IntCellValue(totalAdd),
@@ -145,14 +147,23 @@ class ExportExcelDays {
       ]);
 
       final totalRow = summary.maxRows - 1;
-      for (var col = 0; col < 4; col++) {
+
+      // coluna A (texto)
+      summary
+          .cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: totalRow))
+          .cellStyle = ExcelStyles
+          .total;
+
+      // colunas numéricas (força sem moeda)
+      for (var col = 1; col < 4; col++) {
         summary
             .cell(
               CellIndex.indexByColumnRow(columnIndex: col, rowIndex: totalRow),
             )
             .cellStyle = ExcelStyles
-            .total;
+            .totalNumber;
       }
+
       // ================== DISTRIBUIÇÃO PERCENTUAL (APENAS ENTRADAS) ==================
 
       // linha em branco para respiro visual
