@@ -1,4 +1,3 @@
-// lib/export/days/export_excel_days.dart
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -67,14 +66,13 @@ class ExportExcelDays {
 
       /* ================== RESUMO GERAL ================== */
       final summary = excel['Resumo Geral'];
-      _setColumnWidths(summary, 4);
-      _applyBrandHeader(summary, 4, companyName);
+      _setColumnWidths(summary, 6);
+      _applyBrandHeader(summary, 6, companyName);
 
       summary.merge(
         CellIndex.indexByString('A3'),
-        CellIndex.indexByString('D3'),
+        CellIndex.indexByString('F3'),
       );
-
       summary.cell(CellIndex.indexByString('A3')).value = TextCellValue(
         'Relatório Consolidado',
       );
@@ -83,20 +81,24 @@ class ExportExcelDays {
 
       summary.appendRow([
         TextCellValue('Data'),
-        TextCellValue('Entradas'),
-        TextCellValue('Saídas'),
-        TextCellValue('Saldo'),
+        TextCellValue('Entradas (Qtd)'),
+        TextCellValue('Saídas (Qtd)'),
+        TextCellValue('Saldo (Qtd)'),
+        TextCellValue('Custo Médio'),
+        TextCellValue('Saldo Financeiro'),
       ]);
 
-      for (var col = 0; col < 4; col++) {
+      for (var col = 0; col < 6; col++) {
         summary
                 .cell(CellIndex.indexByColumnRow(columnIndex: col, rowIndex: 3))
                 .cellStyle =
             ExcelStyles.header;
       }
 
-      int totalAdd = 0;
-      int totalRemove = 0;
+      /// ================== ACUMULADORES GLOBAIS ==================
+      int saldoQuantidade = 0;
+      double saldoFinanceiro = 0.0;
+      double custoMedio = 0.0;
 
       for (final day in days) {
         final dayMovements = movements.where(
@@ -106,25 +108,42 @@ class ExportExcelDays {
               m.timestamp.day == day.day,
         );
 
-        final add = dayMovements
-            .where((m) => m.type == 'add')
-            .fold<int>(0, (s, m) => s + m.quantity);
+        int entradasQtd = 0;
+        int saidasQtd = 0;
+        double entradasValor = 0.0;
+        double saidasValor = 0.0;
 
-        final remove = dayMovements
-            .where((m) => m.type == 'remove')
-            .fold<int>(0, (s, m) => s + m.quantity);
+        for (final m in dayMovements) {
+          if (m.type == 'add') {
+            entradasQtd += m.quantity;
+            entradasValor += m.quantity * m.unitPrice;
+          } else if (m.type == 'remove') {
+            saidasQtd += m.quantity;
+            saidasValor += m.quantity * custoMedio;
+          }
+        }
 
-        totalAdd += add;
-        totalRemove += remove;
+        /// Atualiza saldos
+        saldoQuantidade += entradasQtd - saidasQtd;
+        saldoFinanceiro += entradasValor - saidasValor;
+
+        /// Recalcula custo médio (apenas se houver saldo)
+        if (saldoQuantidade > 0) {
+          custoMedio = saldoFinanceiro / saldoQuantidade;
+        } else {
+          custoMedio = 0.0;
+        }
 
         summary.appendRow([
           TextCellValue(DateFormat('dd/MM/yyyy').format(day)),
-          IntCellValue(add),
-          IntCellValue(remove),
-          IntCellValue(add - remove),
+          IntCellValue(entradasQtd),
+          IntCellValue(saidasQtd),
+          IntCellValue(saldoQuantidade),
+          DoubleCellValue(double.parse(custoMedio.toStringAsFixed(2))),
+          DoubleCellValue(double.parse(saldoFinanceiro.toStringAsFixed(2))),
         ]);
 
-        for (var col = 1; col < 4; col++) {
+        for (var col = 1; col < 6; col++) {
           summary
                   .cell(
                     CellIndex.indexByColumnRow(
@@ -136,147 +155,6 @@ class ExportExcelDays {
               ExcelStyles.dataCenterSmall;
         }
       }
-
-      summary.appendRow([]);
-
-      summary.appendRow([
-        TextCellValue('Totais Gerais'),
-        IntCellValue(totalAdd),
-        IntCellValue(totalRemove),
-        IntCellValue(totalAdd - totalRemove),
-      ]);
-
-      final totalRow = summary.maxRows - 1;
-
-      // coluna A (texto)
-      summary
-          .cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: totalRow))
-          .cellStyle = ExcelStyles
-          .total;
-
-      // colunas numéricas (força sem moeda)
-      for (var col = 1; col < 4; col++) {
-        summary
-            .cell(
-              CellIndex.indexByColumnRow(columnIndex: col, rowIndex: totalRow),
-            )
-            .cellStyle = ExcelStyles
-            .totalNumber;
-      }
-
-      // ================== DISTRIBUIÇÃO PERCENTUAL (APENAS ENTRADAS) ==================
-
-      // linha em branco para respiro visual
-      summary.appendRow([TextCellValue('')]);
-
-      // ===== TÍTULO =====
-      summary.appendRow([
-        TextCellValue('Distribuição Percentual por Produto (Entradas)'),
-      ]);
-
-      final distTitleRow = summary.maxRows - 1;
-
-      // merge do título (A até D)
-      summary.merge(
-        CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: distTitleRow),
-        CellIndex.indexByColumnRow(columnIndex: 3, rowIndex: distTitleRow),
-      );
-
-      // estilo do título
-      summary
-          .cell(
-            CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: distTitleRow),
-          )
-          .cellStyle = ExcelStyles
-          .resumoGeralTitle;
-
-      // ===== CABEÇALHO =====
-      summary.appendRow([
-        TextCellValue('Produto'),
-        TextCellValue('Categoria'),
-        TextCellValue('Quantidade de Entrada'),
-        TextCellValue('Percentual'),
-      ]);
-
-      final headerRow = summary.maxRows - 1;
-
-      for (var col = 0; col < 4; col++) {
-        summary
-            .cell(
-              CellIndex.indexByColumnRow(columnIndex: col, rowIndex: headerRow),
-            )
-            .cellStyle = ExcelStyles
-            .header;
-      }
-
-      // 🔹 TOTAL DE ENTRADAS POR PRODUTO
-      final Map<String, int> productEntradaTotals = {};
-
-      for (final m in movements) {
-        if (m.type != 'add') continue;
-
-        productEntradaTotals.update(
-          m.productName,
-          (value) => value + m.quantity,
-          ifAbsent: () => m.quantity,
-        );
-      }
-
-      // 🔹 TOTAL GERAL DE ENTRADAS
-      final int totalEntradas = productEntradaTotals.values.fold(
-        0,
-        (a, b) => a + b,
-      );
-
-      // 🔹 DADOS
-      productEntradaTotals.forEach((productName, quantity) {
-        final double percent = totalEntradas == 0
-            ? 0
-            : quantity / totalEntradas;
-
-        // 🔎 tenta localizar o produto no productMap (SEM classe Product)
-        dynamic product;
-
-        for (final p in productMap.values) {
-          if (p.name == productName) {
-            product = p;
-            break;
-          }
-        }
-
-        summary.appendRow([
-          TextCellValue(productName),
-          TextCellValue(product?.category ?? '-'),
-          IntCellValue(quantity),
-          DoubleCellValue(percent),
-        ]);
-
-        final row = summary.maxRows - 1;
-
-        // Produto
-        summary
-                .cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: row))
-                .cellStyle =
-            ExcelStyles.dataCenterSmall;
-
-        // Categoria
-        summary
-                .cell(CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: row))
-                .cellStyle =
-            ExcelStyles.dataCenterSmall;
-
-        // Quantidade
-        summary
-                .cell(CellIndex.indexByColumnRow(columnIndex: 2, rowIndex: row))
-                .cellStyle =
-            ExcelStyles.dataCenterSmall;
-
-        // Percentual (%)
-        summary
-                .cell(CellIndex.indexByColumnRow(columnIndex: 3, rowIndex: row))
-                .cellStyle =
-            ExcelStyles.percent;
-      });
 
       /* ================== ABAS POR DIA ================== */
       for (final day in days) {
@@ -294,7 +172,6 @@ class ExportExcelDays {
         sheet.cell(CellIndex.indexByString('A3')).cellStyle =
             ExcelStyles.sheetTitle;
 
-        /* ===== HEADER ===== */
         sheet.appendRow([
           TextCellValue('Horário'),
           TextCellValue('Nome do Produto'),
@@ -326,18 +203,35 @@ class ExportExcelDays {
                 .toList()
               ..sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
+        final Map<String, int> qtyEntrada = {};
+        final Map<String, double> totalCusto = {};
+
         int addDay = 0;
         int removeDay = 0;
         double totalCostDay = 0;
 
         for (final m in dayMovements) {
           final product = productMap[m.productId];
-          final cost = product?.cost ?? 0;
 
-          if (m.type == 'add') addDay += m.quantity;
-          if (m.type == 'remove') removeDay += m.quantity;
+          if (m.type == 'add') {
+            addDay += m.quantity;
 
-          totalCostDay += cost * m.quantity;
+            qtyEntrada[m.productId] =
+                (qtyEntrada[m.productId] ?? 0) + m.quantity;
+
+            totalCusto[m.productId] =
+                (totalCusto[m.productId] ?? 0) + (m.unitPrice * m.quantity);
+
+            totalCostDay += m.unitPrice * m.quantity;
+          }
+
+          if (m.type == 'remove') {
+            removeDay += m.quantity;
+          }
+
+          final qty = qtyEntrada[m.productId] ?? 0;
+          final total = totalCusto[m.productId] ?? 0;
+          final custoMedio = qty == 0 ? 0 : total / qty;
 
           sheet.appendRow([
             TextCellValue(DateFormat('HH:mm').format(m.timestamp)),
@@ -347,23 +241,20 @@ class ExportExcelDays {
             TextCellValue(product?.barcode ?? ''),
             TextCellValue(product?.category ?? ''),
             TextCellValue(
-              'R\$ ${cost.toStringAsFixed(2).replaceAll('.', ',')}',
+              'R\$ ${custoMedio.toStringAsFixed(2).replaceAll('.', ',')}',
             ),
             TextCellValue(
-              'R\$ ${(product?.unitPrice ?? 0).toStringAsFixed(2).replaceAll('.', ',')}',
+              'R\$ ${m.unitPrice.toStringAsFixed(2).replaceAll('.', ',')}',
             ),
             IntCellValue(product?.quantity ?? 0),
             IntCellValue(product?.minStock ?? 0),
           ]);
 
           final row = sheet.maxRows - 1;
-
-          // define o estilo da linha conforme o tipo
-          final CellStyle rowStyle = m.type == 'add'
+          final style = m.type == 'add'
               ? ExcelStyles.colorEntrada
               : ExcelStyles.colorSaida;
 
-          // aplica o estilo da coluna A até J
           for (var col = 0; col < 10; col++) {
             sheet
                     .cell(
@@ -373,11 +264,10 @@ class ExportExcelDays {
                       ),
                     )
                     .cellStyle =
-                rowStyle;
+                style;
           }
         }
 
-        /* ===== RESUMO ===== */
         sheet.appendRow([TextCellValue('')]);
         sheet.appendRow([TextCellValue('Valor Total Custo')]);
 
@@ -404,46 +294,6 @@ class ExportExcelDays {
           TextCellValue('Custo Total'),
           DoubleCellValue(totalCostDay),
         ]);
-
-        final custoRow = sheet.maxRows - 1;
-
-        sheet
-            .cell(
-              CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: custoRow),
-            )
-            .cellStyle = ExcelStyles
-            .total;
-
-        sheet
-            .cell(
-              CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: custoRow),
-            )
-            .cellStyle = ExcelStyles.total
-          ..numberFormat = NumFormat.custom(formatCode: r'"R$" #,##0.00');
-
-        for (var i = 1; i <= 3; i++) {
-          // coluna A
-          sheet
-                  .cell(
-                    CellIndex.indexByColumnRow(
-                      columnIndex: 0,
-                      rowIndex: resumoRow + i,
-                    ),
-                  )
-                  .cellStyle =
-              ExcelStyles.dataCenterSmall;
-
-          // coluna B
-          sheet
-                  .cell(
-                    CellIndex.indexByColumnRow(
-                      columnIndex: 1,
-                      rowIndex: resumoRow + i,
-                    ),
-                  )
-                  .cellStyle =
-              ExcelStyles.dataCenterSmall;
-        }
       }
 
       final bytes = excel.encode();

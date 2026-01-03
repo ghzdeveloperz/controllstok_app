@@ -1,3 +1,4 @@
+// lib/utils/average_cost.dart
 class StockEntry {
   final int quantity;
   final double unitCost;
