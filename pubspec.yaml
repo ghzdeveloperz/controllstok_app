@@ -1,5 +1,5 @@
-name: controllstock_app
-description: "A new Flutter project."
+name: mystoreday
+description: "Controle de Estoque para o seu negócio."
 publish_to: 'none'
 
 version: 1.0.0+1

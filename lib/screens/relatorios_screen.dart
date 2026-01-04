@@ -1,5 +1,5 @@
-import 'package:controllstock_app/screens/relatorios_months.dart';
-import 'package:controllstock_app/screens/relatorios_years.dart';
+import 'package:mystoreday/screens/relatorios_months.dart';
+import 'package:mystoreday/screens/relatorios_years.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui'; // Para BackdropFilter
 import 'package:google_fonts/google_fonts.dart';
