@@ -1,5 +1,5 @@
-import 'package:mystoreday/screens/relatorios_months.dart';
-import 'package:mystoreday/screens/relatorios_years.dart';
+// import 'package:mystoreday/screens/relatorios_months.dart'; // Comentado pois não será usado
+// import 'package:mystoreday/screens/relatorios_years.dart'; // Comentado pois não será usado
 import 'package:flutter/material.dart';
 import 'dart:ui'; // Para BackdropFilter
 import 'package:google_fonts/google_fonts.dart';
@@ -8,7 +8,8 @@ import 'relatorios_days.dart';
 /// =======================
 /// ENUM DE PERÍODO
 /// =======================
-enum PeriodType { daily, monthly, yearly }
+// enum PeriodType { daily, monthly, yearly } // Comentado para focar apenas em daily
+enum PeriodType { daily } // Apenas daily para simplificar
 
 /// =======================
 /// TELA DE RELATÓRIOS
@@ -22,7 +23,7 @@ class RelatoriosScreen extends StatefulWidget {
 
 class _RelatoriosScreenState extends State<RelatoriosScreen>
     with TickerProviderStateMixin {
-  PeriodType _selectedPeriod = PeriodType.daily;
+  PeriodType _selectedPeriod = PeriodType.daily; // Sempre daily
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
 
@@ -92,25 +93,25 @@ class _RelatoriosScreenState extends State<RelatoriosScreen>
                       Text(
                         'Relatórios',
                         style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.w600,
                           fontSize: 28,
                           color: Colors.black87,
                           shadows: [
                             Shadow(
-                              color: Colors.black.withValues(alpha: 0.15),
-                              offset: const Offset(0, 3),
-                              blurRadius: 6,
+                              color: Colors.black.withValues(alpha: 0.1),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 10),
 
-                      /// ---------- SELETOR DE PERÍODO PREMIUM ----------
+                      /// ---------- SELETOR DE PERÍODO PREMIUM (AGORA APENAS "DIA") ----------
                       _PeriodSelector(
                         selected: _selectedPeriod,
                         onChange: (value) {
-                          setState(() => _selectedPeriod = value);
+                          // Não faz nada, pois sempre é daily
                         },
                       ),
                     ],
@@ -119,7 +120,7 @@ class _RelatoriosScreenState extends State<RelatoriosScreen>
               ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 2),
 
             /// ---------- CONTEÚDO COM ANIMAÇÃO ----------
             Expanded(
@@ -135,16 +136,16 @@ class _RelatoriosScreenState extends State<RelatoriosScreen>
   }
 
   /// =======================
-  /// RENDERIZA POR PERÍODO
+  /// RENDERIZA POR PERÍODO (APENAS DAILY)
   /// =======================
   Widget _buildContent() {
     switch (_selectedPeriod) {
       case PeriodType.daily:
         return _buildDailyView();
-      case PeriodType.monthly:
-        return _buildMonthlyView();
-      case PeriodType.yearly:
-        return _buildYearlyView();
+      // case PeriodType.monthly: // Comentado
+      //   return _buildMonthlyView();
+      // case PeriodType.yearly: // Comentado
+      //   return _buildYearlyView();
     }
   }
 
@@ -155,17 +156,17 @@ class _RelatoriosScreenState extends State<RelatoriosScreen>
     return const RelatoriosDays();
   }
 
-  Widget _buildMonthlyView() {
-    return const RelatoriosMonths();
-  }
+  // Widget _buildMonthlyView() { // Comentado
+  //   return const RelatoriosMonths();
+  // }
 
-  Widget _buildYearlyView() {
-    return const RelatoriosYears();
-  }
+  // Widget _buildYearlyView() { // Comentado
+  //   return const RelatoriosYears();
+  // }
 }
 
 /// =======================
-/// SELETOR PREMIUM COM ANIMAÇÃO
+/// SELETOR PREMIUM COM ANIMAÇÃO (AGORA APENAS "DIA")
 /// =======================
 class _PeriodSelector extends StatefulWidget {
   final PeriodType selected;
@@ -227,9 +228,9 @@ class _PeriodSelectorState extends State<_PeriodSelector>
           ),
           child: Row(
             children: [
-              _buildItem('Dia', PeriodType.daily),
-              _buildItem('Mês', PeriodType.monthly),
-              _buildItem('Ano', PeriodType.yearly),
+              _buildItem('Dia', PeriodType.daily), // Apenas "Dia"
+              // _buildItem('Mês', PeriodType.monthly), // Comentado
+              // _buildItem('Ano', PeriodType.yearly), // Comentado
             ],
           ),
         );
@@ -242,7 +243,9 @@ class _PeriodSelectorState extends State<_PeriodSelector>
 
     return Expanded(
       child: GestureDetector(
-        onTap: () => widget.onChange(value),
+        onTap: () => widget.onChange(
+          value,
+        ), // Mesmo que não mude, mantém para consistência
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           margin: const EdgeInsets.all(4),
