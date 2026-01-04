@@ -14,7 +14,7 @@ class ScannerScreen extends StatefulWidget {
   const ScannerScreen({super.key, required this.uid});
 
   @override
-  State<ScannerScreen> createState() => _ScannerScreenState();  
+  State<ScannerScreen> createState() => _ScannerScreenState();
 }
 
 class _ScannerScreenState extends State<ScannerScreen>
@@ -42,7 +42,9 @@ class _ScannerScreenState extends State<ScannerScreen>
 
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1500), // Duração aumentada para suavidade
+      duration: const Duration(
+        milliseconds: 1500,
+      ), // Duração aumentada para suavidade
     )..repeat(reverse: true);
 
     _opacityAnimation = Tween<double>(begin: 0.3, end: 1.0).animate(
@@ -77,7 +79,10 @@ class _ScannerScreenState extends State<ScannerScreen>
     if (_hasScanned) return const SizedBox.shrink();
 
     return Align(
-      alignment: const Alignment(0, -0.4), // Movido mais para cima (Y negativo para subir)
+      alignment: const Alignment(
+        0,
+        -0.4,
+      ), // Movido mais para cima (Y negativo para subir)
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -86,10 +91,14 @@ class _ScannerScreenState extends State<ScannerScreen>
             width: 320,
             height: 180,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(24), // Bordas mais arredondadas
+              borderRadius: BorderRadius.circular(
+                24,
+              ), // Bordas mais arredondadas
               gradient: LinearGradient(
                 colors: [
-                  Colors.white.withAlpha(50), // Semi-transparente para efeito vidro
+                  Colors.white.withAlpha(
+                    50,
+                  ), // Semi-transparente para efeito vidro
                   Colors.white.withAlpha(20),
                 ],
                 begin: Alignment.topLeft,
@@ -120,7 +129,9 @@ class _ScannerScreenState extends State<ScannerScreen>
                   animation: _animationController,
                   builder: (context, child) {
                     return Positioned(
-                      top: _animationController.value * 140, // Animação vertical suave
+                      top:
+                          _animationController.value *
+                          140, // Animação vertical suave
                       left: 20,
                       right: 20,
                       child: Container(
@@ -130,15 +141,19 @@ class _ScannerScreenState extends State<ScannerScreen>
                           gradient: const LinearGradient(
                             colors: [
                               Colors.transparent,
-                              Colors.black, // Mudado de Colors.cyanAccent para Colors.black
+                              Colors
+                                  .black, // Mudado de Colors.cyanAccent para Colors.black
                               Colors.white,
-                              Colors.black, // Mudado de Colors.cyanAccent para Colors.black
+                              Colors
+                                  .black, // Mudado de Colors.cyanAccent para Colors.black
                               Colors.transparent,
                             ],
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withAlpha(150), // Mudado de Colors.cyanAccent para Colors.black
+                              color: Colors.black.withAlpha(
+                                150,
+                              ), // Mudado de Colors.cyanAccent para Colors.black
                               blurRadius: 10,
                               spreadRadius: 1,
                             ),
@@ -214,13 +229,17 @@ class _ScannerScreenState extends State<ScannerScreen>
             borderRadius: BorderRadius.circular(12),
             gradient: LinearGradient(
               colors: [
-                Colors.black.withAlpha(200), // Mudado de Colors.cyanAccent para Colors.black
+                Colors.black.withAlpha(
+                  200,
+                ), // Mudado de Colors.cyanAccent para Colors.black
                 Colors.white.withAlpha(100),
               ],
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withAlpha(100), // Mudado de Colors.cyanAccent para Colors.black
+                color: Colors.black.withAlpha(
+                  100,
+                ), // Mudado de Colors.cyanAccent para Colors.black
                 blurRadius: 8,
                 offset: const Offset(0, 0),
               ),
@@ -295,7 +314,8 @@ class _ScannerScreenState extends State<ScannerScreen>
           return;
         }
 
-        final currentQty = (snapshot.docs.first.data()['quantity'] ?? 0).toInt();
+        final currentQty = (snapshot.docs.first.data()['quantity'] ?? 0)
+            .toInt();
 
         if (item.quantity > currentQty) {
           if (!mounted) return;
@@ -312,10 +332,10 @@ class _ScannerScreenState extends State<ScannerScreen>
       }
     }
 
-    /// 🔄 ATUALIZAÇÃO REAL (SE PASSOU NA VALIDAÇÃO)
+    /// 🔄 ATUALIZAÇÃO REAL + MOVEMENT "FOTOGRAFIA" (TRANSACIONAL)
     for (final item in cart) {
       try {
-        final snapshot = await _firestore
+        final query = await _firestore
             .collection('users')
             .doc(widget.uid)
             .collection('products')
@@ -323,39 +343,93 @@ class _ScannerScreenState extends State<ScannerScreen>
             .limit(1)
             .get();
 
-        if (snapshot.docs.isEmpty) continue;
+        if (query.docs.isEmpty) continue;
 
-        final docRef = snapshot.docs.first.reference;
-        final data = snapshot.docs.first.data();
+        final docRef = query.docs.first.reference;
 
-        final oldQty = (data['quantity'] ?? 0).toInt();
-        final oldCost = (data['cost'] ?? 0).toDouble();
+        await _firestore.runTransaction((transaction) async {
+          // Re-lê dentro da transação para garantir consistência
+          final freshSnap = await transaction.get(docRef);
+          final freshData = freshSnap.data();
 
-        final int newQty = movementType == 'entrada'
-            ? oldQty + item.quantity
-            : oldQty - item.quantity;
+          if (freshData == null) return;
 
-        double newCost = oldCost;
+          final int oldQty = (freshData['quantity'] ?? 0).toInt();
+          final double oldCost = (freshData['cost'] ?? 0).toDouble();
 
-        if (movementType == 'entrada') {
-          newCost = ((oldQty * oldCost) + (item.quantity * item.unitPrice)) / newQty;
-        }
+          // Campo do seu schema atual (não crio nem renomeio): se não existir, vai 0
+          final int minStockAtTime = freshData.containsKey('minStock')
+              ? (freshData['minStock'] as num).toInt()
+              : 0;
 
-        await docRef.update({
-          'quantity': newQty,
-          'cost': newCost,
-          'unitPrice': item.unitPrice,
-          'updatedAt': FieldValue.serverTimestamp(),
-        });
+          final int newQty = movementType == 'entrada'
+              ? oldQty + item.quantity
+              : oldQty - item.quantity;
 
-        await _firestore.collection('users').doc(widget.uid).collection('movements').add({
-          'productId': docRef.id,
-          'productName': item.name,
-          'type': movementType == 'entrada' ? 'add' : 'remove',
-          'quantity': item.quantity,
-          'unitPrice': item.unitPrice,
-          'cost': item.quantity * item.unitPrice,
-          'timestamp': Timestamp.fromDate(selectedDate),
+          // Segurança extra (mesmo com pré-validação, evita inconsistência por concorrência)
+          if (newQty < 0) {
+            throw StateError(
+              'Estoque ficaria negativo para ${item.name} (antes: $oldQty, saída: ${item.quantity}).',
+            );
+          }
+
+          double newCost = oldCost;
+
+          // Regra de negócio: entradas recalculam custo médio; saídas NÃO alteram
+          if (movementType == 'entrada') {
+            // newCost = ((oldQty * oldCost) + (entradaQty * unitPrice)) / newQty
+            newCost =
+                ((oldQty * oldCost) + (item.quantity * item.unitPrice)) /
+                newQty;
+          }
+
+          // 1) Atualiza o estado atual (products segue sendo a fonte da verdade)
+          transaction.update(docRef, {
+            'quantity': newQty,
+            'cost': newCost,
+            'unitPrice': item.unitPrice,
+            'updatedAt': FieldValue.serverTimestamp(),
+          });
+
+          // 2) Salva o MOVEMENT como fotografia consolidada
+          final movementRef = _firestore
+              .collection('users')
+              .doc(widget.uid)
+              .collection('movements')
+              .doc(); // id automático
+
+          transaction.set(movementRef, {
+            // Campos já existentes (mantidos)
+            'productId': docRef.id,
+            'productName': item.name,
+            'type': movementType == 'entrada' ? 'add' : 'remove',
+            'quantity': item.quantity,
+            'unitPrice': item.unitPrice,
+
+            // Mantém o campo atual "cost" como valor da operação (compatibilidade)
+            'cost': item.quantity * item.unitPrice,
+
+            // ✅ Obrigatórios: fotografia do estado
+            'stockBefore': oldQty,
+            'stockAfter': newQty,
+            // Snapshot financeiro correto
+            'costAtMovement': newCost,
+
+            // Snapshot de estoque mínimo correto
+            'minStockAtMovement': minStockAtTime,
+
+            // Snapshot de categoria (ESTE É O QUE ESTÁ FALTANDO)
+            'category': freshData['category'],
+
+            // Recomendado para relatório (não muda UI)
+            'barcode': item.barcode,
+
+            // Mantém seu timestamp selecionado (para relatórios por dia/mês/ano)
+            'timestamp': Timestamp.fromDate(selectedDate),
+
+            // Útil para auditoria/ordenação real de gravação no Firestore
+            'createdAt': FieldValue.serverTimestamp(),
+          });
         });
       } catch (e) {
         debugPrint('Erro ao finalizar ${item.name}: $e');
@@ -405,7 +479,7 @@ class _ScannerScreenState extends State<ScannerScreen>
           .collection('users')
           .doc(widget.uid)
           .collection('products')
-          .where('barcode', isEqualTo: code)  // Corrigido: 'barcode' para 'code'
+          .where('barcode', isEqualTo: code) // Corrigido: 'barcode' para 'code'
           .limit(1)
           .get();
 
@@ -479,17 +553,24 @@ class _ScannerScreenState extends State<ScannerScreen>
           MobileScanner(controller: _controller, onDetect: _onDetect),
           // Botão para abrir/fechar o carrinho, posicionado acima do scanner
           Align(
-            alignment: const Alignment(0, -0.8), // Acima do scanner overlay (mais alto)
+            alignment: const Alignment(
+              0,
+              -0.8,
+            ), // Acima do scanner overlay (mais alto)
             child: GestureDetector(
               onTap: _toggleCartVisibility,
               child: Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.black.withAlpha(200), // Mudado de Colors.cyanAccent para Colors.black
+                  color: Colors.black.withAlpha(
+                    200,
+                  ), // Mudado de Colors.cyanAccent para Colors.black
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withAlpha(150), // Mudado de Colors.cyanAccent para Colors.black
+                      color: Colors.black.withAlpha(
+                        150,
+                      ), // Mudado de Colors.cyanAccent para Colors.black
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -497,7 +578,8 @@ class _ScannerScreenState extends State<ScannerScreen>
                 ),
                 child: Icon(
                   _isCartVisible ? Icons.close : Icons.shopping_cart,
-                  color: Colors.white, // Mudei para branco para contraste, já que o fundo agora é preto
+                  color: Colors
+                      .white, // Mudei para branco para contraste, já que o fundo agora é preto
                   size: 28,
                 ),
               ),

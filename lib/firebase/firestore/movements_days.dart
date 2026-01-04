@@ -12,13 +12,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 class Movement {
   final String id;
 
-  /// Identidade do produto (para vínculo e imagem)
+  /// Identidade do produto (vínculo técnico)
   final String productId;
 
-  /// Snapshot do nome no momento da movimentação (não depender de products)
+  /// Snapshot do nome no momento da movimentação
   final String productName;
 
-  /// add | remove
+  /// Tipo da movimentação: add | remove
   final String type;
 
   /// Quantidade movimentada
@@ -29,24 +29,35 @@ class Movement {
 
   /// Custo médio (ou custo) NO MOMENTO da movimentação (snapshot)
   ///
-  /// - Pode ser null em movimentações antigas (compatibilidade).
-  /// - Relatórios devem usar esse campo (com fallback seguro).
+  /// - Pode ser null em movimentações antigas (compatibilidade)
+  /// - Relatórios devem usar este campo
   final double? costAtMovement;
 
   /// Categoria do produto no momento da movimentação (snapshot)
   final String? category;
 
-  /// Código de barras usado naquela movimentação (snapshot)
+  /// Código de barras no momento da movimentação (snapshot)
   final String? barcode;
 
-  /// Estoque resultante após a movimentação (snapshot)
-  /// - Pode ser null para movimentações antigas.
+  /// Estoque RESULTANTE após a movimentação (snapshot)
+  ///
+  /// Exemplo:
+  /// - Antes: 10
+  /// - Entrada +5 → stockAfter = 15
   final int? stockAfter;
 
-  /// Momento do registro
+  /// Estoque mínimo configurado NO MOMENTO da movimentação (snapshot)
+  ///
+  /// Importante para:
+  /// - histórico
+  /// - relatórios
+  /// - auditoria
+  final int? minStockAtMovement;
+
+  /// Momento exato do registro
   final DateTime timestamp;
 
-  /// Dado visual (pode vir de products)
+  /// Imagem do produto (visual)
   final String? image;
 
   Movement({
@@ -61,6 +72,7 @@ class Movement {
     this.category,
     this.barcode,
     this.stockAfter,
+    this.minStockAtMovement,
     this.image,
   });
 
@@ -76,6 +88,7 @@ class Movement {
 
   factory Movement.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> doc, {
+
     String? productImage,
   }) {
     final data = doc.data() ?? {};
@@ -83,7 +96,8 @@ class Movement {
     // Compatibilidade com campos antigos:
     // - timestamp pode estar em 'timestamp' ou 'createdAt'
     // - custo pode estar em 'costAtMovement' (novo) ou (eventualmente) 'cost' (antigo)
-    final Timestamp? ts = data['timestamp'] as Timestamp? ?? data['createdAt'] as Timestamp?;
+    final Timestamp? ts =
+        data['timestamp'] as Timestamp? ?? data['createdAt'] as Timestamp?;
 
     return Movement(
       id: doc.id,
@@ -94,11 +108,13 @@ class Movement {
       unitPrice: (data['unitPrice'] as num?)?.toDouble() ?? 0.0,
 
       // IMPORTANTÍSSIMO: ler SEMPRE do documento de movimentação (snapshot histórico)
-      costAtMovement: (data['costAtMovement'] as num?)?.toDouble() ??
+      costAtMovement:
+          (data['costAtMovement'] as num?)?.toDouble() ??
           (data['cost'] as num?)?.toDouble(), // fallback opcional p/ legado
       category: data['category'] as String?,
       barcode: data['barcode'] as String?,
       stockAfter: (data['stockAfter'] as num?)?.toInt(),
+      minStockAtMovement: (data['minStockAtMovement'] as num?)?.toInt(),
 
       timestamp: ts?.toDate() ?? DateTime.now(),
       image: productImage, // visual (permitido vir de products)
@@ -118,8 +134,8 @@ class Movement {
       'category': category,
       'barcode': barcode,
       'stockAfter': stockAfter,
+      'minStockAtMovement': minStockAtMovement,
       'timestamp': Timestamp.fromDate(timestamp),
-      // 'image' não é armazenada aqui por padrão (vem de products), mas poderia ser se desejar.
     };
   }
 }
@@ -161,10 +177,7 @@ class MovementsDaysFirestore {
   /// BUSCAR IMAGEM DO PRODUTO (COM CACHE)
   /// (visual, permitido)
   /// =======================
-  Future<String?> _getProductImage(
-    String uid,
-    String productId,
-  ) async {
+  Future<String?> _getProductImage(String uid, String productId) async {
     if (productId.isEmpty) return null;
 
     if (_productImageCache.containsKey(productId)) {
@@ -218,8 +231,9 @@ class MovementsDaysFirestore {
     final resolvedUid = _resolveUid(uid);
 
     final start = DateTime(year, month, 1);
-    final end =
-        month < 12 ? DateTime(year, month + 1, 1) : DateTime(year + 1, 1, 1);
+    final end = month < 12
+        ? DateTime(year, month + 1, 1)
+        : DateTime(year + 1, 1, 1);
 
     return _firestore
         .collection('users')
@@ -267,8 +281,9 @@ class MovementsDaysFirestore {
     final resolvedUid = _resolveUid(uid);
 
     final start = DateTime(year, month, 1);
-    final end =
-        month < 12 ? DateTime(year, month + 1, 1) : DateTime(year + 1, 1, 1);
+    final end = month < 12
+        ? DateTime(year, month + 1, 1)
+        : DateTime(year + 1, 1, 1);
 
     final snapshot = await _firestore
         .collection('users')
@@ -326,7 +341,9 @@ class MovementsDaysFirestore {
         .toList();
 
     // Pré-carrega imagens necessárias (em paralelo).
-    await Future.wait(productIds.map((productId) => _getProductImage(uid, productId)));
+    await Future.wait(
+      productIds.map((productId) => _getProductImage(uid, productId)),
+    );
 
     // Monta lista final usando cache.
     final movements = <Movement>[];

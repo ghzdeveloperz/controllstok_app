@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../firebase/firestore/movements_days.dart';
-import '../../firebase/firestore/products_firestore.dart';
 import '../styles/excel_styles.dart';
 
 class ExportExcelDays {
@@ -25,8 +24,7 @@ class ExportExcelDays {
       days.sort((a, b) => a.compareTo(b));
       final companyName = await _getCompanyName(uid);
 
-      final products = await ProductsFirestore.streamProducts(uid).first;
-      final productMap = {for (var p in products) p.id: p};
+
 
       final excel = Excel.createExcel();
 
@@ -95,7 +93,6 @@ class ExportExcelDays {
             ExcelStyles.header;
       }
 
-      /// ================== ACUMULADORES GLOBAIS ==================
       int saldoQuantidade = 0;
       double saldoFinanceiro = 0.0;
       double custoMedio = 0.0;
@@ -123,16 +120,12 @@ class ExportExcelDays {
           }
         }
 
-        /// Atualiza saldos
         saldoQuantidade += entradasQtd - saidasQtd;
         saldoFinanceiro += entradasValor - saidasValor;
 
-        /// Recalcula custo médio (apenas se houver saldo)
-        if (saldoQuantidade > 0) {
-          custoMedio = saldoFinanceiro / saldoQuantidade;
-        } else {
-          custoMedio = 0.0;
-        }
+        custoMedio = saldoQuantidade > 0
+            ? saldoFinanceiro / saldoQuantidade
+            : 0.0;
 
         summary.appendRow([
           TextCellValue(DateFormat('dd/MM/yyyy').format(day)),
@@ -142,18 +135,6 @@ class ExportExcelDays {
           DoubleCellValue(double.parse(custoMedio.toStringAsFixed(2))),
           DoubleCellValue(double.parse(saldoFinanceiro.toStringAsFixed(2))),
         ]);
-
-        for (var col = 1; col < 6; col++) {
-          summary
-                  .cell(
-                    CellIndex.indexByColumnRow(
-                      columnIndex: col,
-                      rowIndex: summary.maxRows - 1,
-                    ),
-                  )
-                  .cellStyle =
-              ExcelStyles.dataCenterSmall;
-        }
       }
 
       /* ================== ABAS POR DIA ================== */
@@ -203,51 +184,53 @@ class ExportExcelDays {
                 .toList()
               ..sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
-        final Map<String, int> qtyEntrada = {};
-        final Map<String, double> totalCusto = {};
-
         int addDay = 0;
         int removeDay = 0;
-        double totalCostDay = 0;
+        double totalCostDay = 0.0;
 
         for (final m in dayMovements) {
-          final product = productMap[m.productId];
 
           if (m.type == 'add') {
             addDay += m.quantity;
-
-            qtyEntrada[m.productId] =
-                (qtyEntrada[m.productId] ?? 0) + m.quantity;
-
-            totalCusto[m.productId] =
-                (totalCusto[m.productId] ?? 0) + (m.unitPrice * m.quantity);
-
             totalCostDay += m.unitPrice * m.quantity;
-          }
-
-          if (m.type == 'remove') {
+          } else {
             removeDay += m.quantity;
           }
 
-          final qty = qtyEntrada[m.productId] ?? 0;
-          final total = totalCusto[m.productId] ?? 0;
-          final custoMedio = qty == 0 ? 0 : total / qty;
-
           sheet.appendRow([
+            // Horário da movimentação
             TextCellValue(DateFormat('HH:mm').format(m.timestamp)),
+
+            // Nome do produto (snapshot)
             TextCellValue(m.productName),
+
+            // Tipo
             TextCellValue(m.type == 'add' ? 'Entrada' : 'Saída'),
+
+            // Quantidade movimentada
             IntCellValue(m.quantity),
-            TextCellValue(product?.barcode ?? ''),
-            TextCellValue(product?.category ?? ''),
+
+            // Código de barras (snapshot da movimentação, fallback seguro)
+            TextCellValue(m.barcode ?? ''),
+
+            // Categoria (snapshot da movimentação)
+            TextCellValue(m.category ?? ''),
+
+            // Custo médio NO MOMENTO da movimentação
             TextCellValue(
-              'R\$ ${custoMedio.toStringAsFixed(2).replaceAll('.', ',')}',
+              'R\$ ${(m.costAtMovement ?? m.unitPrice).toStringAsFixed(2).replaceAll('.', ',')}',
             ),
+
+            // Preço unitário da movimentação
             TextCellValue(
               'R\$ ${m.unitPrice.toStringAsFixed(2).replaceAll('.', ',')}',
             ),
-            IntCellValue(product?.quantity ?? 0),
-            IntCellValue(product?.minStock ?? 0),
+
+            // Estoque após a movimentação
+            IntCellValue(m.stockAfter ?? 0),
+
+            // Estoque mínimo no momento da movimentação
+            IntCellValue(m.minStockAtMovement ?? 0),
           ]);
 
           final row = sheet.maxRows - 1;
