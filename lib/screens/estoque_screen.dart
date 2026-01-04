@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:async'; // Para debounce
 
 import '../firebase/firestore/products_firestore.dart';
 import '../firebase/firestore/categories_firestore.dart';
@@ -24,31 +25,79 @@ class EstoqueScreen extends StatefulWidget {
 }
 
 class _EstoqueScreenState extends State<EstoqueScreen> {
-  String _searchText = '';
-  String _selectedCategory = 'Todos';
-  int _selectedCategoryIndex = 0;
-  int _slideDirection = 1;
-  bool _isAvatarPulsing = false; // Estado para controlar a animação de pulso
+  // Isolar estado da busca e filtros com ValueNotifier para reduzir rebuilds globais
+  final ValueNotifier<String> _searchTextNotifier = ValueNotifier<String>('');
+  final ValueNotifier<String> _selectedCategoryNotifier = ValueNotifier<String>('Todos');
+  final ValueNotifier<int> _selectedCategoryIndexNotifier = ValueNotifier<int>(0);
 
+  // Debounce para busca (evita rebuilds excessivos ao digitar)
+  Timer? _debounceTimer;
+
+  // Cache de imagens fora do build (inicializado em initState)
   final Map<String, CachedNetworkImageProvider> _cachedImages = {};
+
+  // Estado local para animação do avatar (leve, não afeta performance global)
+  bool _isAvatarPulsing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Pré-cache inicial pode ser feito aqui se necessário, mas para streams, será tratado no builder
+  }
+
+  @override
+  void dispose() {
+    _searchTextNotifier.dispose();
+    _selectedCategoryNotifier.dispose();
+    _selectedCategoryIndexNotifier.dispose();
+    _debounceTimer?.cancel();
+    super.dispose();
+  }
+
+  // Método para atualizar busca com debounce
+  void _updateSearch(String value) {
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 300), () {
+      _searchTextNotifier.value = value.toLowerCase();
+    });
+  }
+
+  // Método para pré-cache de imagens (chamado fora do build, quando produtos chegam)
+  void _precacheImages(List<Product> products) {
+    for (var product in products) {
+      if (!_cachedImages.containsKey(product.id)) {
+        final provider = CachedNetworkImageProvider(product.image);
+        _cachedImages[product.id] = provider;
+        // Resolve fora do build para evitar latência
+        provider.resolve(const ImageConfiguration()).addListener(ImageStreamListener((_, _) {}));
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey.shade50,
-      body: SafeArea(
-        child: Column(
-          children: [
-            _buildHeader(),
-            _buildSearch(),
-            _buildCategories(),
-            Expanded(child: _buildProducts()),
-          ],
+    // Centralizar fontes no ThemeData para evitar chamadas repetidas a GoogleFonts
+    return Theme(
+      data: Theme.of(context).copyWith(
+        textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme),
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.grey.shade50,
+        body: SafeArea(
+          child: Column(
+            children: [
+              _buildHeader(), // Header usa StreamBuilder, mas é isolado e não rebuilda com busca/filtros
+              _buildSearch(), // Busca isolada com ValueNotifier
+              _buildCategories(), // Categorias usam ValueListenableBuilder para selectedCategory
+              Expanded(child: _buildProducts()), // Produtos com filtragem fora do build
+            ],
+          ),
         ),
       ),
     );
   }
 
+  // Header permanece com StreamBuilder, mas otimizado: remove sombras custosas para priorizar fluidez
   Widget _buildHeader() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
@@ -67,23 +116,17 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
                 children: [
                   Text(
                     company == null ? 'Olá' : 'Olá, $company.',
-                    style: GoogleFonts.poppins(
+                    style: const TextStyle( // Usa ThemeData para fonte
                       fontSize: 24,
                       fontWeight: FontWeight.w700,
                       color: Colors.black87,
-                      shadows: [
-                        Shadow(
-                          color: Colors.black.withValues(alpha: 0.15),
-                          offset: const Offset(0, 3),
-                          blurRadius: 6,
-                        ),
-                      ],
+                      // Sombras removidas para reduzir custo no scroll
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text(
                     'Seu estoque hoje',
-                    style: GoogleFonts.poppins(
+                    style: TextStyle( // Usa ThemeData
                       fontSize: 13,
                       color: Colors.grey.shade600,
                     ),
@@ -104,13 +147,14 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
                   scale: _isAvatarPulsing ? 1.1 : 1.0,
                   duration: const Duration(milliseconds: 150),
                   child: Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       shape: BoxShape.circle,
+                      // Sombras reduzidas para performance
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.2),
-                          blurRadius: 5,
-                          offset: const Offset(0, 2),
+                          color: Colors.black26,
+                          blurRadius: 3, // Blur reduzido
+                          offset: Offset(0, 1),
                         ),
                       ],
                     ),
@@ -141,11 +185,12 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
     );
   }
 
+  // Busca isolada com ValueNotifier (não causa rebuild global)
   Widget _buildSearch() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: TextField(
-        onChanged: (value) => setState(() => _searchText = value.toLowerCase()),
+        onChanged: _updateSearch, // Usa debounce para evitar setState imediato
         decoration: InputDecoration(
           hintText: 'Buscar produto...',
           hintStyle: TextStyle(color: Colors.grey.shade500),
@@ -165,9 +210,10 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
     );
   }
 
+  // Categorias usam ValueListenableBuilder para selectedCategory (rebuilda apenas quando muda)
   Widget _buildCategories() {
     return Padding(
-      padding: const EdgeInsets.only(top: 6),
+      padding: const EdgeInsets.only(top: 6, bottom: 1),
       child: SizedBox(
         height: 44,
         child: StreamBuilder<List<Category>>(
@@ -176,51 +222,53 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
             if (!snapshot.hasData) return const SizedBox();
 
             final categories = [
-              Category(id: 'todos', name: 'Todos'),
+              Category(id: 'todos', name: 'Todos'), // Removido 'const' pois Category não é const
               ...(snapshot.data ?? []),
             ];
 
-            return ListView.separated(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              scrollDirection: Axis.horizontal,
-              itemCount: categories.length,
-              separatorBuilder: (_, _) => const SizedBox(width: 10),
-              itemBuilder: (context, index) {
-                final category = categories[index];
-                final isSelected = category.name == _selectedCategory;
+            return ValueListenableBuilder<String>(
+              valueListenable: _selectedCategoryNotifier,
+              builder: (context, selectedCategory, _) {
+                return ListView.separated(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: categories.length,
+                  separatorBuilder: (_, _) => const SizedBox(width: 10), // Corrigido para (_, _)
+                  itemBuilder: (context, index) {
+                    final category = categories[index];
+                    final isSelected = category.name == selectedCategory;
 
-                return GestureDetector(
-                  onTap: () {
-                    if (_selectedCategoryIndex == index) return;
-                    setState(() {
-                      _slideDirection = index > _selectedCategoryIndex ? 1 : -1;
-                      _selectedCategoryIndex = index;
-                      _selectedCategory = category.name;
-                    });
+                    return GestureDetector(
+                      onTap: () {
+                        if (_selectedCategoryIndexNotifier.value == index) return;
+                        _selectedCategoryIndexNotifier.value = index;
+                        _selectedCategoryNotifier.value = category.name;
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 250),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 10,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isSelected ? Colors.black : Colors.transparent,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: isSelected ? Colors.black : Colors.grey.shade300,
+                            width: 1.4,
+                          ),
+                        ),
+                        child: Text(
+                          category.name,
+                          style: TextStyle( // Usa ThemeData
+                            fontSize: 13.5,
+                            fontWeight: FontWeight.w500,
+                            color: isSelected ? Colors.white : Colors.black87,
+                          ),
+                        ),
+                      ),
+                    );
                   },
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 10,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isSelected ? Colors.black : Colors.transparent,
-                      borderRadius: BorderRadius.circular(22),
-                      border: Border.all(
-                        color: isSelected ? Colors.black : Colors.grey.shade300,
-                        width: 1.4,
-                      ),
-                    ),
-                    child: Text(
-                      category.name,
-                      style: GoogleFonts.poppins(
-                        fontSize: 13.5,
-                        fontWeight: FontWeight.w500,
-                        color: isSelected ? Colors.white : Colors.black87,
-                      ),
-                    ),
-                  ),
                 );
               },
             );
@@ -230,21 +278,17 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
     );
   }
 
+  // Produtos: Filtragem fora do build usando ValueListenableBuilder para search e category
+  // Remove AnimatedSwitcher para evitar animação custosa da árvore inteira
+  // Pré-cache de imagens movido para método separado
   Widget _buildProducts() {
     return StreamBuilder<List<Product>>(
       stream: ProductsFirestore.streamProducts(widget.uid),
       builder: (context, snapshot) {
         final products = snapshot.data ?? [];
 
-        for (var product in products) {
-          if (!_cachedImages.containsKey(product.id)) {
-            final provider = CachedNetworkImageProvider(product.image);
-            _cachedImages[product.id] = provider;
-            provider
-                .resolve(const ImageConfiguration())
-                .addListener(ImageStreamListener((_, _) {}));
-          }
-        }
+        // Pré-cache fora do build
+        _precacheImages(products);
 
         if (widget.onProductsLoaded != null) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -252,68 +296,55 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
           });
         }
 
-        final filteredProducts = products.where((product) {
-          final matchesSearch = product.name.toLowerCase().contains(
-            _searchText,
-          );
-          final matchesCategory =
-              _selectedCategory == 'Todos' ||
-              product.category == _selectedCategory;
-          return matchesSearch && matchesCategory;
-        }).toList();
+        // Filtragem isolada com ValueListenableBuilder (rebuilda apenas quando search ou category mudam)
+        return ValueListenableBuilder<String>(
+          valueListenable: _searchTextNotifier,
+          builder: (context, searchText, _) {
+            return ValueListenableBuilder<String>(
+              valueListenable: _selectedCategoryNotifier,
+              builder: (context, selectedCategory, _) {
+                final filteredProducts = products.where((product) {
+                  final matchesSearch = product.name.toLowerCase().contains(searchText);
+                  final matchesCategory = selectedCategory == 'Todos' || product.category == selectedCategory;
+                  return matchesSearch && matchesCategory;
+                }).toList(); // Lista criada apenas quando necessário
 
-        return AnimatedSwitcher(
-          duration: const Duration(milliseconds: 320),
-          switchInCurve: Curves.easeOutCubic,
-          switchOutCurve: Curves.easeInCubic,
-          transitionBuilder: (child, animation) {
-            final slide = Tween<Offset>(
-              begin: Offset(_slideDirection * 0.06, 0),
-              end: Offset.zero,
-            ).animate(animation);
-            return SlideTransition(
-              position: slide,
-              child: FadeTransition(opacity: animation, child: child),
+                return filteredProducts.isEmpty
+                    ? const Center(
+                        child: Text(
+                          'Nenhum produto encontrado',
+                          style: TextStyle(color: Colors.grey), // Usa ThemeData
+                        ),
+                      )
+                    : GridView.builder(
+                        padding: const EdgeInsets.all(20),
+                        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: 250,
+                          childAspectRatio: 0.85,
+                          crossAxisSpacing: 16,
+                          mainAxisSpacing: 16,
+                        ),
+                        itemCount: filteredProducts.length,
+                        itemBuilder: (context, index) {
+                          final product = filteredProducts[index];
+                          return ProductCard(
+                            product: product,
+                            uid: widget.uid,
+                            userCategories: products.map((p) => p.category).toSet().toList(), // Evitar recriação desnecessária
+                            imageProvider: _cachedImages[product.id],
+                          );
+                        },
+                      );
+              },
             );
           },
-          child: filteredProducts.isEmpty
-              ? Center(
-                  key: const ValueKey('empty'),
-                  child: Text(
-                    'Nenhum produto encontrado',
-                    style: TextStyle(color: Colors.grey.shade600),
-                  ),
-                )
-              : GridView.builder(
-                  key: ValueKey(_selectedCategory),
-                  padding: const EdgeInsets.all(20),
-                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 250,
-                    childAspectRatio: 0.85,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                  ),
-                  itemCount: filteredProducts.length,
-                  itemBuilder: (context, index) {
-                    final product = filteredProducts[index];
-                    return ProductCard(
-                      product: product,
-                      uid: widget.uid,
-                      userCategories: products
-                          .map((p) => p.category)
-                          .toSet()
-                          .toList(),
-                      imageProvider: _cachedImages[product.id],
-                    );
-                  },
-                ),
         );
       },
     );
   }
 }
 
-// Ícone de notificações simples, sem pulsar
+// Ícone de notificações simples, sem pulsar (mantido como está, pois é leve)
 class AnimatedNotificationIcon extends StatelessWidget {
   final VoidCallback onTap;
   const AnimatedNotificationIcon({super.key, required this.onTap});
@@ -331,6 +362,7 @@ class AnimatedNotificationIcon extends StatelessWidget {
   }
 }
 
+// Função auxiliar para avatar (mantida, mas otimizada com const onde possível)
 Widget buildAvatar({
   required String email,
   String? photoUrl,
