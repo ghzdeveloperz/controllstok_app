@@ -554,7 +554,7 @@ class _PerfilScreenState extends State<PerfilScreen>
                 lastSignInTime,
               ),
               const SizedBox(height: 32),
-              _buildActionsSection(),
+              //_buildActionsSection(),
               const SizedBox(height: 32),
               _buildSecuritySection(),
             ],
@@ -1006,7 +1006,7 @@ class _PerfilScreenState extends State<PerfilScreen>
     );
   }
 
-  Widget _buildActionsSection() {
+  /*Widget _buildActionsSection() {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -1093,7 +1093,7 @@ class _PerfilScreenState extends State<PerfilScreen>
         ),
       ),
     );
-  }
+  }*/
 
   Widget _buildSecuritySection() {
     return Container(
