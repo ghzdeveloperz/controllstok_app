@@ -8,9 +8,9 @@ import 'novo_produto_screen.dart';
 import 'scanner_screen.dart';
 import 'relatorios_screen.dart';
 import 'alertas_screen.dart';
-import '../notifications/notification_service.dart';
 import 'login_screen.dart';
-import '../screens/widgets/desactive_acount.dart'; // CustomAlertDialog
+
+import '../screens/widgets/desactive_acount.dart';
 import '../screens/models/product.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -23,7 +23,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
   List<Widget>? _screens;
-  bool _notificationsStarted = false;
   String? _uid;
   Stream<DocumentSnapshot<Map<String, dynamic>>>? _userStream;
 
@@ -48,17 +47,16 @@ class _HomeScreenState extends State<HomeScreen> {
     _screens = [
       EstoqueScreen(
         uid: _uid!,
-        onProductsLoaded: _onProductsLoaded, // Callback para receber produtos
+        onProductsLoaded: _onProductsLoaded,
       ), // 0 Estoque
+
       NovoProdutoScreen(
         uid: _uid!,
         onProductSaved: () {
-          // Volta para Estoque
           setState(() {
             _currentIndex = 0;
           });
 
-          // Mostra SnackBar de sucesso
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Row(
@@ -74,17 +72,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 borderRadius: BorderRadius.circular(16),
               ),
               margin: const EdgeInsets.all(16),
-              duration: Duration(seconds: 2),
+              duration: const Duration(seconds: 2),
             ),
           );
         },
       ), // 1 Novo Produto
-      const SizedBox(), // 2 Scanner (abre modal)
+
+      const SizedBox(), // 2 Scanner (modal)
+
       const RelatoriosScreen(), // 3 Relatórios
+
       AlertasScreen(uid: user.uid), // 4 Alertas
     ];
 
-    await _initNotifications();
     _listenUserActiveStatus();
 
     if (mounted) setState(() {});
@@ -94,8 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _onProductsLoaded(List<Product> products) {
     _products = products;
 
-    // Pré-carrega todas as imagens
-    for (var product in _products) {
+    for (final product in _products) {
       if (product.image.isNotEmpty) {
         precacheImage(NetworkImage(product.image), context);
       }
@@ -112,12 +111,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
     _userStream!.listen((doc) {
       if (!mounted) return;
+
       if (doc.exists) {
         final data = doc.data();
         if (data != null && data['active'] == false) {
           FirebaseAuth.instance.signOut();
 
-          // Impede o usuário de permanecer na HomeScreen
           showDialog(
             context: context,
             barrierDismissible: false,
@@ -139,21 +138,13 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  Future<void> _initNotifications() async {
-    if (_notificationsStarted || _uid == null) return;
-    _notificationsStarted = true;
-
-    await NotificationService.instance.init();
-    if (!mounted) return;
-
-    NotificationService.instance.startListeningStockAlerts(_uid!);
-  }
-
   void _onTap(int index) {
     if (index == 2) {
-      Navigator.of(
-        context,
-      ).push(MaterialPageRoute(builder: (_) => ScannerScreen(uid: _uid!)));
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => ScannerScreen(uid: _uid!),
+        ),
+      );
       return;
     }
 
@@ -164,6 +155,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _navItem({required IconData icon, required int index}) {
     final bool isActive = _currentIndex == index;
+
     return GestureDetector(
       onTap: () => _onTap(index),
       behavior: HitTestBehavior.opaque,
@@ -209,13 +201,17 @@ class _HomeScreenState extends State<HomeScreen> {
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.25),
+              color: Colors.black.withValues(alpha: 0.25),
               blurRadius: 12,
               offset: const Offset(0, 6),
             ),
           ],
         ),
-        child: const Icon(Icons.qr_code_scanner, color: Colors.white, size: 28),
+        child: const Icon(
+          Icons.qr_code_scanner,
+          color: Colors.white,
+          size: 28,
+        ),
       ),
     );
   }
