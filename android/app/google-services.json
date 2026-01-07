@@ -33,6 +33,35 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:653898186857:android:101e018d517e834c1b62f8",
+        "android_client_info": {
+          "package_name": "com.ghz.mystoreday_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "653898186857-cnin69h0nqen1l0roem03t7qld0ckjhj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLgoe8n8-vSQIk1bPq9nBxtXhTgt7q3T8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "653898186857-cnin69h0nqen1l0roem03t7qld0ckjhj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"
