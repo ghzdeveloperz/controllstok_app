@@ -27,19 +27,29 @@ export const notifyStockCritical = onDocumentUpdated(
     const productName = afterData.name ?? "Produto";
     const previousQuantity = beforeData.quantity ?? 0;
     const currentQuantity = afterData.quantity ?? 0;
-    const criticalThreshold = afterData.minStock ?? 5;
+    const minStock = afterData.minStock ?? 5;
     const productImageUrl = afterData.imageUrl ?? "";
 
     console.log(
       `[${userId}] Produto ${productId} | ${previousQuantity} → ${currentQuantity}`
     );
 
-    const crossedCritical =
-      previousQuantity > criticalThreshold &&
-      currentQuantity <= criticalThreshold;
+    // ⚠️ Determina status da notificação
+    let notificationTitle: string | null = null;
+    let isCritical = false;
+    let isZero = false;
 
-    if (!crossedCritical) {
-      console.log("Não cruzou limite crítico.");
+    if (currentQuantity <= 0) {
+      notificationTitle = `${productName} esgotado!`;
+      isZero = true;
+    } else if (currentQuantity <= minStock) {
+      notificationTitle = `${productName} em estoque crítico!`;
+      isCritical = true;
+    }
+
+    // Se não é crítico nem zerado, não envia
+    if (!notificationTitle) {
+      console.log("Quantidade acima do mínimo, sem notificação.");
       return;
     }
 
@@ -69,15 +79,15 @@ export const notifyStockCritical = onDocumentUpdated(
       await admin.messaging().sendEachForMulticast({
         tokens,
         notification: {
-          title: `${productName} em estoque crítico`,
+          title: notificationTitle,
           body: `Quantidade restante: ${currentQuantity}`,
         },
-        // 👇 Thumbnail será enviada via data, não notification.image
         data: {
           productId: String(productId),
           productName: String(productName),
           quantity: String(currentQuantity),
-          isCritical: "true",
+          isCritical: String(isCritical),
+          isZero: String(isZero),
           productImageUrl,
         },
       });

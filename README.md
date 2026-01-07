@@ -1,4 +1,4 @@
-**NOTIFICAÇÔES**
+**alertas**
 
 Mudanças: 
-2. implementação de notificações sincronizadas
+1. apenas comentei a coluna onde contia "pedir agora" e "notificar"

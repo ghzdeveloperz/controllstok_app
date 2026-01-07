@@ -1,6 +1,7 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'dart:io';
 
 class NotificationService {
   NotificationService._();
@@ -19,7 +20,12 @@ class NotificationService {
 
     const settings = InitializationSettings(android: androidSettings);
 
-    await _notifications.initialize(settings);
+    await _notifications.initialize(
+      settings,
+      onDidReceiveNotificationResponse: (details) {
+        print('📲 Notificação clicada: ${details.payload}');
+      },
+    );
 
     // Cria canal de notificações no Android
     const channel = AndroidNotificationChannel(
@@ -36,7 +42,7 @@ class NotificationService {
     await androidPlugin?.createNotificationChannel(channel);
 
     // Solicita permissão no Android 13+
-    if (await Permission.notification.isDenied) {
+    if (Platform.isAndroid && await Permission.notification.isDenied) {
       await Permission.notification.request();
     }
 
@@ -44,17 +50,11 @@ class NotificationService {
     String? token = await FirebaseMessaging.instance.getToken();
     if (token != null) {
       print('✅ FCM Token: $token');
-      // Aqui você pode enviar para seu backend ou Firestore para notificações direcionadas
-      // Exemplo:
-      // await FirebaseFirestore.instance.collection('users').doc(userId).set({
-      //   'fcmToken': token,
-      // }, SetOptions(merge: true));
     }
 
     // 🔹 Listener para atualizar token caso mude
     FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
       print('🔄 FCM Token atualizado: $newToken');
-      // Atualize também no backend
     });
   }
 
@@ -78,36 +78,51 @@ class NotificationService {
     );
   }
 
-  /// 🔔 Exibe notificação de estoque (título e corpo dinâmicos)
+  /// 🔔 Exibe notificação de estoque (robusta)
   Future<void> showStockNotification({
     required String productName,
     required int quantity,
     required bool isCritical,
-    String? productImageUrl, // opcional para imagem futuramente
+    required bool isZero,
+    String? productImageUrl,
   }) async {
-    final title = isCritical
-        ? "$productName em Estoque Crítico!"
-        : "$productName em Estoque Baixo";
+    // Título dinamicamente definido
+    final title = isZero
+        ? "$productName esgotado!"
+        : isCritical
+            ? "$productName em Estoque Crítico!"
+            : "$productName em Estoque Baixo";
 
     final body = "Quantidade restante: $quantity";
 
     AndroidNotificationDetails androidDetails;
 
     if (productImageUrl != null && productImageUrl.isNotEmpty) {
-      androidDetails = AndroidNotificationDetails(
-        _channelId,
-        'Alertas de Estoque',
-        channelDescription: 'Notificações de estoque crítico ou zerado',
-        importance: Importance.max,
-        priority: Priority.high,
-        styleInformation: BigPictureStyleInformation(
-          FilePathAndroidBitmap(productImageUrl), // futuramente local ou cache
-          contentTitle: title,
-          summaryText: body,
-        ),
-      );
+      try {
+        androidDetails = AndroidNotificationDetails(
+          _channelId,
+          'Alertas de Estoque',
+          channelDescription: 'Notificações de estoque crítico ou zerado',
+          importance: Importance.max,
+          priority: Priority.high,
+          styleInformation: BigPictureStyleInformation(
+            FilePathAndroidBitmap(productImageUrl),
+            contentTitle: title,
+            summaryText: body,
+          ),
+        );
+      } catch (e) {
+        print('⚠️ Falha ao carregar imagem da notificação: $e');
+        androidDetails = AndroidNotificationDetails(
+          _channelId,
+          'Alertas de Estoque',
+          channelDescription: 'Notificações de estoque crítico ou zerado',
+          importance: Importance.max,
+          priority: Priority.high,
+        );
+      }
     } else {
-      androidDetails = const AndroidNotificationDetails(
+      androidDetails = AndroidNotificationDetails(
         _channelId,
         'Alertas de Estoque',
         channelDescription: 'Notificações de estoque crítico ou zerado',
@@ -123,6 +138,7 @@ class NotificationService {
       title,
       body,
       details,
+      payload: "productName:$productName;quantity:$quantity",
     );
   }
 }

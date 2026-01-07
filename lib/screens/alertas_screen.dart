@@ -349,7 +349,7 @@ class _PremiumAlertCardState extends State<_PremiumAlertCard> with TickerProvide
                       ],
                     ),
                   ),
-                  Column(
+                  /*Column(
                     children: [
                       ElevatedButton(
                         onPressed: () {},
@@ -374,7 +374,7 @@ class _PremiumAlertCardState extends State<_PremiumAlertCard> with TickerProvide
                         child: Text('Notificar', style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w500)),
                       ),
                     ],
-                  ),
+                  ),*/
                 ],
               )
             : Column(

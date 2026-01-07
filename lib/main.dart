@@ -77,21 +77,28 @@ class _AuthGateState extends State<AuthGate> {
   void initState() {
     super.initState();
 
-    /// Aqui o Android NÃO exibe notificação sozinho
+    /// 🔹 Notificações em foreground
     FirebaseMessaging.onMessage.listen((message) {
       final data = message.data;
 
-      if (data.containsKey('productName')) {
+      if (data.containsKey('productName') && data.containsKey('quantity')) {
+        final quantity = int.tryParse(data['quantity'] ?? '0') ?? 0;
+        final minStock = int.tryParse(data['minStock'] ?? '5') ?? 5;
+
+        final isZero = quantity <= 0;
+        final isCritical = quantity > 0 && quantity <= minStock;
+
         NotificationService.instance.showStockNotification(
           productName: data['productName'] ?? 'Produto',
-          quantity: int.tryParse(data['quantity'] ?? '0') ?? 0,
-          isCritical: data['isCritical'] == 'true',
+          quantity: quantity,
+          isCritical: isCritical,
+          isZero: isZero,
           productImageUrl: data['productImageUrl'],
         );
       }
     });
 
-    /// 📲 Clique na notificação
+    /// 🔹 Clique na notificação
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       debugPrint('📲 Notificação clicada: ${message.data}');
     });
