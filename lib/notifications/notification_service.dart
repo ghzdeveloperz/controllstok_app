@@ -1,5 +1,4 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 class NotificationService {
@@ -11,9 +10,9 @@ class NotificationService {
 
   static const String _channelId = 'stock_alerts';
 
-  /// 🔔 Inicializa notificações locais + canal Android
+  /// 🔔 Inicializa notificações locais (usadas APENAS em foreground)
   Future<void> init() async {
-    // Configurações iniciais do Android
+    // 🔹 Inicialização Android
     const androidSettings =
         AndroidInitializationSettings('@mipmap/ic_launcher');
 
@@ -21,7 +20,7 @@ class NotificationService {
 
     await _notifications.initialize(settings);
 
-    // Cria canal de notificações no Android
+    // 🔹 Canal Android (obrigatório)
     const channel = AndroidNotificationChannel(
       _channelId,
       'Alertas de Estoque',
@@ -35,30 +34,22 @@ class NotificationService {
 
     await androidPlugin?.createNotificationChannel(channel);
 
-    // Solicita permissão no Android 13+
-    if (await Permission.notification.isDenied) {
-      await Permission.notification.request();
-    }
+    // 🔹 Permissão de notificação (Android 13+ / iOS)
+    await FirebaseMessaging.instance.requestPermission();
 
-    // 🔹 Obtém token FCM do dispositivo
-    String? token = await FirebaseMessaging.instance.getToken();
+    // 🔹 Apenas para debug (opcional)
+    final token = await FirebaseMessaging.instance.getToken();
     if (token != null) {
-      print('✅ FCM Token: $token');
-      // Aqui você pode enviar para seu backend ou Firestore para notificações direcionadas
-      // Exemplo:
-      // await FirebaseFirestore.instance.collection('users').doc(userId).set({
-      //   'fcmToken': token,
-      // }, SetOptions(merge: true));
+      print('✅ FCM Token obtido');
     }
 
-    // 🔹 Listener para atualizar token caso mude
+    // 🔹 Listener de refresh de token (backend deve atualizar)
     FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
-      print('🔄 FCM Token atualizado: $newToken');
-      // Atualize também no backend
+      print('🔄 FCM Token atualizado');
     });
   }
 
-  /// 🧪 Teste manual (local)
+  /// 🧪 Teste local (não envolve FCM)
   Future<void> showTestNotification() async {
     const androidDetails = AndroidNotificationDetails(
       _channelId,
@@ -78,45 +69,28 @@ class NotificationService {
     );
   }
 
-  /// 🔔 Exibe notificação de estoque (título e corpo dinâmicos)
+  /// 🔔 Exibe notificação SOMENTE em foreground
+  /// ⚠️ Nunca usar isso para background ou killed
   Future<void> showStockNotification({
     required String productName,
     required int quantity,
     required bool isCritical,
-    String? productImageUrl, // opcional para imagem futuramente
   }) async {
     final title = isCritical
-        ? "$productName em Estoque Crítico!"
-        : "$productName em Estoque Baixo";
+        ? '$productName em Estoque Crítico!'
+        : '$productName em Estoque Baixo!';
 
-    final body = "Quantidade restante: $quantity";
+    final body = 'Quantidade restante: $quantity';
 
-    AndroidNotificationDetails androidDetails;
+    const androidDetails = AndroidNotificationDetails(
+      _channelId,
+      'Alertas de Estoque',
+      channelDescription: 'Notificações de estoque crítico ou zerado',
+      importance: Importance.max,
+      priority: Priority.high,
+    );
 
-    if (productImageUrl != null && productImageUrl.isNotEmpty) {
-      androidDetails = AndroidNotificationDetails(
-        _channelId,
-        'Alertas de Estoque',
-        channelDescription: 'Notificações de estoque crítico ou zerado',
-        importance: Importance.max,
-        priority: Priority.high,
-        styleInformation: BigPictureStyleInformation(
-          FilePathAndroidBitmap(productImageUrl), // futuramente local ou cache
-          contentTitle: title,
-          summaryText: body,
-        ),
-      );
-    } else {
-      androidDetails = const AndroidNotificationDetails(
-        _channelId,
-        'Alertas de Estoque',
-        channelDescription: 'Notificações de estoque crítico ou zerado',
-        importance: Importance.max,
-        priority: Priority.high,
-      );
-    }
-
-    final details = NotificationDetails(android: androidDetails);
+    const details = NotificationDetails(android: androidDetails);
 
     await _notifications.show(
       DateTime.now().millisecondsSinceEpoch ~/ 1000,

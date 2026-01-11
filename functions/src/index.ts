@@ -1,3 +1,4 @@
+// functions/src/index.ts
 import {setGlobalOptions} from "firebase-functions";
 import {onDocumentUpdated} from "firebase-functions/v2/firestore";
 import * as admin from "firebase-admin";
@@ -66,13 +67,12 @@ export const notifyStockCritical = onDocumentUpdated(
 
       console.log(`Enviando para ${tokens.length} dispositivos`);
 
-      await admin.messaging().sendEachForMulticast({
+      const response = await admin.messaging().sendEachForMulticast({
         tokens,
         notification: {
-          title: `${productName} em estoque crítico`,
+          title: `${productName} em Estoque Crítico!`,
           body: `Quantidade restante: ${currentQuantity}`,
         },
-        // 👇 Thumbnail será enviada via data, não notification.image
         data: {
           productId: String(productId),
           productName: String(productName),
@@ -82,7 +82,23 @@ export const notifyStockCritical = onDocumentUpdated(
         },
       });
 
-      console.log("Notificações enviadas com sucesso");
+      // 🔥 LIMPEZA DE TOKENS MORTOS
+      const batch = admin.firestore().batch();
+
+      response.responses.forEach((res, index) => {
+        if (!res.success) {
+          const deadToken = tokens[index];
+          const ref = admin
+            .firestore()
+            .collection(`users/${userId}/fcmTokens`)
+            .doc(deadToken);
+
+          batch.delete(ref);
+        }
+      });
+
+      await batch.commit();
+      console.log("Notificações enviadas com sucesso.");
     } catch (error) {
       console.error("Erro ao enviar notificações:", error);
     }

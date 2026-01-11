@@ -26,13 +26,31 @@ void main() async {
   // 🔹 Firebase
   await FirebaseService.init();
 
-  // 🔹 Notificações locais
+  // 🔹 Notificações locais (foreground)
   await NotificationService.instance.init();
 
   // 🔹 Handler background (obrigatório)
   FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundHandler);
 
-  // 🔹 DateFormatting
+  // 🔹 Listener GLOBAL para mensagens em foreground
+  FirebaseMessaging.onMessage.listen((message) {
+    final data = message.data;
+
+    if (data.containsKey('productName')) {
+      NotificationService.instance.showStockNotification(
+        productName: data['productName'] ?? 'Produto',
+        quantity: int.tryParse(data['quantity'] ?? '0') ?? 0,
+        isCritical: data['isCritical'] == 'true',
+      );
+    }
+  });
+
+  // 🔹 Clique na notificação
+  FirebaseMessaging.onMessageOpenedApp.listen((message) {
+    debugPrint('📲 Notificação clicada: ${message.data}');
+  });
+
+  // 🔹 Date formatting
   await initializeDateFormatting('pt_BR', null);
 
   runApp(const MyApp());
@@ -72,30 +90,6 @@ class AuthGate extends StatefulWidget {
 
 class _AuthGateState extends State<AuthGate> {
   bool _tokenSaved = false;
-
-  @override
-  void initState() {
-    super.initState();
-
-    /// Aqui o Android NÃO exibe notificação sozinho
-    FirebaseMessaging.onMessage.listen((message) {
-      final data = message.data;
-
-      if (data.containsKey('productName')) {
-        NotificationService.instance.showStockNotification(
-          productName: data['productName'] ?? 'Produto',
-          quantity: int.tryParse(data['quantity'] ?? '0') ?? 0,
-          isCritical: data['isCritical'] == 'true',
-          productImageUrl: data['productImageUrl'],
-        );
-      }
-    });
-
-    /// 📲 Clique na notificação
-    FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      debugPrint('📲 Notificação clicada: ${message.data}');
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
