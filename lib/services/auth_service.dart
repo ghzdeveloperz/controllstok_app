@@ -1,4 +1,3 @@
-// lib/services/auth_service.dart
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -18,21 +17,40 @@ class AuthService {
       );
 
       final user = credential.user;
-      if (user == null) return 'Erro ao autenticar usuário';
+      if (user == null) {
+        return 'Erro ao autenticar usuário';
+      }
 
       await user.reload();
+
       if (!user.emailVerified) {
         await user.sendEmailVerification();
-        return 'Email não verificado. Um link de verificação foi enviado para seu email.';
+        return 'E-mail não verificado. Enviamos um link de verificação para seu e-mail.';
       }
 
       return null;
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'wrong-password') return 'Senha incorreta';
-      if (e.code == 'user-not-found') return 'Usuário não encontrado';
-      return 'Erro ao autenticar: ${e.message}';
-    } catch (e) {
-      return 'Erro ao autenticar: $e';
+      // 🔥 Mensagens humanas e padronizadas
+      switch (e.code) {
+        case 'wrong-password':
+        case 'user-not-found':
+        case 'invalid-credential':
+          return 'E-mail ou senha incorretos';
+
+        case 'invalid-email':
+          return 'E-mail inválido';
+
+        case 'too-many-requests':
+          return 'Muitas tentativas. Tente novamente mais tarde';
+
+        case 'network-request-failed':
+          return 'Erro de conexão. Verifique sua internet';
+
+        default:
+          return 'Erro ao autenticar. Tente novamente';
+      }
+    } catch (_) {
+      return 'Erro inesperado ao autenticar';
     }
   }
 
@@ -40,57 +58,67 @@ class AuthService {
   Future<String?> register({
     required String login,
     required String email,
-    String temporaryPassword = 'Temporary123!', // senha temporária
+    String temporaryPassword = 'Temporary123!',
   }) async {
     try {
-      // Verifica se login já existe
       final query = await _firestore
           .collection('users')
           .where('login', isEqualTo: login)
           .limit(1)
           .get();
-      if (query.docs.isNotEmpty) return 'Login já está em uso';
 
-      // Cria usuário com senha temporária
+      if (query.docs.isNotEmpty) {
+        return 'Login já está em uso';
+      }
+
       final credential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: temporaryPassword,
       );
 
       final user = credential.user;
-      if (user == null) return 'Erro ao criar usuário';
+      if (user == null) {
+        return 'Erro ao criar usuário';
+      }
 
-      // Envia email de verificação
       await user.sendEmailVerification();
 
-      // Salva dados no Firestore
       await _firestore.collection('users').doc(user.uid).set({
         'login': login,
         'email': email,
         'createdAt': FieldValue.serverTimestamp(),
-        'isTemporaryPassword': true, // marca que ainda não atualizou a senha
+        'isTemporaryPassword': true,
+        'active': true,
       });
 
       return null;
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'email-already-in-use') return 'Email já está em uso';
-      if (e.code == 'weak-password') return 'Senha muito fraca';
-      return 'Erro ao cadastrar usuário: ${e.message}';
-    } catch (e) {
-      return 'Erro ao cadastrar usuário: $e';
+      switch (e.code) {
+        case 'email-already-in-use':
+          return 'E-mail já está em uso';
+        case 'invalid-email':
+          return 'E-mail inválido';
+        case 'weak-password':
+          return 'Senha muito fraca';
+        default:
+          return 'Erro ao cadastrar usuário';
+      }
+    } catch (_) {
+      return 'Erro inesperado ao cadastrar usuário';
     }
   }
 
   // ================= UPDATE PASSWORD =================
   Future<String?> updatePassword({
     required String newPassword,
-    String? currentPassword, // atual senha, se existir
+    String? currentPassword,
   }) async {
     try {
       User? user = _auth.currentUser;
-      if (user == null) return 'Usuário não autenticado';
+      if (user == null) {
+        return 'Usuário não autenticado';
+      }
 
-      // Reautentica se necessário
       if (currentPassword != null) {
         final cred = EmailAuthProvider.credential(
           email: user.email!,
@@ -99,10 +127,8 @@ class AuthService {
         await user.reauthenticateWithCredential(cred);
       }
 
-      // Atualiza senha
       await user.updatePassword(newPassword);
 
-      // Atualiza flag no Firestore
       await _firestore.collection('users').doc(user.uid).update({
         'isTemporaryPassword': false,
       });
@@ -110,11 +136,11 @@ class AuthService {
       return null;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'requires-recent-login') {
-        return 'Por favor, faça login novamente antes de alterar a senha';
+        return 'Faça login novamente antes de alterar a senha';
       }
-      return 'Erro ao atualizar senha: ${e.message}';
-    } catch (e) {
-      return 'Erro ao atualizar senha: $e';
+      return 'Erro ao atualizar a senha';
+    } catch (_) {
+      return 'Erro inesperado ao atualizar a senha';
     }
   }
 
@@ -122,13 +148,18 @@ class AuthService {
   Future<String?> resetPassword({required String email}) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);
-      return "Link de redefinição enviado para seu e-mail";
+      return 'Enviamos um link de redefinição para seu e-mail';
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') return 'Usuário não encontrado';
-      if (e.code == 'invalid-email') return 'Email inválido';
-      return e.message ?? "Erro ao enviar email de redefinição";
-    } catch (e) {
-      return 'Erro ao enviar email de redefinição: $e';
+      switch (e.code) {
+        case 'user-not-found':
+          return 'Usuário não encontrado';
+        case 'invalid-email':
+          return 'E-mail inválido';
+        default:
+          return 'Erro ao enviar e-mail de redefinição';
+      }
+    } catch (_) {
+      return 'Erro inesperado ao redefinir senha';
     }
   }
 
