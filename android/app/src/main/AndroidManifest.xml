@@ -6,7 +6,6 @@
 
     <application
         android:label="@string/app_name"
-
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 
@@ -31,6 +30,15 @@
             </intent-filter>
 
         </activity>
+
+        <!-- Serviço Firebase Messaging para receber notificações em background/killed -->
+        <service
+            android:name="com.google.firebase.messaging.FirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
 
         <!-- Flutter embedding -->
         <meta-data

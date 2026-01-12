@@ -1,3 +1,4 @@
+// lib/main.dart
 // ignore_for_file: depend_on_referenced_packages
 
 import 'package:flutter/material.dart';
@@ -13,11 +14,22 @@ import 'screens/home_screen.dart';
 import 'notifications/notification_service.dart';
 import 'notifications/save_fcm_token.dart';
 
-/// 🔹 Handler para mensagens em background
-/// ⚠️ NÃO cria notificação aqui
-/// O Android já cria automaticamente se vier `notification` no payload
+/// 🔹 GlobalKey para navegar fora do context
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+/// 🔹 Handler para mensagens em background e app killed
 Future<void> _firebaseBackgroundHandler(RemoteMessage message) async {
-  debugPrint('📩 Mensagem recebida em background: ${message.data}');
+  await FirebaseService.init();
+  debugPrint('📩 Mensagem recebida em background/killed: ${message.data}');
+
+  final data = message.data;
+  if (data.containsKey('productName')) {
+    await NotificationService.instance.showStockNotification(
+      productName: data['productName'] ?? 'Produto',
+      quantity: int.tryParse(data['quantity'] ?? '0') ?? 0,
+      isCritical: data['isCritical'] == 'true',
+    );
+  }
 }
 
 void main() async {
@@ -26,29 +38,11 @@ void main() async {
   // 🔹 Firebase
   await FirebaseService.init();
 
-  // 🔹 Notificações locais (foreground)
+  // 🔹 Notificações locais (foreground e background)
   await NotificationService.instance.init();
 
   // 🔹 Handler background (obrigatório)
   FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundHandler);
-
-  // 🔹 Listener GLOBAL para mensagens em foreground
-  FirebaseMessaging.onMessage.listen((message) {
-    final data = message.data;
-
-    if (data.containsKey('productName')) {
-      NotificationService.instance.showStockNotification(
-        productName: data['productName'] ?? 'Produto',
-        quantity: int.tryParse(data['quantity'] ?? '0') ?? 0,
-        isCritical: data['isCritical'] == 'true',
-      );
-    }
-  });
-
-  // 🔹 Clique na notificação
-  FirebaseMessaging.onMessageOpenedApp.listen((message) {
-    debugPrint('📲 Notificação clicada: ${message.data}');
-  });
 
   // 🔹 Date formatting
   await initializeDateFormatting('pt_BR', null);
@@ -64,6 +58,7 @@ class MyApp extends StatelessWidget {
     final baseTextTheme = GoogleFonts.poppinsTextTheme();
 
     return MaterialApp(
+      navigatorKey: navigatorKey, // ← essencial para navegação global
       debugShowCheckedModeBanner: false,
       title: 'ControlStok',
       theme: ThemeData(
@@ -90,6 +85,54 @@ class AuthGate extends StatefulWidget {
 
 class _AuthGateState extends State<AuthGate> {
   bool _tokenSaved = false;
+  Map<String, dynamic>? _pendingNotification;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // 🔹 Listener de notificações em foreground (app aberto)
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      final data = message.data;
+      debugPrint('📩 Mensagem recebida em foreground: $data');
+
+      if (data.containsKey('productName')) {
+        await NotificationService.instance.showStockNotification(
+          productName: data['productName'] ?? 'Produto',
+          quantity: int.tryParse(data['quantity'] ?? '0') ?? 0,
+          isCritical: data['isCritical'] == 'true',
+        );
+      }
+    });
+
+    // 🔹 Listener de clique em notificações (background ou app aberto)
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      _pendingNotification = message.data;
+      _tryNavigate();
+    });
+
+    // 🔹 Notificação que abriu o app quando estava fechado
+    FirebaseMessaging.instance.getInitialMessage().then((message) {
+      if (message != null) {
+        _pendingNotification = message.data;
+        _tryNavigate();
+      }
+    });
+  }
+
+  // 🔹 Tenta navegar para HomeScreen na aba Alertas se o usuário estiver logado
+  void _tryNavigate() {
+    final user = FirebaseAuth.instance.currentUser;
+    if (_pendingNotification != null && user != null) {
+      navigatorKey.currentState?.pushAndRemoveUntil(
+        MaterialPageRoute(
+          builder: (_) => HomeScreen(initialIndex: 4), // aba Alertas
+        ),
+        (route) => false,
+      );
+      _pendingNotification = null; // limpa pending
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -118,9 +161,12 @@ class _AuthGateState extends State<AuthGate> {
           if (!_tokenSaved) {
             _tokenSaved = true;
             saveFcmTokenIfLoggedIn();
+
+            // Caso haja notificação pendente após login, navega
+            _tryNavigate();
           }
 
-          return const HomeScreen();
+          return const HomeScreen(); // default aba Estoque
         }
 
         _tokenSaved = false;

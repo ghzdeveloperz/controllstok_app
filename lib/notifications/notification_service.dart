@@ -1,3 +1,4 @@
+// lib/notifications/notification_service.dart
 // ignore_for_file: avoid_print
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -15,8 +16,9 @@ class NotificationService {
   /// 🔔 Inicializa notificações locais (usadas APENAS em foreground)
   Future<void> init() async {
     // 🔹 Inicialização Android
-    const androidSettings =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+    const androidSettings = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
 
     const settings = InitializationSettings(android: androidSettings);
 
@@ -32,7 +34,8 @@ class NotificationService {
 
     final androidPlugin = _notifications
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>();
+          AndroidFlutterLocalNotificationsPlugin
+        >();
 
     await androidPlugin?.createNotificationChannel(channel);
 
@@ -42,7 +45,9 @@ class NotificationService {
     // 🔹 Apenas para debug (opcional)
     final token = await FirebaseMessaging.instance.getToken();
     if (token != null) {
-      print('✅ FCM Token obtido');
+      print('✅ FCM Token obtido: $token'); // agora imprime o token completo
+    } else {
+      print('⚠️ Não foi possível obter o FCM Token');
     }
 
     // 🔹 Listener de refresh de token (backend deve atualizar)

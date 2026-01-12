@@ -14,7 +14,8 @@ import '../screens/widgets/desactive_acount.dart';
 import '../screens/models/product.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final int? initialIndex; // ← aba inicial opcional
+  const HomeScreen({super.key, this.initialIndex});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -32,6 +33,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+
+    // Inicializa a aba atual com o valor passado ou 0
+    _currentIndex = widget.initialIndex ?? 0;
+
     _initUserAndScreens();
   }
 
