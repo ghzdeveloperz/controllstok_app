@@ -1,5 +1,4 @@
-**WithOpacity** para: **Alpha**
+## Aqui, comecei a estruturar meu código por completo
 
-Mudanças: 
-1. correção de cores
-2. organização estrutural
+Arquivos ajustados:
+1. Login Screen
