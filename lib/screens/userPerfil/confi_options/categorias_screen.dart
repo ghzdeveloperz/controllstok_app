@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import '../../firebase/firestore/categories_firestore.dart';
-import '../models/category.dart';
-import '../login_screen.dart';
+import '../../../firebase/firestore/categories_firestore.dart';
+import '../../models/category.dart';
+import '../../acounts/login/login_screen.dart';
 
 class CategoriasScreen extends StatefulWidget {
   const CategoriasScreen({super.key});

@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'dart:ui'; // Para BackdropFilter
 import 'package:google_fonts/google_fonts.dart';
-import 'relatorios_days.dart';
+import 'widgets/relatorios/days/relatorios_days.dart';
 
 /// =======================
 /// ENUM DE PERÍODO

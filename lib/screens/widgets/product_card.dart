@@ -46,7 +46,8 @@ class ProductCard extends StatelessWidget {
         },
         borderRadius: BorderRadius.circular(20),
         child: AnimatedScale(
-          scale: 1.0, // Pode ser ajustado dinamicamente se necessário, mas mantido simples
+          scale:
+              1.0, // Pode ser ajustado dinamicamente se necessário, mas mantido simples
           duration: const Duration(milliseconds: 150),
           child: Container(
             decoration: BoxDecoration(
@@ -58,19 +59,14 @@ class ProductCard extends StatelessWidget {
                   offset: Offset(0, 4),
                 ),
               ],
-              border: Border.all(
-                color: Colors.white.withOpacity(0.3),
-                width: 1.5,
-              ),
+              border: Border.all(color: Colors.white.withAlpha(77), width: 1.5),
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: Stack(
                 children: [
                   // Imagem preenchendo o card
-                  Positioned.fill(
-                    child: _buildImage(),
-                  ),
+                  Positioned.fill(child: _buildImage()),
                   // Gradiente overlay sutil para visibilidade
                   Positioned.fill(
                     child: Container(
@@ -80,7 +76,7 @@ class ProductCard extends StatelessWidget {
                           end: Alignment.bottomCenter,
                           colors: [
                             Colors.transparent,
-                            Colors.black.withOpacity(0.1),
+                            Colors.black.withAlpha(26),
                           ],
                         ),
                       ),
@@ -124,7 +120,8 @@ class ProductCard extends StatelessWidget {
       ),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.2), // Falso glassmorphism: cor semi-transparente
+          color: Colors.black.withAlpha(51),
+          // Falso glassmorphism: cor semi-transparente
           borderRadius: const BorderRadius.only(
             bottomLeft: Radius.circular(20),
             bottomRight: Radius.circular(20),
@@ -151,9 +148,12 @@ class ProductCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 6),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.8),
+                    color: Colors.white.withAlpha(20),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
@@ -176,7 +176,7 @@ class ProductCard extends StatelessWidget {
                     'Estoque: ${product.quantity}',
                     style: TextStyle(
                       fontSize: 9,
-                      color: Colors.white.withOpacity(0.9),
+                      color: Colors.white.withAlpha(230),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -209,7 +209,7 @@ class ProductCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
-                    color: statusColor.withOpacity(0.9),
+                    color: statusColor.withAlpha(230),
                     letterSpacing: 0.2,
                   ),
                 ),
@@ -225,18 +225,11 @@ class ProductCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            Colors.grey.shade200,
-            Colors.grey.shade300,
-          ],
+          colors: [Colors.grey.shade200, Colors.grey.shade300],
         ),
       ),
       child: const Center(
-        child: Icon(
-          Icons.inventory_2_outlined,
-          size: 40,
-          color: Colors.grey,
-        ),
+        child: Icon(Icons.inventory_2_outlined, size: 40, color: Colors.grey),
       ),
     );
   }

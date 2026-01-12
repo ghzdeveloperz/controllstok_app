@@ -6,9 +6,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
-import '../firebase/firestore/movements_days.dart';
-import 'models/annual_report_period_controller.dart';
-import 'models/salve_modal.dart';
+import '../../../../firebase/firestore/movements_days.dart';
+import '../../../models/annual_report_period_controller.dart';
+import '../../../models/salve_modal.dart';
 
 class RelatoriosForProductYears extends StatefulWidget {
   final String productId;

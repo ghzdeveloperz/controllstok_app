@@ -204,7 +204,7 @@ class _ProductOverlayState extends State<ProductOverlay>
         return BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 12.0, sigmaY: 12.0), // Blur ultra premium
           child: Container(
-            color: Colors.black.withOpacity(0.7 * _fadeAnimation.value), // Fundo preto intenso com fade
+            color: Colors.black.withAlpha((0.7 * _fadeAnimation.value * 255).round()), // Fundo preto intenso com fade
             child: IgnorePointer( // Bloqueia interações
               child: Center(
                 child: Opacity(
@@ -217,18 +217,18 @@ class _ProductOverlayState extends State<ProductOverlay>
                       borderRadius: BorderRadius.circular(32), // Bordas ultra arredondadas
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.5),
+                          color: Colors.black.withAlpha(128),
                           blurRadius: 40,
                           offset: const Offset(0, 20),
                         ),
                         BoxShadow(
-                          color: Colors.white.withOpacity(0.1),
+                          color: Colors.white.withAlpha(26),
                           blurRadius: 20,
                           offset: const Offset(0, -10), // Glow superior
                         ),
                       ],
                       border: Border.all(
-                        color: Colors.black.withOpacity(0.8), // Borda preta forte
+                        color: Colors.black.withAlpha(20), // Borda preta forte
                         width: 2,
                       ),
                     ),
@@ -293,7 +293,7 @@ class _ProductOverlayState extends State<ProductOverlay>
                           style: GoogleFonts.poppins(
                             fontSize: 18,
                             fontWeight: FontWeight.w400,
-                            color: Colors.black.withOpacity(0.7),
+                            color: Colors.black.withAlpha(179),
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -302,7 +302,7 @@ class _ProductOverlayState extends State<ProductOverlay>
                         Container(
                           height: 8,
                           decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.1),
+                            color: Colors.black.withAlpha(26),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: ClipRRect(
@@ -313,7 +313,7 @@ class _ProductOverlayState extends State<ProductOverlay>
                                   value: _progressAnimation.value,
                                   backgroundColor: Colors.transparent,
                                   valueColor: AlwaysStoppedAnimation<Color>(
-                                    Colors.black.withOpacity(0.8),
+                                    Colors.black.withAlpha(20),
                                   ),
                                 ),
                                 // Shimmer effect
@@ -323,7 +323,7 @@ class _ProductOverlayState extends State<ProductOverlay>
                                       gradient: LinearGradient(
                                         colors: [
                                           Colors.transparent,
-                                          Colors.white.withOpacity(0.4),
+                                          Colors.white.withAlpha(102),
                                           Colors.transparent,
                                         ],
                                         stops: [

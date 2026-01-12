@@ -1,78 +1,59 @@
+// lib/screens/relatorios_for_produto_mounth.dart
 import 'dart:async';
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:intl/date_symbol_data_local.dart';
+
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 
-import '../firebase/firestore/movements_days.dart';
-import '../screens/models/salve_modal.dart';
-import '../screens/models/report_period.dart';
-import '../screens/models/month_reference.dart';
+import '../../../../firebase/firestore/movements_days.dart';
+import '../../../models/monthly_report_period_controller.dart';
+import '../../../models/salve_modal.dart';
 
-class RelatoriosForProducts extends StatefulWidget {
+class RelatoriosForProdutoMounth extends StatefulWidget {
   final String productId;
   final String uid;
-  final ReportPeriod
-  period; // ✅ PERÍODO DO RELATÓRIO (não mais DateTime ambíguo)
 
-  const RelatoriosForProducts({
+  /// Mês selecionado na tela de relatórios mensais
+  final DateTime displayMonth;
+
+  const RelatoriosForProdutoMounth({
     super.key,
     required this.productId,
     required this.uid,
-    required this.period, // ✅ RECEBE O PERÍODO EXPLÍCITO
+    required this.displayMonth,
   });
 
-  /// Construtor de compatibilidade para código legado que passa DateTime
-  /// @deprecated Use o construtor principal com ReportPeriod
-  factory RelatoriosForProducts.fromDate({
-    required String productId,
-    required String uid,
-    required DateTime date,
-  }) {
-    // Tenta detectar se é um mês (dia 1) ou dia específico
-    final period = date.day == 1
-        ? ReportPeriod.month(MonthReference.fromDateTime(date))
-        : ReportPeriod.day(date);
-
-    return RelatoriosForProducts(
-      productId: productId,
-      uid: uid,
-      period: period,
-    );
-  }
-
   @override
-  State<RelatoriosForProducts> createState() => _RelatoriosForProductsState();
+  State<RelatoriosForProdutoMounth> createState() =>
+      _RelatoriosForProdutoMounthState();
 }
 
-class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
+class _RelatoriosForProdutoMounthState extends State<RelatoriosForProdutoMounth> {
   final MovementsDaysFirestore _movementsService = MovementsDaysFirestore();
 
   bool _localeReady = false;
-  late DateTime _displayDate;
+  late DateTime _displayMonth;
   late String _uid;
   late String _productId;
   Timer? _timer;
-  late ValueNotifier<List<Movement>> _movementsNotifier; // ValueNotifier para os movimentos
+  List<Movement> _currentMovements = []; // ✅ Adicionado para armazenar os movimentos atuais
+
+  String get _selectedPeriod => MonthlyReportPeriodController.period.value;
 
   @override
   void initState() {
     super.initState();
 
-    _movementsNotifier = ValueNotifier<List<Movement>>([]);
-
     _uid = widget.uid;
     _productId = widget.productId;
-
-    // ✅ USA O PERÍODO RECEBIDO
-    // Se for um dia específico, usa esse dia
-    // Se for um mês, usa o primeiro dia do mês para exibição
-    _displayDate = widget.period.isDay
-        ? widget.period.specificDay!
-        : widget.period.monthReference!.firstDay;
+    _displayMonth = DateTime(widget.displayMonth.year, widget.displayMonth.month);
 
     _initializeLocale();
+
+    // Atualiza a UI se o período mudar em outra tela (sincronizado)
+    MonthlyReportPeriodController.period.addListener(_onPeriodChanged);
 
     _timer = Timer.periodic(const Duration(minutes: 1), (_) {
       if (mounted) setState(() {});
@@ -82,8 +63,12 @@ class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
   @override
   void dispose() {
     _timer?.cancel();
-    _movementsNotifier.dispose();
+    MonthlyReportPeriodController.period.removeListener(_onPeriodChanged);
     super.dispose();
+  }
+
+  void _onPeriodChanged() {
+    if (mounted) setState(() {});
   }
 
   Future<void> _initializeLocale() async {
@@ -92,60 +77,36 @@ class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
     setState(() => _localeReady = true);
   }
 
-  Future<void> _pickDate() async {
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: _displayDate,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-      locale: const Locale('pt', 'BR'),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: Color(0xFF1A1A1A),
-              onPrimary: Colors.white,
-              onSurface: Color(0xFF1A1A1A),
-            ),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                foregroundColor: const Color(0xFF1A1A1A),
-              ),
-            ),
-          ),
-          child: child!,
-        );
-      },
-    );
+  DateTime _startDateForSelectedPeriod() {
+    final monthStart = DateTime(_displayMonth.year, _displayMonth.month, 1);
+    final nextMonthStart = DateTime(_displayMonth.year, _displayMonth.month + 1, 1);
 
-    if (picked != null) {
-      setState(() => _displayDate = picked);
+    switch (_selectedPeriod) {
+      case 'Últimos 7 dias':
+        return nextMonthStart.subtract(const Duration(days: 7));
+      case 'Últimos 14 dias':
+        return nextMonthStart.subtract(const Duration(days: 14));
+      case 'Últimos 21 dias':
+        return nextMonthStart.subtract(const Duration(days: 21));
+      case 'Últimos 28 dias':
+        return nextMonthStart.subtract(const Duration(days: 28));
+      case 'Mês inteiro':
+      default:
+        return monthStart;
     }
   }
 
-  String get _displayDateText {
-    final now = DateTime.now();
-    if (_displayDate.year == now.year &&
-        _displayDate.month == now.month &&
-        _displayDate.day == now.day) {
-      return 'Hoje';
-    }
-    return DateFormat('dd/MM/yyyy').format(_displayDate);
+  List<Movement> _filterBySelectedPeriod(List<Movement> movements) {
+    final start = _startDateForSelectedPeriod();
+    return movements
+        .where((m) => m.date.isAtSameMomentAs(start) || m.date.isAfter(start))
+        .toList();
   }
 
-  String _formatDateTitle(DateTime date) {
-    // ✅ Formata o título baseado no tipo de período
-    if (widget.period.isMonth) {
-      final month = DateFormat('MMMM', 'pt_BR').format(date);
-      return '${month[0].toUpperCase()}${month.substring(1)} de ${date.year}';
-    } else {
-      final weekday = DateFormat('EEEE', 'pt_BR').format(date);
-      final day = DateFormat('dd', 'pt_BR').format(date);
-      final month = DateFormat('MMMM', 'pt_BR').format(date);
-
-      return '${weekday[0].toUpperCase()}${weekday.substring(1)}, '
-          '$day de ${month[0].toUpperCase()}${month.substring(1)} de ${date.year}';
-    }
+  String _formatMonthTitle(DateTime date) {
+    final month = DateFormat('MMMM', 'pt_BR').format(date);
+    final monthCap = '${month[0].toUpperCase()}${month.substring(1)}';
+    return '$monthCap de ${date.year} ($_selectedPeriod)';
   }
 
   @override
@@ -188,122 +149,110 @@ class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
 
   // ================= TOP ACTIONS =================
   Widget _buildTopActions() {
-    return ValueListenableBuilder<List<Movement>>(
-      valueListenable: _movementsNotifier,
-      builder: (context, movements, child) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          child: Row(
-            children: [
-              Expanded(
-                child: GestureDetector(
-                  onTap: _pickDate,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF1A1A1A), Color(0xFF424242)],
-                      ),
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.2),
-                          blurRadius: 8,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(
-                          Icons.calendar_today,
-                          size: 20,
-                          color: Colors.white,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          _displayDateText,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      child: Row(
+        children: [
+          // ✅ SEM DATEPICKER: seletor de período (sincronizado)
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF1A1A1A), Color(0xFF424242)],
+                ),
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.2),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: ValueListenableBuilder<String>(
+                valueListenable: MonthlyReportPeriodController.period,
+                builder: (context, value, _) {
+                  return DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      dropdownColor: const Color(0xFF1A1A1A),
+                      value: value,
+                      isExpanded: true,
+                      iconEnabledColor: Colors.white,
+                      items: MonthlyReportPeriodController.options.map((opt) {
+                        return DropdownMenuItem<String>(
+                          value: opt,
+                          child: Text(
+                            opt,
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
-                        ),
-                      ],
+                        );
+                      }).toList(),
+                      onChanged: (newValue) {
+                        if (newValue == null) return;
+                        MonthlyReportPeriodController.period.value = newValue;
+                      },
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: movements.isNotEmpty
-                      ? () => SalveModal.show(
-                            context,
-                            days: [_displayDate],
-                            uid: _uid,
-                            movements: movements,
-                          )
-                      : null, // ✅ Desabilita se movements estiver vazio
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Color(0xFF1A1A1A), width: 2),
-                    foregroundColor: const Color(0xFF1A1A1A),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.save, size: 20),
-                      SizedBox(width: 8),
-                      Text(
-                        'Exportar Relatório',
-                        style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
-        );
-      },
+
+          const SizedBox(width: 12),
+
+          Expanded(
+            child: OutlinedButton(
+              onPressed: _currentMovements.isNotEmpty
+                  ? () => SalveModal.show(
+                        context,
+                        days: [_displayMonth], // ✅ Ajustado para passar o mês como lista de dias (ou ajustar conforme necessidade)
+                        uid: _uid,
+                        movements: _currentMovements,
+                      )
+                  : null, // ✅ Desabilita se _currentMovements estiver vazio
+              style: OutlinedButton.styleFrom(
+                side: const BorderSide(color: Color(0xFF1A1A1A), width: 2),
+                foregroundColor: const Color(0xFF1A1A1A),
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.save, size: 20),
+                  SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      'Exportar Relatório',
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   // ================= REPORT =================
   Widget _buildReport() {
-    // ✅ AGORA USA A CONSULTA CORRETA BASEADA NO TIPO DE PERÍODO
-    final Stream<List<Movement>> movementsStream;
-
-    if (widget.period.isDay) {
-      // Relatório de um dia específico
-      movementsStream = _movementsService.getDailyMovementsStream(
-        day: widget.period.specificDay!,
-        uid: _uid,
-      );
-    } else if (widget.period.isMonth) {
-      // Relatório de um mês completo
-      final month = widget.period.monthReference!;
-      movementsStream = _movementsService.getMonthlyMovementsStream(
-        month: month.month,
-        year: month.year,
-        uid: _uid,
-      );
-    } else {
-      // Período customizado - usa consulta diária do primeiro dia
-      // (pode ser expandido no futuro para suportar ranges customizados)
-      movementsStream = _movementsService.getDailyMovementsStream(
-        day: widget.period.startDate,
-        uid: _uid,
-      );
-    }
-
     return StreamBuilder<List<Movement>>(
-      stream: movementsStream,
+      stream: _movementsService.getMonthlyMovementsStream(
+        month: _displayMonth.month,
+        year: _displayMonth.year,
+        uid: _uid,
+      ),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const Center(
@@ -313,32 +262,39 @@ class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
           );
         }
 
-        final allMovements = snapshot.data!;
+        final allMonthMovements = snapshot.data!;
 
-        // Filtra por produto e pelo período (importante para períodos customizados)
-        final movements = allMovements
-            .where(
-              (m) =>
-                  m.productId == _productId &&
-                  widget.period.contains(m.timestamp),
-            )
-            .toList();
+        // 1) Filtra somente do produto
+        final productAll = allMonthMovements.where((m) => m.productId == _productId).toList();
 
-        // Atualizar o notifier com os movimentos filtrados
-        _movementsNotifier.value = List.from(movements);
+        // Pega dados do produto mesmo se o período filtrar tudo
+        final productName = productAll.isNotEmpty ? productAll.first.productName : 'Produto';
+        final productImage = productAll.isNotEmpty ? productAll.first.image : null;
 
-        if (movements.isEmpty) {
-          return _buildEmptyState();
+        // 2) Filtra pelo período selecionado (últimos 7/14/21/28 ou mês inteiro)
+        final productMovements = _filterBySelectedPeriod(productAll);
+
+        // ✅ Atualiza _currentMovements com a lista filtrada
+        if (mounted) {
+          setState(() {
+            _currentMovements = productMovements;
+          });
         }
 
-        return _buildProductReport(movements);
+        if (productMovements.isEmpty) {
+          return _buildEmptyState(productName: productName);
+        }
+
+        return _buildProductMonthReport(
+          movements: productMovements,
+          productName: productName,
+          productImage: productImage,
+        );
       },
     );
   }
 
-  Widget _buildEmptyState() {
-    final periodDescription = widget.period.getDescription();
-
+  Widget _buildEmptyState({required String productName}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Center(
@@ -370,7 +326,7 @@ class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
               Icon(Icons.bar_chart, size: 80, color: Colors.grey.shade400),
               const SizedBox(height: 20),
               Text(
-                'Nenhuma movimentação em $periodDescription',
+                'Nenhuma movimentação de $productName\nem ${_formatMonthTitle(_displayMonth)}',
                 style: GoogleFonts.poppins(
                   fontSize: 18,
                   color: Colors.black54,
@@ -380,9 +336,7 @@ class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
               ),
               const SizedBox(height: 8),
               Text(
-                widget.period.isMonth
-                    ? 'Selecione outro mês ou adicione novas movimentações.'
-                    : 'Selecione outra data ou adicione novas movimentações.',
+                'Selecione outro período ou verifique as movimentações deste mês.',
                 style: GoogleFonts.poppins(
                   fontSize: 14,
                   color: Colors.grey.shade600,
@@ -409,31 +363,31 @@ class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
     );
   }
 
-  Widget _buildProductReport(List<Movement> movements) {
-    final product = movements.first;
-
-    final totalAdd = movements
-        .where((e) => e.type == 'add')
-        .fold<int>(0, (p, e) => p + e.quantity);
-    final totalRemove = movements
-        .where((e) => e.type == 'remove')
-        .fold<int>(0, (p, e) => p + e.quantity);
+  Widget _buildProductMonthReport({
+    required List<Movement> movements,
+    required String productName,
+    required String? productImage,
+  }) {
+    // Totais no período selecionado
+    final totalAdd =
+        movements.where((e) => e.type == 'add').fold<int>(0, (p, e) => p + e.quantity);
+    final totalRemove =
+        movements.where((e) => e.type == 'remove').fold<int>(0, (p, e) => p + e.quantity);
 
     final currentStock = totalAdd - totalRemove;
     final availability = currentStock > 0 ? 'Disponível' : 'Indisponível';
 
-    // Preparar dados para o gráfico de linha (quantidade cumulativa ao longo do tempo)
-    final sortedMovements = movements
-      ..sort(
-        (a, b) => a.timestamp.compareTo(b.timestamp),
-      ); // Do antigo ao atual para o gráfico
+    // ======== Gráfico de linha (cumulativo ao longo dos DIAS do mês) ========
+    final sortedForChart = List<Movement>.from(movements)
+      ..sort((a, b) => a.date.compareTo(b.date));
+
     int cumulativeAdd = 0;
     int cumulativeRemove = 0;
     final List<FlSpot> spotsAdd = [];
     final List<FlSpot> spotsRemove = [];
 
-    for (final m in sortedMovements) {
-      final x = m.timestamp.hour + m.timestamp.minute / 60.0;
+    for (final m in sortedForChart) {
+      final x = m.date.day.toDouble();
       if (m.type == 'add') {
         cumulativeAdd += m.quantity;
         spotsAdd.add(FlSpot(x, cumulativeAdd.toDouble()));
@@ -443,36 +397,39 @@ class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
       }
     }
 
-    // Lista detalhada ordenada do mais recente ao antigo
-    final detailedMovements = List<Movement>.from(movements)
-      ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+    // minX/maxX
+    final Set<double> allX = {...spotsAdd.map((e) => e.x), ...spotsRemove.map((e) => e.x)};
+    final sortedX = allX.toList()..sort();
+    final daysInMonth = DateUtils.getDaysInMonth(_displayMonth.year, _displayMonth.month).toDouble();
 
-    // Coletar valores X únicos
-    final Set<double> allX = {};
-    for (final spot in spotsAdd) {
-      allX.add(spot.x);
-    }
-    for (final spot in spotsRemove) {
-      allX.add(spot.x);
-    }
-    final List<double> sortedX = allX.toList()..sort();
+    double minX = sortedX.isNotEmpty ? (sortedX.first - 1) : 1;
+    double maxX = sortedX.isNotEmpty ? (sortedX.last + 1) : daysInMonth;
 
-    double minX = sortedX.isNotEmpty ? sortedX.first - 1 : 0;
-    double maxX = sortedX.isNotEmpty ? sortedX.last + 1 : 24;
-    minX = minX < 0 ? 0 : minX;
-    maxX = maxX > 24 ? 24 : maxX;
+        minX = minX < 1 ? 1 : minX;
+    maxX = maxX > daysInMonth ? daysInMonth : maxX;
 
-    final maxCumulative = [
-      cumulativeAdd,
-      cumulativeRemove,
-    ].reduce((a, b) => a > b ? a : b);
+    final maxCumulative =
+        [cumulativeAdd, cumulativeRemove].reduce((a, b) => a > b ? a : b);
     final maxY = (maxCumulative + 10).toDouble();
 
+    // ======== Movimentações detalhadas (AGRUPADAS POR DIA) ========
+    final Map<DateTime, List<Movement>> groupedByDay = {};
+    for (final m in movements) {
+      final dayKey = DateTime(m.date.year, m.date.month, m.date.day);
+      groupedByDay.putIfAbsent(dayKey, () => []).add(m);
+    }
+
+    final daysSorted = groupedByDay.keys.toList()..sort((a, b) => b.compareTo(a));
+    for (final day in daysSorted) {
+      groupedByDay[day]!.sort((a, b) => b.date.compareTo(a.date)); // mais recente primeiro
+    }
+
     final children = <Widget>[
+      // Título do mês/período
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
         child: Text(
-          _formatDateTitle(_displayDate),
+          _formatMonthTitle(_displayMonth),
           style: GoogleFonts.poppins(
             fontSize: 22,
             fontWeight: FontWeight.bold,
@@ -481,7 +438,8 @@ class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
           textAlign: TextAlign.center,
         ),
       ),
-      // Informações do Produto
+
+      // Informações do Produto (mesma cara do seu RelatoriosForProducts)
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Container(
@@ -517,7 +475,7 @@ class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
           ),
           child: Row(
             children: [
-              // Imagem do produto com efeito premium
+              // Imagem do produto
               Container(
                 width: 70,
                 height: 70,
@@ -538,17 +496,18 @@ class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(14),
-                  child: _buildProductImage(product.image),
+                  child: _buildProductImage(productImage),
                 ),
               ),
 
               const SizedBox(width: 20),
+
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      product.productName,
+                      productName,
                       style: GoogleFonts.poppins(
                         fontWeight: FontWeight.w800,
                         fontSize: 20,
@@ -560,7 +519,7 @@ class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
                     Row(
                       children: [
                         _premiumTag(
-                          'Estoque Atual: $currentStock',
+                          'Estoque: $currentStock',
                           const Color(0xFFE8F5E8),
                           const Color(0xFF2E7D32),
                           Icons.inventory,
@@ -571,7 +530,7 @@ class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
                           availability == 'Disponível'
                               ? const Color(0xFFE8F5E8)
                               : const Color(0xFFFCE4EC),
-                                                    availability == 'Disponível'
+                          availability == 'Disponível'
                               ? const Color(0xFF2E7D32)
                               : const Color(0xFFD32F2F),
                           availability == 'Disponível'
@@ -587,13 +546,15 @@ class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
           ),
         ),
       ),
-      // Gráfico
+
+      // Gráfico (cumulativo por dia)
       Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         child: LayoutBuilder(
           builder: (context, constraints) {
-            final screenHeight = MediaQuery.of(context).size.height;
+                        final screenHeight = MediaQuery.of(context).size.height;
             final chartHeight = screenHeight * 0.4;
+
             return Container(
               height: chartHeight,
               width: constraints.maxWidth,
@@ -623,9 +584,7 @@ class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
                 child: Column(
                   children: [
                     Text(
-                      widget.period.isMonth
-                          ? 'Movimentações Cumulativas de ${product.productName} no Mês'
-                          : 'Movimentações Cumulativas de ${product.productName}',
+                      'Movimentações Cumulativas de $productName no $_selectedPeriod',
                       style: GoogleFonts.poppins(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
@@ -658,12 +617,8 @@ class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
                                 show: true,
                                 gradient: LinearGradient(
                                   colors: [
-                                    const Color(
-                                      0xFF27AE60,
-                                    ).withValues(alpha: 0.2),
-                                    const Color(
-                                      0xFF2ECC71,
-                                    ).withValues(alpha: 0.05),
+                                    const Color(0xFF27AE60).withValues(alpha: 0.2),
+                                    const Color(0xFF2ECC71).withValues(alpha: 0.05),
                                   ],
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
@@ -671,14 +626,13 @@ class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
                               ),
                               dotData: FlDotData(
                                 show: true,
-                                getDotPainter:
-                                    (spot, percent, barData, index) =>
-                                        FlDotCirclePainter(
-                                          radius: 6,
-                                          color: const Color(0xFF27AE60),
-                                          strokeWidth: 2,
-                                          strokeColor: Colors.white,
-                                        ),
+                                getDotPainter: (spot, percent, barData, index) =>
+                                    FlDotCirclePainter(
+                                  radius: 6,
+                                  color: const Color(0xFF27AE60),
+                                  strokeWidth: 2,
+                                  strokeColor: Colors.white,
+                                ),
                               ),
                             ),
                             LineChartBarData(
@@ -692,12 +646,8 @@ class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
                                 show: true,
                                 gradient: LinearGradient(
                                   colors: [
-                                    const Color(
-                                      0xFFE74C3C,
-                                    ).withValues(alpha: 0.2),
-                                    const Color(
-                                      0xFFE74C3C,
-                                    ).withValues(alpha: 0.05),
+                                    const Color(0xFFE74C3C).withValues(alpha: 0.2),
+                                    const Color(0xFFE74C3C).withValues(alpha: 0.05),
                                   ],
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
@@ -705,14 +655,13 @@ class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
                               ),
                               dotData: FlDotData(
                                 show: true,
-                                getDotPainter:
-                                    (spot, percent, barData, index) =>
-                                        FlDotCirclePainter(
-                                          radius: 6,
-                                          color: const Color(0xFFE74C3C),
-                                          strokeWidth: 2,
-                                          strokeColor: Colors.white,
-                                        ),
+                                getDotPainter: (spot, percent, barData, index) =>
+                                    FlDotCirclePainter(
+                                  radius: 6,
+                                  color: const Color(0xFFE74C3C),
+                                  strokeWidth: 2,
+                                  strokeColor: Colors.white,
+                                ),
                               ),
                             ),
                           ],
@@ -720,7 +669,7 @@ class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
                             show: true,
                             bottomTitles: AxisTitles(
                               axisNameWidget: Text(
-                                'Horário',
+                                'Dia',
                                 style: GoogleFonts.poppins(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
@@ -729,14 +678,14 @@ class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
                               ),
                               sideTitles: SideTitles(
                                 showTitles: true,
-                                reservedSize: 40,
-                                interval: 2,
+                                reservedSize: 36,
+                                interval: 5,
                                 getTitlesWidget: (value, meta) {
-                                  if (value % 2 == 0 &&
-                                      value >= 0 &&
-                                      value <= 24) {
+                                  if (value >= 1 &&
+                                      value <= daysInMonth &&
+                                      value % 5 == 0) {
                                     return Text(
-                                      '${value.toInt().toString().padLeft(2, '0')}:00',
+                                      value.toInt().toString(),
                                       style: GoogleFonts.poppins(
                                         fontSize: 12,
                                         fontWeight: FontWeight.w500,
@@ -776,7 +725,7 @@ class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
                             show: true,
                             drawVerticalLine: true,
                             drawHorizontalLine: true,
-                            verticalInterval: 2,
+                            verticalInterval: 5,
                             horizontalInterval: maxY / 10,
                             getDrawingHorizontalLine: (value) {
                               return FlLine(
@@ -793,57 +742,7 @@ class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
                           ),
                           borderData: FlBorderData(
                             show: true,
-                            border: Border.all(
-                              color: const Color(0xFFBDC3C7),
-                              width: 1,
-                            ),
-                          ),
-                          lineTouchData: LineTouchData(
-                            enabled: true,
-                            handleBuiltInTouches: true,
-                            touchTooltipData: LineTouchTooltipData(
-                              tooltipPadding: const EdgeInsets.all(12),
-                              tooltipMargin: 8,
-                              getTooltipItems: (touchedSpots) {
-                                return touchedSpots.map((spot) {
-                                  final isAdd = spot.barIndex == 0;
-                                  final spotsList = isAdd
-                                      ? spotsAdd
-                                      : spotsRemove;
-                                  final index = spotsList.indexOf(spot);
-                                  if (index != -1) {
-                                    final movementsForType = sortedMovements
-                                        .where(
-                                          (m) =>
-                                              m.type ==
-                                              (isAdd ? 'add' : 'remove'),
-                                        )
-                                        .toList();
-                                    final movement = movementsForType[index];
-                                    final timeStr = DateFormat(
-                                      'HH:mm',
-                                    ).format(movement.timestamp);
-                                    final type = isAdd ? 'Entrada' : 'Saída';
-                                    return LineTooltipItem(
-                                      '$timeStr\n$type: ${movement.quantity}\nCumulativo: ${spot.y.toInt()}',
-                                      GoogleFonts.poppins(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 12,
-                                      ),
-                                    );
-                                  }
-                                  return null;
-                                }).toList();
-                              },
-                            ),
-                            touchCallback:
-                                (
-                                  FlTouchEvent event,
-                                  LineTouchResponse? touchResponse,
-                                ) {
-                                  // Lógica extra ao tocar, se necessário
-                                },
+                            border: Border.all(color: const Color(0xFFBDC3C7), width: 1),
                           ),
                           minX: minX,
                           maxX: maxX,
@@ -859,8 +758,10 @@ class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
           },
         ),
       ),
+
       const SizedBox(height: 16),
-      // Resumo Executivo do Produto
+
+      // Resumo Executivo
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Container(
@@ -929,94 +830,120 @@ class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
           ),
         ),
       ),
+
       const SizedBox(height: 16),
-      // Lista de Movimentações Detalhadas
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Colors.white, Color(0xFFF8F9FA)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+
+      // Movimentações Detalhadas (com TÍTULO DO DIA)
+      ...daysSorted.expand((day) {
+        final dayTitleRaw = DateFormat('EEEE, dd/MM', 'pt_BR').format(day);
+        final dayTitle = '${dayTitleRaw[0].toUpperCase()}${dayTitleRaw.substring(1)}';
+
+        final dayMovements = groupedByDay[day]!;
+
+        return [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Text(
+              dayTitle,
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
             ),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: const Color(0xFFE0E0E0), width: 1.5),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 15,
-                offset: const Offset(0, 6),
-              ),
-              BoxShadow(
-                color: Colors.white.withValues(alpha: 0.8),
-                blurRadius: 10,
-                offset: const Offset(-3, -3),
-              ),
-            ],
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Movimentações Detalhadas',
-                style: GoogleFonts.poppins(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  color: const Color(0xFF2C3E50),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Colors.white, Color(0xFFF8F9FA)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
-              ),
-              const SizedBox(height: 16),
-              ...detailedMovements.map((movement) {
-                final timeStr = DateFormat('HH:mm').format(movement.timestamp);
-                final type = movement.type == 'add' ? 'Entrada' : 'Saída';
-                final color = movement.type == 'add'
-                    ? const Color(0xFF27AE60)
-                    : const Color(0xFFE74C3C);
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 12,
-                        height: 12,
-                        decoration: BoxDecoration(
-                          color: color,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              '$type: ${movement.quantity}',
-                              style: GoogleFonts.poppins(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                                color: const Color(0xFF2C3E50),
-                              ),
-                            ),
-                            Text(
-                              'Horário: $timeStr',
-                              style: GoogleFonts.poppins(
-                                fontSize: 14,
-                                color: const Color(0xFF7F8C8D),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: const Color(0xFFE0E0E0), width: 1.5),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 15,
+                    offset: const Offset(0, 6),
                   ),
-                );
-              }),
-            ],
+                  BoxShadow(
+                    color: Colors.white.withValues(alpha: 0.8),
+                    blurRadius: 10,
+                    offset: const Offset(-3, -3),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Movimentações Detalhadas',
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: const Color(0xFF2C3E50),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  ...dayMovements.map((movement) {
+                    final timeStr = DateFormat('HH:mm').format(movement.date);
+                    final type = movement.type == 'add' ? 'Entrada' : 'Saída';
+                    final color = movement.type == 'add'
+                        ? const Color(0xFF27AE60)
+                        : const Color(0xFFE74C3C);
+
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 12,
+                            height: 12,
+                            decoration: BoxDecoration(
+                              color: color,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '$type: ${movement.quantity}',
+                                  style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16,
+                                    color: const Color(0xFF2C3E50),
+                                  ),
+                                ),
+                                Text(
+                                  'Horário: $timeStr',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 14,
+                                    color: const Color(0xFF7F8C8D),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
+          const SizedBox(height: 12),
+        ];
+      }),
+
+      const SizedBox(height: 16),
     ];
 
     return ListView(
@@ -1085,7 +1012,7 @@ class _RelatoriosForProductsState extends State<RelatoriosForProducts> {
         width: 60,
         height: 60,
         fit: BoxFit.cover,
-        loadingBuilder: (context, child, loadingProgress) {
+                loadingBuilder: (context, child, loadingProgress) {
           if (loadingProgress == null) return child;
           return Container(
             width: 60,

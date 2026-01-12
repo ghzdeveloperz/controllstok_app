@@ -12,7 +12,7 @@ import '../firebase/firestore/users_firestore.dart';
 import 'widgets/product_card.dart';
 import 'models/product.dart';
 import 'models/category.dart';
-import '../screens/conf_options/perfil_screen.dart'; // Adicione este import, assumindo que PerfilScreen está em '../screens/perfil_screen.dart'
+import 'userPerfil/perfil_screen.dart'; // Adicione este import, assumindo que PerfilScreen está em '../screens/perfil_screen.dart'
 
 class EstoqueScreen extends StatefulWidget {
   final String uid;

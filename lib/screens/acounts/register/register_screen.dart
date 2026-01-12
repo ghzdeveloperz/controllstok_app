@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart'; // necessário para TapGestureRecognizer
 import 'register_additional_screen.dart';
-import 'login_screen.dart'; // para navegação
+import '../login/login_screen.dart'; // para navegação
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});

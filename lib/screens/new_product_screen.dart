@@ -14,9 +14,9 @@ import 'package:path/path.dart' as path;
 
 import '../firebase/firestore/categories_firestore.dart';
 import '../../screens/models/category.dart';
-import '../screens/widgets/barcode_scanner_screen.dart'; // <- scanner como modal
+import 'widgets/scanner_code_new_product.dart'; // <- scanner como modal
 import '../screens/widgets/add_category.dart';
-import 'product_overlay.dart'; // <- Adicione este import para o overlay
+import 'models/product_overlay.dart'; // <- Adicione este import para o overlay
 
 class NovoProdutoScreen extends StatefulWidget {
   final String uid;
@@ -571,7 +571,7 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
             borderRadius: BorderRadius.circular(12), // Bordas suaves
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05), // Sombra sutil
+                color: Colors.black.withAlpha(13), // Sombra sutil
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -922,7 +922,7 @@ class _NovoProdutoScreenState extends State<NovoProdutoScreen> {
                       border: Border.all(color: Colors.grey.shade300, width: 1),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.02),
+                          color: Colors.black.withAlpha(5),
                           blurRadius: 4,
                           offset: const Offset(0, 1),
                         ),

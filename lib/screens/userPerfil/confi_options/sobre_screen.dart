@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../screens/conf_options/sobre_terms/politic_privacity.dart';
-import '../../screens/conf_options/sobre_terms/terms_used.dart';
+import 'sobre_terms/politic_privacity.dart';
+import 'sobre_terms/terms_used.dart';
 
 class SobreScreen extends StatelessWidget {
   final VoidCallback logoutCallback;

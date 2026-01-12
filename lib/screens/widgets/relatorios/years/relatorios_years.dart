@@ -1,4 +1,4 @@
-// lib/screens/relatorios_months.dart
+// lib/screens/relatorios_years.dart
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,44 +8,46 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
-import '../firebase/firestore/movements_days.dart';
-import '../screens/models/monthly_report_period_controller.dart';
-import '../screens/models/salve_modal.dart';
-import 'relatorios_for_produto_mounth.dart';
+import '../../../../firebase/firestore/movements_days.dart';
+import '../../../models/annual_report_period_controller.dart';
+import '../../../models/salve_modal.dart';
+import 'relatorios_for_product_years.dart';
 
-class RelatoriosMonths extends StatefulWidget {
-  const RelatoriosMonths({super.key});
+class RelatoriosYears extends StatefulWidget {
+  const RelatoriosYears({super.key});
 
   @override
-  State<RelatoriosMonths> createState() => _RelatoriosMonthsState();
+  State<RelatoriosYears> createState() => _RelatoriosYearsState();
 }
 
-class _RelatoriosMonthsState extends State<RelatoriosMonths>
+class _RelatoriosYearsState extends State<RelatoriosYears>
     with TickerProviderStateMixin {
   final MovementsDaysFirestore _movementsService = MovementsDaysFirestore();
 
   bool _localeReady = false;
-  late DateTime _displayMonth;
+
+  late int _displayYear;
   late String _uid;
+
   Timer? _timer;
 
-  String?
-      _selectedProductId; // Para controlar qual card mostrar ao pressionar um ponto
+  // "Barras" (stacked por mês) ou "Pizza" (distribuição por produto no ano)
+  String _selectedChartType = 'Barras';
 
-  String _selectedChartType = 'Linha'; // Tipo de gráfico selecionado
+  // ✅ Período anual sincronizado (controller global)
+  String _selectedPeriod = AnnualReportPeriodController.period.value;
+  final List<String> _periodOptions = AnnualReportPeriodController.options;
 
-  // ✅ Período sincronizado (inicia do controller)
-  String _selectedPeriod = MonthlyReportPeriodController.period.value;
+  late Future<List<Movement>> _movementsFuture;
 
-  late AnimationController _animationController;
-  late Animation<double> _fadeAnimation;
-
+  // Pie touch
   int _touchedIndex = -1;
   String? _touchedLabel;
   String? _touchedImageUrl;
 
-  // ✅ Mesmas opções do controller (sincronizado)
-  final List<String> _periodOptions = MonthlyReportPeriodController.options;
+  // Animação
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
 
   // Novo: Lista para armazenar os movimentos atuais
   List<Movement> _currentMovements = [];
@@ -54,8 +56,21 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
   void initState() {
     super.initState();
 
-    _uid = FirebaseAuth.instance.currentUser!.uid;
-    _displayMonth = DateTime(DateTime.now().year, DateTime.now().month);
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) Navigator.of(context).pop();
+      });
+      return;
+    }
+
+    _uid = user.uid;
+    _displayYear = DateTime.now().year;
+
+    _movementsFuture = _movementsService.getYearlyMovements(
+      year: _displayYear,
+      uid: _uid,
+    );
 
     _initializeLocale();
 
@@ -63,8 +78,8 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
       if (mounted) setState(() {});
     });
 
-    // ✅ Listener pra refletir mudanças vindas da tela do produto
-    MonthlyReportPeriodController.period.addListener(_syncSelectedPeriod);
+    // ✅ Listener para refletir mudanças vindas da tela do produto (sincronizado)
+    AnnualReportPeriodController.period.addListener(_syncSelectedPeriod);
 
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 600),
@@ -79,10 +94,9 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
   }
 
   void _syncSelectedPeriod() {
-    final newValue = MonthlyReportPeriodController.period.value;
+    final newValue = AnnualReportPeriodController.period.value;
     if (!mounted) return;
     if (_selectedPeriod == newValue) return;
-
     setState(() => _selectedPeriod = newValue);
   }
 
@@ -90,10 +104,7 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
   void dispose() {
     _timer?.cancel();
     _animationController.dispose();
-
-    // ✅ remove listener
-    MonthlyReportPeriodController.period.removeListener(_syncSelectedPeriod);
-
+    AnnualReportPeriodController.period.removeListener(_syncSelectedPeriod);
     super.dispose();
   }
 
@@ -103,10 +114,10 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
     setState(() => _localeReady = true);
   }
 
-  Future<void> _pickMonth() async {
+  Future<void> _pickYear() async {
     final picked = await showDatePicker(
       context: context,
-      initialDate: _displayMonth,
+      initialDate: DateTime(_displayYear),
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
       locale: const Locale('pt', 'BR'),
@@ -129,22 +140,58 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
       },
     );
 
-    if (picked != null) {
-      setState(() => _displayMonth = DateTime(picked.year, picked.month));
+    if (picked != null && picked.year != _displayYear) {
+      setState(() {
+        _displayYear = picked.year;
+        _movementsFuture = _movementsService.getYearlyMovements(
+          year: _displayYear,
+          uid: _uid,
+        );
+      });
     }
   }
 
-  String get _displayMonthText {
+  String get _displayYearText {
     final now = DateTime.now();
-    if (_displayMonth.year == now.year && _displayMonth.month == now.month) {
-      return 'Este mês';
-    }
-    return DateFormat('MMMM/yyyy', 'pt_BR').format(_displayMonth);
+    return _displayYear == now.year ? 'Este ano' : _displayYear.toString();
   }
 
-  String _formatMonthTitle(DateTime date) {
-    final month = DateFormat('MMMM', 'pt_BR').format(date);
-    return '${month[0].toUpperCase()}${month.substring(1)} de ${date.year} ($_selectedPeriod)';
+  String _formatYearTitle(int year) => 'Relatório de $year ($_selectedPeriod)';
+
+  ({int startMonth, int endMonth}) _periodMonthRange() {
+    switch (_selectedPeriod) {
+      case '1º Trimestre (Jan–Mar)':
+        return (startMonth: 1, endMonth: 3);
+      case '2º Trimestre (Abr–Jun)':
+        return (startMonth: 4, endMonth: 6);
+      case '3º Trimestre (Jul–Set)':
+        return (startMonth: 7, endMonth: 9);
+      case '4º Trimestre (Out–Dez)':
+        return (startMonth: 10, endMonth: 12);
+
+      case '1º Semestre (Jan–Jun)':
+        return (startMonth: 1, endMonth: 6);
+      case '2º Semestre (Jul–Dez)':
+        return (startMonth: 7, endMonth: 12);
+
+      case 'Últimos 3 meses (Out–Dez)':
+        return (startMonth: 10, endMonth: 12);
+      case 'Últimos 6 meses (Jul–Dez)':
+        return (startMonth: 7, endMonth: 12);
+
+      case 'Ano inteiro':
+      default:
+        return (startMonth: 1, endMonth: 12);
+    }
+  }
+
+  List<Movement> _filterMovementsByPeriod(List<Movement> movements) {
+    final range = _periodMonthRange();
+    return movements.where((m) {
+      return m.date.year == _displayYear &&
+          m.date.month >= range.startMonth &&
+          m.date.month <= range.endMonth;
+    }).toList();
   }
 
   @override
@@ -168,90 +215,11 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
     );
   }
 
-  Widget _buildChartTypeSelector() {
-    return Material(
-      color: Colors.transparent,
-      child: Container(
-        padding: const EdgeInsets.all(6),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFFE0E0E0), width: 1.5),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: _chartTypeItem(
-                label: 'Linha',
-                icon: Icons.show_chart,
-                isSelected: _selectedChartType == 'Linha',
-                onTap: () => setState(() => _selectedChartType = 'Linha'),
-              ),
-            ),
-            Expanded(
-              child: _chartTypeItem(
-                label: 'Pizza',
-                icon: Icons.pie_chart,
-                isSelected: _selectedChartType == 'Pizza',
-                onTap: () => setState(() => _selectedChartType = 'Pizza'),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _chartTypeItem({
-    required String label,
-    required IconData icon,
-    required bool isSelected,
-    required VoidCallback onTap,
-  }) {
-    return Material(
-      color: isSelected ? const Color(0xFF1A1A1A) : Colors.transparent,
-      borderRadius: BorderRadius.circular(12),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(12),
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                size: 20,
-                color: isSelected ? Colors.white : const Color(0xFF2C3E50),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                label,
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
-                  color: isSelected ? Colors.white : const Color(0xFF2C3E50),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   // ================= TOP ACTIONS =================
   Widget _buildTopActions() {
     return Column(
       children: [
-        // Seletor de período (SINCRONIZADO)
+        // ✅ Select do período anual (igual ao Months: branco, premium, em cima)
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Container(
@@ -272,38 +240,38 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
               value: _selectedPeriod,
               isExpanded: true,
               underline: const SizedBox(),
-              items: _periodOptions.map((String value) {
+              items: _periodOptions.map((opt) {
                 return DropdownMenuItem<String>(
-                  value: value,
+                  value: opt,
                   child: Text(
-                    value,
+                    opt,
                     style: GoogleFonts.poppins(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                       color: const Color(0xFF2C3E50),
                     ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 );
               }).toList(),
-              onChanged: (String? newValue) {
+              onChanged: (newValue) {
                 if (newValue == null) return;
-
-                // ✅ atualiza local e global (sincroniza com a outra tela)
                 setState(() => _selectedPeriod = newValue);
-                MonthlyReportPeriodController.period.value = newValue;
+                AnnualReportPeriodController.period.value = newValue;
               },
             ),
           ),
         ),
+
+        // Ano + Exportar (mantém)
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           child: Row(
             children: [
-              // 📅 SELETOR DE MÊS
               Expanded(
                 child: InkWell(
                   borderRadius: BorderRadius.circular(12),
-                  onTap: _pickMonth,
+                  onTap: _pickYear,
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                       vertical: 14,
@@ -336,7 +304,7 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
                         const SizedBox(width: 8),
                         Flexible(
                           child: Text(
-                            _displayMonthText,
+                            _displayYearText,
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
                               color: Colors.white,
@@ -351,13 +319,12 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
                 ),
               ),
               const SizedBox(width: 12),
-              // 💾 EXPORTAR RELATÓRIO
               Expanded(
                 child: OutlinedButton(
                   onPressed: _currentMovements.isNotEmpty
                       ? () => SalveModal.show(
                             context,
-                            days: [_displayMonth],
+                            days: [DateTime(_displayYear)],
                             uid: _uid,
                             movements: _currentMovements,
                           )
@@ -402,12 +369,8 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
 
   // ================= REPORT =================
   Widget _buildReport() {
-    return StreamBuilder<List<Movement>>(
-      stream: _movementsService.getMonthlyMovementsStream(
-        uid: _uid,
-        month: _displayMonth.month,
-        year: _displayMonth.year,
-      ),
+    return FutureBuilder<List<Movement>>(
+      future: _movementsFuture,
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const Center(
@@ -417,48 +380,17 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
           );
         }
 
-        final movements = snapshot.data!;
-        _currentMovements = movements; // Atualiza os movimentos atuais
-        final filteredMovements = _filterMovementsByPeriod(movements);
+        final allMovements = snapshot.data!;
+        _currentMovements = allMovements; // Atualiza os movimentos atuais
+        final movements = _filterMovementsByPeriod(allMovements);
 
-        if (filteredMovements.isEmpty) {
+        if (movements.isEmpty) {
           return _buildEmptyState();
         }
 
-        return _buildGroupedList(filteredMovements);
+        return _buildGroupedList(movements);
       },
     );
-  }
-
-  List<Movement> _filterMovementsByPeriod(List<Movement> movements) {
-    DateTime startDate;
-
-    switch (_selectedPeriod) {
-      case 'Últimos 7 dias':
-        startDate = DateTime(_displayMonth.year, _displayMonth.month + 1, 1)
-            .subtract(const Duration(days: 7));
-        break;
-      case 'Últimos 14 dias':
-        startDate = DateTime(_displayMonth.year, _displayMonth.month + 1, 1)
-            .subtract(const Duration(days: 14));
-        break;
-      case 'Últimos 21 dias':
-        startDate = DateTime(_displayMonth.year, _displayMonth.month + 1, 1)
-            .subtract(const Duration(days: 21));
-        break;
-      case 'Últimos 28 dias':
-        startDate = DateTime(_displayMonth.year, _displayMonth.month + 1, 1)
-            .subtract(const Duration(days: 28));
-        break;
-      case 'Mês inteiro':
-      default:
-        startDate = DateTime(_displayMonth.year, _displayMonth.month, 1);
-        break;
-    }
-
-    return movements
-        .where((m) => m.date.isAtSameMomentAs(startDate) || m.date.isAfter(startDate))
-        .toList();
   }
 
   Widget _buildEmptyState() {
@@ -493,7 +425,7 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
               Icon(Icons.bar_chart, size: 80, color: Colors.grey.shade400),
               const SizedBox(height: 20),
               Text(
-                'Nenhuma movimentação $_displayMonthText ($_selectedPeriod)',
+                'Nenhuma movimentação em $_displayYearText ($_selectedPeriod)',
                 style: GoogleFonts.poppins(
                   fontSize: 18,
                   color: Colors.black54,
@@ -503,7 +435,7 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
               ),
               const SizedBox(height: 8),
               Text(
-                'Selecione outro mês, período ou adicione novas movimentações.',
+                'Selecione outro ano, período ou adicione novas movimentações.',
                 style: GoogleFonts.poppins(
                   fontSize: 14,
                   color: Colors.grey.shade600,
@@ -530,18 +462,19 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
     );
   }
 
+  // ================= LIST / GROUPING =================
   Widget _buildGroupedList(List<Movement> movements) {
-    // Agrupar por dia
-    final Map<int, List<Movement>> groupedByDay = {};
+    // Agrupar por mês -> produto
+    final Map<int, List<Movement>> groupedByMonth = {};
     for (final m in movements) {
-      groupedByDay.putIfAbsent(m.date.day, () => []).add(m);
+      groupedByMonth.putIfAbsent(m.date.month, () => []).add(m);
     }
 
-    // ✅ AJUSTE: ordenar os dias do mais recente para o mais antigo
-    final sortedDaysDesc = groupedByDay.keys.toList()
+    // ordenar meses (mais recente primeiro)
+    final sortedMonthsDesc = groupedByMonth.keys.toList()
       ..sort((a, b) => b.compareTo(a));
 
-    // Calcular totais para o gráfico
+    // Totais do período selecionado
     final totalAdd = movements
         .where((e) => e.type == 'add')
         .fold<int>(0, (p, e) => p + e.quantity);
@@ -550,74 +483,40 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
         .where((e) => e.type == 'remove')
         .fold<int>(0, (p, e) => p + e.quantity);
 
-    // Preparar dados para o gráfico de linha (quantidade cumulativa ao longo dos dias)
-    final sortedMovements = movements..sort((a, b) => a.date.compareTo(b.date));
-    int cumulativeAdd = 0;
-    int cumulativeRemove = 0;
-    final List<FlSpot> spotsAdd = [];
-    final List<FlSpot> spotsRemove = [];
+    // ===== Dados para gráficos =====
+    final addByMonth = <int, int>{};
+    final removeByMonth = <int, int>{};
 
-    for (final m in sortedMovements) {
-      final x = m.date.day.toDouble();
+    // Distribuição por produto (pizza) -> soma de (add + remove)
+    final productTotals = <String, int>{};
+
+    for (final m in movements) {
+      final month = m.date.month;
+
       if (m.type == 'add') {
-        cumulativeAdd += m.quantity;
-        spotsAdd.add(FlSpot(x, cumulativeAdd.toDouble()));
+        addByMonth[month] = (addByMonth[month] ?? 0) + m.quantity;
       } else {
-        cumulativeRemove += m.quantity;
-        spotsRemove.add(FlSpot(x, cumulativeRemove.toDouble()));
+        removeByMonth[month] = (removeByMonth[month] ?? 0) + m.quantity;
       }
+
+      productTotals[m.productId] =
+          (productTotals[m.productId] ?? 0) + m.quantity;
     }
 
-    // Coletar todos os valores X únicos
-    final Set<double> allX = {};
-    for (final spot in spotsAdd) {
-      allX.add(spot.x);
-    }
-    for (final spot in spotsRemove) {
-      allX.add(spot.x);
-    }
-    final List<double> sortedX = allX.toList()..sort();
+    // ===== Pie sections =====
+    final totalMovementsQty = productTotals.values.fold<int>(
+      0,
+      (p, e) => p + e,
+    );
 
-    // Determinar minX e maxX para zoom nos dados (com padding de 1 dia)
-    double minX = sortedX.isNotEmpty ? sortedX.first - 1 : 1;
-    double maxX = sortedX.isNotEmpty
-        ? sortedX.last + 1
-        : DateUtils.getDaysInMonth(
-            _displayMonth.year,
-            _displayMonth.month,
-          ).toDouble();
-
-    minX = minX < 1 ? 1 : minX;
-
-        final daysInMonth = DateUtils.getDaysInMonth(
-      _displayMonth.year,
-      _displayMonth.month,
-    ).toDouble();
-
-    maxX = maxX > daysInMonth ? daysInMonth : maxX;
-
-    // Determinar maxY automaticamente baseado no maior valor cumulativo
-    final maxCumulative = [cumulativeAdd, cumulativeRemove]
-        .reduce((a, b) => a > b ? a : b);
-    final maxY = (maxCumulative + 10).toDouble();
-
-    // Preparar dados para o gráfico percentual (pie chart)
-    final Map<String, int> productTotals = {};
-    for (final entry in groupedByDay.entries) {
-      for (final m in entry.value) {
-        productTotals[m.productId] =
-            (productTotals[m.productId] ?? 0) + m.quantity;
-      }
-    }
-
-    final totalMovements = productTotals.values.fold<int>(0, (p, e) => p + e);
     final List<PieChartSectionData> pieSections = [];
-
     int index = 0;
+
     for (final entry in productTotals.entries) {
-      final total = entry.value;
-      final percentage =
-          totalMovements == 0 ? 0.0 : (total / totalMovements) * 100;
+      final qty = entry.value;
+      final percentage = totalMovementsQty == 0
+          ? 0.0
+          : (qty / totalMovementsQty) * 100;
 
       pieSections.add(
         PieChartSectionData(
@@ -643,7 +542,7 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
         child: Text(
-          _formatMonthTitle(_displayMonth),
+          _formatYearTitle(_displayYear),
           style: GoogleFonts.poppins(
             fontSize: 22,
             fontWeight: FontWeight.bold,
@@ -653,13 +552,13 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
         ),
       ),
 
-      // Seletor premium para tipo de gráfico
+      // ✅ AGORA IGUAL AO MONTHS: seletor do tipo de gráfico fica AQUI (dentro do relatório)
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: _buildChartTypeSelector(),
       ),
 
-      // Gráfico baseado na seleção
+      // ===== Chart container (premium) =====
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         child: LayoutBuilder(
@@ -677,17 +576,9 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(24),
-                border: Border.all(
-                  color: const Color(0xFFE0E0E0),
-                  width: 1.5,
-                ),
+                border: Border.all(color: const Color(0xFFE0E0E0), width: 1.5),
                 boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
-                    blurRadius: 20,
-                    offset: const Offset(0, 8),
-                  ),
-                  BoxShadow(
+                                    BoxShadow(
                     color: Colors.white.withValues(alpha: 0.8),
                     blurRadius: 15,
                     offset: const Offset(-5, -5),
@@ -698,19 +589,12 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
                 padding: const EdgeInsets.all(16),
                 child: FadeTransition(
                   opacity: _fadeAnimation,
-                  child: _selectedChartType == 'Linha'
-                      ? _buildLineChart(
-                          spotsAdd,
-                          spotsRemove,
-                          minX,
-                          maxX,
-                          maxY,
-                          sortedMovements,
-                        )
-                      : _buildPieChart(
-                          pieSections,
-                          productTotals,
-                          movements,
+                  child: _selectedChartType == 'Barras'
+                      ? _buildYearBarChart(addByMonth, removeByMonth)
+                      : _buildYearPieChart(
+                          sections: pieSections,
+                          productTotals: productTotals,
+                          movements: movements,
                         ),
                 ),
               ),
@@ -721,7 +605,7 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
 
       const SizedBox(height: 16),
 
-      // Resumo
+      // ===== Resumo Executivo =====
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Container(
@@ -733,10 +617,7 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
               end: Alignment.bottomRight,
             ),
             borderRadius: BorderRadius.circular(22),
-            border: Border.all(
-              color: const Color(0xFFE0E0E0),
-              width: 1.5,
-            ),
+            border: Border.all(color: const Color(0xFFE0E0E0), width: 1.5),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.06),
@@ -797,24 +678,14 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
 
       const SizedBox(height: 16),
 
-      // ✅ AJUSTE: Lista de dias com produtos movimentados (MAIS RECENTE PRIMEIRO)
-      ...sortedDaysDesc.map((day) {
-        final dayMovements = groupedByDay[day]!;
-        return _buildDaySection(day, dayMovements);
+      // ===== Meses (mais recente primeiro) =====
+      ...sortedMonthsDesc.map((month) {
+        final monthMovements = groupedByMonth[month]!;
+        return _buildMonthSection(month, monthMovements);
       }),
 
       const SizedBox(height: 16),
     ];
-
-    // Adicionar card apenas se um produto estiver selecionado
-    if (_selectedProductId != null) {
-      final selectedMovements =
-          movements.where((m) => m.productId == _selectedProductId).toList();
-
-      if (selectedMovements.isNotEmpty) {
-        children.add(_buildProductCard(selectedMovements));
-      }
-    }
 
     return ListView(
       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -822,18 +693,164 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
     );
   }
 
-  Widget _buildLineChart(
-    List<FlSpot> spotsAdd,
-    List<FlSpot> spotsRemove,
-    double minX,
-    double maxX,
-    double maxY,
-    List<Movement> sortedMovements,
+  // =======================
+  // CHART TYPE SELECTOR (igual ao Months)
+  // =======================
+  Widget _buildChartTypeSelector() {
+    return Material(
+      color: Colors.transparent,
+      child: Container(
+        padding: const EdgeInsets.all(6),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: const Color(0xFFE0E0E0), width: 1.5),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: _chartTypeItem(
+                label: 'Barras',
+                icon: Icons.bar_chart,
+                isSelected: _selectedChartType == 'Barras',
+                onTap: () => setState(() => _selectedChartType = 'Barras'),
+              ),
+            ),
+            Expanded(
+              child: _chartTypeItem(
+                label: 'Pizza',
+                icon: Icons.pie_chart,
+                isSelected: _selectedChartType == 'Pizza',
+                onTap: () => setState(() => _selectedChartType = 'Pizza'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _chartTypeItem({
+    required String label,
+    required IconData icon,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: isSelected ? const Color(0xFF1A1A1A) : Colors.transparent,
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 20,
+                color: isSelected ? Colors.white : const Color(0xFF2C3E50),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                label,
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                  color: isSelected ? Colors.white : const Color(0xFF2C3E50),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // =======================
+  // CHARTS
+  // =======================
+  Widget _buildYearBarChart(
+    Map<int, int> addByMonth,
+    Map<int, int> removeByMonth,
   ) {
+    // ✅ opcional (recomendado): mostra somente meses do período selecionado
+    final range = _periodMonthRange();
+    final monthsInRange = List<int>.generate(
+      range.endMonth - range.startMonth + 1,
+      (i) => range.startMonth + i,
+    );
+
+    final barGroups = monthsInRange.map((month) {
+      final add = (addByMonth[month] ?? 0).toDouble();
+      final remove = (removeByMonth[month] ?? 0).toDouble();
+
+      // x = mês (1..12) para facilitar labels
+      return BarChartGroupData(
+        x: month,
+        groupVertically: true,
+        barRods: [
+          BarChartRodData(
+            fromY: 0,
+            toY: add,
+            width: 14,
+            borderRadius: BorderRadius.circular(6),
+            gradient: const LinearGradient(
+              colors: [Color(0xFF27AE60), Color(0xFF2ECC71)],
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+            ),
+          ),
+          BarChartRodData(
+            fromY: add,
+            toY: add + remove,
+            width: 14,
+            borderRadius: BorderRadius.circular(6),
+            gradient: const LinearGradient(
+              colors: [Color(0xFFE74C3C), Color(0xFFEF5350)],
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+            ),
+          ),
+        ],
+      );
+    }).toList();
+
+    final maxY =
+        barGroups
+            .expand((g) => g.barRods)
+            .map((r) => r.toY)
+            .fold<double>(0, (p, c) => c > p ? c : p) +
+        10;
+
+    const monthsShort = [
+      '',
+      'JAN',
+      'FEV',
+      'MAR',
+      'ABR',
+      'MAI',
+      'JUN',
+      'JUL',
+      'AGO',
+      'SET',
+      'OUT',
+      'NOV',
+      'DEZ',
+    ];
+
     return Column(
       children: [
         Text(
-          'Movimentações Cumulativas ao Longo do $_selectedPeriod',
+          'Movimentações Mensais ($_selectedPeriod)',
           style: GoogleFonts.poppins(
             fontSize: 16,
             fontWeight: FontWeight.w600,
@@ -842,8 +859,6 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 12),
-
-        // Legenda
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -852,215 +867,112 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
             _buildLegendItem('Saídas', const Color(0xFFE74C3C)),
           ],
         ),
-
         const SizedBox(height: 12),
-
         Expanded(
-          child: LineChart(
-            LineChartData(
-              lineBarsData: [
-                // Entrada
-                LineChartBarData(
-                  spots: spotsAdd,
-                  isCurved: true,
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF27AE60), Color(0xFF2ECC71)],
-                  ),
-                  barWidth: 5,
-                  belowBarData: BarAreaData(
-                    show: true,
-                    gradient: LinearGradient(
-                      colors: [
-                        const Color(0xFF27AE60).withValues(alpha: 0.2),
-                        const Color(0xFF2ECC71).withValues(alpha: 0.05),
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ),
-                  ),
-                  dotData: FlDotData(
-                    show: true,
-                    getDotPainter: (spot, percent, barData, index) =>
-                        FlDotCirclePainter(
-                      radius: 6,
-                      color: const Color(0xFF27AE60),
-                      strokeWidth: 2,
-                      strokeColor: Colors.white,
-                    ),
-                  ),
-                ),
-
-                // Saída
-                LineChartBarData(
-                  spots: spotsRemove,
-                  isCurved: true,
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFFE74C3C), Color(0xFFE74C3C)],
-                  ),
-                  barWidth: 5,
-                  belowBarData: BarAreaData(
-                    show: true,
-                    gradient: LinearGradient(
-                      colors: [
-                        const Color(0xFFE74C3C).withValues(alpha: 0.2),
-                        const Color(0xFFE74C3C).withValues(alpha: 0.05),
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ),
-                  ),
-                  dotData: FlDotData(
-                    show: true,
-                    getDotPainter: (spot, percent, barData, index) =>
-                        FlDotCirclePainter(
-                      radius: 6,
-                      color: const Color(0xFFE74C3C),
-                      strokeWidth: 2,
-                      strokeColor: Colors.white,
-                    ),
-                  ),
-                ),
-              ],
-              titlesData: FlTitlesData(
+          child: BarChart(
+            BarChartData(
+              maxY: maxY,
+              barGroups: barGroups,
+              gridData: FlGridData(
                 show: true,
-                bottomTitles: AxisTitles(
-                  axisNameWidget: Text(
-                    'Dia',
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: const Color(0xFF7F8C8D),
-                    ),
-                  ),
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    reservedSize: 40,
-                    interval: 5,
-                    getTitlesWidget: (value, meta) {
-                      if (value >= 1 &&
-                          value <=
-                              DateUtils.getDaysInMonth(
-                                _displayMonth.year,
-                                _displayMonth.month,
-                              ) &&
-                          value % 5 == 0) {
-                        return Text(
-                          value.toInt().toString(),
-                          style: GoogleFonts.poppins(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            color: const Color(0xFF7F8C8D),
-                          ),
-                        );
-                      }
-                      return const Text('');
-                    },
-                  ),
-                ),
+                drawVerticalLine: false,
+                horizontalInterval: maxY / 10,
+                getDrawingHorizontalLine: (value) =>
+                    FlLine(color: const Color(0xFFECF0F1), strokeWidth: 0.6),
+              ),
+              borderData: FlBorderData(
+                show: true,
+                border: Border.all(color: const Color(0xFFBDC3C7), width: 1),
+              ),
+              titlesData: FlTitlesData(
+                topTitles: const AxisTitles(),
+                rightTitles: const AxisTitles(),
                 leftTitles: AxisTitles(
                   sideTitles: SideTitles(
                     showTitles: true,
-                    reservedSize: 50,
+                    reservedSize: 46,
                     interval: maxY / 10,
-                    getTitlesWidget: (value, meta) {
-                      return Text(
-                        value.toInt().toString(),
-                        style: GoogleFonts.poppins(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: const Color(0xFF7F8C8D),
+                    getTitlesWidget: (value, _) => Text(
+                      value.toInt().toString(),
+                      style: GoogleFonts.poppins(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                        color: const Color(0xFF7F8C8D),
+                      ),
+                    ),
+                  ),
+                ),
+                bottomTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    getTitlesWidget: (value, _) {
+                      final month = value.toInt();
+                      if (!monthsInRange.contains(month)) {
+                        return const SizedBox.shrink();
+                      }
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: Text(
+                          monthsShort[month],
+                          style: GoogleFonts.poppins(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xFF7F8C8D),
+                          ),
                         ),
                       );
                     },
                   ),
                 ),
-                topTitles: AxisTitles(
-                  sideTitles: SideTitles(showTitles: false),
-                ),
-                rightTitles: AxisTitles(
-                  sideTitles: SideTitles(showTitles: false),
-                ),
               ),
-              gridData: FlGridData(
-                show: true,
-                drawVerticalLine: true,
-                drawHorizontalLine: true,
-                verticalInterval: 5,
-                horizontalInterval: maxY / 10,
-                getDrawingHorizontalLine: (value) => FlLine(
-                  color: const Color(0xFFECF0F1),
-                  strokeWidth: 0.5,
-                ),
-                getDrawingVerticalLine: (value) => FlLine(
-                  color: const Color(0xFFECF0F1),
-                  strokeWidth: 0.5,
-                ),
-              ),
-              borderData: FlBorderData(
-                show: true,
-                border: Border.all(
-                  color: const Color(0xFFBDC3C7),
-                  width: 1,
-                ),
-              ),
-              lineTouchData: LineTouchData(
+              barTouchData: BarTouchData(
                 enabled: true,
-                handleBuiltInTouches: true,
-                touchTooltipData: LineTouchTooltipData(
+                touchTooltipData: BarTouchTooltipData(
                   tooltipPadding: const EdgeInsets.all(12),
                   tooltipMargin: 8,
-                  getTooltipItems: (touchedSpots) {
-                    return touchedSpots.map((spot) {
-                      final isAdd = spot.barIndex == 0;
-                      final spotsList = isAdd ? spotsAdd : spotsRemove;
-                      final idx = spotsList.indexOf(spot);
+                  getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                    final month = group.x; // 1..12
+                    final monthLabel = monthsShort[month];
 
-                      if (idx != -1) {
-                        final movementsForType = sortedMovements
-                            .where((m) => m.type == (isAdd ? 'add' : 'remove'))
-                            .toList();
+                    final add = (addByMonth[month] ?? 0);
+                    final remove = (removeByMonth[month] ?? 0);
 
-                        if (idx >= 0 && idx < movementsForType.length) {
-                          final movement = movementsForType[idx];
-                          setState(() {
-                            _selectedProductId = movement.productId;
-                          });
+                    if (rodIndex == 0) {
+                      return BarTooltipItem(
+                        '$monthLabel\nEntrada: $add',
+                        GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 12,
+                        ),
+                      );
+                    }
 
-                          final dayStr =
-                              '${movement.date.day}/${movement.date.month}';
-                          final type = isAdd ? 'Entrada' : 'Saída';
-
-                          return LineTooltipItem(
-                            '$dayStr\n$type: ${movement.quantity}\nCumulativo: ${spot.y.toInt()}',
-                            GoogleFonts.poppins(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 12,
-                            ),
-                          );
-                        }
-                      }
-                      return null;
-                    }).toList();
+                    return BarTooltipItem(
+                      '$monthLabel\nSaída: $remove',
+                      GoogleFonts.poppins(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 12,
+                      ),
+                    );
                   },
                 ),
               ),
-              minX: minX,
-              maxX: maxX,
-              minY: 0,
-              maxY: maxY,
             ),
+            duration: const Duration(milliseconds: 800),
+            curve: Curves.easeInOut,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildPieChart(
-    List<PieChartSectionData> sections,
-    Map<String, int> productTotals,
-    List<Movement> movements,
-  ) {
+  Widget _buildYearPieChart({
+    required List<PieChartSectionData> sections,
+    required Map<String, int> productTotals,
+    required List<Movement> movements,
+  }) {
     return Column(
       children: [
         Text(
@@ -1073,7 +985,6 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 12),
-
         Expanded(
           child: Stack(
             children: [
@@ -1096,8 +1007,9 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
                         _touchedIndex =
                             response.touchedSection!.touchedSectionIndex;
 
-                        final productId =
-                            productTotals.keys.elementAt(_touchedIndex);
+                        final productId = productTotals.keys.elementAt(
+                          _touchedIndex,
+                        );
 
                         final product = movements.firstWhere(
                           (m) => m.productId == productId,
@@ -1123,7 +1035,6 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
                   }).toList(),
                 ),
               ),
-
               if (_touchedLabel != null && _touchedImageUrl != null)
                 Positioned(
                   left: 12,
@@ -1151,46 +1062,63 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
             ],
           ),
         ),
-
         const SizedBox(height: 12),
-
         Wrap(
           alignment: WrapAlignment.center,
           spacing: 10,
           runSpacing: 8,
           children: sections.asMap().entries.map((entry) {
-            final index = entry.key;
+            final idx = entry.key;
             final section = entry.value;
 
-            final productId = productTotals.keys.elementAt(index);
+            final productId = productTotals.keys.elementAt(idx);
             final product = movements.firstWhere(
               (m) => m.productId == productId,
             );
 
-            return Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 12,
-                  height: 12,
-                  decoration: BoxDecoration(
-                    color: section.color,
-                    borderRadius: BorderRadius.circular(3),
-                  ),
-                ),
-                const SizedBox(width: 6),
-                Flexible(
-                  child: Text(
-                    product.productName,
-                    style: GoogleFonts.poppins(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: const Color(0xFF2C3E50),
+            return InkWell(
+              borderRadius: BorderRadius.circular(10),
+              onTap: () {
+                // ✅ garante sincronização no detalhe
+                AnnualReportPeriodController.period.value = _selectedPeriod;
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => RelatoriosForProductYears(
+                      productId: productId,
+                      uid: _uid,
+                      displayYear: _displayYear,
                     ),
-                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-              ],
+                );
+              },
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 12,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: section.color,
+                      borderRadius: BorderRadius.circular(3),
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 170),
+                    child: Text(
+                      product.productName,
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: const Color(0xFF2C3E50),
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
             );
           }).toList(),
         ),
@@ -1198,70 +1126,34 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
     );
   }
 
-  Widget _buildLegendItem(String label, Color color) {
-    return Row(
-      children: [
-        Container(
-          width: 16,
-          height: 4,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(2),
-          ),
-        ),
-        const SizedBox(width: 8),
-        Text(
-          label,
-          style: GoogleFonts.poppins(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: const Color(0xFF34495E),
-          ),
-        ),
-      ],
-    );
-  }
-
-   Widget _buildSummaryItem(String label, int value, Color color) {
-    return Column(
-      children: [
-        Text(
-          value.toString(),
-          style: GoogleFonts.poppins(
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-            color: color,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: GoogleFonts.poppins(
-            fontSize: 14,
-            color: const Color(0xFF7F8C8D),
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDaySection(int day, List<Movement> movements) {
-    final dayDate = DateTime(_displayMonth.year, _displayMonth.month, day);
-    final dayTitle = DateFormat('EEEE, dd/MM', 'pt_BR').format(dayDate);
+  // =======================
+  // MONTH SECTION + PRODUCT CARD (igual ao que você já tinha)
+  // =======================
+  Widget _buildMonthSection(int month, List<Movement> movements) {
+    final monthDate = DateTime(_displayYear, month, 1);
+    final monthTitleRaw = DateFormat('MMMM/yyyy', 'pt_BR').format(monthDate);
+    final monthTitle =
+        '${monthTitleRaw[0].toUpperCase()}${monthTitleRaw.substring(1)}';
 
     final Map<String, List<Movement>> groupedByProduct = {};
     for (final m in movements) {
       groupedByProduct.putIfAbsent(m.productId, () => []).add(m);
     }
 
+    final productGroups = groupedByProduct.values.toList()
+      ..sort((a, b) {
+        final totalA = a.fold<int>(0, (p, e) => p + e.quantity);
+        final totalB = b.fold<int>(0, (p, e) => p + e.quantity);
+        return totalB.compareTo(totalA);
+      });
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           child: Text(
-            dayTitle,
+            monthTitle,
             style: GoogleFonts.poppins(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -1269,9 +1161,7 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
             ),
           ),
         ),
-        ...groupedByProduct.values.map(
-          (productMovements) => _buildProductCard(productMovements),
-        ),
+        ...productGroups.map(_buildProductCard),
       ],
     );
   }
@@ -1279,15 +1169,13 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
   Widget _buildProductCard(List<Movement> movements) {
     final product = movements.first;
 
-    final add = movements.where((e) => e.type == 'add').fold<int>(
-          0,
-          (p, e) => p + e.quantity,
-        );
+    final add = movements
+        .where((e) => e.type == 'add')
+        .fold<int>(0, (p, e) => p + e.quantity);
 
-    final remove = movements.where((e) => e.type == 'remove').fold<int>(
-          0,
-          (p, e) => p + e.quantity,
-        );
+    final remove = movements
+        .where((e) => e.type == 'remove')
+        .fold<int>(0, (p, e) => p + e.quantity);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
@@ -1347,15 +1235,16 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
                   size: 20,
                 ),
                 onPressed: () {
-                  MonthlyReportPeriodController.period.value = _selectedPeriod;
+                  // ✅ garante sincronização no detalhe
+                  AnnualReportPeriodController.period.value = _selectedPeriod;
 
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => RelatoriosForProdutoMounth(
+                      builder: (_) => RelatoriosForProductYears(
                         productId: product.productId,
                         uid: _uid,
-                        displayMonth: _displayMonth,
+                        displayYear: _displayYear,
                       ),
                     ),
                   );
@@ -1369,9 +1258,7 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
   }
 
   Widget _buildProductImage(String? imageUrl) {
-    if (imageUrl == null || imageUrl.isEmpty) {
-      return _imagePlaceholder();
-    }
+    if (imageUrl == null || imageUrl.isEmpty) return _imagePlaceholder();
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(12),
@@ -1471,6 +1358,54 @@ class _RelatoriosMonthsState extends State<RelatoriosMonths>
           fontWeight: FontWeight.w600,
         ),
       ),
+    );
+  }
+
+  Widget _buildLegendItem(String label, Color color) {
+    return Row(
+      children: [
+        Container(
+          width: 16,
+          height: 4,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          label,
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: const Color(0xFF34495E),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSummaryItem(String label, int value, Color color) {
+    return Column(
+      children: [
+        Text(
+          value.toString(),
+          style: GoogleFonts.poppins(
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+            color: color,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          label,
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            color: const Color(0xFF7F8C8D),
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
     );
   }
 

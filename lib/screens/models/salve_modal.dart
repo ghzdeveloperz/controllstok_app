@@ -30,7 +30,7 @@ class SalveModal extends StatefulWidget {
       context: context,
       barrierDismissible: true,
       barrierLabel: 'Fechar',
-      barrierColor: Colors.black.withOpacity(0.8),
+      barrierColor: Colors.black.withAlpha(20),
       transitionDuration: const Duration(milliseconds: 120),
       pageBuilder: (dialogContext, _, __) => SalveModal(
         days: days,

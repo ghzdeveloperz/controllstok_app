@@ -4,11 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'estoque_screen.dart';
-import 'novo_produto_screen.dart';
+import 'new_product_screen.dart';
 import 'scanner_screen.dart';
 import 'relatorios_screen.dart';
 import 'alertas_screen.dart';
-import 'login_screen.dart';
+import 'acounts/login/login_screen.dart';
 
 import '../screens/widgets/desactive_acount.dart';
 import '../screens/models/product.dart';

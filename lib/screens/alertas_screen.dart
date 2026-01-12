@@ -48,12 +48,12 @@ class _AlertasScreenState extends State<AlertasScreen> {
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.08),
+                          color: Colors.black.withAlpha(20),
                           blurRadius: 12,
                           offset: const Offset(0, 6),
                         ),
                         BoxShadow(
-                          color: Colors.white.withOpacity(0.9),
+                          color: Colors.white.withAlpha(230),
                           blurRadius: 8,
                           offset: const Offset(-4, -4),
                         ),
@@ -83,12 +83,12 @@ class _AlertasScreenState extends State<AlertasScreen> {
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.08),
+                        color: Colors.black.withAlpha(20),
                         blurRadius: 12,
                         offset: const Offset(0, 6),
                       ),
                       BoxShadow(
-                        color: Colors.white.withOpacity(0.9),
+                        color: Colors.white.withAlpha(230),
                         blurRadius: 8,
                         offset: const Offset(-4, -4),
                       ),
@@ -210,7 +210,7 @@ class _SectionHeader extends StatelessWidget {
           width: 8,
           height: 24,
           decoration: BoxDecoration(
-            color: color.withOpacity(0.8),
+            color: color.withAlpha(204),
             borderRadius: BorderRadius.circular(4),
           ),
         ),
@@ -281,28 +281,28 @@ class _PremiumAlertCardState extends State<_PremiumAlertCard> with TickerProvide
             end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: color.withOpacity(0.2), width: 1.5),
+          border: Border.all(color: color.withAlpha(51), width: 1.5),
           boxShadow: _isHovered
               ? [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.12),
+                    color: Colors.black.withAlpha(31),
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   ),
                   BoxShadow(
-                    color: Colors.white.withOpacity(0.8),
+                    color: Colors.white.withAlpha(20),
                     blurRadius: 16,
                     offset: const Offset(-6, -6),
                   ),
                 ]
               : [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.08),
+                    color: Colors.black.withAlpha(20),
                     blurRadius: 16,
                     offset: const Offset(0, 8),
                   ),
                   BoxShadow(
-                    color: Colors.white.withOpacity(0.9),
+                    color: Colors.white.withAlpha(230),
                     blurRadius: 12,
                     offset: const Offset(-4, -4),
                   ),
@@ -318,7 +318,7 @@ class _PremiumAlertCardState extends State<_PremiumAlertCard> with TickerProvide
                         : Container(
                             width: 70,
                             height: 70,
-                            color: color.withOpacity(0.1),
+                            color: color.withAlpha(26),
                             child: Icon(Icons.cancel_outlined, color: color, size: 32),
                           ),
                   ),
@@ -387,7 +387,7 @@ class _PremiumAlertCardState extends State<_PremiumAlertCard> with TickerProvide
                         : Container(
                             width: 60,
                             height: 60,
-                            color: color.withOpacity(0.1),
+                            color: color.withAlpha(26),
                             child: Icon(Icons.warning_amber_rounded, color: color, size: 28),
                           ),
                   ),
@@ -416,7 +416,7 @@ class _PremiumAlertCardState extends State<_PremiumAlertCard> with TickerProvide
                       child: Container(
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
-                            colors: quantity > 5 ? [const Color(0xFF4CAF50), const Color(0xFF66BB6A)] : [color, color.withOpacity(0.7)],
+                            colors: quantity > 5 ? [const Color(0xFF4CAF50), const Color(0xFF66BB6A)] : [color, color.withAlpha(179)],
                           ),
                           borderRadius: BorderRadius.circular(4),
                         ),
@@ -461,12 +461,12 @@ class _EmptyState extends StatelessWidget {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.08),
+                  color: Colors.black.withAlpha(20),
                   blurRadius: 20,
                   offset: const Offset(0, 10),
                 ),
                 BoxShadow(
-                  color: Colors.white.withOpacity(0.9),
+                  color: Colors.white.withAlpha(230),
                   blurRadius: 16,
                   offset: const Offset(-6, -6),
                 ),

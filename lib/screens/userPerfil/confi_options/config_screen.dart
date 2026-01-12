@@ -3,9 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:ui';
 
-import '../screens/login_screen.dart';
-import 'conf_options/categorias_screen.dart';
-import 'conf_options/sobre_screen.dart';
+import '../../acounts/login/login_screen.dart';
+import 'categorias_screen.dart';
+import 'sobre_screen.dart';
 
 class ConfigScreen extends StatefulWidget {
   const ConfigScreen({super.key});

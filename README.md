@@ -1,4 +1,5 @@
-**perfil | ações**
+**WithOpacity** para: **Alpha**
 
 Mudanças: 
-2. removi o container de "Ações" mas eu só comentei, linhas: 557 e início: 1009
+1. correção de cores
+2. organização estrutural

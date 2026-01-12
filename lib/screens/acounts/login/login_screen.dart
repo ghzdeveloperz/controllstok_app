@@ -2,11 +2,11 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../services/auth_service.dart';
-import 'home_screen.dart';
-import 'register_screen.dart';
+import '../../../services/auth_service.dart';
+import '../../home_screen.dart';
+import '../register/register_screen.dart';
 import 'package:flutter/gestures.dart';
-import '../screens/widgets/desactive_acount.dart'; // CustomAlertDialog import
+import '../../widgets/desactive_acount.dart'; // CustomAlertDialog import
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
