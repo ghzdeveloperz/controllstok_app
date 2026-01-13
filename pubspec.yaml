@@ -38,6 +38,7 @@ dependencies:
   path_provider: ^2.1.5
   open_filex: ^4.7.0
   provider: ^6.1.5+1
+  
 
 
 
@@ -72,3 +73,10 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/logo-controllstok-bac.png
+    - assets/images/logo-and-name.png
+
+
+    # gifs
+    - assets/images/banners/gif/caixa-banner.gif
+    - assets/images/banners/gif/company-banner.gif
+    - assets/images/banners/gif/relatorios-banner.gif
