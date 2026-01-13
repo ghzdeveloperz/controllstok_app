@@ -11,7 +11,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../acounts/login/login_screen.dart';
+import '../../main.dart';
+import '../acounts/auth_choice/auth_choice_screen.dart';
 
 class PerfilScreen extends StatefulWidget {
   const PerfilScreen({super.key});
@@ -339,7 +340,7 @@ class _PerfilScreenState extends State<PerfilScreen>
     );
   }
 
-  void _showDeleteAccountDialog() {
+  void _showDeleteAccountDialog({required VoidCallback onConfirmed}) {
     final TextEditingController passwordController = TextEditingController();
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
     bool isLoading = false;
@@ -417,10 +418,20 @@ class _PerfilScreenState extends State<PerfilScreen>
                       });
 
                       try {
+                        // Garantindo email não nulo
+                        final email = _user?.email;
+                        if (email == null || email.isEmpty) {
+                          throw FirebaseAuthException(
+                            code: 'no-email',
+                            message: 'Email do usuário não encontrado.',
+                          );
+                        }
+
                         final credential = EmailAuthProvider.credential(
-                          email: _user!.email!,
+                          email: email,
                           password: passwordController.text,
                         );
+
                         await _user!.reauthenticateWithCredential(credential);
 
                         await FirebaseFirestore.instance
@@ -428,7 +439,8 @@ class _PerfilScreenState extends State<PerfilScreen>
                             .doc(_user!.uid)
                             .update({'active': false});
 
-                        await _logout();
+                        // navegação para AuthChoiceScreen
+                        onConfirmed();
                       } catch (e) {
                         if (!mounted) return;
 
@@ -437,6 +449,10 @@ class _PerfilScreenState extends State<PerfilScreen>
                             e.code == 'wrong-password') {
                           message =
                               'Senha incorreta. Verifique e tente novamente.';
+                        } else if (e is FirebaseAuthException &&
+                            e.code == 'no-email') {
+                          message =
+                              e.message ?? 'Email do usuário não encontrado.';
                         } else {
                           message = 'Erro ao desativar a conta.';
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -445,8 +461,6 @@ class _PerfilScreenState extends State<PerfilScreen>
                               backgroundColor: Colors.black87,
                             ),
                           );
-                          Navigator.of(context).pop();
-                          return;
                         }
 
                         setState(() {
@@ -481,15 +495,6 @@ class _PerfilScreenState extends State<PerfilScreen>
     );
   }
 
-  Future<void> _logout() async {
-    await FirebaseAuth.instance.signOut();
-    if (!mounted) return;
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (_) => const LoginScreen()),
-      (_) => false,
-    );
-  }
-
   // =========
   // BUILD UI
   // =========
@@ -499,11 +504,17 @@ class _PerfilScreenState extends State<PerfilScreen>
     if (_errorMessage != null) return _buildErrorScreen();
     if (_user == null) return _buildEmptyScreen();
 
-    final String displayName =
-        (_companyName != null && _companyName!.trim().isNotEmpty)
-        ? _companyName!.trim()
-        : (_user!.email?.split('@').first ?? 'Usuário');
+    // Garantindo que displayName nunca seja nulo
+    String displayName;
+    if (_companyName != null && _companyName!.trim().isNotEmpty) {
+      displayName = _companyName!.trim();
+    } else if (_user!.email != null && _user!.email!.isNotEmpty) {
+      displayName = _user!.email!.split('@').first;
+    } else {
+      displayName = 'Usuário';
+    }
 
+    // Garantindo que email e uid nunca sejam nulos
     final String email = _user!.email ?? 'Sem email';
     final String uid = _user!.uid;
 
@@ -1121,6 +1132,8 @@ class _PerfilScreenState extends State<PerfilScreen>
             ),
           ),
           const SizedBox(height: 16),
+
+          // Botão de Sair da Conta
           _buildSecurityButton(
             Icons.logout,
             'Sair da Conta',
@@ -1128,15 +1141,35 @@ class _PerfilScreenState extends State<PerfilScreen>
             () => _showConfirmationDialog(
               'Sair da Conta',
               'Tem certeza que deseja sair?',
-              _logout,
+              () async {
+                // Desloga o usuário
+                await FirebaseAuth.instance.signOut();
+
+                // Navegação global para AuthChoiceScreen
+                navigatorKey.currentState?.pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (_) => const AuthChoiceScreen()),
+                  (route) => false,
+                );
+              },
             ),
           ),
+
           const SizedBox(height: 12),
+
+          // Botão de Desativar Conta
           _buildSecurityButton(
             Icons.delete_forever,
             'Desativar Conta',
             Colors.red.shade800,
-            _showDeleteAccountDialog,
+            () => _showDeleteAccountDialog(
+              onConfirmed: () {
+                // navegação global para AuthChoiceScreen
+                navigatorKey.currentState?.pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (_) => const AuthChoiceScreen()),
+                  (route) => false,
+                );
+              },
+            ),
           ),
         ],
       ),
