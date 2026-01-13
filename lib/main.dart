@@ -9,7 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'services/firebase_service.dart';
-import 'screens/acounts/login/login_screen.dart';
+import 'screens/acounts/auth_choice/auth_choice_screen.dart'; // ← Nova tela
 import 'screens/home_screen.dart';
 import 'notifications/notification_service.dart';
 import 'notifications/save_fcm_token.dart';
@@ -126,7 +126,7 @@ class _AuthGateState extends State<AuthGate> {
     if (_pendingNotification != null && user != null) {
       navigatorKey.currentState?.pushAndRemoveUntil(
         MaterialPageRoute(
-          builder: (_) => HomeScreen(initialIndex: 4), // aba Alertas
+          builder: (_) => const HomeScreen(initialIndex: 4), // aba Alertas
         ),
         (route) => false,
       );
@@ -170,7 +170,8 @@ class _AuthGateState extends State<AuthGate> {
         }
 
         _tokenSaved = false;
-        return const LoginScreen();
+        // 🔹 Aqui vai a nova tela de escolha
+        return const AuthChoiceScreen();
       },
     );
   }
