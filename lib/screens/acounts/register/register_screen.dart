@@ -1,8 +1,7 @@
-// lib/screens/acounts/register/register_screen.dart
 import 'package:flutter/material.dart';
+import 'register_controller.dart';
 import 'widgets/register_form.dart';
 import 'widgets/register_alert.dart';
-import 'register_controller.dart';
 import 'widgets/register_header.dart';
 import 'widgets/register_footer.dart';
 
@@ -16,76 +15,92 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen>
     with SingleTickerProviderStateMixin {
   late final RegisterController controller;
-  late final AnimationController _alertAnimationController;
+
+  late final AnimationController _animationController;
+  late final Animation<double> _animation;
+
+  String? _lastError;
 
   @override
   void initState() {
     super.initState();
+
     controller = RegisterController();
 
-    _alertAnimationController = AnimationController(
+    _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 400),
+      duration: const Duration(milliseconds: 350),
     );
+
+    _animation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    );
+
+    controller.addListener(_handleErrorAnimation);
   }
 
-  void _handleSubmit() {
-    controller.submit();
+  void _handleErrorAnimation() {
+    final error = controller.errorMessage;
 
-    if (controller.errorMessage != null && controller.errorMessage!.isNotEmpty) {
-      _alertAnimationController.forward();
-
-      Future.delayed(const Duration(seconds: 3), () {
-        controller.clearError();
-        _alertAnimationController.reverse();
-      });
+    if (error != null && error.isNotEmpty && error != _lastError) {
+      _lastError = error;
+      _animationController
+        ..reset()
+        ..forward();
+      return;
     }
 
-    setState(() {}); // atualiza loading e erro
+    if ((error == null || error.isEmpty) && _lastError != null) {
+      _lastError = null;
+      _animationController.reverse();
+    }
+
+    setState(() {});
   }
 
   @override
   void dispose() {
+    controller.removeListener(_handleErrorAnimation);
     controller.dispose();
-    _alertAnimationController.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final hideFooter = controller.awaitingVerification || controller.emailVerified;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF7F7F7),
       body: SafeArea(
-        child: Center( // <--- centraliza verticalmente igual ao LoginScreen
+        child: Center(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(24),
             child: Column(
-              mainAxisSize: MainAxisSize.min, // <--- evita ocupar todo o espaço vertical
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const RegisterHeader(),
-                const SizedBox(height: 28),
+                const SizedBox(height: 20),
 
-                // ALERTA ANIMADO
                 RegisterAlert(
-                  animation: _alertAnimationController,
+                  animation: _animation,
                   message: controller.errorMessage,
-                ),
-                if (controller.errorMessage != null &&
-                    controller.errorMessage!.isNotEmpty)
-                  const SizedBox(height: 16),
-
-                // FORMULÁRIO
-                RegisterForm(
-                  controller: controller,
-                  isLoading: controller.isLoading,
-                  onSubmit: _handleSubmit,
                 ),
 
                 const SizedBox(height: 20),
 
-                // FOOTER
-                const RegisterFooter(),
+                RegisterForm(
+                  controller: controller,
+                  isLoading: controller.isLoading,
+                  onSubmit: controller.submit,
+                ),
+
+                if (!hideFooter) ...[
+                  const SizedBox(height: 28),
+                  const RegisterFooter(),
+                ],
               ],
             ),
           ),
