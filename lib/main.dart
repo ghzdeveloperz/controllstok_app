@@ -7,9 +7,11 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'services/firebase_service.dart';
-import 'screens/acounts/auth_choice/auth_choice_screen.dart'; // ← Nova tela
+import 'screens/acounts/auth_choice/auth_choice_screen.dart';
+import 'screens/acounts/register/register_screen.dart';
 import 'screens/home_screen.dart';
 import 'notifications/notification_service.dart';
 import 'notifications/save_fcm_token.dart';
@@ -58,7 +60,7 @@ class MyApp extends StatelessWidget {
     final baseTextTheme = GoogleFonts.poppinsTextTheme();
 
     return MaterialApp(
-      navigatorKey: navigatorKey, // ← essencial para navegação global
+      navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       title: 'ControlStok',
       theme: ThemeData(
@@ -86,6 +88,10 @@ class AuthGate extends StatefulWidget {
 class _AuthGateState extends State<AuthGate> {
   bool _tokenSaved = false;
   Map<String, dynamic>? _pendingNotification;
+
+  // ✅ chaves usadas no RegisterController
+  static const _kPendingEmail = 'register_pending_email';
+  static const _kPendingTempPass = 'register_pending_temp_pass';
 
   @override
   void initState() {
@@ -120,18 +126,33 @@ class _AuthGateState extends State<AuthGate> {
     });
   }
 
+  Future<bool> _hasPendingRegister() async {
+    final prefs = await SharedPreferences.getInstance();
+    final email = prefs.getString(_kPendingEmail);
+    final pass = prefs.getString(_kPendingTempPass);
+    return email != null && pass != null;
+  }
+
   // 🔹 Tenta navegar para HomeScreen na aba Alertas se o usuário estiver logado
-  void _tryNavigate() {
+  // ✅ MAS: não navega se houver cadastro pendente
+  Future<void> _tryNavigate() async {
     final user = FirebaseAuth.instance.currentUser;
-    if (_pendingNotification != null && user != null) {
-      navigatorKey.currentState?.pushAndRemoveUntil(
-        MaterialPageRoute(
-          builder: (_) => const HomeScreen(initialIndex: 4), // aba Alertas
-        ),
-        (route) => false,
-      );
-      _pendingNotification = null; // limpa pending
+    if (_pendingNotification == null || user == null) return;
+
+    final pending = await _hasPendingRegister();
+    if (pending) {
+      // usuário temporário logado → não deve ir pra Home
+      return;
     }
+
+    navigatorKey.currentState?.pushAndRemoveUntil(
+      MaterialPageRoute(
+        builder: (_) => const HomeScreen(initialIndex: 4),
+      ),
+      (route) => false,
+    );
+
+    _pendingNotification = null;
   }
 
   @override
@@ -156,21 +177,40 @@ class _AuthGateState extends State<AuthGate> {
           );
         }
 
+        // ✅ usuário logado (pode ser temporário)
         if (snapshot.hasData) {
-          /// 🔑 Salva o token FCM UMA VEZ por sessão
-          if (!_tokenSaved) {
-            _tokenSaved = true;
-            saveFcmTokenIfLoggedIn();
+          return FutureBuilder<bool>(
+            future: _hasPendingRegister(),
+            builder: (context, pendingSnap) {
+              if (pendingSnap.connectionState == ConnectionState.waiting) {
+                return const Scaffold(
+                  body: Center(child: CircularProgressIndicator()),
+                );
+              }
 
-            // Caso haja notificação pendente após login, navega
-            _tryNavigate();
-          }
+              final pending = pendingSnap.data == true;
 
-          return const HomeScreen(); // default aba Estoque
+              // ✅ Se existir cadastro pendente, fica no Register (não Home)
+              if (pending) {
+                _tokenSaved = false; // não salva token como sessão "final"
+                return const RegisterScreen();
+              }
+
+              /// 🔑 Salva o token FCM UMA VEZ por sessão (somente quando é login final)
+              if (!_tokenSaved) {
+                _tokenSaved = true;
+                saveFcmTokenIfLoggedIn();
+
+                // Caso haja notificação pendente após login final, navega
+                _tryNavigate();
+              }
+
+              return const HomeScreen();
+            },
+          );
         }
 
         _tokenSaved = false;
-        // 🔹 Aqui vai a nova tela de escolha
         return const AuthChoiceScreen();
       },
     );

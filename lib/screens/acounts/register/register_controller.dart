@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'utils/password_strength.dart';
 
@@ -13,9 +14,9 @@ class RegisterController extends ChangeNotifier {
   final TextEditingController confirmPasswordController = TextEditingController();
 
   bool isLoading = false;
+  bool isRestoring = true;
   String? errorMessage;
 
-  // ===== Email verification flow =====
   bool emailSent = false;
   bool emailVerified = false;
   bool awaitingVerification = false;
@@ -26,39 +27,72 @@ class RegisterController extends ChangeNotifier {
   Timer? _verifyTimer;
   Timer? _verifyTimeoutTimer;
 
-  // ===== cooldown do reenviar =====
   int resendCooldownSeconds = 0;
   Timer? _resendCooldownTimer;
 
-  // ===== Password UX =====
   bool showPassword = false;
   bool showConfirmPassword = false;
-  int passwordStrength = 0; // 0..3
+  int passwordStrength = 0;
+
+  static const _kPendingEmail = 'register_pending_email';
+  static const _kPendingTempPass = 'register_pending_temp_pass';
+  static const _kPendingCreatedAt = 'register_pending_created_at';
 
   RegisterController() {
     emailController.addListener(_onEmailChanged);
-
-    // ✅ tempo real: reconstruir quando senha/confirm mudar
     passwordController.addListener(_onPasswordFieldsChanged);
     confirmPasswordController.addListener(_onPasswordFieldsChanged);
 
-    // força inicial (caso já tenha texto por algum motivo)
     _recomputePasswordStrength();
+    Future.microtask(_restorePendingIfAny);
   }
 
-  void _onEmailChanged() {
-    notifyListeners();
+  bool get hasPendingVerification => emailSent && !emailVerified;
+
+  Future<void> cancelPendingRegistration() async {
+    if (!emailSent || emailVerified) return;
+    await _deleteTempUserIfExists();
+    await _clearPendingStorage();
   }
+
+  /// ✅ NOVO: cancela e volta pra tela inicial (AuthChoice)
+  /// - funciona tanto se estiver "aguardando" quanto se já estiver verificado
+  Future<void> cancelAndResetRegistration() async {
+    if (isLoading) return;
+
+    _setLoading(true);
+    try {
+      await _deleteTempUserIfExists();
+      await _clearPendingStorage();
+
+      emailController.clear();
+      passwordController.clear();
+      confirmPasswordController.clear();
+
+      emailSent = false;
+      emailVerified = false;
+      awaitingVerification = false;
+
+      _resetResendCooldown();
+      clearError();
+    } catch (_) {
+      // se falhar, mantém uma mensagem humana
+      setAlertWithTimeout('Não foi possível cancelar agora. Tente novamente.');
+    } finally {
+      _setLoading(false);
+      notifyListeners();
+    }
+  }
+
+  void _onEmailChanged() => notifyListeners();
 
   void _onPasswordFieldsChanged() {
     _recomputePasswordStrength();
-    // ✅ sempre notifica para atualizar canSubmit em tempo real
     notifyListeners();
   }
 
   void _recomputePasswordStrength() {
-    final strength = calculatePasswordStrength(passwordController.text.trim());
-    passwordStrength = strength; // pode atualizar direto (bar/label vai acompanhar)
+    passwordStrength = calculatePasswordStrength(passwordController.text.trim());
   }
 
   void toggleShowPassword() {
@@ -84,15 +118,12 @@ class RegisterController extends ChangeNotifier {
         password == confirm;
   }
 
-  // ===== ALERT helper (usado pra erro E pra status) =====
   void setAlertWithTimeout(String message, {int seconds = 4}) {
     errorMessage = message;
     notifyListeners();
 
     Future.delayed(Duration(seconds: seconds), () {
-      if (errorMessage == message) {
-        clearError();
-      }
+      if (errorMessage == message) clearError();
     });
   }
 
@@ -101,7 +132,6 @@ class RegisterController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ===== cooldown =====
   void _startResendCooldown([int seconds = 30]) {
     _resendCooldownTimer?.cancel();
     resendCooldownSeconds = seconds;
@@ -125,7 +155,6 @@ class RegisterController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ===== 1) Enviar email de verificação =====
   Future<void> sendEmailVerification() async {
     final email = emailController.text.trim();
 
@@ -150,6 +179,8 @@ class RegisterController extends ChangeNotifier {
       _tempUser = credential.user;
       _tempPassword = randomPass;
 
+      await _persistPending(email: email, tempPassword: randomPass);
+
       await _tempUser?.sendEmailVerification();
 
       emailSent = true;
@@ -171,7 +202,6 @@ class RegisterController extends ChangeNotifier {
     }
   }
 
-  // ===== Reenviar (com cooldown) =====
   Future<void> resendEmailVerification() async {
     if (isLoading) return;
     if (resendCooldownSeconds > 0) return;
@@ -181,7 +211,7 @@ class RegisterController extends ChangeNotifier {
       setAlertWithTimeout('Preencha o e-mail.');
       return;
     }
-    if (!_changeableLooksLikeEmail(email)) {
+    if (!_looksLikeEmail(email)) {
       setAlertWithTimeout('E-mail inválido.');
       return;
     }
@@ -199,6 +229,8 @@ class RegisterController extends ChangeNotifier {
 
       _tempUser = credential.user;
       _tempPassword = randomPass;
+
+      await _persistPending(email: email, tempPassword: randomPass);
 
       await _tempUser?.sendEmailVerification();
 
@@ -221,7 +253,6 @@ class RegisterController extends ChangeNotifier {
     }
   }
 
-  // ===== “Não é esse e-mail?” =====
   Future<void> changeEmail() async {
     if (isLoading) return;
 
@@ -229,6 +260,7 @@ class RegisterController extends ChangeNotifier {
 
     try {
       await _deleteTempUserIfExists();
+      await _clearPendingStorage();
 
       emailController.clear();
       passwordController.clear();
@@ -254,6 +286,9 @@ class RegisterController extends ChangeNotifier {
     _verifyTimeoutTimer?.cancel();
 
     try {
+      // se já estiver logado, garante que _tempUser aponta pro currentUser
+      _tempUser ??= _auth.currentUser;
+
       await _tempUser?.delete();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'requires-recent-login') {
@@ -301,7 +336,6 @@ class RegisterController extends ChangeNotifier {
         _verifyTimer?.cancel();
         _verifyTimeoutTimer?.cancel();
 
-        // ✅ você pediu: sem alert de "email verificado"
         notifyListeners();
       }
     });
@@ -313,7 +347,6 @@ class RegisterController extends ChangeNotifier {
     });
   }
 
-  // ===== 2) Finalizar registro =====
   Future<void> submit() async {
     if (!emailVerified) {
       setAlertWithTimeout('Verifique seu e-mail antes de continuar.');
@@ -338,7 +371,7 @@ class RegisterController extends ChangeNotifier {
       return;
     }
 
-    if (_tempUser == null || _tempPassword == null) {
+    if (_tempPassword == null) {
       setAlertWithTimeout('Sessão inválida. Refaça a verificação do e-mail.');
       return;
     }
@@ -356,6 +389,8 @@ class RegisterController extends ChangeNotifier {
       await _auth.currentUser?.updatePassword(password);
 
       _tempPassword = null;
+      await _clearPendingStorage();
+
       clearError();
       notifyListeners();
     } on FirebaseAuthException catch (e) {
@@ -376,9 +411,6 @@ class RegisterController extends ChangeNotifier {
     return email.contains('@') && email.contains('.') && email.length >= 6;
   }
 
-  // (igual ao seu _looksLikeEmail, só mantive pra não quebrar nada)
-  bool _changeableLooksLikeEmail(String email) => _looksLikeEmail(email);
-
   String _generateTempPassword() {
     final millis = DateTime.now().millisecondsSinceEpoch;
     return 'Tmp@${millis}Aa1!';
@@ -398,6 +430,78 @@ class RegisterController extends ChangeNotifier {
         return 'Muitas tentativas. Aguarde um pouco.';
       default:
         return 'Erro ao continuar o cadastro.';
+    }
+  }
+
+  Future<void> _persistPending({
+    required String email,
+    required String tempPassword,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_kPendingEmail, email);
+    await prefs.setString(_kPendingTempPass, tempPassword);
+    await prefs.setInt(_kPendingCreatedAt, DateTime.now().millisecondsSinceEpoch);
+  }
+
+  Future<void> _clearPendingStorage() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_kPendingEmail);
+    await prefs.remove(_kPendingTempPass);
+    await prefs.remove(_kPendingCreatedAt);
+  }
+
+  Future<void> _restorePendingIfAny() async {
+    isRestoring = true;
+    notifyListeners();
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final email = prefs.getString(_kPendingEmail);
+      final pass = prefs.getString(_kPendingTempPass);
+
+      if (email == null || pass == null) {
+        isRestoring = false;
+        notifyListeners();
+        return;
+      }
+
+      emailController.text = email;
+      _tempPassword = pass;
+
+      try {
+        await _auth.signInWithEmailAndPassword(email: email, password: pass);
+      } catch (_) {
+        await _clearPendingStorage();
+        isRestoring = false;
+        notifyListeners();
+        return;
+      }
+
+      _tempUser = _auth.currentUser;
+      if (_tempUser == null) {
+        await _clearPendingStorage();
+        isRestoring = false;
+        notifyListeners();
+        return;
+      }
+
+      await _tempUser!.reload();
+      final refreshed = _auth.currentUser;
+      final verified = refreshed?.emailVerified == true;
+
+      emailSent = true;
+      emailVerified = verified;
+      awaitingVerification = !verified;
+
+      if (!verified) {
+        _startVerificationPolling();
+      }
+
+      isRestoring = false;
+      notifyListeners();
+    } catch (_) {
+      isRestoring = false;
+      notifyListeners();
     }
   }
 

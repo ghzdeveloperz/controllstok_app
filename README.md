@@ -20,64 +20,85 @@ Este repositório contém a reestruturação completa da tela de Login, com foco
 
 ## Estruturação do módulo de Registro
 
-Este módulo contém a reestruturação completa do fluxo de cadastro de usuários, com foco em segurança, clareza de uso e arquitetura bem definida.
+Este módulo implementa um fluxo de cadastro em duas etapas, projetado para garantir integridade dos dados, segurança de autenticação e uma experiência de uso clara e guiada.
 
 ### Alterações realizadas
 
-- Refatoração da Register Screen, separando responsabilidades em widgets distintos:
+- Refatoração completa da tela de registro, separando responsabilidades em widgets especializados:
   - `RegisterHeader`
   - `RegisterForm`
   - `RegisterAlert`
   - `RegisterFooter`
-- Implementação de gerenciamento de estado com `ChangeNotifier` no `RegisterController`, garantindo atualização em tempo real da interface.
-- Criação de um fluxo de registro em duas etapas:
-  - Envio de e-mail de verificação.
-  - Liberação dos campos de senha somente após o e-mail ser confirmado.
-- Bloqueio automático do campo de e-mail após o primeiro envio de verificação para evitar inconsistências.
-- Indicador inline abaixo do campo de e-mail:
+
+- Implementação de gerenciamento de estado via `ChangeNotifier` no `RegisterController`, garantindo atualização reativa da interface.
+
+- Criação de um fluxo de cadastro em duas etapas:
+  - Envio de e-mail de verificação com criação de uma conta temporária no Firebase.
+  - Liberação dos campos de senha apenas após o e-mail ser confirmado.
+
+- Persistência automática do cadastro pendente:
+  - O e-mail e a senha temporária são armazenados localmente (`SharedPreferences`).
+  - Ao reabrir o app, o fluxo é restaurado sem perda de contexto.
+
+- Bloqueio automático do campo de e-mail após o envio da verificação, impedindo alterações que poderiam invalidar o processo.
+
+- Indicador de status inline abaixo do campo de e-mail:
   - “Aguardando verificação do usuário...” com reticências animadas.
-  - “E-mail verificado.” após confirmação.
-- Implementação de proteção contra spam no botão de reenviar verificação:
-  - Temporizador regressivo.
-  - Botão desativado até o tempo de espera finalizar.
+  - “E-mail verificado.” assim que o Firebase confirma a validação.
+
+- Proteção contra abuso no reenvio de verificação:
+  - Temporizador regressivo visível.
+  - Botão de reenviar automaticamente desativado até o tempo expirar.
+
 - Ação **“Não é esse e-mail?”**:
-  - Remove a conta temporária criada no Firebase.
-  - Libera a edição do e-mail e reinicia o fluxo de verificação.
-- Ocultação inteligente de elementos durante o fluxo:
-  - Botões Google e Apple são ocultados enquanto o usuário aguarda a verificação de e-mail.
-  - O `RegisterFooter` é ocultado durante a verificação e também após o e-mail ser validado.
-- Habilitação em tempo real do botão **Criar conta** quando:
+  - Exclui a conta temporária no Firebase.
+  - Limpa os dados persistidos.
+  - Libera a edição do e-mail e reinicia o fluxo.
+
+- Ação **“Excluir cadastro”** após o e-mail ser verificado:
+  - Remove completamente a conta temporária.
+  - Retorna o usuário à tela `AuthChoiceScreen`.
+
+- Ocultação contextual de elementos da interface:
+  - Botões Google e Apple são ocultados enquanto o usuário aguarda a verificação.
+  - O `RegisterFooter` não aparece durante a verificação nem após a confirmação do e-mail.
+
+- Habilitação em tempo real do botão **Criar conta** somente quando:
+  - O e-mail está verificado.
   - A senha e a confirmação são iguais.
-  - A senha é classificada como forte.
-  - O e-mail já está verificado.
-- Criação de alerta animado (`RegisterAlert`) para feedback de erros e estados importantes.
-- Padronização e tradução das mensagens de erro retornadas pelo Firebase para português.
+  - A senha atinge nível **forte** de segurança.
+
+- Sistema de feedback visual (`RegisterAlert`) com animações para erros e estados relevantes.
+
+- Padronização e tradução das mensagens do Firebase para português.
 
 ### Objetivo das melhorias
 
-- Reduzir erros e fraudes no processo de cadastro.
-- Garantir um fluxo de registro mais seguro e orientado.
-- Melhorar a clareza da interface e a experiência do usuário.
-- Facilitar manutenção e evolução do módulo.
+- Evitar contas inválidas ou e-mails incorretos.
+- Garantir que apenas usuários com e-mail confirmado concluam o cadastro.
+- Tornar o fluxo resiliente a fechamento do app ou reinício do sistema.
+- Oferecer uma experiência clara, segura e profissional.
+- Facilitar manutenção, auditoria e evolução do módulo.
 
 ---
 
 ## Estruturação do módulo de Escolha de Autenticação (`AuthChoiceScreen`)
 
-Este módulo centraliza a escolha do usuário entre Login e Registro, oferecendo uma interface moderna e alinhada com o restante do aplicativo.
+Este módulo centraliza a escolha do usuário entre Login e Registro, oferecendo uma interface moderna, clara e alinhada com o restante do aplicativo.
 
 ### Alterações realizadas
 
 - Criação da `AuthChoiceScreen` com **PageView de banners** rotativos e indicadores animados.
 - Implementação de **rodapé transparente com efeito blur**, inspirado no estilo Apple, contendo os botões de Login e Registro.
 - Animação suave de entrada do rodapé e interação animada nos botões (`AnimatedButton`).
-- Ajustes finos de espaçamentos, paddings e dimensões do header, banners e botões.
-- Uso de **tipografia moderna** via Google Fonts (`Inter`) e gradientes sutis nos botões.
-- Preparação da arquitetura para futuras integrações com autenticação via redes sociais.
-- Ajustes no fluxo de saída e retorno ao `ProfileScreen`.
+- Ajustes finos de espaçamentos, paddings e dimensões de header, banners e botões.
+- Uso de **tipografia moderna** via Google Fonts (`Inter`) e gradientes sutis.
+- Preparação da arquitetura para futuras integrações de autenticação social.
+- Ajustes no fluxo de retorno ao `ProfileScreen`.
 
 ### Objetivo das melhorias
 
-- Oferecer uma tela inicial elegante, clara e intuitiva.
+- Oferecer uma tela inicial elegante e intuitiva.
 - Garantir consistência visual e sensação de produto premium.
-- Facilitar a manutenção e evolução do fluxo de autenticação.
+- Centralizar e simplificar o fluxo de autenticação.
+- Facilitar a manutenção e expansão do sistema de login e cadastro.
