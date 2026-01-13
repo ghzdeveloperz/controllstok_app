@@ -1,11 +1,11 @@
-// lib/screens/login/widgets/login_error.dart
+// lib/screens/acounts/register/widgets/register_alert.dart
 import 'package:flutter/material.dart';
 
-class LoginError extends StatelessWidget {
+class RegisterAlert extends StatelessWidget {
   final Animation<double> animation;
   final String? message;
 
-  const LoginError({
+  const RegisterAlert({
     super.key,
     required this.animation,
     required this.message,
@@ -16,27 +16,23 @@ class LoginError extends StatelessWidget {
     return AnimatedBuilder(
       animation: animation,
       builder: (_, __) {
-        // Quando não tem mensagem E animação terminou → não ocupa espaço
-        if ((message == null || message!.isEmpty) &&
-            animation.value == 0) {
+        if ((message == null || message!.isEmpty) && animation.value == 0) {
           return const SizedBox.shrink();
         }
 
         return SizeTransition(
           sizeFactor: animation,
           axisAlignment: -1.0,
-          child: Opacity(
-            opacity: animation.value,
+          child: FadeTransition(
+            opacity: animation,
             child: Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(
-                vertical: 12,
-                horizontal: 16,
-              ),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
               decoration: BoxDecoration(
-                color: const Color(0xFFE0E0E0),
+                color: const Color(0xFFFFE0E0),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.black12),
+                border: Border.all(color: Colors.red.shade200),
               ),
               child: Text(
                 message ?? '',
@@ -44,7 +40,7 @@ class LoginError extends StatelessWidget {
                 style: const TextStyle(
                   color: Colors.black87,
                   fontWeight: FontWeight.w600,
-                  
+                  fontSize: 13,
                 ),
               ),
             ),

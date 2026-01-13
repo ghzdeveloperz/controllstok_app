@@ -1,265 +1,265 @@
-import 'dart:ui';
-import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+  import 'dart:ui';
+  import 'package:flutter/material.dart';
+  import 'package:firebase_auth/firebase_auth.dart';
+  import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'estoque_screen.dart';
-import 'new_product_screen.dart';
-import 'scanner_screen.dart';
-import 'relatorios_screen.dart';
-import 'alertas_screen.dart';
-import 'acounts/login/login_screen.dart';
+  import 'estoque_screen.dart';
+  import 'new_product_screen.dart';
+  import 'scanner_screen.dart';
+  import 'relatorios_screen.dart';
+  import 'alertas_screen.dart';
+  import 'acounts/login/login_screen.dart';
 
-import '../screens/widgets/desactive_acount.dart';
-import '../screens/models/product.dart';
+  import '../screens/widgets/desactive_acount.dart';
+  import '../screens/models/product.dart';
 
-class HomeScreen extends StatefulWidget {
-  final int? initialIndex; // ← aba inicial opcional
-  const HomeScreen({super.key, this.initialIndex});
+  class HomeScreen extends StatefulWidget {
+    final int? initialIndex; // ← aba inicial opcional
+    const HomeScreen({super.key, this.initialIndex});
 
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  int _currentIndex = 0;
-  List<Widget>? _screens;
-  String? _uid;
-  Stream<DocumentSnapshot<Map<String, dynamic>>>? _userStream;
-
-  // Lista de produtos para pré-carregamento das imagens
-  List<Product> _products = [];
-
-  @override
-  void initState() {
-    super.initState();
-
-    // Inicializa a aba atual com o valor passado ou 0
-    _currentIndex = widget.initialIndex ?? 0;
-
-    _initUserAndScreens();
+    @override
+    State<HomeScreen> createState() => _HomeScreenState();
   }
 
-  Future<void> _initUserAndScreens() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
-      if (mounted) Navigator.of(context).pop();
-      return;
+  class _HomeScreenState extends State<HomeScreen> {
+    int _currentIndex = 0;
+    List<Widget>? _screens;
+    String? _uid;
+    Stream<DocumentSnapshot<Map<String, dynamic>>>? _userStream;
+
+    // Lista de produtos para pré-carregamento das imagens
+    List<Product> _products = [];
+
+    @override
+    void initState() {
+      super.initState();
+
+      // Inicializa a aba atual com o valor passado ou 0
+      _currentIndex = widget.initialIndex ?? 0;
+
+      _initUserAndScreens();
     }
 
-    _uid = user.uid;
-
-    _screens = [
-      EstoqueScreen(
-        uid: _uid!,
-        onProductsLoaded: _onProductsLoaded,
-      ), // 0 Estoque
-
-      NovoProdutoScreen(
-        uid: _uid!,
-        onProductSaved: () {
-          setState(() {
-            _currentIndex = 0;
-          });
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Row(
-                children: const [
-                  Icon(Icons.check_circle_outline, color: Colors.white),
-                  SizedBox(width: 12),
-                  Expanded(child: Text('Produto salvo com sucesso')),
-                ],
-              ),
-              backgroundColor: Colors.black,
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              margin: const EdgeInsets.all(16),
-              duration: const Duration(seconds: 2),
-            ),
-          );
-        },
-      ), // 1 Novo Produto
-
-      const SizedBox(), // 2 Scanner (modal)
-
-      const RelatoriosScreen(), // 3 Relatórios
-
-      AlertasScreen(uid: user.uid), // 4 Alertas
-    ];
-
-    _listenUserActiveStatus();
-
-    if (mounted) setState(() {});
-  }
-
-  // Callback chamada quando os produtos são carregados no EstoqueScreen
-  void _onProductsLoaded(List<Product> products) {
-    _products = products;
-
-    for (final product in _products) {
-      if (product.image.isNotEmpty) {
-        precacheImage(NetworkImage(product.image), context);
+    Future<void> _initUserAndScreens() async {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        if (mounted) Navigator.of(context).pop();
+        return;
       }
+
+      _uid = user.uid;
+
+      _screens = [
+        EstoqueScreen(
+          uid: _uid!,
+          onProductsLoaded: _onProductsLoaded,
+        ), // 0 Estoque
+
+        NovoProdutoScreen(
+          uid: _uid!,
+          onProductSaved: () {
+            setState(() {
+              _currentIndex = 0;
+            });
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Row(
+                  children: const [
+                    Icon(Icons.check_circle_outline, color: Colors.white),
+                    SizedBox(width: 12),
+                    Expanded(child: Text('Produto salvo com sucesso')),
+                  ],
+                ),
+                backgroundColor: Colors.black,
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                margin: const EdgeInsets.all(16),
+                duration: const Duration(seconds: 2),
+              ),
+            );
+          },
+        ), // 1 Novo Produto
+
+        const SizedBox(), // 2 Scanner (modal)
+
+        const RelatoriosScreen(), // 3 Relatórios
+
+        AlertasScreen(uid: user.uid), // 4 Alertas
+      ];
+
+      _listenUserActiveStatus();
+
+      if (mounted) setState(() {});
     }
-  }
 
-  void _listenUserActiveStatus() {
-    if (_uid == null) return;
+    // Callback chamada quando os produtos são carregados no EstoqueScreen
+    void _onProductsLoaded(List<Product> products) {
+      _products = products;
 
-    _userStream = FirebaseFirestore.instance
-        .collection('users')
-        .doc(_uid!)
-        .snapshots();
-
-    _userStream!.listen((doc) {
-      if (!mounted) return;
-
-      if (doc.exists) {
-        final data = doc.data();
-        if (data != null && data['active'] == false) {
-          FirebaseAuth.instance.signOut();
-
-          showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (_) => CustomAlertDialog(
-              title: "Conta desativada",
-              message:
-                  "Sua conta foi desativada. Entre em contato com o suporte.",
-              buttonText: "OK",
-              onPressed: () {
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (_) => const LoginScreen()),
-                  (route) => false,
-                );
-              },
-            ),
-          );
+      for (final product in _products) {
+        if (product.image.isNotEmpty) {
+          precacheImage(NetworkImage(product.image), context);
         }
       }
-    });
-  }
-
-  void _onTap(int index) {
-    if (index == 2) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) => ScannerScreen(uid: _uid!),
-        ),
-      );
-      return;
     }
 
-    setState(() {
-      _currentIndex = index;
-    });
-  }
+    void _listenUserActiveStatus() {
+      if (_uid == null) return;
 
-  Widget _navItem({required IconData icon, required int index}) {
-    final bool isActive = _currentIndex == index;
+      _userStream = FirebaseFirestore.instance
+          .collection('users')
+          .doc(_uid!)
+          .snapshots();
 
-    return GestureDetector(
-      onTap: () => _onTap(index),
-      behavior: HitTestBehavior.opaque,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              transform: Matrix4.translationValues(0, isActive ? -4 : 0, 0),
-              child: Icon(
-                icon,
-                size: 26,
-                color: isActive ? Colors.black : Colors.grey.shade400,
+      _userStream!.listen((doc) {
+        if (!mounted) return;
+
+        if (doc.exists) {
+          final data = doc.data();
+          if (data != null && data['active'] == false) {
+            FirebaseAuth.instance.signOut();
+
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (_) => CustomAlertDialog(
+                title: "Conta desativada",
+                message:
+                    "Sua conta foi desativada. Entre em contato com o suporte.",
+                buttonText: "OK",
+                onPressed: () {
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (_) => const LoginScreen()),
+                    (route) => false,
+                  );
+                },
               ),
-            ),
-            const SizedBox(height: 6),
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              height: 4,
-              width: isActive ? 16 : 0,
-              decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+            );
+          }
+        }
+      });
+    }
 
-  Widget _scannerButton() {
-    return GestureDetector(
-      onTap: () => _onTap(2),
-      child: Container(
-        height: 56,
-        width: 56,
-        decoration: BoxDecoration(
-          color: Colors.black,
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.25),
-              blurRadius: 12,
-              offset: const Offset(0, 6),
-            ),
-          ],
-        ),
-        child: const Icon(
-          Icons.qr_code_scanner,
-          color: Colors.white,
-          size: 28,
-        ),
-      ),
-    );
-  }
+    void _onTap(int index) {
+      if (index == 2) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => ScannerScreen(uid: _uid!),
+          ),
+        );
+        return;
+      }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _screens ?? const [SizedBox()],
-      ),
-      bottomNavigationBar: SafeArea(
-        child: SizedBox(
-          height: 72,
-          child: Stack(
+      setState(() {
+        _currentIndex = index;
+      });
+    }
+
+    Widget _navItem({required IconData icon, required int index}) {
+      final bool isActive = _currentIndex == index;
+
+      return GestureDetector(
+        onTap: () => _onTap(index),
+        behavior: HitTestBehavior.opaque,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(28),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(0, 212, 31, 31),
-                      borderRadius: BorderRadius.circular(28),
-                    ),
-                  ),
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                transform: Matrix4.translationValues(0, isActive ? -4 : 0, 0),
+                child: Icon(
+                  icon,
+                  size: 26,
+                  color: isActive ? Colors.black : Colors.grey.shade400,
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  _navItem(icon: Icons.inventory_2_outlined, index: 0),
-                  _navItem(icon: Icons.add_business_outlined, index: 1),
-                  _scannerButton(),
-                  _navItem(icon: Icons.bar_chart, index: 3),
-                  _navItem(icon: Icons.notifications, index: 4),
-                ],
+              const SizedBox(height: 6),
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                height: 4,
+                width: isActive ? 16 : 0,
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
             ],
           ),
         ),
-      ),
-    );
+      );
+    }
+
+    Widget _scannerButton() {
+      return GestureDetector(
+        onTap: () => _onTap(2),
+        child: Container(
+          height: 56,
+          width: 56,
+          decoration: BoxDecoration(
+            color: Colors.black,
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.25),
+                blurRadius: 12,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
+          child: const Icon(
+            Icons.qr_code_scanner,
+            color: Colors.white,
+            size: 28,
+          ),
+        ),
+      );
+    }
+
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        backgroundColor: Colors.white,
+        body: IndexedStack(
+          index: _currentIndex,
+          children: _screens ?? const [SizedBox()],
+        ),
+        bottomNavigationBar: SafeArea(
+          child: SizedBox(
+            height: 72,
+            child: Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(28),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(0, 212, 31, 31),
+                        borderRadius: BorderRadius.circular(28),
+                      ),
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _navItem(icon: Icons.inventory_2_outlined, index: 0),
+                    _navItem(icon: Icons.add_business_outlined, index: 1),
+                    _scannerButton(),
+                    _navItem(icon: Icons.bar_chart, index: 3),
+                    _navItem(icon: Icons.notifications, index: 4),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
   }
-}
