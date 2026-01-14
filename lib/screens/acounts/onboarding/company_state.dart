@@ -1,28 +1,27 @@
+// lib/screens/acounts/onboarding/company_state.dart
 class CompanyState {
   final bool isLoading;
   final String? error;
 
-  /// Tipo selecionado no bottom sheet:
-  /// - '' = não selecionado (obrigatório selecionar)
-  /// - 'Restaurante', 'Mercado', etc
-  /// - 'Outro' (exige customBusinessType)
   final String businessType;
+  final String customBusinessType;
 
-  /// Perguntas "Sim/Não" para campos condicionais
   final bool useFantasyName;
   final bool useOwner;
   final bool usePhone;
 
-  /// Quando businessType == 'Outro', o usuário descreve aqui (até 20 chars)
-  final String customBusinessType;
+  final bool acceptTerms;
+  final bool acceptPrivacy;
 
   const CompanyState({
     required this.isLoading,
     required this.businessType,
+    required this.customBusinessType,
     required this.useFantasyName,
     required this.useOwner,
     required this.usePhone,
-    required this.customBusinessType,
+    required this.acceptTerms,
+    required this.acceptPrivacy,
     this.error,
   });
 
@@ -30,32 +29,38 @@ class CompanyState {
     return const CompanyState(
       isLoading: false,
       error: null,
-      businessType: '',
+      businessType: '', // ✅ começa vazio (sem default)
+      customBusinessType: '',
       useFantasyName: false,
       useOwner: false,
       usePhone: false,
-      customBusinessType: '',
+      acceptTerms: false,
+      acceptPrivacy: false,
     );
   }
 
   CompanyState copyWith({
     bool? isLoading,
+    String? error,
+    bool clearError = false,
     String? businessType,
+    String? customBusinessType,
     bool? useFantasyName,
     bool? useOwner,
     bool? usePhone,
-    String? customBusinessType,
-    String? error,
-    bool clearError = false,
+    bool? acceptTerms,
+    bool? acceptPrivacy,
   }) {
     return CompanyState(
       isLoading: isLoading ?? this.isLoading,
+      error: clearError ? null : (error ?? this.error),
       businessType: businessType ?? this.businessType,
+      customBusinessType: customBusinessType ?? this.customBusinessType,
       useFantasyName: useFantasyName ?? this.useFantasyName,
       useOwner: useOwner ?? this.useOwner,
       usePhone: usePhone ?? this.usePhone,
-      customBusinessType: customBusinessType ?? this.customBusinessType,
-      error: clearError ? null : (error ?? this.error),
+      acceptTerms: acceptTerms ?? this.acceptTerms,
+      acceptPrivacy: acceptPrivacy ?? this.acceptPrivacy,
     );
   }
 }

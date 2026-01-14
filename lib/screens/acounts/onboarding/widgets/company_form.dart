@@ -1,5 +1,11 @@
+// lib/screens/acounts/onboarding/widgets/company_form.dart
 import 'package:flutter/material.dart';
+
 import '../company_controller.dart';
+
+// ✅ use os seus paths reais
+import '../../../userPerfil/confi_options/sobre_terms/terms_used.dart';
+import '../../../userPerfil/confi_options/sobre_terms/politic_privacity.dart';
 
 class CompanyForm extends StatelessWidget {
   final CompanyController controller;
@@ -175,9 +181,119 @@ class CompanyForm extends StatelessWidget {
       },
     );
 
-    if (selected != null) {
-      controller.setBusinessType(selected);
-    }
+    if (selected != null) controller.setBusinessType(selected);
+  }
+
+  // ✅ MODAL CORRIGIDO (renderiza sua tela real dentro do bottom sheet)
+  Future<void> _openLegalModal({
+    required BuildContext context,
+    required Widget page,
+  }) async {
+    final height = MediaQuery.of(context).size.height;
+
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return SafeArea(
+          top: false,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: Material(
+                color: Colors.white,
+                child: SizedBox(
+                  height: height * 0.92,
+                  child: Stack(
+                    children: [
+                      Positioned.fill(child: page),
+                      Positioned(
+                        top: 10,
+                        right: 10,
+                        child: Material(
+                          color: Colors.white,
+                          shape: const CircleBorder(),
+                          elevation: 2,
+                          child: IconButton(
+                            onPressed: () => Navigator.pop(ctx),
+                            icon: const Icon(Icons.close_rounded),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _legalCheckbox({
+    required bool value,
+    required ValueChanged<bool?> onChanged,
+    required String label,
+    required String linkText,
+    required VoidCallback onLinkTap,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          height: 24,
+          width: 24,
+          child: Checkbox(
+            value: value,
+            onChanged: isLoading ? null : onChanged,
+            activeColor: Colors.black,
+            checkColor: Colors.white,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+            side: const BorderSide(color: Colors.black26, width: 1.2),
+          ),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 2),
+            child: Wrap(
+              alignment: WrapAlignment.start,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              runSpacing: 6,
+              children: [
+                Text(
+                  label,
+                  style: const TextStyle(
+                    fontSize: 13.2,
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w600,
+                    height: 1.25,
+                  ),
+                ),
+                const SizedBox(width: 4),
+                InkWell(
+                  onTap: isLoading ? null : onLinkTap,
+                  child: Text(
+                    linkText,
+                    style: const TextStyle(
+                      fontSize: 13.2,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w900,
+                      decoration: TextDecoration.underline,
+                      height: 1.25,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   @override
@@ -307,7 +423,7 @@ class CompanyForm extends StatelessWidget {
         ),
         const SizedBox(height: 18),
 
-        // Tipo de negócio (sem default — vem vazio)
+        // Tipo de negócio (sem default)
         GestureDetector(
           onTap: isLoading ? null : () => _pickBusinessType(context),
           child: AbsorbPointer(
@@ -316,8 +432,7 @@ class CompanyForm extends StatelessWidget {
               decoration: _dec(
                 hint: "Tipo de negócio",
                 icon: Icons.category_outlined,
-                suffix:
-                    const Icon(Icons.expand_more_rounded, color: Colors.black54),
+                suffix: const Icon(Icons.expand_more_rounded, color: Colors.black54),
               ).copyWith(
                 hintText: hasBusinessType ? controller.businessType : "Tipo de negócio",
               ),
@@ -325,7 +440,7 @@ class CompanyForm extends StatelessWidget {
           ),
         ),
 
-        // Se "Outro", campo custom obrigatório (até 20 chars / sem espaços duplos)
+        // Se "Outro", campo custom obrigatório (até 20 chars)
         AnimatedSize(
           duration: const Duration(milliseconds: 220),
           curve: Curves.easeOutCubic,
@@ -340,11 +455,8 @@ class CompanyForm extends StatelessWidget {
                     decoration: _dec(
                       hint: "Descreva (até 20 caracteres)",
                       icon: Icons.edit_outlined,
-                    ).copyWith(
-                      counterText: "",
-                    ),
+                    ).copyWith(counterText: ""),
                     onChanged: (v) {
-                      // evita espaços duplos automaticamente (premiumzinho)
                       final fixed = v.replaceAll(RegExp(r'\s{2,}'), ' ');
                       if (fixed != v) {
                         controller.customBusinessTypeController.value =
@@ -357,6 +469,35 @@ class CompanyForm extends StatelessWidget {
                   ),
                 )
               : const SizedBox.shrink(),
+        ),
+
+        const SizedBox(height: 22),
+
+        // ✅ Checkboxes obrigatórios para finalizar
+        _legalCheckbox(
+          value: controller.acceptTerms,
+          onChanged: (v) => controller.setAcceptTerms(v ?? false),
+          label: "Eu li e concordo com os",
+          linkText: "Termos de uso",
+          onLinkTap: () {
+            _openLegalModal(
+              context: context,
+              page: const TermsUsedScreen(),
+            );
+          },
+        ),
+        const SizedBox(height: 10),
+        _legalCheckbox(
+          value: controller.acceptPrivacy,
+          onChanged: (v) => controller.setAcceptPrivacy(v ?? false),
+          label: "Eu li e concordo com as",
+          linkText: "Políticas de privacidade",
+          onLinkTap: () {
+            _openLegalModal(
+              context: context,
+              page: const PoliticPrivacityScreen(),
+            );
+          },
         ),
 
         const SizedBox(height: 26),

@@ -1,3 +1,4 @@
+// lib/screens/acounts/onboarding/company_controller.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +34,6 @@ class CompanyController extends ChangeNotifier {
   ];
 
   CompanyController() {
-    // ✅ habilitar botão em tempo real
     companyController.addListener(_onFieldsChanged);
     fantasyNameController.addListener(_onFieldsChanged);
     ownerController.addListener(_onFieldsChanged);
@@ -44,18 +44,21 @@ class CompanyController extends ChangeNotifier {
   // ===== Getters (pra UI) =====
   bool get isLoading => _state.isLoading;
   String? get error => _state.error;
+
   String get businessType => _state.businessType;
+  String get customBusinessType => _state.customBusinessType;
 
   bool get useFantasyName => _state.useFantasyName;
   bool get useOwner => _state.useOwner;
   bool get usePhone => _state.usePhone;
 
-  String get customBusinessType => _state.customBusinessType;
+  bool get acceptTerms => _state.acceptTerms;
+  bool get acceptPrivacy => _state.acceptPrivacy;
 
   bool get hasBusinessType => _state.businessType.trim().isNotEmpty;
   bool get isOtherBusinessType => _state.businessType == 'Outro';
 
-  // ===== Validações "premium" =====
+  // ===== Validações =====
   bool get _companyOk => companyController.text.trim().isNotEmpty;
 
   bool get _fantasyOk {
@@ -79,8 +82,11 @@ class CompanyController extends ChangeNotifier {
     return _state.customBusinessType.trim().isNotEmpty;
   }
 
-  /// ✅ isso substitui o antigo isValid do seu form
-  bool get canFinish => _companyOk && _fantasyOk && _ownerOk && _phoneOk && _businessOk;
+  bool get _legalOk => acceptTerms && acceptPrivacy;
+
+  /// ✅ botão só habilita com tudo certo
+  bool get canFinish =>
+      _companyOk && _fantasyOk && _ownerOk && _phoneOk && _businessOk && _legalOk;
 
   // ===== Mutations =====
   void _update(CompanyState newState) {
@@ -89,7 +95,6 @@ class CompanyController extends ChangeNotifier {
   }
 
   void _onFieldsChanged() {
-    // só força rebuild pra habilitar/desabilitar botão
     notifyListeners();
   }
 
@@ -99,7 +104,7 @@ class CompanyController extends ChangeNotifier {
     // sem espaços duplos
     final fixed = raw.replaceAll(RegExp(r'\s{2,}'), ' ').trimLeft();
 
-    // limite de 20 caracteres
+    // limite 20 chars
     final limited = fixed.length > 20 ? fixed.substring(0, 20) : fixed;
 
     if (limited != raw) {
@@ -120,7 +125,6 @@ class CompanyController extends ChangeNotifier {
   void setBusinessType(String value) {
     if (value == _state.businessType) return;
 
-    // se mudou pra algo que não é "Outro", limpa o custom
     if (value != 'Outro') {
       customBusinessTypeController.clear();
       _update(_state.copyWith(businessType: value, customBusinessType: ''));
@@ -133,9 +137,7 @@ class CompanyController extends ChangeNotifier {
   void setUseFantasyName(bool value) {
     if (value == _state.useFantasyName) return;
 
-    if (!value) {
-      fantasyNameController.clear();
-    }
+    if (!value) fantasyNameController.clear();
 
     _update(_state.copyWith(useFantasyName: value));
   }
@@ -143,9 +145,7 @@ class CompanyController extends ChangeNotifier {
   void setUseOwner(bool value) {
     if (value == _state.useOwner) return;
 
-    if (!value) {
-      ownerController.clear();
-    }
+    if (!value) ownerController.clear();
 
     _update(_state.copyWith(useOwner: value));
   }
@@ -153,11 +153,19 @@ class CompanyController extends ChangeNotifier {
   void setUsePhone(bool value) {
     if (value == _state.usePhone) return;
 
-    if (!value) {
-      phoneController.clear();
-    }
+    if (!value) phoneController.clear();
 
     _update(_state.copyWith(usePhone: value));
+  }
+
+  void setAcceptTerms(bool value) {
+    if (value == _state.acceptTerms) return;
+    _update(_state.copyWith(acceptTerms: value));
+  }
+
+  void setAcceptPrivacy(bool value) {
+    if (value == _state.acceptPrivacy) return;
+    _update(_state.copyWith(acceptPrivacy: value));
   }
 
   void setError(String? value) {
@@ -206,6 +214,11 @@ class CompanyController extends ChangeNotifier {
       return false;
     }
 
+    if (!acceptTerms || !acceptPrivacy) {
+      setError('Você precisa aceitar os Termos e a Política de Privacidade.');
+      return false;
+    }
+
     _setLoading(true);
     clearError();
 
@@ -220,7 +233,7 @@ class CompanyController extends ChangeNotifier {
       await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
         'email': user.email,
         'company': company,
-        'fantasyName': useFantasyName ? fantasyName : null,
+        'fantasyName': useFantasyName ? fantasyName : null, // ✅ agora é null
         'owner': useOwner ? owner : null,
         'phone': usePhone ? phone : null,
         'businessType': businessToSave,
@@ -229,6 +242,8 @@ class CompanyController extends ChangeNotifier {
         'onboardingCompleted': true,
         'createdAt': FieldValue.serverTimestamp(),
         'emailVerified': user.emailVerified,
+        'acceptedTerms': acceptTerms,
+        'acceptedPrivacy': acceptPrivacy,
       }, SetOptions(merge: true));
 
       return true;

@@ -96,10 +96,10 @@ Nenhum usuário pode acessar o aplicativo enquanto não concluir o cadastro da e
   - `onboardingCompleted`
 
 - Campos estruturados para dados reais de negócio:
-  - Razão social
-  - Nome fantasia (opcional, controlado por escolha)
-  - Responsável (opcional)
-  - Telefone (opcional)
+  - Razão social (obrigatório)
+  - Nome fantasia (controlado por pergunta Sim/Não)
+  - Responsável (controlado por pergunta Sim/Não)
+  - Telefone / WhatsApp (controlado por pergunta Sim/Não)
   - Tipo de negócio (seleção obrigatória ou texto customizado)
 
 - Sistema de perguntas para campos opcionais:
@@ -110,7 +110,17 @@ Nenhum usuário pode acessar o aplicativo enquanto não concluir o cadastro da e
   - Nenhum valor é pré-selecionado.
   - Se escolher “Outro”, o usuário informa um tipo customizado.
 
-- Validações de consistência antes de permitir finalizar.
+- Campo “Outro” com regras:
+  - Limite de até 20 caracteres.
+  - Normalização automática de espaços.
+
+- Inclusão de aceite obrigatório de documentos legais antes de finalizar:
+  - Checkbox de **Termos de uso**
+  - Checkbox de **Política de privacidade**
+  - Abertura dos documentos em **modal interno** (sem sair do onboarding)
+
+- Validações de consistência antes de permitir finalizar:
+  - Botão só habilita com campos válidos + tipo de negócio selecionado + aceite legal confirmado.
 
 - Salvamento dos dados no Firestore com `merge`, garantindo compatibilidade futura.
 
@@ -119,7 +129,8 @@ Nenhum usuário pode acessar o aplicativo enquanto não concluir o cadastro da e
 - Garantir que toda conta tenha contexto de negócio.
 - Preparar o sistema para relatórios, permissões e planos.
 - Evitar usuários “vazios” dentro da base.
-- Tornar o app utilizável apenas após configuração mínima.
+- Reforçar conformidade e credibilidade com aceite de termos e privacidade.
+- Tornar o app utilizável apenas após configuração mínima válida.
 
 ---
 
