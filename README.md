@@ -155,3 +155,7 @@ Essas regras são reavaliadas a cada mudança de autenticação ou Firestore.
 - Garantir continuidade do fluxo.
 - Evitar estados quebrados ou inconsistentes.
 - Manter o app resiliente a fechamento forçado, crash ou perda de conexão.
+
+## arquivo dart buttons svgs
+- Goole
+- Apple
