@@ -1,20 +1,25 @@
 // lib/main.dart
 // ignore_for_file: depend_on_referenced_packages
 
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/date_symbol_data_local.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'services/firebase_service.dart';
-import 'screens/acounts/auth_choice/auth_choice_screen.dart';
-import 'screens/acounts/register/register_screen.dart';
-import 'screens/home_screen.dart';
 import 'notifications/notification_service.dart';
 import 'notifications/save_fcm_token.dart';
+
+import 'screens/home_screen.dart';
+import 'screens/acounts/auth_choice/auth_choice_screen.dart';
+
+// ✅ Ajuste os imports conforme o seu caminho real
+import 'screens/acounts/register/register_screen.dart';
+import 'screens/acounts/onboarding/company_screen.dart';
 
 /// 🔹 GlobalKey para navegar fora do context
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -62,7 +67,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
-      title: 'ControlStok',
+      title: 'MyStoreDay', // ✅ nome atualizado
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
         textTheme: baseTextTheme,
@@ -89,10 +94,6 @@ class _AuthGateState extends State<AuthGate> {
   bool _tokenSaved = false;
   Map<String, dynamic>? _pendingNotification;
 
-  // ✅ chaves usadas no RegisterController
-  static const _kPendingEmail = 'register_pending_email';
-  static const _kPendingTempPass = 'register_pending_temp_pass';
-
   @override
   void initState() {
     super.initState();
@@ -114,36 +115,30 @@ class _AuthGateState extends State<AuthGate> {
     // 🔹 Listener de clique em notificações (background ou app aberto)
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       _pendingNotification = message.data;
-      _tryNavigate();
+      _navigateToAlertsIfAllowed();
     });
 
     // 🔹 Notificação que abriu o app quando estava fechado
     FirebaseMessaging.instance.getInitialMessage().then((message) {
       if (message != null) {
         _pendingNotification = message.data;
-        _tryNavigate();
+        _navigateToAlertsIfAllowed();
       }
     });
   }
 
-  Future<bool> _hasPendingRegister() async {
+  // ✅ Detecta se existe REGISTRO PENDENTE (etapa “definir senha”)
+  Future<bool> _hasRegisterPending() async {
     final prefs = await SharedPreferences.getInstance();
-    final email = prefs.getString(_kPendingEmail);
-    final pass = prefs.getString(_kPendingTempPass);
+    final email = prefs.getString('register_pending_email');
+    final pass = prefs.getString('register_pending_temp_pass');
     return email != null && pass != null;
   }
 
-  // 🔹 Tenta navegar para HomeScreen na aba Alertas se o usuário estiver logado
-  // ✅ MAS: não navega se houver cadastro pendente
-  Future<void> _tryNavigate() async {
+  // 🔹 Navega para HomeScreen na aba Alertas se permitido
+  void _navigateToAlertsIfAllowed() {
     final user = FirebaseAuth.instance.currentUser;
     if (_pendingNotification == null || user == null) return;
-
-    final pending = await _hasPendingRegister();
-    if (pending) {
-      // usuário temporário logado → não deve ir pra Home
-      return;
-    }
 
     navigatorKey.currentState?.pushAndRemoveUntil(
       MaterialPageRoute(
@@ -177,41 +172,80 @@ class _AuthGateState extends State<AuthGate> {
           );
         }
 
-        // ✅ usuário logado (pode ser temporário)
-        if (snapshot.hasData) {
-          return FutureBuilder<bool>(
-            future: _hasPendingRegister(),
-            builder: (context, pendingSnap) {
-              if (pendingSnap.connectionState == ConnectionState.waiting) {
-                return const Scaffold(
-                  body: Center(child: CircularProgressIndicator()),
-                );
-              }
-
-              final pending = pendingSnap.data == true;
-
-              // ✅ Se existir cadastro pendente, fica no Register (não Home)
-              if (pending) {
-                _tokenSaved = false; // não salva token como sessão "final"
-                return const RegisterScreen();
-              }
-
-              /// 🔑 Salva o token FCM UMA VEZ por sessão (somente quando é login final)
-              if (!_tokenSaved) {
-                _tokenSaved = true;
-                saveFcmTokenIfLoggedIn();
-
-                // Caso haja notificação pendente após login final, navega
-                _tryNavigate();
-              }
-
-              return const HomeScreen();
-            },
-          );
+        // ✅ Usuário NÃO logado
+        if (!snapshot.hasData) {
+          _tokenSaved = false;
+          return const AuthChoiceScreen();
         }
 
-        _tokenSaved = false;
-        return const AuthChoiceScreen();
+        // ✅ Usuário logado
+        final user = snapshot.data!;
+
+        // ✅ Agora o app segue ETAPAS:
+        // 1) Se existir register_pending_* => volta para RegisterScreen (definir senha)
+        // 2) Se onboardingCompleted == false => CompanyScreen
+        // 3) Se onboardingCompleted == true => HomeScreen
+        return FutureBuilder<bool>(
+          future: _hasRegisterPending(),
+          builder: (context, pendingSnap) {
+            if (pendingSnap.connectionState == ConnectionState.waiting) {
+              return const Scaffold(
+                body: Center(child: CircularProgressIndicator()),
+              );
+            }
+
+            final hasRegisterPending = pendingSnap.data == true;
+
+            // ✅ ETAPA 1: registro pendente (senha)
+            if (hasRegisterPending) {
+              _tokenSaved = false;
+              return const RegisterScreen();
+            }
+
+            // ✅ ETAPA 2/3: onboarding no Firestore
+            return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+              stream: FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(user.uid)
+                  .snapshots(),
+              builder: (context, docSnap) {
+                if (docSnap.connectionState == ConnectionState.waiting) {
+                  return const Scaffold(
+                    body: Center(child: CircularProgressIndicator()),
+                  );
+                }
+
+                final data = docSnap.data?.data();
+                final onboardingCompleted = data?['onboardingCompleted'] == true;
+
+                // ✅ ETAPA 2: onboarding pendente
+                if (!onboardingCompleted) {
+                  _tokenSaved = false;
+                  return CompanyScreen(user: user);
+                }
+
+                // ✅ ETAPA 3: tudo OK => Home
+                if (!_tokenSaved) {
+                  _tokenSaved = true;
+                  saveFcmTokenIfLoggedIn();
+                }
+
+                // ✅ Se abriu por notificação, manda pra aba Alertas
+                if (_pendingNotification != null) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    _navigateToAlertsIfAllowed();
+                  });
+
+                  return const Scaffold(
+                    body: Center(child: CircularProgressIndicator()),
+                  );
+                }
+
+                return const HomeScreen();
+              },
+            );
+          },
+        );
       },
     );
   }

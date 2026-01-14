@@ -55,8 +55,9 @@ class RegisterController extends ChangeNotifier {
     await _clearPendingStorage();
   }
 
-  /// ✅ NOVO: cancela e volta pra tela inicial (AuthChoice)
+  /// ✅ cancela e reseta TUDO
   /// - funciona tanto se estiver "aguardando" quanto se já estiver verificado
+  /// - não navega (a navegação você faz na UI)
   Future<void> cancelAndResetRegistration() async {
     if (isLoading) return;
 
@@ -76,7 +77,6 @@ class RegisterController extends ChangeNotifier {
       _resetResendCooldown();
       clearError();
     } catch (_) {
-      // se falhar, mantém uma mensagem humana
       setAlertWithTimeout('Não foi possível cancelar agora. Tente novamente.');
     } finally {
       _setLoading(false);
@@ -285,26 +285,28 @@ class RegisterController extends ChangeNotifier {
     _verifyTimer?.cancel();
     _verifyTimeoutTimer?.cancel();
 
-    try {
-      // se já estiver logado, garante que _tempUser aponta pro currentUser
-      _tempUser ??= _auth.currentUser;
+    // ✅ pega as duas referências possíveis
+    final User? userToDelete = _tempUser ?? _auth.currentUser;
 
-      await _tempUser?.delete();
+    try {
+      if (userToDelete != null) {
+        await userToDelete.delete();
+      }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'requires-recent-login') {
         final email = emailController.text.trim();
-        if (_tempPassword != null && email.isNotEmpty) {
-          final cred = EmailAuthProvider.credential(
-            email: email,
-            password: _tempPassword!,
-          );
-          await _auth.currentUser?.reauthenticateWithCredential(cred);
-          await _auth.currentUser?.delete();
+        final pass = _tempPassword;
+
+        if (pass != null && email.isNotEmpty && _auth.currentUser != null) {
+          final cred = EmailAuthProvider.credential(email: email, password: pass);
+          await _auth.currentUser!.reauthenticateWithCredential(cred);
+          await _auth.currentUser!.delete();
         }
       } else {
         rethrow;
       }
     } finally {
+      // ✅ garante que não fica logado
       await _auth.signOut();
 
       _tempUser = null;
@@ -322,6 +324,8 @@ class RegisterController extends ChangeNotifier {
     _verifyTimeoutTimer?.cancel();
 
     _verifyTimer = Timer.periodic(const Duration(seconds: 2), (_) async {
+      // ✅ garante referência
+      _tempUser ??= _auth.currentUser;
       if (_tempUser == null) return;
 
       await _tempUser!.reload();
