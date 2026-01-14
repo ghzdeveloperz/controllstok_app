@@ -2,22 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class SocialLoginButtons extends StatelessWidget {
-  final VoidCallback onAppleTap;
   final VoidCallback onGoogleTap;
+  final VoidCallback onAppleTap;
 
   const SocialLoginButtons({
     super.key,
-    required this.onAppleTap,
     required this.onGoogleTap,
+    required this.onAppleTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Row(
       children: [
-        _AppleButton(onTap: onAppleTap),
-        const SizedBox(height: 15),
-        _GoogleButton(onTap: onGoogleTap),
+        Expanded(child: _GoogleButton(onTap: onGoogleTap)),
+        const SizedBox(width: 12),
+        Expanded(child: _AppleButton(onTap: onAppleTap)),
       ],
     );
   }
@@ -53,12 +53,14 @@ class _AppleButton extends StatelessWidget {
             SvgPicture.string(
               _appleSvg,
               height: 18,
-              colorFilter:
-                  const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+              colorFilter: const ColorFilter.mode(
+                Colors.white,
+                BlendMode.srcIn,
+              ),
             ),
             const SizedBox(width: 8),
             const Text(
-              "Log in with Apple",
+              "Continue com Apple",
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 11,
@@ -99,13 +101,10 @@ class _GoogleButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SvgPicture.string(
-              _googleSvg,
-              height: 18,
-            ),
+            SvgPicture.string(_googleSvg, height: 18),
             const SizedBox(width: 8),
             const Text(
-              "Log in with Google",
+              "Continue com Google",
               style: TextStyle(
                 color: Colors.black87,
                 fontSize: 11,
@@ -127,6 +126,6 @@ const String _appleSvg = '''
 
 const String _googleSvg = '''
 <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-<path fill="#FFC107" d="M43.611,20.083H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20c0-1.341-0.138-2.65-0.389-3.917z"/>
+<path fill="#000000" d="M43.611,20.083H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20c0-1.341-0.138-2.65-0.389-3.917z"/>
 </svg>
 ''';

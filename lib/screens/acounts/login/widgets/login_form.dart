@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'social_login_buttons.dart';
 
 class LoginForm extends StatelessWidget {
   final TextEditingController emailController;
@@ -34,31 +35,6 @@ class LoginForm extends StatelessWidget {
     );
   }
 
-  Widget _socialButton({
-    required String label,
-    required IconData icon,
-    required VoidCallback onPressed,
-  }) {
-    return SizedBox(
-      height: 54,
-      child: OutlinedButton.icon(
-        onPressed: onPressed,
-        icon: Icon(icon, size: 20),
-        label: Text(
-          label,
-          style: const TextStyle(fontWeight: FontWeight.w600),
-        ),
-        style: OutlinedButton.styleFrom(
-          foregroundColor: Colors.black87,
-          side: const BorderSide(color: Colors.black12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -72,7 +48,6 @@ class LoginForm extends StatelessWidget {
             icon: Icons.email_outlined,
           ),
         ),
-
         const SizedBox(height: 14),
 
         TextField(
@@ -84,7 +59,6 @@ class LoginForm extends StatelessWidget {
             icon: Icons.lock_outline,
           ),
         ),
-
         const SizedBox(height: 6),
 
         Align(
@@ -106,7 +80,6 @@ class LoginForm extends StatelessWidget {
             ),
           ),
         ),
-
         const SizedBox(height: 22),
 
         SizedBox(
@@ -141,7 +114,6 @@ class LoginForm extends StatelessWidget {
                   ),
           ),
         ),
-
         const SizedBox(height: 26),
 
         Row(
@@ -151,40 +123,21 @@ class LoginForm extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 12),
               child: Text(
                 "ou continue com",
-                style: TextStyle(
-                  color: Colors.black54,
-                  fontSize: 13,
-                ),
+                style: TextStyle(color: Colors.black54, fontSize: 13),
               ),
             ),
             Expanded(child: Divider()),
           ],
         ),
-
         const SizedBox(height: 18),
 
-        Row(
-          children: [
-            Expanded(
-              child: _socialButton(
-                label: "Google",
-                icon: Icons.g_mobiledata,
-                onPressed: () {
-                  // TODO: Google Sign-In
-                },
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: _socialButton(
-                label: "Apple",
-                icon: Icons.apple,
-                onPressed: () {
-                  // TODO: Apple Sign-In
-                },
-              ),
-            ),
-          ],
+        SocialLoginButtons(
+          onGoogleTap: () {
+            // Aqui você vai chamar seu método real depois
+          },
+          onAppleTap: () {
+            // Aqui você vai chamar seu método real depois
+          },
         ),
       ],
     );

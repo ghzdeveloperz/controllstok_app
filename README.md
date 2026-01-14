@@ -159,3 +159,6 @@ Essas regras são reavaliadas a cada mudança de autenticação ou Firestore.
 ## arquivo dart buttons svgs
 - Goole
 - Apple
+
+### Objetivo das melhorias
+- estilização dos buttons

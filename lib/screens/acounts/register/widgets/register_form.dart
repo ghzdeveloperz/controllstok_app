@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../auth_choice/auth_choice_screen.dart';
 import '../register_controller.dart';
+import 'social_register_buttons.dart';
 
 class RegisterForm extends StatelessWidget {
   final RegisterController controller;
@@ -96,27 +97,7 @@ class RegisterForm extends StatelessWidget {
     );
   }
 
-  Widget _socialButton({
-    required String label,
-    required IconData icon,
-    required VoidCallback onPressed,
-  }) {
-    return SizedBox(
-      height: 54,
-      child: OutlinedButton.icon(
-        onPressed: onPressed,
-        icon: Icon(icon, size: 20),
-        label: Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
-        style: OutlinedButton.styleFrom(
-          foregroundColor: Colors.black87,
-          side: const BorderSide(color: Colors.black12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-        ),
-      ),
-    );
-  }
+
 
   Widget _dotsLoading({TextStyle? style}) => _DotsLoadingText(style: style);
 
@@ -261,7 +242,7 @@ class RegisterForm extends StatelessWidget {
                 awaiting: awaiting,
               ),
 
-            const SizedBox(height: 14),
+
 
             if (!controller.isRestoring) ...[
               if (!emailVerified) ...[
@@ -367,24 +348,13 @@ class RegisterForm extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 18),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _socialButton(
-                          label: "Google",
-                          icon: Icons.g_mobiledata,
-                          onPressed: () {},
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: _socialButton(
-                          label: "Apple",
-                          icon: Icons.apple,
-                          onPressed: () {},
-                        ),
-                      ),
-                    ],
+                  SocialLoginButtons(
+                    onGoogleTap: () {
+                      // Aqui você vai chamar seu método real depois
+                    },
+                    onAppleTap: () {
+                      // Aqui você vai chamar seu método real depois
+                    },
                   ),
                 ],
               ],
