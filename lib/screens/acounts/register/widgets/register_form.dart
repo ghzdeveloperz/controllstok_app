@@ -1,3 +1,4 @@
+// ... seus imports
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../auth_choice/auth_choice_screen.dart';
@@ -15,6 +16,269 @@ class RegisterForm extends StatelessWidget {
     required this.isLoading,
     required this.onSubmit,
   });
+
+  // ... (todo o resto do seu código permanece igual)
+
+  Future<void> _deleteAndBackToAuthChoice(BuildContext context) async {
+    await controller.cancelAndResetRegistration();
+
+    if (!context.mounted) return;
+
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (_) => const AuthChoiceScreen()),
+      (route) => false,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (_, __) {
+        final emailSent = controller.emailSent;
+        final emailVerified = controller.emailVerified;
+        final awaiting = controller.awaitingVerification;
+
+        final hasPasswordTyped = controller.passwordController.text.isNotEmpty;
+        final isAwaitingVerification = emailSent && !emailVerified && awaiting;
+
+        final cooldown = controller.resendCooldownSeconds;
+        final canResend = cooldown == 0;
+
+        final emailEnabled = !isLoading && !emailSent && !emailVerified;
+        final currentEmail = controller.emailController.text;
+        final canShowSendButton = !emailSent && _looksLikeEmail(currentEmail);
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TextField(
+              controller: controller.emailController,
+              enabled: emailEnabled,
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.done,
+              decoration: _inputDecoration(
+                hint: "Email",
+                icon: Icons.email_outlined,
+              ),
+            ),
+
+            if (controller.isRestoring)
+              _restoringHint()
+            else
+              _emailInlineStatus(
+                emailSent: emailSent,
+                emailVerified: emailVerified,
+                awaiting: awaiting,
+              ),
+
+            if (!controller.isRestoring) ...[
+              if (!emailVerified) ...[
+                if (canShowSendButton)
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: OutlinedButton(
+                      onPressed: isLoading ? null : controller.sendEmailVerification,
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.black,
+                        side: const BorderSide(color: Colors.black12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                      child: isLoading
+                          ? const SizedBox(
+                              width: 22,
+                              height: 22,
+                              child: CircularProgressIndicator(strokeWidth: 2.4),
+                            )
+                          : const Text(
+                              "Enviar e-mail de verificação",
+                              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+                            ),
+                    ),
+                  ),
+
+                if (emailSent) ...[
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: OutlinedButton(
+                      onPressed: isLoading ? null : (canResend ? controller.resendEmailVerification : null),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.black,
+                        side: const BorderSide(color: Colors.black12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                      child: isLoading
+                          ? const SizedBox(
+                              width: 22,
+                              height: 22,
+                              child: CircularProgressIndicator(strokeWidth: 2.4),
+                            )
+                          : Text(
+                              canResend ? "Reenviar e-mail de verificação" : "Reenviar em ${cooldown}s",
+                              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+                            ),
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: TextButton(
+                      onPressed: isLoading ? null : controller.changeEmail,
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        foregroundColor: Colors.black87,
+                      ),
+                      child: const Text(
+                        'Não é esse e-mail?',
+                        style: TextStyle(fontWeight: FontWeight.w700),
+                      ),
+                    ),
+                  ),
+                ],
+
+                if (!isAwaitingVerification) ...[
+                  const SizedBox(height: 26),
+                  Row(
+                    children: const [
+                      Expanded(child: Divider()),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 12),
+                        child: Text(
+                          "ou continue com",
+                          style: TextStyle(color: Colors.black54, fontSize: 13),
+                        ),
+                      ),
+                      Expanded(child: Divider()),
+                    ],
+                  ),
+                  const SizedBox(height: 18),
+
+                  // ✅ AQUI: agora chama o método real
+                  SocialLoginButtons(
+                    onGoogleTap: controller.registerWithGoogle,
+                    onAppleTap: () {
+                      controller.setAlertWithTimeout('Apple ainda não implementado.');
+                    },
+                  ),
+                ],
+              ],
+            ],
+
+            const SizedBox(height: 18),
+
+            // ... (restante do seu build segue igual)
+            AnimatedSize(
+              duration: const Duration(milliseconds: 280),
+              curve: Curves.easeOutCubic,
+              alignment: Alignment.topCenter,
+              child: emailVerified
+                  ? Column(
+                      children: [
+                        TextField(
+                          controller: controller.passwordController,
+                          enabled: !isLoading,
+                          obscureText: !controller.showPassword,
+                          textInputAction: TextInputAction.next,
+                          decoration: _inputDecoration(
+                            hint: "Senha",
+                            icon: Icons.lock_outline,
+                            suffix: IconButton(
+                              onPressed: isLoading ? null : controller.toggleShowPassword,
+                              icon: Icon(
+                                controller.showPassword ? Icons.visibility_off : Icons.visibility,
+                                color: Colors.black54,
+                              ),
+                            ),
+                          ),
+                        ),
+                        if (hasPasswordTyped) _passwordStrengthUI(),
+                        const SizedBox(height: 14),
+                        TextField(
+                          controller: controller.confirmPasswordController,
+                          enabled: !isLoading,
+                          obscureText: !controller.showConfirmPassword,
+                          textInputAction: TextInputAction.done,
+                          decoration: _inputDecoration(
+                            hint: "Confirmar senha",
+                            icon: Icons.lock_outline,
+                            suffix: IconButton(
+                              onPressed: isLoading ? null : controller.toggleShowConfirmPassword,
+                              icon: Icon(
+                                controller.showConfirmPassword ? Icons.visibility_off : Icons.visibility,
+                                color: Colors.black54,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 54,
+                          child: ElevatedButton(
+                            onPressed: controller.canSubmit ? onSubmit : null,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.black,
+                              foregroundColor: Colors.white,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                            ),
+                            child: isLoading
+                                ? const SizedBox(
+                                    width: 22,
+                                    height: 22,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2.4,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : const Text(
+                                    "Criar conta",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
+                                      letterSpacing: 0.4,
+                                    ),
+                                  ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Align(
+                          alignment: Alignment.center,
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: isLoading ? null : () => _deleteAndBackToAuthChoice(context),
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 6),
+                              child: Text(
+                                'Excluir cadastro',
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.w600,
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : const SizedBox.shrink(),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // ======== tudo abaixo permanece igual ao seu arquivo original ========
 
   InputDecoration _inputDecoration({
     required String hint,
@@ -96,8 +360,6 @@ class RegisterForm extends StatelessWidget {
       ],
     );
   }
-
-
 
   Widget _dotsLoading({TextStyle? style}) => _DotsLoadingText(style: style);
 
@@ -186,299 +448,6 @@ class RegisterForm extends StatelessWidget {
       ),
     );
   }
-
-  Future<void> _deleteAndBackToAuthChoice(BuildContext context) async {
-    await controller.cancelAndResetRegistration();
-
-    if (!context.mounted) return;
-
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (_) => const AuthChoiceScreen()),
-      (route) => false,
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: controller,
-      builder: (_, __) {
-        final emailSent = controller.emailSent;
-        final emailVerified = controller.emailVerified;
-        final awaiting = controller.awaitingVerification;
-
-        final hasPasswordTyped = controller.passwordController.text.isNotEmpty;
-
-        final isAwaitingVerification = emailSent && !emailVerified && awaiting;
-
-        final cooldown = controller.resendCooldownSeconds;
-        final canResend = cooldown == 0;
-
-        final emailEnabled = !isLoading && !emailSent && !emailVerified;
-
-        final currentEmail = controller.emailController.text;
-        final canShowSendButton = !emailSent && _looksLikeEmail(currentEmail);
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextField(
-              controller: controller.emailController,
-              enabled: emailEnabled,
-              keyboardType: TextInputType.emailAddress,
-              textInputAction: TextInputAction.done,
-              decoration: _inputDecoration(
-                hint: "Email",
-                icon: Icons.email_outlined,
-              ),
-            ),
-
-            if (controller.isRestoring)
-              _restoringHint()
-            else
-              _emailInlineStatus(
-                emailSent: emailSent,
-                emailVerified: emailVerified,
-                awaiting: awaiting,
-              ),
-
-
-
-            if (!controller.isRestoring) ...[
-              if (!emailVerified) ...[
-                if (canShowSendButton)
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: OutlinedButton(
-                      onPressed: isLoading
-                          ? null
-                          : controller.sendEmailVerification,
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.black,
-                        side: const BorderSide(color: Colors.black12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                      ),
-                      child: isLoading
-                          ? const SizedBox(
-                              width: 22,
-                              height: 22,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2.4,
-                              ),
-                            )
-                          : const Text(
-                              "Enviar e-mail de verificação",
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                    ),
-                  ),
-
-                if (emailSent) ...[
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: OutlinedButton(
-                      onPressed: isLoading
-                          ? null
-                          : (canResend
-                                ? controller.resendEmailVerification
-                                : null),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.black,
-                        side: const BorderSide(color: Colors.black12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                      ),
-                      child: isLoading
-                          ? const SizedBox(
-                              width: 22,
-                              height: 22,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2.4,
-                              ),
-                            )
-                          : Text(
-                              canResend
-                                  ? "Reenviar e-mail de verificação"
-                                  : "Reenviar em ${cooldown}s",
-                              style: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: TextButton(
-                      onPressed: isLoading ? null : controller.changeEmail,
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                        foregroundColor: Colors.black87,
-                      ),
-                      child: const Text(
-                        'Não é esse e-mail?',
-                        style: TextStyle(fontWeight: FontWeight.w700),
-                      ),
-                    ),
-                  ),
-                ],
-
-                if (!isAwaitingVerification) ...[
-                  const SizedBox(height: 26),
-                  Row(
-                    children: const [
-                      Expanded(child: Divider()),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12),
-                        child: Text(
-                          "ou continue com",
-                          style: TextStyle(color: Colors.black54, fontSize: 13),
-                        ),
-                      ),
-                      Expanded(child: Divider()),
-                    ],
-                  ),
-                  const SizedBox(height: 18),
-                  SocialLoginButtons(
-                    onGoogleTap: () {
-                      // Aqui você vai chamar seu método real depois
-                    },
-                    onAppleTap: () {
-                      // Aqui você vai chamar seu método real depois
-                    },
-                  ),
-                ],
-              ],
-            ],
-
-            const SizedBox(height: 18),
-
-            AnimatedSize(
-              duration: const Duration(milliseconds: 280),
-              curve: Curves.easeOutCubic,
-              alignment: Alignment.topCenter,
-              child: emailVerified
-                  ? Column(
-                      children: [
-                        TextField(
-                          controller: controller.passwordController,
-                          enabled: !isLoading,
-                          obscureText: !controller.showPassword,
-                          textInputAction: TextInputAction.next,
-                          decoration: _inputDecoration(
-                            hint: "Senha",
-                            icon: Icons.lock_outline,
-                            suffix: IconButton(
-                              onPressed: isLoading
-                                  ? null
-                                  : controller.toggleShowPassword,
-                              icon: Icon(
-                                controller.showPassword
-                                    ? Icons.visibility_off
-                                    : Icons.visibility,
-                                color: Colors.black54,
-                              ),
-                            ),
-                          ),
-                        ),
-                        if (hasPasswordTyped) _passwordStrengthUI(),
-                        const SizedBox(height: 14),
-                        TextField(
-                          controller: controller.confirmPasswordController,
-                          enabled: !isLoading,
-                          obscureText: !controller.showConfirmPassword,
-                          textInputAction: TextInputAction.done,
-                          decoration: _inputDecoration(
-                            hint: "Confirmar senha",
-                            icon: Icons.lock_outline,
-                            suffix: IconButton(
-                              onPressed: isLoading
-                                  ? null
-                                  : controller.toggleShowConfirmPassword,
-                              icon: Icon(
-                                controller.showConfirmPassword
-                                    ? Icons.visibility_off
-                                    : Icons.visibility,
-                                color: Colors.black54,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-
-                        SizedBox(
-                          width: double.infinity,
-                          height: 54,
-                          child: ElevatedButton(
-                            onPressed: controller.canSubmit ? onSubmit : null,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black,
-                              foregroundColor: Colors.white,
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                            ),
-                            child: isLoading
-                                ? const SizedBox(
-                                    width: 22,
-                                    height: 22,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2.4,
-                                      color: Colors.white,
-                                    ),
-                                  )
-                                : const Text(
-                                    "Criar conta",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w700,
-                                      letterSpacing: 0.4,
-                                    ),
-                                  ),
-                          ),
-                        ),
-
-                        // ✅ NOVO: textbutton discreto, sublinhado, abaixo do Criar conta
-                        const SizedBox(height: 10),
-                        Align(
-                          alignment: Alignment.center,
-                          child: GestureDetector(
-                            behavior: HitTestBehavior.opaque,
-                            onTap: isLoading
-                                ? null
-                                : () => _deleteAndBackToAuthChoice(context),
-                            child: const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 6),
-                              child: Text(
-                                'Excluir cadastro',
-                                style: TextStyle(
-                                  color: Colors.black54,
-                                  fontWeight: FontWeight.w600,
-                                  decoration: TextDecoration.underline,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
-                  : const SizedBox.shrink(),
-            ),
-          ],
-        );
-      },
-    );
-  }
 }
 
 class _DotsLoadingText extends StatefulWidget {
@@ -513,8 +482,8 @@ class _DotsLoadingTextState extends State<_DotsLoadingText> {
     final dots = _step == 0
         ? '.'
         : _step == 1
-        ? '..'
-        : '...';
+            ? '..'
+            : '...';
     return Text(dots, style: widget.style);
   }
 }

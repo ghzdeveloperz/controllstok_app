@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'utils/password_strength.dart';
+import 'package:mystoreday/services/auth/google_auth_service.dart';
 
 class RegisterController extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -49,6 +50,44 @@ class RegisterController extends ChangeNotifier {
 
   bool get hasPendingVerification => emailSent && !emailVerified;
 
+  /// ✅ NOVO: Cadastro/Login com Google (seleciona a conta)
+  Future<void> registerWithGoogle() async {
+    if (isLoading) return;
+
+    _setLoading(true);
+    clearError();
+
+    try {
+      // Se tinha fluxo de e-mail pendente, limpa tudo (sem deletar conta do Google, claro)
+      _verifyTimer?.cancel();
+      _verifyTimeoutTimer?.cancel();
+      _resetResendCooldown();
+      awaitingVerification = false;
+      emailSent = false;
+      emailVerified = false;
+      _tempUser = null;
+      _tempPassword = null;
+      await _clearPendingStorage();
+
+      final cred = await GoogleAuthService.instance.signInWithGoogle();
+
+      if (cred == null) {
+        setAlertWithTimeout('Login com Google cancelado.');
+        return;
+      }
+
+      // Aqui você já está autenticado no Firebase
+      clearError();
+      notifyListeners();
+    } on FirebaseAuthException catch (e) {
+      setAlertWithTimeout(_mapFirebaseError(e.code));
+    } catch (_) {
+      setAlertWithTimeout('Falha ao continuar com Google. Verifique sua configuração do Firebase/Google.');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
   Future<void> cancelPendingRegistration() async {
     if (!emailSent || emailVerified) return;
     await _deleteTempUserIfExists();
@@ -56,8 +95,6 @@ class RegisterController extends ChangeNotifier {
   }
 
   /// ✅ cancela e reseta TUDO
-  /// - funciona tanto se estiver "aguardando" quanto se já estiver verificado
-  /// - não navega (a navegação você faz na UI)
   Future<void> cancelAndResetRegistration() async {
     if (isLoading) return;
 
@@ -285,7 +322,6 @@ class RegisterController extends ChangeNotifier {
     _verifyTimer?.cancel();
     _verifyTimeoutTimer?.cancel();
 
-    // ✅ pega as duas referências possíveis
     final User? userToDelete = _tempUser ?? _auth.currentUser;
 
     try {
@@ -306,7 +342,6 @@ class RegisterController extends ChangeNotifier {
         rethrow;
       }
     } finally {
-      // ✅ garante que não fica logado
       await _auth.signOut();
 
       _tempUser = null;
@@ -324,7 +359,6 @@ class RegisterController extends ChangeNotifier {
     _verifyTimeoutTimer?.cancel();
 
     _verifyTimer = Timer.periodic(const Duration(seconds: 2), (_) async {
-      // ✅ garante referência
       _tempUser ??= _auth.currentUser;
       if (_tempUser == null) return;
 

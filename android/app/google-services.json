@@ -43,6 +43,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "653898186857-o5d74m78ok8364d38vfp4j08nf4p5pkh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ghz.mystoreday_app",
+            "certificate_hash": "7a79a6b17ebcfe853634160a22bd03170a0128ba"
+          }
+        },
+        {
           "client_id": "653898186857-cnin69h0nqen1l0roem03t7qld0ckjhj.apps.googleusercontent.com",
           "client_type": 3
         }
