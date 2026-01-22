@@ -160,5 +160,16 @@ Essas regras são reavaliadas a cada mudança de autenticação ou Firestore.
 - Goole
 - Apple
 
-### Objetivo das melhorias
+## Objetivo das melhorias
 - estilização dos buttons
+
+## [Milestone 01] Navegação do usuário para home
+**Status:** em andamento...  
+
+### Melhorias:
+- Navega certo quando clica em botão do google e email no `Cadastro`
+
+### Obejtivo:
+- Navega certo quando clica em botão do google e email no `Cadastro`
+- Navega certo quando clica em botão do google e email no `Login`
+- Quando navegar, quero que carregue primeiramente tudo do usuário com loading antes de entrar

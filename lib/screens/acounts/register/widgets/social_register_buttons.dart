@@ -2,22 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class SocialLoginButtons extends StatelessWidget {
-  final VoidCallback onGoogleTap;
+  final Future<void> Function()? onGoogleTap;
   final VoidCallback onAppleTap;
+  final bool isDisabled;
 
   const SocialLoginButtons({
     super.key,
     required this.onGoogleTap,
     required this.onAppleTap,
+    this.isDisabled = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(child: _GoogleButton(onTap: onGoogleTap)),
+        Expanded(child: _GoogleButton(onTap: onGoogleTap, isDisabled: isDisabled)),
         const SizedBox(width: 12),
-        Expanded(child: _AppleButton(onTap: onAppleTap)),
+        Expanded(child: _AppleButton(onTap: onAppleTap, isDisabled: isDisabled)),
       ],
     );
   }
@@ -25,49 +27,53 @@ class SocialLoginButtons extends StatelessWidget {
 
 class _AppleButton extends StatelessWidget {
   final VoidCallback onTap;
+  final bool isDisabled;
 
-  const _AppleButton({required this.onTap});
+  const _AppleButton({required this.onTap, required this.isDisabled});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 48,
-        decoration: BoxDecoration(
-          color: Colors.black,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.black, width: 2),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black26,
-              blurRadius: 20,
-              offset: Offset(0, 8),
-            ),
-          ],
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SvgPicture.string(
-              _appleSvg,
-              height: 18,
-              colorFilter: const ColorFilter.mode(
-                Colors.white,
-                BlendMode.srcIn,
+      onTap: isDisabled ? null : onTap,
+      child: Opacity(
+        opacity: isDisabled ? 0.6 : 1,
+        child: Container(
+          height: 48,
+          decoration: BoxDecoration(
+            color: Colors.black,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.black, width: 2),
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 20,
+                offset: Offset(0, 8),
               ),
-            ),
-            const SizedBox(width: 8),
-            const Text(
-              "Continue com Apple",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
+            ],
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.string(
+                _appleSvg,
+                height: 18,
+                colorFilter: const ColorFilter.mode(
+                  Colors.white,
+                  BlendMode.srcIn,
+                ),
               ),
-            ),
-          ],
+              const SizedBox(width: 8),
+              const Text(
+                "Continue com Apple",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -75,43 +81,51 @@ class _AppleButton extends StatelessWidget {
 }
 
 class _GoogleButton extends StatelessWidget {
-  final VoidCallback onTap;
+  final Future<void> Function()? onTap;
+  final bool isDisabled;
 
-  const _GoogleButton({required this.onTap});
+  const _GoogleButton({required this.onTap, required this.isDisabled});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 48,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: const Color(0xFF747474), width: 2),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black12,
-              blurRadius: 20,
-              offset: Offset(0, 8),
-            ),
-          ],
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SvgPicture.string(_googleSvg, height: 18),
-            const SizedBox(width: 8),
-            const Text(
-              "Continue com Google",
-              style: TextStyle(
-                color: Colors.black87,
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
+      onTap: isDisabled
+          ? null
+          : () async {
+              await onTap?.call();
+            },
+      child: Opacity(
+        opacity: isDisabled ? 0.6 : 1,
+        child: Container(
+          height: 48,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: const Color(0xFF747474), width: 2),
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 20,
+                offset: Offset(0, 8),
               ),
-            ),
-          ],
+            ],
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.string(_googleSvg, height: 18),
+              const SizedBox(width: 8),
+              const Text(
+                "Continue com Google",
+                style: TextStyle(
+                  color: Colors.black87,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

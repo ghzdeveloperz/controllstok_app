@@ -1,9 +1,17 @@
-// ... seus imports
 import 'dart:async';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import '../../../home_screen.dart';
+import '../../onboarding/company_screen.dart';
 import '../../auth_choice/auth_choice_screen.dart';
+
 import '../register_controller.dart';
 import 'social_register_buttons.dart';
+
+// ✅ NOVO
+import '../../../widgets/blocking_loader.dart';
 
 class RegisterForm extends StatelessWidget {
   final RegisterController controller;
@@ -17,8 +25,6 @@ class RegisterForm extends StatelessWidget {
     required this.onSubmit,
   });
 
-  // ... (todo o resto do seu código permanece igual)
-
   Future<void> _deleteAndBackToAuthChoice(BuildContext context) async {
     await controller.cancelAndResetRegistration();
 
@@ -26,6 +32,47 @@ class RegisterForm extends StatelessWidget {
 
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (_) => const AuthChoiceScreen()),
+      (route) => false,
+    );
+  }
+
+  Future<void> _handleGoogleTap(BuildContext context) async {
+    if (controller.isLoading || isLoading) return;
+
+    final goToCompany = await BlockingLoader.run<bool?>(
+      context: context,
+      message: 'Entrando com Google...',
+      action: () async {
+        try {
+          return await controller.registerWithGoogle();
+        } catch (e) {
+          controller.setAlertWithTimeout(
+            'Falha ao entrar com Google. Tente novamente.',
+          );
+          return null;
+        }
+      },
+    );
+
+    if (!context.mounted || goToCompany == null) return;
+
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      controller.setAlertWithTimeout('Login não concluído. Tente novamente.');
+      return;
+    }
+
+    // ✅ VOLTA AO COMPORTAMENTO ANTIGO (não quebra nada)
+    if (goToCompany) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => CompanyScreen(user: user)),
+      );
+      return;
+    }
+
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (_) => const HomeScreen()),
       (route) => false,
     );
   }
@@ -79,7 +126,9 @@ class RegisterForm extends StatelessWidget {
                     width: double.infinity,
                     height: 50,
                     child: OutlinedButton(
-                      onPressed: isLoading ? null : controller.sendEmailVerification,
+                      onPressed: isLoading
+                          ? null
+                          : controller.sendEmailVerification,
                       style: OutlinedButton.styleFrom(
                         foregroundColor: Colors.black,
                         side: const BorderSide(color: Colors.black12),
@@ -91,11 +140,16 @@ class RegisterForm extends StatelessWidget {
                           ? const SizedBox(
                               width: 22,
                               height: 22,
-                              child: CircularProgressIndicator(strokeWidth: 2.4),
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.4,
+                              ),
                             )
                           : const Text(
                               "Enviar e-mail de verificação",
-                              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                     ),
                   ),
@@ -105,7 +159,11 @@ class RegisterForm extends StatelessWidget {
                     width: double.infinity,
                     height: 50,
                     child: OutlinedButton(
-                      onPressed: isLoading ? null : (canResend ? controller.resendEmailVerification : null),
+                      onPressed: isLoading
+                          ? null
+                          : (canResend
+                                ? controller.resendEmailVerification
+                                : null),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: Colors.black,
                         side: const BorderSide(color: Colors.black12),
@@ -117,11 +175,18 @@ class RegisterForm extends StatelessWidget {
                           ? const SizedBox(
                               width: 22,
                               height: 22,
-                              child: CircularProgressIndicator(strokeWidth: 2.4),
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.4,
+                              ),
                             )
                           : Text(
-                              canResend ? "Reenviar e-mail de verificação" : "Reenviar em ${cooldown}s",
-                              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+                              canResend
+                                  ? "Reenviar e-mail de verificação"
+                                  : "Reenviar em ${cooldown}s",
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                     ),
                   ),
@@ -159,11 +224,13 @@ class RegisterForm extends StatelessWidget {
                   ),
                   const SizedBox(height: 18),
 
-                  // ✅ AQUI: agora chama o método real
                   SocialLoginButtons(
-                    onGoogleTap: controller.registerWithGoogle,
+                    isDisabled: isLoading,
+                    onGoogleTap: () => _handleGoogleTap(context),
                     onAppleTap: () {
-                      controller.setAlertWithTimeout('Apple ainda não implementado.');
+                      controller.setAlertWithTimeout(
+                        'Apple ainda não implementado.',
+                      );
                     },
                   ),
                 ],
@@ -172,7 +239,6 @@ class RegisterForm extends StatelessWidget {
 
             const SizedBox(height: 18),
 
-            // ... (restante do seu build segue igual)
             AnimatedSize(
               duration: const Duration(milliseconds: 280),
               curve: Curves.easeOutCubic,
@@ -189,9 +255,13 @@ class RegisterForm extends StatelessWidget {
                             hint: "Senha",
                             icon: Icons.lock_outline,
                             suffix: IconButton(
-                              onPressed: isLoading ? null : controller.toggleShowPassword,
+                              onPressed: isLoading
+                                  ? null
+                                  : controller.toggleShowPassword,
                               icon: Icon(
-                                controller.showPassword ? Icons.visibility_off : Icons.visibility,
+                                controller.showPassword
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
                                 color: Colors.black54,
                               ),
                             ),
@@ -208,9 +278,13 @@ class RegisterForm extends StatelessWidget {
                             hint: "Confirmar senha",
                             icon: Icons.lock_outline,
                             suffix: IconButton(
-                              onPressed: isLoading ? null : controller.toggleShowConfirmPassword,
+                              onPressed: isLoading
+                                  ? null
+                                  : controller.toggleShowConfirmPassword,
                               icon: Icon(
-                                controller.showConfirmPassword ? Icons.visibility_off : Icons.visibility,
+                                controller.showConfirmPassword
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
                                 color: Colors.black54,
                               ),
                             ),
@@ -254,7 +328,9 @@ class RegisterForm extends StatelessWidget {
                           alignment: Alignment.center,
                           child: GestureDetector(
                             behavior: HitTestBehavior.opaque,
-                            onTap: isLoading ? null : () => _deleteAndBackToAuthChoice(context),
+                            onTap: isLoading
+                                ? null
+                                : () => _deleteAndBackToAuthChoice(context),
                             child: const Padding(
                               padding: EdgeInsets.symmetric(vertical: 6),
                               child: Text(
@@ -277,8 +353,6 @@ class RegisterForm extends StatelessWidget {
       },
     );
   }
-
-  // ======== tudo abaixo permanece igual ao seu arquivo original ========
 
   InputDecoration _inputDecoration({
     required String hint,
@@ -482,8 +556,8 @@ class _DotsLoadingTextState extends State<_DotsLoadingText> {
     final dots = _step == 0
         ? '.'
         : _step == 1
-            ? '..'
-            : '...';
+        ? '..'
+        : '...';
     return Text(dots, style: widget.style);
   }
 }

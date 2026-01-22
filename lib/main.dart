@@ -16,8 +16,6 @@ import 'notifications/save_fcm_token.dart';
 
 import 'screens/home_screen.dart';
 import 'screens/acounts/auth_choice/auth_choice_screen.dart';
-
-// ✅ Ajuste os imports conforme o seu caminho real
 import 'screens/acounts/register/register_screen.dart';
 import 'screens/acounts/onboarding/company_screen.dart';
 
@@ -67,7 +65,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
-      title: 'MyStoreDay', // ✅ nome atualizado
+      title: 'MyStoreDay',
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
         textTheme: baseTextTheme,
@@ -93,6 +91,9 @@ class AuthGate extends StatefulWidget {
 class _AuthGateState extends State<AuthGate> {
   bool _tokenSaved = false;
   Map<String, dynamic>? _pendingNotification;
+
+  // Ajuda a resetar estados quando troca de usuário (logout/login outro)
+  String? _lastUid;
 
   @override
   void initState() {
@@ -127,12 +128,35 @@ class _AuthGateState extends State<AuthGate> {
     });
   }
 
-  // ✅ Detecta se existe REGISTRO PENDENTE (etapa “definir senha”)
-  Future<bool> _hasRegisterPending() async {
+  /// ✅ Detecta se existe REGISTRO PENDENTE (etapa “definir senha”)
+  /// ⚠️ Importante: só considera pendente se for do MESMO e-mail do usuário atual,
+  /// pra não travar o fluxo com pendência antiga.
+  Future<bool> _hasRegisterPendingForCurrentUser(User user) async {
     final prefs = await SharedPreferences.getInstance();
-    final email = prefs.getString('register_pending_email');
+    final pendingEmail = prefs.getString('register_pending_email');
     final pass = prefs.getString('register_pending_temp_pass');
-    return email != null && pass != null;
+
+    if (pendingEmail == null || pass == null) return false;
+
+    final currentEmail = (user.email ?? '').trim().toLowerCase();
+    final storedEmail = pendingEmail.trim().toLowerCase();
+
+    return currentEmail.isNotEmpty && currentEmail == storedEmail;
+  }
+
+  /// ✅ Garante que exista um documento do usuário no Firestore.
+  /// Evita fluxos quebrados quando o Google login cria auth user mas ainda não criou doc.
+  Future<void> _ensureUserDoc(User user) async {
+    final ref = FirebaseFirestore.instance.collection('users').doc(user.uid);
+    final snap = await ref.get();
+    if (snap.exists) return;
+
+    await ref.set({
+      'uid': user.uid,
+      'email': user.email,
+      'createdAt': FieldValue.serverTimestamp(),
+      'onboardingCompleted': false,
+    }, SetOptions(merge: true));
   }
 
   // 🔹 Navega para HomeScreen na aba Alertas se permitido
@@ -175,73 +199,92 @@ class _AuthGateState extends State<AuthGate> {
         // ✅ Usuário NÃO logado
         if (!snapshot.hasData) {
           _tokenSaved = false;
+          _lastUid = null;
           return const AuthChoiceScreen();
         }
 
         // ✅ Usuário logado
         final user = snapshot.data!;
 
-        // ✅ Agora o app segue ETAPAS:
-        // 1) Se existir register_pending_* => volta para RegisterScreen (definir senha)
-        // 2) Se onboardingCompleted == false => CompanyScreen
-        // 3) Se onboardingCompleted == true => HomeScreen
-        return FutureBuilder<bool>(
-          future: _hasRegisterPending(),
-          builder: (context, pendingSnap) {
-            if (pendingSnap.connectionState == ConnectionState.waiting) {
+        // Se mudou de usuário, reseta flags
+        if (_lastUid != user.uid) {
+          _lastUid = user.uid;
+          _tokenSaved = false;
+        }
+
+        // 0) garantir doc Firestore
+        return FutureBuilder<void>(
+          future: _ensureUserDoc(user),
+          builder: (context, ensureSnap) {
+            if (ensureSnap.connectionState == ConnectionState.waiting) {
               return const Scaffold(
                 body: Center(child: CircularProgressIndicator()),
               );
             }
 
-            final hasRegisterPending = pendingSnap.data == true;
-
-            // ✅ ETAPA 1: registro pendente (senha)
-            if (hasRegisterPending) {
-              _tokenSaved = false;
-              return const RegisterScreen();
-            }
-
-            // ✅ ETAPA 2/3: onboarding no Firestore
-            return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-              stream: FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(user.uid)
-                  .snapshots(),
-              builder: (context, docSnap) {
-                if (docSnap.connectionState == ConnectionState.waiting) {
+            // 1) Se existir register_pending_* => volta para RegisterScreen (definir senha)
+            return FutureBuilder<bool>(
+              future: _hasRegisterPendingForCurrentUser(user),
+              builder: (context, pendingSnap) {
+                if (pendingSnap.connectionState == ConnectionState.waiting) {
                   return const Scaffold(
                     body: Center(child: CircularProgressIndicator()),
                   );
                 }
 
-                final data = docSnap.data?.data();
-                final onboardingCompleted = data?['onboardingCompleted'] == true;
+                final hasRegisterPending = pendingSnap.data == true;
 
-                // ✅ ETAPA 2: onboarding pendente
-                if (!onboardingCompleted) {
+                if (hasRegisterPending) {
                   _tokenSaved = false;
-                  return CompanyScreen(user: user);
+                  return const RegisterScreen();
                 }
 
-                // ✅ ETAPA 3: tudo OK => Home
-                if (!_tokenSaved) {
-                  _tokenSaved = true;
-                  saveFcmTokenIfLoggedIn();
-                }
+                // 2) onboarding no Firestore
+                return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                  stream: FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(user.uid)
+                      .snapshots(),
+                  builder: (context, docSnap) {
+                    if (docSnap.connectionState == ConnectionState.waiting) {
+                      return const Scaffold(
+                        body: Center(child: CircularProgressIndicator()),
+                      );
+                    }
 
-                // ✅ Se abriu por notificação, manda pra aba Alertas
-                if (_pendingNotification != null) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    _navigateToAlertsIfAllowed();
-                  });
+                    // Se por algum motivo ainda não existe (ou veio null), segura no CompanyScreen
+                    final exists = docSnap.data?.exists == true;
+                    final data = exists ? docSnap.data!.data() : null;
 
-                  return const Scaffold(
-                    body: Center(child: CircularProgressIndicator()),
-                  );
-                }
+                    final onboardingCompleted =
+                        data?['onboardingCompleted'] == true;
 
-                return const HomeScreen();
+                    // 2) onboarding pendente
+                    if (!onboardingCompleted) {
+                      _tokenSaved = false;
+                      return CompanyScreen(user: user);
+                    }
+
+                    // 3) tudo OK => Home
+                    if (!_tokenSaved) {
+                      _tokenSaved = true;
+                      saveFcmTokenIfLoggedIn();
+                    }
+
+                    // Se abriu por notificação, manda pra aba Alertas
+                    if (_pendingNotification != null) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        _navigateToAlertsIfAllowed();
+                      });
+
+                      return const Scaffold(
+                        body: Center(child: CircularProgressIndicator()),
+                      );
+                    }
+
+                    return const HomeScreen();
+                  },
+                );
               },
             );
           },

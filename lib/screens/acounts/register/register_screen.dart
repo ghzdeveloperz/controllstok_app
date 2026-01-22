@@ -1,3 +1,4 @@
+// lib/screens/acounts/register/register_screen.dart
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -67,7 +68,6 @@ class _RegisterScreenState extends State<RegisterScreen>
     await controller.submit();
     if (!mounted) return;
 
-    // ✅ pega o user real após definir a senha
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
@@ -118,7 +118,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                   RegisterForm(
                     controller: controller,
                     isLoading: controller.isLoading,
-                    onSubmit: _handleSubmit, // ✅ agora navega pro onboarding
+                    onSubmit: _handleSubmit,
                   ),
                   if (!hideFooter) ...[
                     const SizedBox(height: 28),

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -50,39 +51,86 @@ class RegisterController extends ChangeNotifier {
 
   bool get hasPendingVerification => emailSent && !emailVerified;
 
-  /// ✅ NOVO: Cadastro/Login com Google (seleciona a conta)
-  Future<void> registerWithGoogle() async {
-    if (isLoading) return;
+  /// ✅ Google sign-in
+  /// Retorna:
+  /// - true  => ir para Company (novo usuário ou onboarding incompleto)
+  /// - false => ir para Home (onboarding completo)
+  /// - null  => cancelado/erro (não navegar)
+  Future<bool?> registerWithGoogle() async {
+    if (isLoading) return null;
 
     _setLoading(true);
     clearError();
 
     try {
-      // Se tinha fluxo de e-mail pendente, limpa tudo (sem deletar conta do Google, claro)
+      // 🔹 Reseta qualquer fluxo pendente de email/senha
       _verifyTimer?.cancel();
       _verifyTimeoutTimer?.cancel();
       _resetResendCooldown();
+
       awaitingVerification = false;
       emailSent = false;
       emailVerified = false;
+
       _tempUser = null;
       _tempPassword = null;
+
       await _clearPendingStorage();
 
       final cred = await GoogleAuthService.instance.signInWithGoogle();
 
       if (cred == null) {
         setAlertWithTimeout('Login com Google cancelado.');
-        return;
+        return null;
       }
 
-      // Aqui você já está autenticado no Firebase
+      final user = cred.user ?? _auth.currentUser;
+      if (user == null) {
+        setAlertWithTimeout('Não foi possível obter o usuário do Google.');
+        return null;
+      }
+
+      final isNewUser = cred.additionalUserInfo?.isNewUser == true;
+
+      final userRef =
+          FirebaseFirestore.instance.collection('users').doc(user.uid);
+
+      // 🔹 Se doc já existe, respeita o estado atual do onboarding
+      final existingDoc = await userRef.get();
+      final existedBefore = existingDoc.exists;
+      final onboardingCompleted =
+          existedBefore && (existingDoc.data()?['onboardingCompleted'] == true);
+
+      // 🔹 Garante doc mínimo (sem sobrescrever dados)
+      await userRef.set({
+        'uid': user.uid,
+        'email': user.email,
+        'provider': 'google',
+        'emailVerified': user.emailVerified,
+        'active': true,
+        'plan': 'Grátis',
+        'updatedAt': FieldValue.serverTimestamp(),
+
+        // Só define createdAt e onboarding inicial quando é novo/primeira vez
+        if (isNewUser || !existedBefore) 'createdAt': FieldValue.serverTimestamp(),
+        if (isNewUser || !existedBefore) 'onboardingCompleted': false,
+      }, SetOptions(merge: true));
+
       clearError();
       notifyListeners();
+
+      // ✅ Decide destino
+      if (isNewUser) return true;
+      if (onboardingCompleted) return false;
+      return true;
     } on FirebaseAuthException catch (e) {
       setAlertWithTimeout(_mapFirebaseError(e.code));
+      return null;
     } catch (_) {
-      setAlertWithTimeout('Falha ao continuar com Google. Verifique sua configuração do Firebase/Google.');
+      setAlertWithTimeout(
+        'Falha ao continuar com Google. Verifique sua configuração do Firebase/Google.',
+      );
+      return null;
     } finally {
       _setLoading(false);
     }
@@ -94,7 +142,6 @@ class RegisterController extends ChangeNotifier {
     await _clearPendingStorage();
   }
 
-  /// ✅ cancela e reseta TUDO
   Future<void> cancelAndResetRegistration() async {
     if (isLoading) return;
 
