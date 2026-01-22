@@ -1,4 +1,3 @@
-// lib/screens/login/login_controller.dart
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -6,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../../services/auth_service.dart';
+import '../../../services/bootstrap/auth_bootstrap_service.dart';
 import '../../widgets/desactive_acount.dart';
 import 'login_state.dart';
 
@@ -24,7 +24,10 @@ class LoginController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void _setTemporaryError(String message, {Duration duration = const Duration(seconds: 3)}) {
+  void _setTemporaryError(
+    String message, {
+    Duration duration = const Duration(seconds: 3),
+  }) {
     _errorTimer?.cancel();
 
     _setState(
@@ -39,6 +42,11 @@ class LoginController extends ChangeNotifier {
     });
   }
 
+  /// ✅ LOGIN (email/senha) com:
+  /// - validações
+  /// - AuthService.login
+  /// - checagem de conta ativa
+  /// - warmup/bootstrap (Firestore + precache) antes de navegar
   Future<void> handleLogin({
     required BuildContext context,
     required String email,
@@ -50,13 +58,16 @@ class LoginController extends ChangeNotifier {
     _errorTimer?.cancel();
     _setState(_state.copyWith(isLoading: true, error: null));
 
-    if (email.isEmpty || password.isEmpty) {
+    final safeEmail = email.trim();
+
+    if (safeEmail.isEmpty || password.isEmpty) {
       _setTemporaryError("Preencha email e senha");
       return;
     }
 
+    // 1) autentica
     final message = await _authService.login(
-      email: email,
+      email: safeEmail,
       password: password,
     );
 
@@ -65,12 +76,14 @@ class LoginController extends ChangeNotifier {
       return;
     }
 
+    // 2) valida user
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
       _setTemporaryError("Erro ao obter usuário");
       return;
     }
 
+    // 3) checa se está ativo (mantido)
     final activeMessage = await _checkUserActive(
       context: context,
       user: user,
@@ -81,10 +94,23 @@ class LoginController extends ChangeNotifier {
       return;
     }
 
+    // 4) ✅ warmup/bootstrap antes de navegar (aqui o loading fica "funcional")
+    try {
+      await AuthBootstrapService.warmUp(
+        context: context,
+        user: user,
+      );
+    } catch (_) {
+      // Não travar login por causa do warmup.
+      // Se der erro, ainda assim deixa entrar.
+    }
+
+    // 5) sucesso
     _setState(_state.copyWith(isLoading: false));
     onSuccess();
   }
 
+  /// Mantido: garante que o usuário não está desativado.
   Future<String?> _checkUserActive({
     required BuildContext context,
     required User user,
@@ -101,13 +127,14 @@ class LoginController extends ChangeNotifier {
       if (data['active'] == false) {
         await FirebaseAuth.instance.signOut();
 
+        if (!context.mounted) return "Sua conta está desativada.";
+
         showDialog(
           context: context,
           barrierDismissible: false,
           builder: (_) => CustomAlertDialog(
             title: "Conta desativada",
-            message:
-                "Sua conta está desativada. Entre em contato com o suporte.",
+            message: "Sua conta está desativada. Entre em contato com o suporte.",
             buttonText: "OK",
             onPressed: () {
               Navigator.of(context).popUntil((route) => route.isFirst);
@@ -127,15 +154,29 @@ class LoginController extends ChangeNotifier {
   Future<void> resetPassword(String email) async {
     _errorTimer?.cancel();
 
-    if (email.isEmpty) {
+    final safeEmail = email.trim();
+
+    if (safeEmail.isEmpty) {
       _setTemporaryError("Informe seu email para redefinir a senha");
       return;
     }
 
-    final message = await _authService.resetPassword(email: email);
+    _setState(_state.copyWith(isLoading: true, error: null));
 
-    if (message != null) {
-      _setTemporaryError(message);
+    try {
+      final message = await _authService.resetPassword(email: safeEmail);
+
+      if (message != null) {
+        _setTemporaryError(message);
+        return;
+      }
+
+      // Se seu AuthService retorna mensagem de sucesso (string),
+      // você já exibe via _setTemporaryError. Se ele retornar null no sucesso,
+      // pode mostrar algo aqui:
+      _setTemporaryError("Enviamos um link de redefinição para seu e-mail.");
+    } catch (_) {
+      _setTemporaryError("Erro inesperado ao redefinir senha");
     }
   }
 

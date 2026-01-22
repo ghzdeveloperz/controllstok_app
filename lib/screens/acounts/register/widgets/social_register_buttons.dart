@@ -17,116 +17,231 @@ class SocialLoginButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(child: _GoogleButton(onTap: onGoogleTap, isDisabled: isDisabled)),
+        Expanded(
+          child: _PressableAsync(
+            isDisabled: isDisabled,
+            onTap: onGoogleTap,
+            child: const _GoogleContent(),
+          ),
+        ),
         const SizedBox(width: 12),
-        Expanded(child: _AppleButton(onTap: onAppleTap, isDisabled: isDisabled)),
+        Expanded(
+          child: _PressableSync(
+            isDisabled: isDisabled,
+            onTap: onAppleTap,
+            child: const _AppleContent(),
+          ),
+        ),
       ],
     );
   }
 }
 
-class _AppleButton extends StatelessWidget {
-  final VoidCallback onTap;
+/// ✅ Wrapper animado pra callback async (Google)
+class _PressableAsync extends StatefulWidget {
   final bool isDisabled;
+  final Future<void> Function()? onTap;
+  final Widget child;
 
-  const _AppleButton({required this.onTap, required this.isDisabled});
+  const _PressableAsync({
+    required this.isDisabled,
+    required this.onTap,
+    required this.child,
+  });
+
+  @override
+  State<_PressableAsync> createState() => _PressableAsyncState();
+}
+
+class _PressableAsyncState extends State<_PressableAsync> {
+  bool _pressed = false;
+  bool _busy = false;
+
+  bool get _disabled => widget.isDisabled || _busy || widget.onTap == null;
+
+  void _onDown(TapDownDetails _) {
+    if (_disabled) return;
+    setState(() => _pressed = true);
+  }
+
+  Future<void> _onUp(TapUpDetails _) async {
+    if (_disabled) return;
+
+    setState(() {
+      _pressed = false;
+      _busy = true;
+    });
+
+    try {
+      await widget.onTap?.call();
+    } finally {
+      if (!mounted) return;
+      setState(() => _busy = false);
+    }
+  }
+
+  void _onCancel() {
+    if (_disabled) return;
+    setState(() => _pressed = false);
+  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: isDisabled ? null : onTap,
-      child: Opacity(
-        opacity: isDisabled ? 0.6 : 1,
-        child: Container(
-          height: 48,
-          decoration: BoxDecoration(
-            color: Colors.black,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.black, width: 2),
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.black26,
-                blurRadius: 20,
-                offset: Offset(0, 8),
-              ),
-            ],
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SvgPicture.string(
-                _appleSvg,
-                height: 18,
-                colorFilter: const ColorFilter.mode(
-                  Colors.white,
-                  BlendMode.srcIn,
-                ),
-              ),
-              const SizedBox(width: 8),
-              const Text(
-                "Continue com Apple",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
+      behavior: HitTestBehavior.opaque,
+      onTapDown: _disabled ? null : _onDown,
+      onTapUp: _disabled ? null : _onUp,
+      onTapCancel: _disabled ? null : _onCancel,
+      child: AnimatedScale(
+        duration: const Duration(milliseconds: 120),
+        curve: Curves.easeOut,
+        scale: (_pressed && !_disabled) ? 0.97 : 1.0,
+        child: AnimatedOpacity(
+          duration: const Duration(milliseconds: 120),
+          opacity: _disabled ? 0.6 : 1,
+          child: widget.child,
         ),
       ),
     );
   }
 }
 
-class _GoogleButton extends StatelessWidget {
-  final Future<void> Function()? onTap;
+/// ✅ Wrapper animado pra callback sync (Apple)
+class _PressableSync extends StatefulWidget {
   final bool isDisabled;
+  final VoidCallback onTap;
+  final Widget child;
 
-  const _GoogleButton({required this.onTap, required this.isDisabled});
+  const _PressableSync({
+    required this.isDisabled,
+    required this.onTap,
+    required this.child,
+  });
+
+  @override
+  State<_PressableSync> createState() => _PressableSyncState();
+}
+
+class _PressableSyncState extends State<_PressableSync> {
+  bool _pressed = false;
+
+  void _onDown(TapDownDetails _) {
+    if (widget.isDisabled) return;
+    setState(() => _pressed = true);
+  }
+
+  void _onUp(TapUpDetails _) {
+    if (widget.isDisabled) return;
+    setState(() => _pressed = false);
+    widget.onTap();
+  }
+
+  void _onCancel() {
+    if (widget.isDisabled) return;
+    setState(() => _pressed = false);
+  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: isDisabled
-          ? null
-          : () async {
-              await onTap?.call();
-            },
-      child: Opacity(
-        opacity: isDisabled ? 0.6 : 1,
-        child: Container(
-          height: 48,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: const Color(0xFF747474), width: 2),
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 20,
-                offset: Offset(0, 8),
-              ),
-            ],
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SvgPicture.string(_googleSvg, height: 18),
-              const SizedBox(width: 8),
-              const Text(
-                "Continue com Google",
-                style: TextStyle(
-                  color: Colors.black87,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
+      behavior: HitTestBehavior.opaque,
+      onTapDown: widget.isDisabled ? null : _onDown,
+      onTapUp: widget.isDisabled ? null : _onUp,
+      onTapCancel: widget.isDisabled ? null : _onCancel,
+      child: AnimatedScale(
+        duration: const Duration(milliseconds: 120),
+        curve: Curves.easeOut,
+        scale: (_pressed && !widget.isDisabled) ? 0.97 : 1.0,
+        child: AnimatedOpacity(
+          duration: const Duration(milliseconds: 120),
+          opacity: widget.isDisabled ? 0.6 : 1,
+          child: widget.child,
         ),
+      ),
+    );
+  }
+}
+
+class _AppleContent extends StatelessWidget {
+  const _AppleContent();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 48,
+      decoration: BoxDecoration(
+        color: Colors.black,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.black, width: 2),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 20,
+            offset: Offset(0, 8),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SvgPicture.string(
+            _appleSvg,
+            height: 18,
+            colorFilter: const ColorFilter.mode(
+              Colors.white,
+              BlendMode.srcIn,
+            ),
+          ),
+          const SizedBox(width: 8),
+          const Text(
+            "Continue com Apple",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _GoogleContent extends StatelessWidget {
+  const _GoogleContent();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 48,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFF747474), width: 2),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 20,
+            offset: Offset(0, 8),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SvgPicture.string(_googleSvg, height: 18),
+          const SizedBox(width: 8),
+          const Text(
+            "Continue com Google",
+            style: TextStyle(
+              color: Colors.black87,
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
       ),
     );
   }

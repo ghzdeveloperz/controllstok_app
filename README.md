@@ -167,12 +167,12 @@ Essas regras são reavaliadas a cada mudança de autenticação ou Firestore.
 **Status:** em andamento...  
 
 ### Melhorias:
-1. Navega certo quando clica em botão do google e email no `Cadastro`
-  - OBJETIVO (1): Navega certo quando clica em botão do google e email no `Cadastro`
-2. Modal de Loading `blocking_loader` para pré-carregar informações
-  - OBJETIVO (3): Quando navegar, carregue primeiramente tudo do usuário com loading antes de entrar
+- Navega certo quando clica em botão do google e email no `Cadastro`
+- Navega certo quando clica em botão do google e email no `Login`
+- Quando navegar, carregue primeiramente tudo do usuário com loading antes de entrar (Modal de Loading `blocking_loader` para pré-carregar informações)
+
 
 ### Obejtivo:
-1. Navega certo quando clica em botão do google e email no `Cadastro`
-2. Navega certo quando clica em botão do google e email no `Login`
-3. Quando navegar, carregue primeiramente tudo do usuário com loading antes de entrar
+- Navega certo quando clica em botão do google e email no `Cadastro`
+- Navega certo quando clica em botão do google e email no `Login`
+- Quando navegar, carregue primeiramente tudo do usuário com loading antes de entrar (Modal de Loading `blocking_loader` para pré-carregar informações)

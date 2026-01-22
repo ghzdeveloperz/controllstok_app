@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 class AuthBootstrapService {
   AuthBootstrapService._();
 
-  /// Campos comuns que podem conter URL de imagem no seu Firestore.
-  /// Ajuste/adicione conforme seu schema.
   static const List<String> _imageUrlKeys = [
     'photoUrl',
     'avatarUrl',
@@ -17,19 +15,26 @@ class AuthBootstrapService {
     'bannerUrl',
   ];
 
-  /// Faz o "warmup" pós-login:
-  /// 1) garante doc do usuário (se não existir, cria básico)
-  /// 2) baixa o doc do usuário
-  /// 3) pré-carrega imagens principais (URLs encontradas no doc)
-  ///
-  /// Observação: isso não tenta carregar "o app inteiro".
-  /// Só o que estiver no doc e parecer imagem.
+  /// Compatível com o que você já usa:
+  /// - garante doc
+  /// - baixa doc
+  /// - pré-carrega imagens
   static Future<void> warmUp({
     required BuildContext context,
     required User user,
   }) async {
-    final firestore = FirebaseFirestore.instance;
+    final _ = await warmUpAndDecideRoute(context: context, user: user);
+  }
 
+  /// ✅ Novo: faz warmup e já retorna se deve ir para Company (onboarding pendente).
+  ///
+  /// Regra:
+  /// goToCompany = onboardingCompleted != true
+  static Future<bool> warmUpAndDecideRoute({
+    required BuildContext context,
+    required User user,
+  }) async {
+    final firestore = FirebaseFirestore.instance;
     final userRef = firestore.collection('users').doc(user.uid);
 
     // 1) garante doc
@@ -47,11 +52,15 @@ class AuthBootstrapService {
     final freshSnap = await userRef.get();
     final data = freshSnap.data() ?? <String, dynamic>{};
 
-    // 3) extrai urls de imagem
-    final urls = _collectImageUrls(data);
+    // 3) decide rota
+    final onboardingCompleted = data['onboardingCompleted'] == true;
+    final goToCompany = !onboardingCompleted;
 
-    // 4) pré-carrega imagens (não falha o fluxo se der erro)
+    // 4) pré-carrega imagens principais
+    final urls = _collectImageUrls(data);
     await _precacheUrls(context, urls);
+
+    return goToCompany;
   }
 
   static List<String> _collectImageUrls(Map<String, dynamic> data) {
@@ -64,14 +73,12 @@ class AuthBootstrapService {
       }
     }
 
-    // Também pode existir algum campo "images" como lista:
     final images = data['images'];
     if (images is List) {
       for (final item in images) {
         if (item is String && _looksLikeUrl(item)) {
           urls.add(item.trim());
         } else if (item is Map) {
-          // Ex: [{url: "..."}]
           final u = item['url'];
           if (u is String && _looksLikeUrl(u)) {
             urls.add(u.trim());
@@ -80,7 +87,6 @@ class AuthBootstrapService {
       }
     }
 
-    // remove duplicadas
     return urls.toSet().toList();
   }
 
@@ -96,15 +102,14 @@ class AuthBootstrapService {
   ) async {
     if (urls.isEmpty) return;
 
-    // Importante: limitar pra não virar “loading infinito” se tiver 50 imagens.
-    // Carregue só as mais importantes primeiro.
+    // Limite pra não virar “loading eterno” se o doc tiver muitas imagens.
     final limited = urls.take(6).toList();
 
     for (final url in limited) {
       try {
         await precacheImage(NetworkImage(url), context);
       } catch (_) {
-        // ignora erro de imagem
+        // não trava login por falha de imagem
       }
     }
   }

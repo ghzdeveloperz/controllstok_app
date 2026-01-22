@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+typedef AsyncVoidCallback = Future<void> Function();
+
 class SocialLoginButtons extends StatelessWidget {
-  final VoidCallback onGoogleTap;
-  final VoidCallback onAppleTap;
+  final bool isDisabled;
+  final AsyncVoidCallback onGoogleTap;
+  final AsyncVoidCallback onAppleTap;
 
   const SocialLoginButtons({
     super.key,
+    required this.isDisabled,
     required this.onGoogleTap,
     required this.onAppleTap,
   });
@@ -15,104 +19,177 @@ class SocialLoginButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(child: _GoogleButton(onTap: onGoogleTap)),
+        Expanded(
+          child: _PressableButton(
+            isDisabled: isDisabled,
+            onTap: onGoogleTap,
+            child: _GoogleContent(isDisabled: isDisabled),
+          ),
+        ),
         const SizedBox(width: 12),
-        Expanded(child: _AppleButton(onTap: onAppleTap)),
+        Expanded(
+          child: _PressableButton(
+            isDisabled: isDisabled,
+            onTap: onAppleTap,
+            child: _AppleContent(isDisabled: isDisabled),
+          ),
+        ),
       ],
     );
   }
 }
 
-class _AppleButton extends StatelessWidget {
-  final VoidCallback onTap;
+/// ✅ Wrapper genérico com animação de "press"
+class _PressableButton extends StatefulWidget {
+  final bool isDisabled;
+  final AsyncVoidCallback onTap;
+  final Widget child;
 
-  const _AppleButton({required this.onTap});
+  const _PressableButton({
+    required this.isDisabled,
+    required this.onTap,
+    required this.child,
+  });
+
+  @override
+  State<_PressableButton> createState() => _PressableButtonState();
+}
+
+class _PressableButtonState extends State<_PressableButton> {
+  bool _pressed = false;
+  bool _busy = false;
+
+  void _down(_) {
+    if (widget.isDisabled || _busy) return;
+    setState(() => _pressed = true);
+  }
+
+  Future<void> _up(_) async {
+    if (widget.isDisabled || _busy) return;
+
+    setState(() {
+      _pressed = false;
+      _busy = true;
+    });
+
+    try {
+      await widget.onTap();
+    } finally {
+      if (!mounted) return;
+      setState(() => _busy = false);
+    }
+  }
+
+  void _cancel() {
+    if (widget.isDisabled || _busy) return;
+    setState(() => _pressed = false);
+  }
 
   @override
   Widget build(BuildContext context) {
+    final disabled = widget.isDisabled || _busy;
+
     return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 48,
-        decoration: BoxDecoration(
-          color: Colors.black,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.black, width: 2),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black26,
-              blurRadius: 20,
-              offset: Offset(0, 8),
-            ),
-          ],
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SvgPicture.string(
-              _appleSvg,
-              height: 18,
-              colorFilter: const ColorFilter.mode(
-                Colors.white,
-                BlendMode.srcIn,
-              ),
-            ),
-            const SizedBox(width: 8),
-            const Text(
-              "Entre com Apple",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
+      behavior: HitTestBehavior.opaque,
+      onTapDown: disabled ? null : _down,
+      onTapUp: disabled ? null : _up,
+      onTapCancel: disabled ? null : _cancel,
+      child: AnimatedScale(
+        duration: const Duration(milliseconds: 120),
+        curve: Curves.easeOut,
+        scale: (_pressed && !disabled) ? 0.97 : 1.0,
+        child: AnimatedOpacity(
+          duration: const Duration(milliseconds: 120),
+          opacity: disabled ? 0.65 : 1,
+          child: widget.child,
         ),
       ),
     );
   }
 }
 
-class _GoogleButton extends StatelessWidget {
-  final VoidCallback onTap;
-
-  const _GoogleButton({required this.onTap});
+class _AppleContent extends StatelessWidget {
+  final bool isDisabled;
+  const _AppleContent({required this.isDisabled});
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 48,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: const Color(0xFF747474), width: 2),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black12,
-              blurRadius: 20,
-              offset: Offset(0, 8),
+    return Container(
+      height: 48,
+      decoration: BoxDecoration(
+        color: Colors.black,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.black, width: 2),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 20,
+            offset: Offset(0, 8),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SvgPicture.string(
+            _appleSvg,
+            height: 18,
+            colorFilter: const ColorFilter.mode(
+              Colors.white,
+              BlendMode.srcIn,
             ),
-          ],
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SvgPicture.string(_googleSvg, height: 18),
-            const SizedBox(width: 8),
-            const Text(
-              "Entre com Google",
-              style: TextStyle(
-                color: Colors.black87,
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-              ),
+          ),
+          const SizedBox(width: 8),
+          const Text(
+            "Entre com Apple",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
             ),
-          ],
-        ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _GoogleContent extends StatelessWidget {
+  final bool isDisabled;
+  const _GoogleContent({required this.isDisabled});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 48,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFF747474), width: 2),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 20,
+            offset: Offset(0, 8),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SvgPicture.string(_googleSvg, height: 18),
+          const SizedBox(width: 8),
+          const Text(
+            "Entre com Google",
+            style: TextStyle(
+              color: Colors.black87,
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 import 'social_login_buttons.dart';
 
+typedef AsyncVoidCallback = Future<void> Function();
+
 class LoginForm extends StatelessWidget {
   final TextEditingController emailController;
   final TextEditingController passwordController;
   final bool isLoading;
-  final VoidCallback onSubmit;
+
+  /// ✅ agora é async
+  final AsyncVoidCallback onSubmit;
+
+  /// ✅ agora é async
+  final AsyncVoidCallback onGoogleTap;
+
+  /// ✅ pode continuar sync (não tem await obrigatório)
   final VoidCallback onResetPassword;
 
   const LoginForm({
@@ -14,6 +23,7 @@ class LoginForm extends StatelessWidget {
     required this.passwordController,
     required this.isLoading,
     required this.onSubmit,
+    required this.onGoogleTap,
     required this.onResetPassword,
   });
 
@@ -49,7 +59,6 @@ class LoginForm extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 14),
-
         TextField(
           controller: passwordController,
           enabled: !isLoading,
@@ -60,11 +69,10 @@ class LoginForm extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 6),
-
         Align(
           alignment: Alignment.centerLeft,
           child: TextButton(
-            onPressed: onResetPassword,
+            onPressed: isLoading ? null : onResetPassword,
             style: TextButton.styleFrom(
               padding: EdgeInsets.zero,
               minimumSize: const Size(0, 0),
@@ -81,12 +89,15 @@ class LoginForm extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 22),
-
         SizedBox(
           width: double.infinity,
           height: 54,
           child: ElevatedButton(
-            onPressed: isLoading ? null : onSubmit,
+            onPressed: isLoading
+                ? null
+                : () async {
+                    await onSubmit();
+                  },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.black,
               foregroundColor: Colors.white,
@@ -115,7 +126,6 @@ class LoginForm extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 26),
-
         Row(
           children: const [
             Expanded(child: Divider()),
@@ -131,12 +141,14 @@ class LoginForm extends StatelessWidget {
         ),
         const SizedBox(height: 18),
 
+        /// ✅ social agora recebe onGoogleTap async e chama com await internamente
         SocialLoginButtons(
-          onGoogleTap: () {
-            // Aqui você vai chamar seu método real depois
+          isDisabled: isLoading,
+          onGoogleTap: () async {
+            await onGoogleTap();
           },
-          onAppleTap: () {
-            // Aqui você vai chamar seu método real depois
+          onAppleTap: () async {
+            // você ainda não implementou, então deixa isso quieto por enquanto
           },
         ),
       ],

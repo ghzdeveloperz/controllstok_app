@@ -1,23 +1,27 @@
 import 'package:flutter/material.dart';
 
 class BlockingLoader {
-  static Future<T?> run<T>({
+  static Future<T> run<T>({
     required BuildContext context,
     required Future<T> Function() action,
     String message = 'Carregando...',
   }) async {
+    // ✅ pega o nav antes do await (não usa context depois)
+    final nav = Navigator.of(context, rootNavigator: true);
+
     showDialog(
       context: context,
       barrierDismissible: false,
+      useRootNavigator: true,
       builder: (_) => _BlockingLoaderDialog(message: message),
     );
 
     try {
-      return await action();
+      final result = await action();
+      return result;
     } finally {
-      // Fecha com segurança (rootNavigator evita fechar alguma rota errada)
-      if (Navigator.of(context, rootNavigator: true).canPop()) {
-        Navigator.of(context, rootNavigator: true).pop();
+      if (nav.canPop()) {
+        nav.pop();
       }
     }
   }
