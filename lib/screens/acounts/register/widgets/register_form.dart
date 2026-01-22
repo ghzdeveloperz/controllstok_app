@@ -10,8 +10,10 @@ import '../../auth_choice/auth_choice_screen.dart';
 import '../register_controller.dart';
 import 'social_register_buttons.dart';
 
-// ✅ NOVO
 import '../../../widgets/blocking_loader.dart';
+
+// ✅ NOVO
+import '../../../../services/bootstrap/auth_bootstrap_service.dart';
 
 class RegisterForm extends StatelessWidget {
   final RegisterController controller;
@@ -62,7 +64,22 @@ class RegisterForm extends StatelessWidget {
       return;
     }
 
-    // ✅ VOLTA AO COMPORTAMENTO ANTIGO (não quebra nada)
+    // ✅ Agora o loading vira “funcional”:
+    // segura até puxar o doc e pré-carregar imagens do user
+    await BlockingLoader.run<void>(
+      context: context,
+      message: 'Preparando sua conta...',
+      action: () async {
+        await AuthBootstrapService.warmUp(
+          context: context,
+          user: user,
+        );
+      },
+    );
+
+    if (!context.mounted) return;
+
+    // ✅ mantém seu comportamento antigo (não quebra)
     if (goToCompany) {
       Navigator.pushReplacement(
         context,
@@ -126,9 +143,7 @@ class RegisterForm extends StatelessWidget {
                     width: double.infinity,
                     height: 50,
                     child: OutlinedButton(
-                      onPressed: isLoading
-                          ? null
-                          : controller.sendEmailVerification,
+                      onPressed: isLoading ? null : controller.sendEmailVerification,
                       style: OutlinedButton.styleFrom(
                         foregroundColor: Colors.black,
                         side: const BorderSide(color: Colors.black12),
@@ -140,16 +155,11 @@ class RegisterForm extends StatelessWidget {
                           ? const SizedBox(
                               width: 22,
                               height: 22,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2.4,
-                              ),
+                              child: CircularProgressIndicator(strokeWidth: 2.4),
                             )
                           : const Text(
                               "Enviar e-mail de verificação",
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w700,
-                              ),
+                              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
                             ),
                     ),
                   ),
@@ -161,9 +171,7 @@ class RegisterForm extends StatelessWidget {
                     child: OutlinedButton(
                       onPressed: isLoading
                           ? null
-                          : (canResend
-                                ? controller.resendEmailVerification
-                                : null),
+                          : (canResend ? controller.resendEmailVerification : null),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: Colors.black,
                         side: const BorderSide(color: Colors.black12),
@@ -175,18 +183,13 @@ class RegisterForm extends StatelessWidget {
                           ? const SizedBox(
                               width: 22,
                               height: 22,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2.4,
-                              ),
+                              child: CircularProgressIndicator(strokeWidth: 2.4),
                             )
                           : Text(
                               canResend
                                   ? "Reenviar e-mail de verificação"
                                   : "Reenviar em ${cooldown}s",
-                              style: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w700,
-                              ),
+                              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
                             ),
                     ),
                   ),
@@ -228,9 +231,7 @@ class RegisterForm extends StatelessWidget {
                     isDisabled: isLoading,
                     onGoogleTap: () => _handleGoogleTap(context),
                     onAppleTap: () {
-                      controller.setAlertWithTimeout(
-                        'Apple ainda não implementado.',
-                      );
+                      controller.setAlertWithTimeout('Apple ainda não implementado.');
                     },
                   ),
                 ],
@@ -255,13 +256,9 @@ class RegisterForm extends StatelessWidget {
                             hint: "Senha",
                             icon: Icons.lock_outline,
                             suffix: IconButton(
-                              onPressed: isLoading
-                                  ? null
-                                  : controller.toggleShowPassword,
+                              onPressed: isLoading ? null : controller.toggleShowPassword,
                               icon: Icon(
-                                controller.showPassword
-                                    ? Icons.visibility_off
-                                    : Icons.visibility,
+                                controller.showPassword ? Icons.visibility_off : Icons.visibility,
                                 color: Colors.black54,
                               ),
                             ),
@@ -278,13 +275,9 @@ class RegisterForm extends StatelessWidget {
                             hint: "Confirmar senha",
                             icon: Icons.lock_outline,
                             suffix: IconButton(
-                              onPressed: isLoading
-                                  ? null
-                                  : controller.toggleShowConfirmPassword,
+                              onPressed: isLoading ? null : controller.toggleShowConfirmPassword,
                               icon: Icon(
-                                controller.showConfirmPassword
-                                    ? Icons.visibility_off
-                                    : Icons.visibility,
+                                controller.showConfirmPassword ? Icons.visibility_off : Icons.visibility,
                                 color: Colors.black54,
                               ),
                             ),
@@ -328,9 +321,7 @@ class RegisterForm extends StatelessWidget {
                           alignment: Alignment.center,
                           child: GestureDetector(
                             behavior: HitTestBehavior.opaque,
-                            onTap: isLoading
-                                ? null
-                                : () => _deleteAndBackToAuthChoice(context),
+                            onTap: isLoading ? null : () => _deleteAndBackToAuthChoice(context),
                             child: const Padding(
                               padding: EdgeInsets.symmetric(vertical: 6),
                               child: Text(
@@ -556,8 +547,8 @@ class _DotsLoadingTextState extends State<_DotsLoadingText> {
     final dots = _step == 0
         ? '.'
         : _step == 1
-        ? '..'
-        : '...';
+            ? '..'
+            : '...';
     return Text(dots, style: widget.style);
   }
 }

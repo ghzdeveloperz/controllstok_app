@@ -1,3 +1,4 @@
+// lib/core/app_navigator.dart
 import 'package:flutter/material.dart';
 
 class AppNavigator {
