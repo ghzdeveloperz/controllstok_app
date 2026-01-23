@@ -164,7 +164,7 @@ Essas regras são reavaliadas a cada mudança de autenticação ou Firestore.
 - estilização dos buttons
 
 ## [Milestone 01] Navegação do usuário para home
-**Status:** em andamento...  
+**Status:** Concluido ✅  
 
 ### Melhorias:
 - Navega certo quando clica em botão do google e email no `Cadastro`
@@ -176,3 +176,25 @@ Essas regras são reavaliadas a cada mudança de autenticação ou Firestore.
 - Navega certo quando clica em botão do google e email no `Cadastro`
 - Navega certo quando clica em botão do google e email no `Login`
 - Quando navegar, carregue primeiramente tudo do usuário com loading antes de entrar (Modal de Loading `blocking_loader` para pré-carregar informações)
+
+## [Milestone 02] Internacionalização automática (i18n)
+
+**Status:** Concluído ✅
+
+### Melhorias
+- Implementado sistema oficial de **internacionalização (i18n)** do Flutter
+- Tradução automática baseada no **idioma do sistema**, sem solicitar permissão de localização
+- Suporte a múltiplos idiomas:
+  - 🇧🇷 Português (Brasil)
+  - 🇵🇹 Português (Portugal)
+  - 🇺🇸 Inglês
+  - 🇪🇸 Espanhol
+- Estrutura de traduções centralizada via arquivos `.arb` (`lib/l10n`)
+- Geração automática de strings tipadas com `flutter gen-l10n`
+- Fallback automático para inglês quando o idioma do sistema não é suportado
+
+### Objetivo
+- Garantir que o app seja exibido automaticamente no idioma do usuário
+- Eliminar dependência de permissões de localização
+- Preparar a base do app para expansão internacional
+- Padronizar textos e remover strings hardcoded da UI

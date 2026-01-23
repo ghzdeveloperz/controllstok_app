@@ -1,0 +1,19 @@
+{
+  "@@locale": "pt",
+
+  "appTitle": "MyStoreDay",
+
+  "hello": "Olá",
+
+  "helloCompany": "Olá, {company}.",
+  "@helloCompany": {
+    "placeholders": {
+      "company": {}
+    }
+  },
+
+  "stockToday": "Seu estoque hoje",
+  "searchProductHint": "Buscar produto...",
+  "allCategory": "Todos",
+  "noProductsFound": "Nenhum produto encontrado"
+}

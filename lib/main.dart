@@ -10,6 +10,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'l10n/app_localizations.dart';
+import 'core/app_navigator.dart';
+
 import 'services/firebase_service.dart';
 import 'notifications/notification_service.dart';
 import 'notifications/save_fcm_token.dart';
@@ -18,9 +21,6 @@ import 'screens/home_screen.dart';
 import 'screens/acounts/auth_choice/auth_choice_screen.dart';
 import 'screens/acounts/register/register_screen.dart';
 import 'screens/acounts/onboarding/company_screen.dart';
-
-/// 🔹 GlobalKey para navegar fora do context
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 /// 🔹 Handler para mensagens em background e app killed
 Future<void> _firebaseBackgroundHandler(RemoteMessage message) async {
@@ -49,7 +49,7 @@ void main() async {
   // 🔹 Handler background (obrigatório)
   FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundHandler);
 
-  // 🔹 Date formatting
+  // 🔹 Date formatting (opcional)
   await initializeDateFormatting('pt_BR', null);
 
   runApp(const MyApp());
@@ -63,19 +63,38 @@ class MyApp extends StatelessWidget {
     final baseTextTheme = GoogleFonts.poppinsTextTheme();
 
     return MaterialApp(
-      navigatorKey: navigatorKey,
+      navigatorKey: AppNavigator.key,
       debugShowCheckedModeBanner: false,
-      title: 'MyStoreDay',
+
+      // ✅ título traduzível (use a key que existir no seu ARB)
+      onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
+
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
         textTheme: baseTextTheme,
       ),
+
+      // ✅ l10n oficial do Flutter (gerado em lib/l10n)
       localizationsDelegates: const [
+        AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: const [Locale('pt', 'BR')],
+      supportedLocales: AppLocalizations.supportedLocales,
+
+      // ✅ sem localização: idioma do sistema; fallback en
+      localeResolutionCallback: (deviceLocale, supportedLocales) {
+        if (deviceLocale == null) return const Locale('en');
+
+        for (final locale in supportedLocales) {
+          if (locale.languageCode == deviceLocale.languageCode) {
+            return locale;
+          }
+        }
+        return const Locale('en');
+      },
+
       home: const AuthGate(),
     );
   }
@@ -94,6 +113,9 @@ class _AuthGateState extends State<AuthGate> {
 
   // Ajuda a resetar estados quando troca de usuário (logout/login outro)
   String? _lastUid;
+
+  // ✅ Cache do Future pra não criar Future novo a cada build
+  Future<void>? _ensureDocFuture;
 
   @override
   void initState() {
@@ -129,8 +151,7 @@ class _AuthGateState extends State<AuthGate> {
   }
 
   /// ✅ Detecta se existe REGISTRO PENDENTE (etapa “definir senha”)
-  /// ⚠️ Importante: só considera pendente se for do MESMO e-mail do usuário atual,
-  /// pra não travar o fluxo com pendência antiga.
+  /// ⚠️ Só considera pendente se for do MESMO e-mail do usuário atual.
   Future<bool> _hasRegisterPendingForCurrentUser(User user) async {
     final prefs = await SharedPreferences.getInstance();
     final pendingEmail = prefs.getString('register_pending_email');
@@ -145,7 +166,6 @@ class _AuthGateState extends State<AuthGate> {
   }
 
   /// ✅ Garante que exista um documento do usuário no Firestore.
-  /// Evita fluxos quebrados quando o Google login cria auth user mas ainda não criou doc.
   Future<void> _ensureUserDoc(User user) async {
     final ref = FirebaseFirestore.instance.collection('users').doc(user.uid);
     final snap = await ref.get();
@@ -159,18 +179,11 @@ class _AuthGateState extends State<AuthGate> {
     }, SetOptions(merge: true));
   }
 
-  // 🔹 Navega para HomeScreen na aba Alertas se permitido
   void _navigateToAlertsIfAllowed() {
     final user = FirebaseAuth.instance.currentUser;
     if (_pendingNotification == null || user == null) return;
 
-    navigatorKey.currentState?.pushAndRemoveUntil(
-      MaterialPageRoute(
-        builder: (_) => const HomeScreen(initialIndex: 4),
-      ),
-      (route) => false,
-    );
-
+    AppNavigator.resetTo(const HomeScreen(initialIndex: 4));
     _pendingNotification = null;
   }
 
@@ -200,21 +213,25 @@ class _AuthGateState extends State<AuthGate> {
         if (!snapshot.hasData) {
           _tokenSaved = false;
           _lastUid = null;
+          _ensureDocFuture = null;
           return const AuthChoiceScreen();
         }
 
-        // ✅ Usuário logado
         final user = snapshot.data!;
 
-        // Se mudou de usuário, reseta flags
+        // Se mudou de usuário, reseta flags + refaz future
         if (_lastUid != user.uid) {
           _lastUid = user.uid;
           _tokenSaved = false;
+          _ensureDocFuture = _ensureUserDoc(user);
         }
+
+        // Se ainda não inicializou (caso raro), inicializa
+        _ensureDocFuture ??= _ensureUserDoc(user);
 
         // 0) garantir doc Firestore
         return FutureBuilder<void>(
-          future: _ensureUserDoc(user),
+          future: _ensureDocFuture,
           builder: (context, ensureSnap) {
             if (ensureSnap.connectionState == ConnectionState.waiting) {
               return const Scaffold(
@@ -222,7 +239,7 @@ class _AuthGateState extends State<AuthGate> {
               );
             }
 
-            // 1) Se existir register_pending_* => volta para RegisterScreen (definir senha)
+            // 1) Se existir register_pending_* => volta para RegisterScreen
             return FutureBuilder<bool>(
               future: _hasRegisterPendingForCurrentUser(user),
               builder: (context, pendingSnap) {
@@ -252,14 +269,12 @@ class _AuthGateState extends State<AuthGate> {
                       );
                     }
 
-                    // Se por algum motivo ainda não existe (ou veio null), segura no CompanyScreen
                     final exists = docSnap.data?.exists == true;
                     final data = exists ? docSnap.data!.data() : null;
 
                     final onboardingCompleted =
                         data?['onboardingCompleted'] == true;
 
-                    // 2) onboarding pendente
                     if (!onboardingCompleted) {
                       _tokenSaved = false;
                       return CompanyScreen(user: user);
@@ -271,7 +286,6 @@ class _AuthGateState extends State<AuthGate> {
                       saveFcmTokenIfLoggedIn();
                     }
 
-                    // Se abriu por notificação, manda pra aba Alertas
                     if (_pendingNotification != null) {
                       WidgetsBinding.instance.addPostFrameCallback((_) {
                         _navigateToAlertsIfAllowed();

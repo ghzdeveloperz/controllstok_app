@@ -11,7 +11,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../../main.dart';
+import '../../core/app_navigator.dart';
+
 import '../acounts/auth_choice/auth_choice_screen.dart';
 
 class PerfilScreen extends StatefulWidget {
@@ -1144,12 +1145,7 @@ class _PerfilScreenState extends State<PerfilScreen>
               () async {
                 // Desloga o usuário
                 await FirebaseAuth.instance.signOut();
-
-                // Navegação global para AuthChoiceScreen
-                navigatorKey.currentState?.pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (_) => const AuthChoiceScreen()),
-                  (route) => false,
-                );
+                AppNavigator.resetTo(const AuthChoiceScreen());
               },
             ),
           ),
@@ -1163,11 +1159,7 @@ class _PerfilScreenState extends State<PerfilScreen>
             Colors.red.shade800,
             () => _showDeleteAccountDialog(
               onConfirmed: () {
-                // navegação global para AuthChoiceScreen
-                navigatorKey.currentState?.pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (_) => const AuthChoiceScreen()),
-                  (route) => false,
-                );
+                AppNavigator.resetTo(const AuthChoiceScreen());
               },
             ),
           ),

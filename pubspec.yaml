@@ -10,6 +10,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+    
+  flutter_localizations:
+    sdk: flutter
 
   firebase_core: ^4.3.0
   cloud_firestore: ^6.1.1
@@ -23,7 +26,6 @@ dependencies:
   cupertino_icons: ^1.0.8
   url_launcher: ^6.3.2
   shared_preferences: ^2.5.4
-  flutter_localization: ^0.3.3
   fl_chart: ^1.1.1
   image_picker: ^1.2.1
   image: ^4.0.6
@@ -71,8 +73,9 @@ flutter_native_splash:
 # Assets
 # ─────────────────────────────
 flutter:
-  uses-material-design: true
-  assets:
+   generate: true
+   uses-material-design: true
+   assets:
     - assets/images/logo-controllstok-bac.png
     - assets/images/logo-and-name.png
 

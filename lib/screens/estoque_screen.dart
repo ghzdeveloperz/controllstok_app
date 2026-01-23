@@ -1,9 +1,9 @@
 // lib/screens/estoque_screen.dart
+import 'dart:async'; // debounce
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'dart:async'; // Para debounce
 
 import '../firebase/firestore/products_firestore.dart';
 import '../firebase/firestore/categories_firestore.dart';
@@ -12,7 +12,9 @@ import '../firebase/firestore/users_firestore.dart';
 import 'widgets/product_card.dart';
 import 'models/product.dart';
 import 'models/category.dart';
-import 'userPerfil/perfil_screen.dart'; // Adicione este import, assumindo que PerfilScreen está em '../screens/perfil_screen.dart'
+import 'userPerfil/perfil_screen.dart';
+
+import '../l10n/app_localizations.dart';
 
 class EstoqueScreen extends StatefulWidget {
   final String uid;
@@ -25,36 +27,33 @@ class EstoqueScreen extends StatefulWidget {
 }
 
 class _EstoqueScreenState extends State<EstoqueScreen> {
-  // Isolar estado da busca e filtros com ValueNotifier para reduzir rebuilds globais
-  final ValueNotifier<String> _searchTextNotifier = ValueNotifier<String>('');
-  final ValueNotifier<String> _selectedCategoryNotifier = ValueNotifier<String>('Todos');
-  final ValueNotifier<int> _selectedCategoryIndexNotifier = ValueNotifier<int>(0);
+  // ✅ ID estável para categoria "Todos" (não depende do idioma)
+  static const String _kAllCategoryId = '__all__';
 
-  // Debounce para busca (evita rebuilds excessivos ao digitar)
+  // Busca e filtros
+  final ValueNotifier<String> _searchTextNotifier = ValueNotifier<String>('');
+  final ValueNotifier<String> _selectedCategoryIdNotifier =
+      ValueNotifier<String>(_kAllCategoryId);
+  final ValueNotifier<int> _selectedCategoryIndexNotifier =
+      ValueNotifier<int>(0);
+
   Timer? _debounceTimer;
 
-  // Cache de imagens fora do build (inicializado em initState)
+  // Cache de imagens fora do build
   final Map<String, CachedNetworkImageProvider> _cachedImages = {};
 
-  // Estado local para animação do avatar (leve, não afeta performance global)
+  // Avatar pulse
   bool _isAvatarPulsing = false;
-
-  @override
-  void initState() {
-    super.initState();
-    // Pré-cache inicial pode ser feito aqui se necessário, mas para streams, será tratado no builder
-  }
 
   @override
   void dispose() {
     _searchTextNotifier.dispose();
-    _selectedCategoryNotifier.dispose();
+    _selectedCategoryIdNotifier.dispose();
     _selectedCategoryIndexNotifier.dispose();
     _debounceTimer?.cancel();
     super.dispose();
   }
 
-  // Método para atualizar busca com debounce
   void _updateSearch(String value) {
     _debounceTimer?.cancel();
     _debounceTimer = Timer(const Duration(milliseconds: 300), () {
@@ -62,21 +61,22 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
     });
   }
 
-  // Método para pré-cache de imagens (chamado fora do build, quando produtos chegam)
   void _precacheImages(List<Product> products) {
-    for (var product in products) {
+    for (final product in products) {
       if (!_cachedImages.containsKey(product.id)) {
         final provider = CachedNetworkImageProvider(product.image);
         _cachedImages[product.id] = provider;
-        // Resolve fora do build para evitar latência
-        provider.resolve(const ImageConfiguration()).addListener(ImageStreamListener((_, _) {}));
+        provider
+            .resolve(const ImageConfiguration())
+            .addListener(ImageStreamListener((_, __) {}));
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Centralizar fontes no ThemeData para evitar chamadas repetidas a GoogleFonts
+    final l10n = AppLocalizations.of(context)!;
+
     return Theme(
       data: Theme.of(context).copyWith(
         textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme),
@@ -86,10 +86,10 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
         body: SafeArea(
           child: Column(
             children: [
-              _buildHeader(), // Header usa StreamBuilder, mas é isolado e não rebuilda com busca/filtros
-              _buildSearch(), // Busca isolada com ValueNotifier
-              _buildCategories(), // Categorias usam ValueListenableBuilder para selectedCategory
-              Expanded(child: _buildProducts()), // Produtos com filtragem fora do build
+              _buildHeader(l10n),
+              _buildSearch(l10n),
+              _buildCategories(l10n),
+              Expanded(child: _buildProducts(l10n)),
             ],
           ),
         ),
@@ -97,8 +97,7 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
     );
   }
 
-  // Header permanece com StreamBuilder, mas otimizado: remove sombras custosas para priorizar fluidez
-  Widget _buildHeader() {
+  Widget _buildHeader(AppLocalizations l10n) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
       child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
@@ -108,6 +107,11 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
           final company = data?['company'] as String?;
           final email = data?['email'] as String? ?? '';
           final photoUrl = data?['photoUrl'] as String?;
+
+          final greeting = (company == null || company.trim().isEmpty)
+              ? l10n.hello
+              : l10n.helloCompany(company.trim());
+
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -115,18 +119,17 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    company == null ? 'Olá' : 'Olá, $company.',
-                    style: const TextStyle( // Usa ThemeData para fonte
+                    greeting,
+                    style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.w700,
                       color: Colors.black87,
-                      // Sombras removidas para reduzir custo no scroll
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    'Seu estoque hoje',
-                    style: TextStyle( // Usa ThemeData
+                    l10n.stockToday,
+                    style: TextStyle(
                       fontSize: 13,
                       color: Colors.grey.shade600,
                     ),
@@ -139,7 +142,7 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
                   setState(() => _isAvatarPulsing = false);
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => PerfilScreen()),
+                    MaterialPageRoute(builder: (_) => const PerfilScreen()),
                   );
                 },
                 onTapCancel: () => setState(() => _isAvatarPulsing = false),
@@ -149,11 +152,10 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
                   child: Container(
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
-                      // Sombras reduzidas para performance
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black26,
-                          blurRadius: 3, // Blur reduzido
+                          blurRadius: 3,
                           offset: Offset(0, 1),
                         ),
                       ],
@@ -161,12 +163,15 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
                     child: CircleAvatar(
                       radius: 20,
                       backgroundColor: Colors.black87,
-                      backgroundImage: (photoUrl != null && photoUrl.isNotEmpty)
-                          ? CachedNetworkImageProvider(photoUrl)
-                          : null,
+                      backgroundImage:
+                          (photoUrl != null && photoUrl.isNotEmpty)
+                              ? CachedNetworkImageProvider(photoUrl)
+                              : null,
                       child: (photoUrl == null || photoUrl.isEmpty)
                           ? Text(
-                              email.isNotEmpty ? email[0].toUpperCase() : 'U',
+                              email.isNotEmpty
+                                  ? email[0].toUpperCase()
+                                  : 'U',
                               style: const TextStyle(
                                 fontSize: 16,
                                 color: Colors.white,
@@ -185,14 +190,13 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
     );
   }
 
-  // Busca isolada com ValueNotifier (não causa rebuild global)
-  Widget _buildSearch() {
+  Widget _buildSearch(AppLocalizations l10n) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: TextField(
-        onChanged: _updateSearch, // Usa debounce para evitar setState imediato
+        onChanged: _updateSearch,
         decoration: InputDecoration(
-          hintText: 'Buscar produto...',
+          hintText: l10n.searchProductHint,
           hintStyle: TextStyle(color: Colors.grey.shade500),
           prefixIcon: Icon(Icons.search, color: Colors.grey.shade600),
           filled: true,
@@ -210,8 +214,7 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
     );
   }
 
-  // Categorias usam ValueListenableBuilder para selectedCategory (rebuilda apenas quando muda)
-  Widget _buildCategories() {
+  Widget _buildCategories(AppLocalizations l10n) {
     return Padding(
       padding: const EdgeInsets.only(top: 6, bottom: 1),
       child: SizedBox(
@@ -221,28 +224,29 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
           builder: (context, snapshot) {
             if (!snapshot.hasData) return const SizedBox();
 
-            final categories = [
-              Category(id: 'todos', name: 'Todos'), // Removido 'const' pois Category não é const
+            // ✅ Primeiro item é "Todos" com ID estável
+            final categories = <Category>[
+              Category(id: _kAllCategoryId, name: l10n.allCategory),
               ...(snapshot.data ?? []),
             ];
 
             return ValueListenableBuilder<String>(
-              valueListenable: _selectedCategoryNotifier,
-              builder: (context, selectedCategory, _) {
+              valueListenable: _selectedCategoryIdNotifier,
+              builder: (context, selectedCategoryId, _) {
                 return ListView.separated(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   scrollDirection: Axis.horizontal,
                   itemCount: categories.length,
-                  separatorBuilder: (_, _) => const SizedBox(width: 10), // Corrigido para (_, _)
+                  separatorBuilder: (_, __) => const SizedBox(width: 10),
                   itemBuilder: (context, index) {
                     final category = categories[index];
-                    final isSelected = category.name == selectedCategory;
+                    final isSelected = category.id == selectedCategoryId;
 
                     return GestureDetector(
                       onTap: () {
                         if (_selectedCategoryIndexNotifier.value == index) return;
                         _selectedCategoryIndexNotifier.value = index;
-                        _selectedCategoryNotifier.value = category.name;
+                        _selectedCategoryIdNotifier.value = category.id;
                       },
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 250),
@@ -254,13 +258,14 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
                           color: isSelected ? Colors.black : Colors.transparent,
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
-                            color: isSelected ? Colors.black : Colors.grey.shade300,
+                            color:
+                                isSelected ? Colors.black : Colors.grey.shade300,
                             width: 1.4,
                           ),
                         ),
                         child: Text(
-                          category.name,
-                          style: TextStyle( // Usa ThemeData
+                          category.name, // "Todos" já vem traduzido aqui
+                          style: TextStyle(
                             fontSize: 13.5,
                             fontWeight: FontWeight.w500,
                             color: isSelected ? Colors.white : Colors.black87,
@@ -278,16 +283,12 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
     );
   }
 
-  // Produtos: Filtragem fora do build usando ValueListenableBuilder para search e category
-  // Remove AnimatedSwitcher para evitar animação custosa da árvore inteira
-  // Pré-cache de imagens movido para método separado
-  Widget _buildProducts() {
+  Widget _buildProducts(AppLocalizations l10n) {
     return StreamBuilder<List<Product>>(
       stream: ProductsFirestore.streamProducts(widget.uid),
       builder: (context, snapshot) {
         final products = snapshot.data ?? [];
 
-        // Pré-cache fora do build
         _precacheImages(products);
 
         if (widget.onProductsLoaded != null) {
@@ -296,45 +297,53 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
           });
         }
 
-        // Filtragem isolada com ValueListenableBuilder (rebuilda apenas quando search ou category mudam)
         return ValueListenableBuilder<String>(
           valueListenable: _searchTextNotifier,
           builder: (context, searchText, _) {
             return ValueListenableBuilder<String>(
-              valueListenable: _selectedCategoryNotifier,
-              builder: (context, selectedCategory, _) {
+              valueListenable: _selectedCategoryIdNotifier,
+              builder: (context, selectedCategoryId, _) {
                 final filteredProducts = products.where((product) {
-                  final matchesSearch = product.name.toLowerCase().contains(searchText);
-                  final matchesCategory = selectedCategory == 'Todos' || product.category == selectedCategory;
-                  return matchesSearch && matchesCategory;
-                }).toList(); // Lista criada apenas quando necessário
+                  final matchesSearch =
+                      product.name.toLowerCase().contains(searchText);
 
-                return filteredProducts.isEmpty
-                    ? const Center(
-                        child: Text(
-                          'Nenhum produto encontrado',
-                          style: TextStyle(color: Colors.grey), // Usa ThemeData
-                        ),
-                      )
-                    : GridView.builder(
-                        padding: const EdgeInsets.all(20),
-                        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                          maxCrossAxisExtent: 250,
-                          childAspectRatio: 0.85,
-                          crossAxisSpacing: 16,
-                          mainAxisSpacing: 16,
-                        ),
-                        itemCount: filteredProducts.length,
-                        itemBuilder: (context, index) {
-                          final product = filteredProducts[index];
-                          return ProductCard(
-                            product: product,
-                            uid: widget.uid,
-                            userCategories: products.map((p) => p.category).toSet().toList(), // Evitar recriação desnecessária
-                            imageProvider: _cachedImages[product.id],
-                          );
-                        },
-                      );
+                  final matchesCategory = selectedCategoryId == _kAllCategoryId ||
+                      product.category == selectedCategoryId ||
+                      product.category == _categoryNameByIdFallback(selectedCategoryId);
+
+                  return matchesSearch && matchesCategory;
+                }).toList();
+
+                if (filteredProducts.isEmpty) {
+                  return Center(
+                    child: Text(
+                      l10n.noProductsFound,
+                      style: const TextStyle(color: Colors.grey),
+                    ),
+                  );
+                }
+
+                return GridView.builder(
+                  padding: const EdgeInsets.all(20),
+                  gridDelegate:
+                      const SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 250,
+                    childAspectRatio: 0.85,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                  ),
+                  itemCount: filteredProducts.length,
+                  itemBuilder: (context, index) {
+                    final product = filteredProducts[index];
+                    return ProductCard(
+                      product: product,
+                      uid: widget.uid,
+                      userCategories:
+                          products.map((p) => p.category).toSet().toList(),
+                      imageProvider: _cachedImages[product.id],
+                    );
+                  },
+                );
               },
             );
           },
@@ -342,9 +351,17 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
       },
     );
   }
+
+  /// ⚠️ Fallback: se seu Product.category salva "nome" ao invés de "id",
+  /// você pode adaptar aqui. Mantive um fallback simples.
+  String _categoryNameByIdFallback(String categoryId) {
+    // Se o seu product.category salva "nome", então selectedCategoryId deveria ser "nome".
+    // Como não tenho o seu model aqui, deixei neutro.
+    return categoryId;
+  }
 }
 
-// Ícone de notificações simples, sem pulsar (mantido como está, pois é leve)
+// Ícone de notificações simples (mantido)
 class AnimatedNotificationIcon extends StatelessWidget {
   final VoidCallback onTap;
   const AnimatedNotificationIcon({super.key, required this.onTap});
@@ -362,7 +379,6 @@ class AnimatedNotificationIcon extends StatelessWidget {
   }
 }
 
-// Função auxiliar para avatar (mantida, mas otimizada com const onde possível)
 Widget buildAvatar({
   required String email,
   String? photoUrl,
