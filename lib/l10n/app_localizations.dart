@@ -142,6 +142,54 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Nenhum produto encontrado'**
   String get noProductsFound;
+
+  /// No description provided for @languageTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Idioma'**
+  String get languageTitle;
+
+  /// No description provided for @languageSystem.
+  ///
+  /// In pt, this message translates to:
+  /// **'Idioma do sistema'**
+  String get languageSystem;
+
+  /// No description provided for @languageSystemDescription.
+  ///
+  /// In pt, this message translates to:
+  /// **'Usar o idioma do seu dispositivo automaticamente'**
+  String get languageSystemDescription;
+
+  /// No description provided for @searchLanguageHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Buscar idioma...'**
+  String get searchLanguageHint;
+
+  /// No description provided for @languageSectionPreferences.
+  ///
+  /// In pt, this message translates to:
+  /// **'Preferências'**
+  String get languageSectionPreferences;
+
+  /// No description provided for @languageSectionAvailable.
+  ///
+  /// In pt, this message translates to:
+  /// **'Idiomas disponíveis'**
+  String get languageSectionAvailable;
+
+  /// No description provided for @selectedLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecionado'**
+  String get selectedLabel;
+
+  /// No description provided for @noLanguageFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum idioma encontrado'**
+  String get noLanguageFound;
 }
 
 class _AppLocalizationsDelegate

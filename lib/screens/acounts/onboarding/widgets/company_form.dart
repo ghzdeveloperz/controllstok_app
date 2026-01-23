@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import '../company_controller.dart';
 
 // ✅ use os seus paths reais
-import '../../../userPerfil/confi_options/sobre_terms/terms_used.dart';
-import '../../../userPerfil/confi_options/sobre_terms/politic_privacity.dart';
+import '../../../userPerfil/config_options/sobre_terms/terms_used.dart';
+import '../../../userPerfil/config_options/sobre_terms/politic_privacity.dart';
 
 class CompanyForm extends StatelessWidget {
   final CompanyController controller;

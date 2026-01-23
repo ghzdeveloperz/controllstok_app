@@ -30,6 +30,31 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get noProductsFound => 'Nenhum produto encontrado';
+
+  @override
+  String get languageTitle => 'Idioma';
+
+  @override
+  String get languageSystem => 'Idioma do sistema';
+
+  @override
+  String get languageSystemDescription =>
+      'Usar o idioma do seu dispositivo automaticamente';
+
+  @override
+  String get searchLanguageHint => 'Buscar idioma...';
+
+  @override
+  String get languageSectionPreferences => 'Preferências';
+
+  @override
+  String get languageSectionAvailable => 'Idiomas disponíveis';
+
+  @override
+  String get selectedLabel => 'Selecionado';
+
+  @override
+  String get noLanguageFound => 'Nenhum idioma encontrado';
 }
 
 /// The translations for Portuguese, as used in Portugal (`pt_PT`).
@@ -58,4 +83,29 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get noProductsFound => 'Nenhum produto encontrado';
+
+  @override
+  String get languageTitle => 'Idioma';
+
+  @override
+  String get languageSystem => 'Idioma do sistema';
+
+  @override
+  String get languageSystemDescription =>
+      'Usar automaticamente o idioma do seu dispositivo';
+
+  @override
+  String get searchLanguageHint => 'Buscar idioma...';
+
+  @override
+  String get languageSectionPreferences => 'Preferências';
+
+  @override
+  String get languageSectionAvailable => 'Idiomas disponíveis';
+
+  @override
+  String get selectedLabel => 'Selecionado';
+
+  @override
+  String get noLanguageFound => 'Nenhum idioma encontrado';
 }

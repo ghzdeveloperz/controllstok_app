@@ -198,3 +198,33 @@ Essas regras são reavaliadas a cada mudança de autenticação ou Firestore.
 - Eliminar dependência de permissões de localização
 - Preparar a base do app para expansão internacional
 - Padronizar textos e remover strings hardcoded da UI
+- 
+## 🔹 [Milestone 13] Sistema de Idioma Dinâmico (Auto + Manual Persistido)
+**Status:** Concluído ✅
+
+### O que foi implementado
+- Sistema de **internacionalização (i18n)** usando o padrão oficial do Flutter (`gen-l10n`)
+- Tradução **automática baseada no idioma do sistema**, sem solicitar permissão de localização
+- Opção de **idioma manual** acessível em *Configurações*
+- Persistência do idioma escolhido via `SharedPreferences`
+- Aplicação **imediata do idioma** sem necessidade de reiniciar o app
+- Suporte inicial aos idiomas:
+  - Português (Brasil)
+  - Português (Portugal)
+  - Inglês
+  - Espanhol
+- Fallback seguro para evitar crashes caso alguma key ainda não exista nos ARBs
+- Arquitetura preparada para expansão futura de idiomas
+
+### Objetivo
+- Garantir que o app se adapte automaticamente ao idioma do usuário
+- Permitir override manual com persistência entre sessões
+- Manter estabilidade e previsibilidade mesmo durante evolução dos arquivos de tradução
+
+### Próximo passo (próximo commit)
+- **Organização estrutural completa** do que foi implementado:
+  - Padronizar nomes de keys nos ARBs
+  - Consolidar lógica de idioma (`LocaleController`, `LocaleStore`)
+  - Revisar imports e remover código legado
+  - Documentar a arquitetura de i18n no projeto
+

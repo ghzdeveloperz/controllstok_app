@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'l10n/app_localizations.dart';
 import 'core/app_navigator.dart';
+import 'core/locale_controller.dart';
 
 import 'services/firebase_service.dart';
 import 'notifications/notification_service.dart';
@@ -52,6 +53,9 @@ void main() async {
   // 🔹 Date formatting (opcional)
   await initializeDateFormatting('pt_BR', null);
 
+  // ✅ Carrega locale salvo ANTES de subir o app
+  await LocaleController.init();
+
   runApp(const MyApp());
 }
 
@@ -62,40 +66,60 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final baseTextTheme = GoogleFonts.poppinsTextTheme();
 
-    return MaterialApp(
-      navigatorKey: AppNavigator.key,
-      debugShowCheckedModeBanner: false,
+    return ValueListenableBuilder<Locale?>(
+      valueListenable: LocaleController.notifier,
+      builder: (context, overrideLocale, _) {
+        return MaterialApp(
+          navigatorKey: AppNavigator.key,
+          debugShowCheckedModeBanner: false,
 
-      // ✅ título traduzível (use a key que existir no seu ARB)
-      onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
+          // ✅ locale override manual (se existir). Se null, segue sistema.
+          locale: overrideLocale,
 
-      theme: ThemeData(
-        scaffoldBackgroundColor: Colors.white,
-        textTheme: baseTextTheme,
-      ),
+          // ✅ título traduzível (sem depender de appTitle existir)
+          onGenerateTitle: (context) {
+            // TODO: Troque quando tiver a key no ARB:
+            // return AppLocalizations.of(context)?.appName ?? 'MyStoreDay';
+            return 'MyStoreDay';
+          },
 
-      // ✅ l10n oficial do Flutter (gerado em lib/l10n)
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: AppLocalizations.supportedLocales,
+          theme: ThemeData(
+            scaffoldBackgroundColor: Colors.white,
+            textTheme: baseTextTheme,
+          ),
 
-      // ✅ sem localização: idioma do sistema; fallback en
-      localeResolutionCallback: (deviceLocale, supportedLocales) {
-        if (deviceLocale == null) return const Locale('en');
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
 
-        for (final locale in supportedLocales) {
-          if (locale.languageCode == deviceLocale.languageCode) {
-            return locale;
-          }
-        }
-        return const Locale('en');
+          // ✅ idioma do sistema; fallback en
+          localeResolutionCallback: (deviceLocale, supportedLocales) {
+            // Se existe override, o Flutter já respeita `locale: overrideLocale`.
+            if (overrideLocale != null) return overrideLocale;
+
+            if (deviceLocale == null) return const Locale('en');
+
+            for (final locale in supportedLocales) {
+              if (locale.languageCode == deviceLocale.languageCode) {
+                // se tiver match por país (pt_PT), melhor ainda
+                if (locale.countryCode != null &&
+                    deviceLocale.countryCode != null &&
+                    locale.countryCode == deviceLocale.countryCode) {
+                  return locale;
+                }
+                return locale;
+              }
+            }
+            return const Locale('en');
+          },
+
+          home: const AuthGate(),
+        );
       },
-
-      home: const AuthGate(),
     );
   }
 }

@@ -15,5 +15,15 @@
   "stockToday": "O seu stock hoje",
   "searchProductHint": "Pesquisar produto...",
   "allCategory": "Todos",
-  "noProductsFound": "Nenhum produto encontrado"
+  "noProductsFound": "Nenhum produto encontrado",
+
+  "languageTitle": "Idioma",
+  "languageSystem": "Idioma do sistema",
+  "languageSystemDescription": "Usar automaticamente o idioma do seu dispositivo",
+
+  "searchLanguageHint": "Buscar idioma...",
+  "languageSectionPreferences": "Preferências",
+  "languageSectionAvailable": "Idiomas disponíveis",
+  "selectedLabel": "Selecionado",
+  "noLanguageFound": "Nenhum idioma encontrado"
 }

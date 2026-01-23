@@ -30,4 +30,29 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noProductsFound => 'No products found';
+
+  @override
+  String get languageTitle => 'Language';
+
+  @override
+  String get languageSystem => 'System language';
+
+  @override
+  String get languageSystemDescription =>
+      'Use your device language automatically';
+
+  @override
+  String get searchLanguageHint => 'Search language...';
+
+  @override
+  String get languageSectionPreferences => 'Preferences';
+
+  @override
+  String get languageSectionAvailable => 'Available languages';
+
+  @override
+  String get selectedLabel => 'Selected';
+
+  @override
+  String get noLanguageFound => 'No language found';
 }

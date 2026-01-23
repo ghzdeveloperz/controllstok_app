@@ -6,6 +6,7 @@ import 'dart:ui';
 import '../../acounts/login/login_screen.dart';
 import 'categorias_screen.dart';
 import 'sobre_screen.dart';
+import 'traducer_screen.dart';
 
 class ConfigScreen extends StatefulWidget {
   const ConfigScreen({super.key});
@@ -22,10 +23,10 @@ class _ConfigScreenState extends State<ConfigScreen>
   late AnimationController _backgroundAnimationController;
   late Animation<Color?> _backgroundColorAnimation;
 
-  // Paleta “premium” (acento sutil + neutros)
-  static const Color _accent = Color(0xFF2D6CDF); // azul refinado
-  static const Color _ink = Color(0xFF0F172A); // quase preto (mais premium)
-  static const Color _surface = Color(0xFFF8FAFC); // fundo suave
+  // Paleta “premium”
+  static const Color _accent = Color(0xFF2D6CDF);
+  static const Color _ink = Color(0xFF0F172A);
+  static const Color _surface = Color(0xFFF8FAFC);
 
   @override
   void initState() {
@@ -36,8 +37,8 @@ class _ConfigScreenState extends State<ConfigScreen>
       vsync: this,
     );
 
-    // Agora são 2 opções (Categorias e Sobre)
-    _animations = List.generate(2, (index) {
+    // Agora são 3 opções
+    _animations = List.generate(3, (index) {
       return Tween<double>(begin: 0.0, end: 1.0).animate(
         CurvedAnimation(
           parent: _animationController,
@@ -74,6 +75,17 @@ class _ConfigScreenState extends State<ConfigScreen>
       MaterialPageRoute(builder: (_) => const LoginScreen()),
       (_) => false,
     );
+  }
+
+  Future<void> _openLanguage(BuildContext context) async {
+    final changed = await Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const TraducerScreen()),
+    );
+
+    // 🔮 Hook pronto para futuro (reiniciar árvore se quiser)
+    if (changed == true && mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -129,7 +141,7 @@ class _ConfigScreenState extends State<ConfigScreen>
                 end: Alignment.bottomCenter,
                 colors: [
                   _backgroundColorAnimation.value ?? _surface,
-                  const Color(0xFFF4F7FF), // leve azulado
+                  const Color(0xFFF4F7FF),
                   const Color(0xFFF8FAFC),
                 ],
                 stops: const [0.0, 0.55, 1.0],
@@ -141,11 +153,34 @@ class _ConfigScreenState extends State<ConfigScreen>
                 children: [
                   const SizedBox(height: 10),
 
-                  // Categorias
+                  // Idioma
                   AnimatedBuilder(
                     animation: _animations[0],
                     builder: (context, child) {
                       final t = _animations[0].value;
+                      return Transform.translate(
+                        offset: Offset(0, 26 * (1 - t)),
+                        child: Opacity(
+                          opacity: t,
+                          child: _buildOption(
+                            context,
+                            icon: Icons.language_outlined,
+                            title: 'Idioma',
+                            subtitle: 'Idioma e região',
+                            onTap: () => _openLanguage(context),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // Categorias
+                  AnimatedBuilder(
+                    animation: _animations[1],
+                    builder: (context, child) {
+                      final t = _animations[1].value;
                       return Transform.translate(
                         offset: Offset(0, 26 * (1 - t)),
                         child: Opacity(
@@ -166,9 +201,9 @@ class _ConfigScreenState extends State<ConfigScreen>
 
                   // Sobre
                   AnimatedBuilder(
-                    animation: _animations[1],
+                    animation: _animations[2],
                     builder: (context, child) {
-                      final t = _animations[1].value;
+                      final t = _animations[2].value;
                       return Transform.translate(
                         offset: Offset(0, 26 * (1 - t)),
                         child: Opacity(
@@ -200,19 +235,23 @@ class _ConfigScreenState extends State<ConfigScreen>
     required IconData icon,
     required String title,
     String? subtitle,
-    required Widget page,
+    Widget? page,
+    VoidCallback? onTap,
   }) {
     return Material(
       color: Colors.transparent,
       borderRadius: BorderRadius.circular(18),
-      elevation: 0, // mais “premium”: menos elevação pesada
       child: InkWell(
         borderRadius: BorderRadius.circular(18),
         splashColor: _accent.withValues(alpha: 0.10),
         highlightColor: _accent.withValues(alpha: 0.06),
-        onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
-        },
+        onTap: onTap ??
+            () {
+              if (page != null) {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (_) => page));
+              }
+            },
         child: Ink(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(18),
@@ -258,7 +297,8 @@ class _ConfigScreenState extends State<ConfigScreen>
                       width: 1.0,
                     ),
                   ),
-                  child: Icon(icon, color: _ink.withValues(alpha: 0.88), size: 24),
+                  child:
+                      Icon(icon, color: _ink.withValues(alpha: 0.88), size: 24),
                 ),
                 const SizedBox(width: 14),
                 Expanded(
@@ -288,10 +328,10 @@ class _ConfigScreenState extends State<ConfigScreen>
                     ],
                   ),
                 ),
-                Icon(
+                const Icon(
                   Icons.arrow_forward_ios_rounded,
                   size: 18,
-                  color: const Color(0xFF94A3B8),
+                  color: Color(0xFF94A3B8),
                 ),
               ],
             ),
