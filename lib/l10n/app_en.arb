@@ -25,5 +25,24 @@
   "languageSectionPreferences": "Preferences",
   "languageSectionAvailable": "Available languages",
   "selectedLabel": "Selected",
-  "noLanguageFound": "No language found"
+  "noLanguageFound": "No language found",
+
+  "languageConfirmTitle": "Confirm change",
+  "languageConfirmMessage": "Apply this language now? You can change it anytime.",
+  "cancel": "Cancel",
+  "apply": "Apply",
+
+  "languageTitle": "Idioma",
+  "searchLanguageHint": "Buscar idioma...",
+  "languageSectionPreferences": "Preferencias",
+  "languageSectionAvailable": "Idiomas disponibles",
+  "languageSystem": "Idioma del sistema",
+  "languageSystemDescription": "Usar automáticamente el idioma de tu dispositivo",
+  "selectedLabel": "Seleccionado",
+  "noLanguageFound": "No se encontró ningún idioma",
+
+  "languageConfirmTitle": "Confirmar cambio",
+  "languageConfirmMessage": "¿Quieres aplicar este idioma ahora? Puedes cambiarlo cuando quieras.",
+  "cancel": "Cancelar",
+  "apply": "Aplicar"
 }

@@ -6,7 +6,7 @@ import 'dart:ui';
 import '../../acounts/login/login_screen.dart';
 import 'categorias_screen.dart';
 import 'sobre_screen.dart';
-import 'traducer_screen.dart';
+import 'traducer/traducer_screen.dart';
 
 class ConfigScreen extends StatefulWidget {
   const ConfigScreen({super.key});

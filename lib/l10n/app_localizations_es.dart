@@ -55,4 +55,17 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get noLanguageFound => 'No se encontró ningún idioma';
+
+  @override
+  String get languageConfirmTitle => 'Confirmar alteração';
+
+  @override
+  String get languageConfirmMessage =>
+      'Deseja aplicar este idioma agora? Você pode alterar novamente quando quiser.';
+
+  @override
+  String get cancel => 'Cancelar';
+
+  @override
+  String get apply => 'Aplicar';
 }

@@ -55,6 +55,19 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get noLanguageFound => 'Nenhum idioma encontrado';
+
+  @override
+  String get languageConfirmTitle => 'Confirmar alteração';
+
+  @override
+  String get languageConfirmMessage =>
+      'Deseja aplicar este idioma agora? Você pode alterar novamente quando quiser.';
+
+  @override
+  String get cancel => 'Cancelar';
+
+  @override
+  String get apply => 'Aplicar';
 }
 
 /// The translations for Portuguese, as used in Portugal (`pt_PT`).
@@ -108,4 +121,17 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get noLanguageFound => 'Nenhum idioma encontrado';
+
+  @override
+  String get languageConfirmTitle => 'Confirmar alteração';
+
+  @override
+  String get languageConfirmMessage =>
+      'Pretende aplicar este idioma agora? Pode alterar novamente quando quiser.';
+
+  @override
+  String get cancel => 'Cancelar';
+
+  @override
+  String get apply => 'Aplicar';
 }

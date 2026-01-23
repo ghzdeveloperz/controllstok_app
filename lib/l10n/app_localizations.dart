@@ -190,6 +190,30 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Nenhum idioma encontrado'**
   String get noLanguageFound;
+
+  /// No description provided for @languageConfirmTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Confirmar alteração'**
+  String get languageConfirmTitle;
+
+  /// No description provided for @languageConfirmMessage.
+  ///
+  /// In pt, this message translates to:
+  /// **'Deseja aplicar este idioma agora? Você pode alterar novamente quando quiser.'**
+  String get languageConfirmMessage;
+
+  /// No description provided for @cancel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cancelar'**
+  String get cancel;
+
+  /// No description provided for @apply.
+  ///
+  /// In pt, this message translates to:
+  /// **'Aplicar'**
+  String get apply;
 }
 
 class _AppLocalizationsDelegate

@@ -32,27 +32,40 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noProductsFound => 'No products found';
 
   @override
-  String get languageTitle => 'Language';
+  String get languageTitle => 'Idioma';
 
   @override
-  String get languageSystem => 'System language';
+  String get languageSystem => 'Idioma del sistema';
 
   @override
   String get languageSystemDescription =>
-      'Use your device language automatically';
+      'Usar automáticamente el idioma de tu dispositivo';
 
   @override
-  String get searchLanguageHint => 'Search language...';
+  String get searchLanguageHint => 'Buscar idioma...';
 
   @override
-  String get languageSectionPreferences => 'Preferences';
+  String get languageSectionPreferences => 'Preferencias';
 
   @override
-  String get languageSectionAvailable => 'Available languages';
+  String get languageSectionAvailable => 'Idiomas disponibles';
 
   @override
-  String get selectedLabel => 'Selected';
+  String get selectedLabel => 'Seleccionado';
 
   @override
-  String get noLanguageFound => 'No language found';
+  String get noLanguageFound => 'No se encontró ningún idioma';
+
+  @override
+  String get languageConfirmTitle => 'Confirmar cambio';
+
+  @override
+  String get languageConfirmMessage =>
+      '¿Quieres aplicar este idioma ahora? Puedes cambiarlo cuando quieras.';
+
+  @override
+  String get cancel => 'Cancelar';
+
+  @override
+  String get apply => 'Aplicar';
 }

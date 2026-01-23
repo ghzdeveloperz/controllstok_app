@@ -25,5 +25,10 @@
   "languageSectionPreferences": "Preferências",
   "languageSectionAvailable": "Idiomas disponíveis",
   "selectedLabel": "Selecionado",
-  "noLanguageFound": "Nenhum idioma encontrado"
+  "noLanguageFound": "Nenhum idioma encontrado",
+
+  "languageConfirmTitle": "Confirmar alteração",
+  "languageConfirmMessage": "Deseja aplicar este idioma agora? Você pode alterar novamente quando quiser.",
+  "cancel": "Cancelar",
+  "apply": "Aplicar"
 }
