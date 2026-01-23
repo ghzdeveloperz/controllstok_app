@@ -1,5 +1,12 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'utils/password_strength.dart';
+import 'package:mystoreday/services/auth/google_auth_service.dart';
 
 class RegisterController extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -9,34 +16,472 @@ class RegisterController extends ChangeNotifier {
   final TextEditingController confirmPasswordController = TextEditingController();
 
   bool isLoading = false;
+  bool isRestoring = true;
   String? errorMessage;
 
-  // SUBMIT
-  void submit() async {
-    final email = emailController.text.trim();
-    final password = passwordController.text.trim();
-    final confirmPassword = confirmPasswordController.text.trim();
+  bool emailSent = false;
+  bool emailVerified = false;
+  bool awaitingVerification = false;
 
-    // Validações
-    if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
-      return setErrorWithTimeout('Preencha todos os campos.');
+  User? _tempUser;
+  String? _tempPassword;
+
+  Timer? _verifyTimer;
+  Timer? _verifyTimeoutTimer;
+
+  int resendCooldownSeconds = 0;
+  Timer? _resendCooldownTimer;
+
+  bool showPassword = false;
+  bool showConfirmPassword = false;
+  int passwordStrength = 0;
+
+  static const _kPendingEmail = 'register_pending_email';
+  static const _kPendingTempPass = 'register_pending_temp_pass';
+  static const _kPendingCreatedAt = 'register_pending_created_at';
+
+  RegisterController() {
+    emailController.addListener(_onEmailChanged);
+    passwordController.addListener(_onPasswordFieldsChanged);
+    confirmPasswordController.addListener(_onPasswordFieldsChanged);
+
+    _recomputePasswordStrength();
+    Future.microtask(_restorePendingIfAny);
+  }
+
+  bool get hasPendingVerification => emailSent && !emailVerified;
+
+  /// ✅ Google sign-in
+  /// Retorna:
+  /// - true  => ir para Company (novo usuário ou onboarding incompleto)
+  /// - false => ir para Home (onboarding completo)
+  /// - null  => cancelado/erro (não navegar)
+  Future<bool?> registerWithGoogle() async {
+    if (isLoading) return null;
+
+    _setLoading(true);
+    clearError();
+
+    try {
+      // 🔹 Reseta qualquer fluxo pendente de email/senha
+      _verifyTimer?.cancel();
+      _verifyTimeoutTimer?.cancel();
+      _resetResendCooldown();
+
+      awaitingVerification = false;
+      emailSent = false;
+      emailVerified = false;
+
+      _tempUser = null;
+      _tempPassword = null;
+
+      await _clearPendingStorage();
+
+      final cred = await GoogleAuthService.instance.signInWithGoogle();
+
+      if (cred == null) {
+        setAlertWithTimeout('Login com Google cancelado.');
+        return null;
+      }
+
+      final user = cred.user ?? _auth.currentUser;
+      if (user == null) {
+        setAlertWithTimeout('Não foi possível obter o usuário do Google.');
+        return null;
+      }
+
+      final isNewUser = cred.additionalUserInfo?.isNewUser == true;
+
+      final userRef =
+          FirebaseFirestore.instance.collection('users').doc(user.uid);
+
+      // 🔹 Se doc já existe, respeita o estado atual do onboarding
+      final existingDoc = await userRef.get();
+      final existedBefore = existingDoc.exists;
+      final onboardingCompleted =
+          existedBefore && (existingDoc.data()?['onboardingCompleted'] == true);
+
+      // 🔹 Garante doc mínimo (sem sobrescrever dados)
+      await userRef.set({
+        'uid': user.uid,
+        'email': user.email,
+        'provider': 'google',
+        'emailVerified': user.emailVerified,
+        'active': true,
+        'plan': 'Grátis',
+        'updatedAt': FieldValue.serverTimestamp(),
+
+        // Só define createdAt e onboarding inicial quando é novo/primeira vez
+        if (isNewUser || !existedBefore) 'createdAt': FieldValue.serverTimestamp(),
+        if (isNewUser || !existedBefore) 'onboardingCompleted': false,
+      }, SetOptions(merge: true));
+
+      clearError();
+      notifyListeners();
+
+      // ✅ Decide destino
+      if (isNewUser) return true;
+      if (onboardingCompleted) return false;
+      return true;
+    } on FirebaseAuthException catch (e) {
+      setAlertWithTimeout(_mapFirebaseError(e.code));
+      return null;
+    } catch (_) {
+      setAlertWithTimeout(
+        'Falha ao continuar com Google. Verifique sua configuração do Firebase/Google.',
+      );
+      return null;
+    } finally {
+      _setLoading(false);
     }
-    if (password.length < 6) {
-      return setErrorWithTimeout('A senha deve ter no mínimo 6 caracteres.');
+  }
+
+  Future<void> cancelPendingRegistration() async {
+    if (!emailSent || emailVerified) return;
+    await _deleteTempUserIfExists();
+    await _clearPendingStorage();
+  }
+
+  Future<void> cancelAndResetRegistration() async {
+    if (isLoading) return;
+
+    _setLoading(true);
+    try {
+      await _deleteTempUserIfExists();
+      await _clearPendingStorage();
+
+      emailController.clear();
+      passwordController.clear();
+      confirmPasswordController.clear();
+
+      emailSent = false;
+      emailVerified = false;
+      awaitingVerification = false;
+
+      _resetResendCooldown();
+      clearError();
+    } catch (_) {
+      setAlertWithTimeout('Não foi possível cancelar agora. Tente novamente.');
+    } finally {
+      _setLoading(false);
+      notifyListeners();
     }
-    if (password != confirmPassword) {
-      return setErrorWithTimeout('As senhas não coincidem.');
+  }
+
+  void _onEmailChanged() => notifyListeners();
+
+  void _onPasswordFieldsChanged() {
+    _recomputePasswordStrength();
+    notifyListeners();
+  }
+
+  void _recomputePasswordStrength() {
+    passwordStrength = calculatePasswordStrength(passwordController.text.trim());
+  }
+
+  void toggleShowPassword() {
+    showPassword = !showPassword;
+    notifyListeners();
+  }
+
+  void toggleShowConfirmPassword() {
+    showConfirmPassword = !showConfirmPassword;
+    notifyListeners();
+  }
+
+  bool get canSubmit {
+    final password = passwordController.text.trim();
+    final confirm = confirmPasswordController.text.trim();
+    final strongEnough = passwordStrength >= 3;
+
+    return emailVerified &&
+        !isLoading &&
+        strongEnough &&
+        password.isNotEmpty &&
+        confirm.isNotEmpty &&
+        password == confirm;
+  }
+
+  void setAlertWithTimeout(String message, {int seconds = 4}) {
+    errorMessage = message;
+    notifyListeners();
+
+    Future.delayed(Duration(seconds: seconds), () {
+      if (errorMessage == message) clearError();
+    });
+  }
+
+  void clearError() {
+    errorMessage = null;
+    notifyListeners();
+  }
+
+  void _startResendCooldown([int seconds = 30]) {
+    _resendCooldownTimer?.cancel();
+    resendCooldownSeconds = seconds;
+    notifyListeners();
+
+    _resendCooldownTimer = Timer.periodic(const Duration(seconds: 1), (t) {
+      resendCooldownSeconds--;
+      notifyListeners();
+
+      if (resendCooldownSeconds <= 0) {
+        resendCooldownSeconds = 0;
+        t.cancel();
+        notifyListeners();
+      }
+    });
+  }
+
+  void _resetResendCooldown() {
+    _resendCooldownTimer?.cancel();
+    resendCooldownSeconds = 0;
+    notifyListeners();
+  }
+
+  Future<void> sendEmailVerification() async {
+    final email = emailController.text.trim();
+
+    if (email.isEmpty) {
+      setAlertWithTimeout('Preencha o e-mail.');
+      return;
+    }
+    if (!_looksLikeEmail(email)) {
+      setAlertWithTimeout('E-mail inválido.');
+      return;
     }
 
     _setLoading(true);
 
     try {
-      await _auth.createUserWithEmailAndPassword(email: email, password: password);
-      clearError();
+      final randomPass = _generateTempPassword();
+      final credential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: randomPass,
+      );
+
+      _tempUser = credential.user;
+      _tempPassword = randomPass;
+
+      await _persistPending(email: email, tempPassword: randomPass);
+
+      await _tempUser?.sendEmailVerification();
+
+      emailSent = true;
+      emailVerified = false;
+      awaitingVerification = true;
+
+      setAlertWithTimeout(
+        'E-mail de verificação enviado. Verifique sua caixa de entrada (e spam).',
+      );
+
+      _startVerificationPolling();
+      notifyListeners();
     } on FirebaseAuthException catch (e) {
-      setErrorWithTimeout(_mapFirebaseError(e.code));
+      setAlertWithTimeout(_mapFirebaseError(e.code));
     } catch (_) {
-      setErrorWithTimeout('Erro inesperado ao criar conta.');
+      setAlertWithTimeout('Erro inesperado ao enviar verificação.');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<void> resendEmailVerification() async {
+    if (isLoading) return;
+    if (resendCooldownSeconds > 0) return;
+
+    final email = emailController.text.trim();
+    if (email.isEmpty) {
+      setAlertWithTimeout('Preencha o e-mail.');
+      return;
+    }
+    if (!_looksLikeEmail(email)) {
+      setAlertWithTimeout('E-mail inválido.');
+      return;
+    }
+
+    _setLoading(true);
+
+    try {
+      await _deleteTempUserIfExists();
+
+      final randomPass = _generateTempPassword();
+      final credential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: randomPass,
+      );
+
+      _tempUser = credential.user;
+      _tempPassword = randomPass;
+
+      await _persistPending(email: email, tempPassword: randomPass);
+
+      await _tempUser?.sendEmailVerification();
+
+      emailSent = true;
+      emailVerified = false;
+      awaitingVerification = true;
+
+      setAlertWithTimeout('E-mail reenviado. Verifique a caixa de entrada (e spam).');
+
+      _startResendCooldown(30);
+
+      _startVerificationPolling();
+      notifyListeners();
+    } on FirebaseAuthException catch (e) {
+      setAlertWithTimeout(_mapFirebaseError(e.code));
+    } catch (_) {
+      setAlertWithTimeout('Erro inesperado ao reenviar verificação.');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<void> changeEmail() async {
+    if (isLoading) return;
+
+    _setLoading(true);
+
+    try {
+      await _deleteTempUserIfExists();
+      await _clearPendingStorage();
+
+      emailController.clear();
+      passwordController.clear();
+      confirmPasswordController.clear();
+
+      emailSent = false;
+      emailVerified = false;
+      awaitingVerification = false;
+
+      _resetResendCooldown();
+
+      setAlertWithTimeout('Você pode alterar o e-mail e tentar novamente.', seconds: 3);
+      notifyListeners();
+    } catch (_) {
+      setAlertWithTimeout('Não foi possível alterar agora. Tente novamente.');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<void> _deleteTempUserIfExists() async {
+    _verifyTimer?.cancel();
+    _verifyTimeoutTimer?.cancel();
+
+    final User? userToDelete = _tempUser ?? _auth.currentUser;
+
+    try {
+      if (userToDelete != null) {
+        await userToDelete.delete();
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'requires-recent-login') {
+        final email = emailController.text.trim();
+        final pass = _tempPassword;
+
+        if (pass != null && email.isNotEmpty && _auth.currentUser != null) {
+          final cred = EmailAuthProvider.credential(email: email, password: pass);
+          await _auth.currentUser!.reauthenticateWithCredential(cred);
+          await _auth.currentUser!.delete();
+        }
+      } else {
+        rethrow;
+      }
+    } finally {
+      await _auth.signOut();
+
+      _tempUser = null;
+      _tempPassword = null;
+
+      awaitingVerification = false;
+      emailSent = false;
+      emailVerified = false;
+      notifyListeners();
+    }
+  }
+
+  void _startVerificationPolling() {
+    _verifyTimer?.cancel();
+    _verifyTimeoutTimer?.cancel();
+
+    _verifyTimer = Timer.periodic(const Duration(seconds: 2), (_) async {
+      _tempUser ??= _auth.currentUser;
+      if (_tempUser == null) return;
+
+      await _tempUser!.reload();
+      final refreshed = _auth.currentUser;
+
+      final verified = refreshed?.emailVerified == true;
+
+      if (verified && !emailVerified) {
+        emailVerified = true;
+        awaitingVerification = false;
+
+        _verifyTimer?.cancel();
+        _verifyTimeoutTimer?.cancel();
+
+        notifyListeners();
+      }
+    });
+
+    _verifyTimeoutTimer = Timer(const Duration(minutes: 2), () {
+      _verifyTimer?.cancel();
+      awaitingVerification = false;
+      notifyListeners();
+    });
+  }
+
+  Future<void> submit() async {
+    if (!emailVerified) {
+      setAlertWithTimeout('Verifique seu e-mail antes de continuar.');
+      return;
+    }
+
+    final password = passwordController.text.trim();
+    final confirm = confirmPasswordController.text.trim();
+
+    if (password.isEmpty || confirm.isEmpty) {
+      setAlertWithTimeout('Preencha a senha e a confirmação.');
+      return;
+    }
+
+    if (passwordStrength < 3) {
+      setAlertWithTimeout('A senha precisa ser forte para criar a conta.');
+      return;
+    }
+
+    if (password != confirm) {
+      setAlertWithTimeout('As senhas não coincidem.');
+      return;
+    }
+
+    if (_tempPassword == null) {
+      setAlertWithTimeout('Sessão inválida. Refaça a verificação do e-mail.');
+      return;
+    }
+
+    _setLoading(true);
+
+    try {
+      final email = emailController.text.trim();
+      final cred = EmailAuthProvider.credential(
+        email: email,
+        password: _tempPassword!,
+      );
+
+      await _auth.currentUser?.reauthenticateWithCredential(cred);
+      await _auth.currentUser?.updatePassword(password);
+
+      _tempPassword = null;
+      await _clearPendingStorage();
+
+      clearError();
+      notifyListeners();
+    } on FirebaseAuthException catch (e) {
+      setAlertWithTimeout(_mapFirebaseError(e.code));
+    } catch (_) {
+      setAlertWithTimeout('Erro inesperado ao criar conta.');
     } finally {
       _setLoading(false);
     }
@@ -47,18 +492,13 @@ class RegisterController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setErrorWithTimeout(String message, {int seconds = 3}) {
-    errorMessage = message;
-    notifyListeners();
-
-    Future.delayed(Duration(seconds: seconds), () {
-      clearError();
-    });
+  bool _looksLikeEmail(String email) {
+    return email.contains('@') && email.contains('.') && email.length >= 6;
   }
 
-  void clearError() {
-    errorMessage = null;
-    notifyListeners();
+  String _generateTempPassword() {
+    final millis = DateTime.now().millisecondsSinceEpoch;
+    return 'Tmp@${millis}Aa1!';
   }
 
   String _mapFirebaseError(String code) {
@@ -68,14 +508,98 @@ class RegisterController extends ChangeNotifier {
       case 'invalid-email':
         return 'E-mail inválido.';
       case 'weak-password':
-        return 'Senha muito fraca.';
+        return 'Senha fraca.';
+      case 'network-request-failed':
+        return 'Sem conexão. Tente novamente.';
+      case 'too-many-requests':
+        return 'Muitas tentativas. Aguarde um pouco.';
       default:
-        return 'Erro ao criar conta.';
+        return 'Erro ao continuar o cadastro.';
+    }
+  }
+
+  Future<void> _persistPending({
+    required String email,
+    required String tempPassword,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_kPendingEmail, email);
+    await prefs.setString(_kPendingTempPass, tempPassword);
+    await prefs.setInt(_kPendingCreatedAt, DateTime.now().millisecondsSinceEpoch);
+  }
+
+  Future<void> _clearPendingStorage() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_kPendingEmail);
+    await prefs.remove(_kPendingTempPass);
+    await prefs.remove(_kPendingCreatedAt);
+  }
+
+  Future<void> _restorePendingIfAny() async {
+    isRestoring = true;
+    notifyListeners();
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final email = prefs.getString(_kPendingEmail);
+      final pass = prefs.getString(_kPendingTempPass);
+
+      if (email == null || pass == null) {
+        isRestoring = false;
+        notifyListeners();
+        return;
+      }
+
+      emailController.text = email;
+      _tempPassword = pass;
+
+      try {
+        await _auth.signInWithEmailAndPassword(email: email, password: pass);
+      } catch (_) {
+        await _clearPendingStorage();
+        isRestoring = false;
+        notifyListeners();
+        return;
+      }
+
+      _tempUser = _auth.currentUser;
+      if (_tempUser == null) {
+        await _clearPendingStorage();
+        isRestoring = false;
+        notifyListeners();
+        return;
+      }
+
+      await _tempUser!.reload();
+      final refreshed = _auth.currentUser;
+      final verified = refreshed?.emailVerified == true;
+
+      emailSent = true;
+      emailVerified = verified;
+      awaitingVerification = !verified;
+
+      if (!verified) {
+        _startVerificationPolling();
+      }
+
+      isRestoring = false;
+      notifyListeners();
+    } catch (_) {
+      isRestoring = false;
+      notifyListeners();
     }
   }
 
   @override
   void dispose() {
+    _verifyTimer?.cancel();
+    _verifyTimeoutTimer?.cancel();
+    _resendCooldownTimer?.cancel();
+
+    emailController.removeListener(_onEmailChanged);
+    passwordController.removeListener(_onPasswordFieldsChanged);
+    confirmPasswordController.removeListener(_onPasswordFieldsChanged);
+
     emailController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();

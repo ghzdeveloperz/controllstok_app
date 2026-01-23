@@ -1,18 +1,23 @@
 // lib/main.dart
 // ignore_for_file: depend_on_referenced_packages
 
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/date_symbol_data_local.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'services/firebase_service.dart';
-import 'screens/acounts/auth_choice/auth_choice_screen.dart'; // ← Nova tela
-import 'screens/home_screen.dart';
 import 'notifications/notification_service.dart';
 import 'notifications/save_fcm_token.dart';
+
+import 'screens/home_screen.dart';
+import 'screens/acounts/auth_choice/auth_choice_screen.dart';
+import 'screens/acounts/register/register_screen.dart';
+import 'screens/acounts/onboarding/company_screen.dart';
 
 /// 🔹 GlobalKey para navegar fora do context
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -58,9 +63,9 @@ class MyApp extends StatelessWidget {
     final baseTextTheme = GoogleFonts.poppinsTextTheme();
 
     return MaterialApp(
-      navigatorKey: navigatorKey, // ← essencial para navegação global
+      navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
-      title: 'ControlStok',
+      title: 'MyStoreDay',
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
         textTheme: baseTextTheme,
@@ -87,6 +92,9 @@ class _AuthGateState extends State<AuthGate> {
   bool _tokenSaved = false;
   Map<String, dynamic>? _pendingNotification;
 
+  // Ajuda a resetar estados quando troca de usuário (logout/login outro)
+  String? _lastUid;
+
   @override
   void initState() {
     super.initState();
@@ -108,30 +116,62 @@ class _AuthGateState extends State<AuthGate> {
     // 🔹 Listener de clique em notificações (background ou app aberto)
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       _pendingNotification = message.data;
-      _tryNavigate();
+      _navigateToAlertsIfAllowed();
     });
 
     // 🔹 Notificação que abriu o app quando estava fechado
     FirebaseMessaging.instance.getInitialMessage().then((message) {
       if (message != null) {
         _pendingNotification = message.data;
-        _tryNavigate();
+        _navigateToAlertsIfAllowed();
       }
     });
   }
 
-  // 🔹 Tenta navegar para HomeScreen na aba Alertas se o usuário estiver logado
-  void _tryNavigate() {
+  /// ✅ Detecta se existe REGISTRO PENDENTE (etapa “definir senha”)
+  /// ⚠️ Importante: só considera pendente se for do MESMO e-mail do usuário atual,
+  /// pra não travar o fluxo com pendência antiga.
+  Future<bool> _hasRegisterPendingForCurrentUser(User user) async {
+    final prefs = await SharedPreferences.getInstance();
+    final pendingEmail = prefs.getString('register_pending_email');
+    final pass = prefs.getString('register_pending_temp_pass');
+
+    if (pendingEmail == null || pass == null) return false;
+
+    final currentEmail = (user.email ?? '').trim().toLowerCase();
+    final storedEmail = pendingEmail.trim().toLowerCase();
+
+    return currentEmail.isNotEmpty && currentEmail == storedEmail;
+  }
+
+  /// ✅ Garante que exista um documento do usuário no Firestore.
+  /// Evita fluxos quebrados quando o Google login cria auth user mas ainda não criou doc.
+  Future<void> _ensureUserDoc(User user) async {
+    final ref = FirebaseFirestore.instance.collection('users').doc(user.uid);
+    final snap = await ref.get();
+    if (snap.exists) return;
+
+    await ref.set({
+      'uid': user.uid,
+      'email': user.email,
+      'createdAt': FieldValue.serverTimestamp(),
+      'onboardingCompleted': false,
+    }, SetOptions(merge: true));
+  }
+
+  // 🔹 Navega para HomeScreen na aba Alertas se permitido
+  void _navigateToAlertsIfAllowed() {
     final user = FirebaseAuth.instance.currentUser;
-    if (_pendingNotification != null && user != null) {
-      navigatorKey.currentState?.pushAndRemoveUntil(
-        MaterialPageRoute(
-          builder: (_) => const HomeScreen(initialIndex: 4), // aba Alertas
-        ),
-        (route) => false,
-      );
-      _pendingNotification = null; // limpa pending
-    }
+    if (_pendingNotification == null || user == null) return;
+
+    navigatorKey.currentState?.pushAndRemoveUntil(
+      MaterialPageRoute(
+        builder: (_) => const HomeScreen(initialIndex: 4),
+      ),
+      (route) => false,
+    );
+
+    _pendingNotification = null;
   }
 
   @override
@@ -156,22 +196,99 @@ class _AuthGateState extends State<AuthGate> {
           );
         }
 
-        if (snapshot.hasData) {
-          /// 🔑 Salva o token FCM UMA VEZ por sessão
-          if (!_tokenSaved) {
-            _tokenSaved = true;
-            saveFcmTokenIfLoggedIn();
-
-            // Caso haja notificação pendente após login, navega
-            _tryNavigate();
-          }
-
-          return const HomeScreen(); // default aba Estoque
+        // ✅ Usuário NÃO logado
+        if (!snapshot.hasData) {
+          _tokenSaved = false;
+          _lastUid = null;
+          return const AuthChoiceScreen();
         }
 
-        _tokenSaved = false;
-        // 🔹 Aqui vai a nova tela de escolha
-        return const AuthChoiceScreen();
+        // ✅ Usuário logado
+        final user = snapshot.data!;
+
+        // Se mudou de usuário, reseta flags
+        if (_lastUid != user.uid) {
+          _lastUid = user.uid;
+          _tokenSaved = false;
+        }
+
+        // 0) garantir doc Firestore
+        return FutureBuilder<void>(
+          future: _ensureUserDoc(user),
+          builder: (context, ensureSnap) {
+            if (ensureSnap.connectionState == ConnectionState.waiting) {
+              return const Scaffold(
+                body: Center(child: CircularProgressIndicator()),
+              );
+            }
+
+            // 1) Se existir register_pending_* => volta para RegisterScreen (definir senha)
+            return FutureBuilder<bool>(
+              future: _hasRegisterPendingForCurrentUser(user),
+              builder: (context, pendingSnap) {
+                if (pendingSnap.connectionState == ConnectionState.waiting) {
+                  return const Scaffold(
+                    body: Center(child: CircularProgressIndicator()),
+                  );
+                }
+
+                final hasRegisterPending = pendingSnap.data == true;
+
+                if (hasRegisterPending) {
+                  _tokenSaved = false;
+                  return const RegisterScreen();
+                }
+
+                // 2) onboarding no Firestore
+                return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                  stream: FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(user.uid)
+                      .snapshots(),
+                  builder: (context, docSnap) {
+                    if (docSnap.connectionState == ConnectionState.waiting) {
+                      return const Scaffold(
+                        body: Center(child: CircularProgressIndicator()),
+                      );
+                    }
+
+                    // Se por algum motivo ainda não existe (ou veio null), segura no CompanyScreen
+                    final exists = docSnap.data?.exists == true;
+                    final data = exists ? docSnap.data!.data() : null;
+
+                    final onboardingCompleted =
+                        data?['onboardingCompleted'] == true;
+
+                    // 2) onboarding pendente
+                    if (!onboardingCompleted) {
+                      _tokenSaved = false;
+                      return CompanyScreen(user: user);
+                    }
+
+                    // 3) tudo OK => Home
+                    if (!_tokenSaved) {
+                      _tokenSaved = true;
+                      saveFcmTokenIfLoggedIn();
+                    }
+
+                    // Se abriu por notificação, manda pra aba Alertas
+                    if (_pendingNotification != null) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        _navigateToAlertsIfAllowed();
+                      });
+
+                      return const Scaffold(
+                        body: Center(child: CircularProgressIndicator()),
+                      );
+                    }
+
+                    return const HomeScreen();
+                  },
+                );
+              },
+            );
+          },
+        );
       },
     );
   }

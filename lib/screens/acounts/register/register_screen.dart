@@ -1,10 +1,14 @@
 // lib/screens/acounts/register/register_screen.dart
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+import 'register_controller.dart';
 import 'widgets/register_form.dart';
 import 'widgets/register_alert.dart';
-import 'register_controller.dart';
 import 'widgets/register_header.dart';
 import 'widgets/register_footer.dart';
+
+import '../../acounts/onboarding/company_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -16,77 +20,112 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen>
     with SingleTickerProviderStateMixin {
   late final RegisterController controller;
-  late final AnimationController _alertAnimationController;
+
+  late final AnimationController _animationController;
+  late final Animation<double> _animation;
+
+  String? _lastError;
 
   @override
   void initState() {
     super.initState();
+
     controller = RegisterController();
 
-    _alertAnimationController = AnimationController(
+    _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 400),
+      duration: const Duration(milliseconds: 350),
     );
+
+    _animation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    );
+
+    controller.addListener(_handleErrorAnimation);
   }
 
-  void _handleSubmit() {
-    controller.submit();
+  void _handleErrorAnimation() {
+    final error = controller.errorMessage;
 
-    if (controller.errorMessage != null && controller.errorMessage!.isNotEmpty) {
-      _alertAnimationController.forward();
-
-      Future.delayed(const Duration(seconds: 3), () {
-        controller.clearError();
-        _alertAnimationController.reverse();
-      });
+    if (error != null && error.isNotEmpty && error != _lastError) {
+      _lastError = error;
+      _animationController
+        ..reset()
+        ..forward();
+      return;
     }
 
-    setState(() {}); // atualiza loading e erro
+    if ((error == null || error.isEmpty) && _lastError != null) {
+      _lastError = null;
+      _animationController.reverse();
+    }
+
+    setState(() {});
+  }
+
+  Future<void> _handleSubmit() async {
+    await controller.submit();
+    if (!mounted) return;
+
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => CompanyScreen(user: user),
+      ),
+    );
   }
 
   @override
   void dispose() {
+    controller.removeListener(_handleErrorAnimation);
     controller.dispose();
-    _alertAnimationController.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F7),
-      body: SafeArea(
-        child: Center( // <--- centraliza verticalmente igual ao LoginScreen
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min, // <--- evita ocupar todo o espaço vertical
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const RegisterHeader(),
-                const SizedBox(height: 28),
+    final hideFooter = controller.awaitingVerification || controller.emailVerified;
 
-                // ALERTA ANIMADO
-                RegisterAlert(
-                  animation: _alertAnimationController,
-                  message: controller.errorMessage,
-                ),
-                if (controller.errorMessage != null &&
-                    controller.errorMessage!.isNotEmpty)
-                  const SizedBox(height: 16),
-
-                // FORMULÁRIO
-                RegisterForm(
-                  controller: controller,
-                  isLoading: controller.isLoading,
-                  onSubmit: _handleSubmit,
-                ),
-
-                const SizedBox(height: 20),
-
-                // FOOTER
-                const RegisterFooter(),
-              ],
+    return WillPopScope(
+      onWillPop: () async {
+        if (controller.hasPendingVerification) {
+          await controller.cancelPendingRegistration();
+        }
+        return true;
+      },
+      child: Scaffold(
+        backgroundColor: const Color(0xFFF7F7F7),
+        body: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const RegisterHeader(),
+                  const SizedBox(height: 20),
+                  RegisterAlert(
+                    animation: _animation,
+                    message: controller.errorMessage,
+                  ),
+                  const SizedBox(height: 20),
+                  RegisterForm(
+                    controller: controller,
+                    isLoading: controller.isLoading,
+                    onSubmit: _handleSubmit,
+                  ),
+                  if (!hideFooter) ...[
+                    const SizedBox(height: 28),
+                    const RegisterFooter(),
+                  ],
+                ],
+              ),
             ),
           ),
         ),

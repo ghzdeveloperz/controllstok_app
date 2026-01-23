@@ -23,16 +23,15 @@ class RegisterAlert extends StatelessWidget {
         return SizeTransition(
           sizeFactor: animation,
           axisAlignment: -1.0,
-          child: FadeTransition(
-            opacity: animation,
+          child: Opacity(
+            opacity: animation.value,
             child: Container(
               width: double.infinity,
-              padding:
-                  const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
               decoration: BoxDecoration(
-                color: const Color(0xFFFFE0E0),
+                color: const Color(0xFFE0E0E0), // igual login
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.red.shade200),
+                border: Border.all(color: Colors.black12),
               ),
               child: Text(
                 message ?? '',
