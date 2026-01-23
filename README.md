@@ -229,23 +229,19 @@ Essas regras são reavaliadas a cada mudança de autenticação ou Firestore.
   - Documentar a arquitetura de i18n no projeto
 
 
-## [Milestone 14] Estrutura organizada da implementação de Tradução (l10n + idioma manual)
+## [Milestone 14] Organização da Estrutura + Idioma Suíço (de-CH)
 **Status:** Concluído ✅
 
 ### Melhorias:
-- Refatoração da feature de idioma para **estrutura modular**:
-  - `TraducerScreen` isolado por pasta (`traducer/`)
-  - Componentes reutilizáveis separados em `widgets/` (cards, search, labels, dialog, flags)
-  - Dados de idiomas centralizados em `data/` (options/lista)
-- Ajuste de arquitetura do idioma manual:
-  - Persistência do idioma via `LocaleStore`
-  - Aplicação imediata via `LocaleController` (sem precisar fechar o app)
-- UI mais premium e consistente com o app (preto/branco):
-  - Cards refinados, indicadores de seleção
-  - Campo de busca para filtrar idiomas
-  - Confirmação ao aplicar mudança de idioma
-- Padronização geral (nomenclatura, imports, pastas e responsabilidades)
+- Estrutura de tradução **refatorada e organizada** (Traducer modular, arquivos separados por responsabilidade)
+- Tela de idiomas com **UI premium**, busca e seleção persistida
+- Implementado novo idioma: **Alemão (Suíça) — `de_CH`**
+- Criado fallback obrigatório **`de`** para suportar corretamente o `de_CH` (exigência do `flutter gen-l10n`)
+- Ajustado padrão de arquivos para evitar conflito entre `@@locale` e nome do `.arb`
 
 ### Objetivo:
-- Organizar a implementação de tradução e idioma manual em uma estrutura clara, escalável e fácil de manter,
-  deixando a base pronta para expandir o app com novas telas traduzidas e novas preferências do usuário.
+- Manter a base de i18n escalável e fácil de evoluir
+- Garantir que idiomas com país (ex: `de_CH`) funcionem com fallback correto (`de`)
+- Preparar o projeto para adicionar novos idiomas sem quebrar o `gen-l10n`
+
+> Próximo commit: organizar estruturalmente todo o restante do que foi implementado (padronização de pastas/nomes/imports).

@@ -1,0 +1,34 @@
+{
+  "@@locale": "de_CH",
+
+  "appTitle": "MyStoreDay",
+
+  "hello": "Hallo",
+
+  "helloCompany": "Hallo, {company}.",
+  "@helloCompany": {
+    "placeholders": {
+      "company": {}
+    }
+  },
+
+  "stockToday": "Ihr Lagerbestand heute",
+  "searchProductHint": "Produkt suchen...",
+  "allCategory": "Alle",
+  "noProductsFound": "Keine Produkte gefunden",
+
+  "languageTitle": "Sprache",
+  "languageSystem": "Systemsprache",
+  "languageSystemDescription": "Automatisch die Gerätesprache verwenden",
+
+  "searchLanguageHint": "Sprache suchen...",
+  "languageSectionPreferences": "Einstellungen",
+  "languageSectionAvailable": "Verfügbare Sprachen",
+  "selectedLabel": "Ausgewählt",
+  "noLanguageFound": "Keine Sprache gefunden",
+
+  "languageConfirmTitle": "Sprache ändern",
+  "languageConfirmMessage": "Möchten Sie diese Sprache jetzt anwenden? Sie können sie jederzeit erneut ändern.",
+  "cancel": "Abbrechen",
+  "apply": "Anwenden"
+}

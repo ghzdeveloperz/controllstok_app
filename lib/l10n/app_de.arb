@@ -1,0 +1,18 @@
+{
+  "@@locale": "de",
+
+  "languageTitle": "Sprache",
+  "languageSystem": "Systemsprache",
+  "languageSystemDescription": "Automatisch die Gerätesprache verwenden",
+
+  "languageConfirmTitle": "Sprache ändern",
+  "languageConfirmMessage": "Möchten Sie diese Sprache jetzt anwenden?",
+  "apply": "Anwenden",
+  "cancel": "Abbrechen",
+
+  "searchLanguageHint": "Sprache suchen...",
+  "languageSectionPreferences": "Einstellungen",
+  "languageSectionAvailable": "Verfügbare Sprachen",
+  "selectedLabel": "Ausgewählt",
+  "noLanguageFound": "Keine Sprache gefunden"
+}
