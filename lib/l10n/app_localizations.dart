@@ -104,119 +104,131 @@ abstract class AppLocalizations {
     Locale('pt', 'PT'),
   ];
 
-  /// No description provided for @appTitle.
+  /// GERAL / APP — Título principal do aplicativo
   ///
   /// In pt, this message translates to:
   /// **'MyStoreDay'**
   String get appTitle;
 
-  /// No description provided for @hello.
+  /// GERAL / APP — Saudação genérica
   ///
   /// In pt, this message translates to:
   /// **'Olá'**
   String get hello;
 
-  /// No description provided for @helloCompany.
+  /// GERAL / APP — Saudação com nome da empresa
   ///
   /// In pt, this message translates to:
   /// **'Olá, {company}.'**
   String helloCompany(Object company);
 
-  /// No description provided for @stockToday.
+  /// TELA AUTH_CHOICE — Texto do botão Login
+  ///
+  /// In pt, this message translates to:
+  /// **'Login'**
+  String get authChoiceLogin;
+
+  /// TELA AUTH_CHOICE — Texto do botão Cadastrar
+  ///
+  /// In pt, this message translates to:
+  /// **'Cadastrar'**
+  String get authChoiceRegister;
+
+  /// TELA ESTOQUE / HOME — Título do resumo do estoque
   ///
   /// In pt, this message translates to:
   /// **'Seu estoque hoje'**
   String get stockToday;
 
-  /// No description provided for @searchProductHint.
+  /// TELA ESTOQUE / HOME — Placeholder do campo de busca de produtos
   ///
   /// In pt, this message translates to:
   /// **'Buscar produto...'**
   String get searchProductHint;
 
-  /// No description provided for @allCategory.
+  /// TELA ESTOQUE / HOME — Filtro 'Todos' (categorias)
   ///
   /// In pt, this message translates to:
   /// **'Todos'**
   String get allCategory;
 
-  /// No description provided for @noProductsFound.
+  /// TELA ESTOQUE / HOME — Mensagem quando não há produtos
   ///
   /// In pt, this message translates to:
   /// **'Nenhum produto encontrado'**
   String get noProductsFound;
 
-  /// No description provided for @languageTitle.
+  /// TELA IDIOMA — Título da tela de idioma
   ///
   /// In pt, this message translates to:
   /// **'Idioma'**
   String get languageTitle;
 
-  /// No description provided for @languageSystem.
+  /// TELA IDIOMA — Opção para usar idioma do sistema
   ///
   /// In pt, this message translates to:
   /// **'Idioma do sistema'**
   String get languageSystem;
 
-  /// No description provided for @languageSystemDescription.
+  /// TELA IDIOMA — Descrição do idioma do sistema
   ///
   /// In pt, this message translates to:
   /// **'Usar o idioma do seu dispositivo automaticamente'**
   String get languageSystemDescription;
 
-  /// No description provided for @searchLanguageHint.
+  /// TELA IDIOMA — Placeholder do campo de busca de idioma
   ///
   /// In pt, this message translates to:
   /// **'Buscar idioma...'**
   String get searchLanguageHint;
 
-  /// No description provided for @languageSectionPreferences.
+  /// TELA IDIOMA — Título da seção de preferências
   ///
   /// In pt, this message translates to:
   /// **'Preferências'**
   String get languageSectionPreferences;
 
-  /// No description provided for @languageSectionAvailable.
+  /// TELA IDIOMA — Título da seção de idiomas disponíveis
   ///
   /// In pt, this message translates to:
   /// **'Idiomas disponíveis'**
   String get languageSectionAvailable;
 
-  /// No description provided for @selectedLabel.
+  /// TELA IDIOMA — Label exibido quando idioma está selecionado
   ///
   /// In pt, this message translates to:
   /// **'Selecionado'**
   String get selectedLabel;
 
-  /// No description provided for @noLanguageFound.
+  /// TELA IDIOMA — Mensagem quando a busca não encontra idiomas
   ///
   /// In pt, this message translates to:
   /// **'Nenhum idioma encontrado'**
   String get noLanguageFound;
 
-  /// No description provided for @languageConfirmTitle.
+  /// MODAL IDIOMA — Título do modal de confirmação
   ///
   /// In pt, this message translates to:
   /// **'Confirmar alteração'**
   String get languageConfirmTitle;
 
-  /// No description provided for @languageConfirmMessage.
+  /// MODAL IDIOMA — Mensagem do modal de confirmação
   ///
   /// In pt, this message translates to:
   /// **'Deseja aplicar este idioma agora? Você pode alterar novamente quando quiser.'**
   String get languageConfirmMessage;
 
-  /// No description provided for @cancel.
-  ///
-  /// In pt, this message translates to:
-  /// **'Cancelar'**
-  String get cancel;
-
-  /// No description provided for @apply.
+  /// MODAL / BOTÕES — Ação de confirmar/aplicar
   ///
   /// In pt, this message translates to:
   /// **'Aplicar'**
   String get apply;
+
+  /// MODAL / BOTÕES — Ação de cancelar/voltar
+  ///
+  /// In pt, this message translates to:
+  /// **'Cancelar'**
+  String get cancel;
 }
 
 class _AppLocalizationsDelegate

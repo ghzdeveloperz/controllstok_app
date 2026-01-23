@@ -20,6 +20,12 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get authChoiceLogin => 'Iniciar sesión';
+
+  @override
+  String get authChoiceRegister => 'Registrarse';
+
+  @override
   String get stockToday => 'Tu inventario hoy';
 
   @override
@@ -39,7 +45,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get languageSystemDescription =>
-      'Usar el idioma del dispositivo automáticamente';
+      'Usar automáticamente el idioma de tu dispositivo';
 
   @override
   String get searchLanguageHint => 'Buscar idioma...';
@@ -57,15 +63,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get noLanguageFound => 'No se encontró ningún idioma';
 
   @override
-  String get languageConfirmTitle => 'Confirmar alteração';
+  String get languageConfirmTitle => 'Confirmar cambio';
 
   @override
   String get languageConfirmMessage =>
-      'Deseja aplicar este idioma agora? Você pode alterar novamente quando quiser.';
-
-  @override
-  String get cancel => 'Cancelar';
+      '¿Deseas aplicar este idioma ahora? Puedes cambiarlo cuando quieras.';
 
   @override
   String get apply => 'Aplicar';
+
+  @override
+  String get cancel => 'Cancelar';
 }

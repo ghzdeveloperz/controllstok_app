@@ -238,6 +238,7 @@ Essas regras são reavaliadas a cada mudança de autenticação ou Firestore.
 - Implementado novo idioma: **Alemão (Suíça) — `de_CH`**
 - Criado fallback obrigatório **`de`** para suportar corretamente o `de_CH` (exigência do `flutter gen-l10n`)
 - Ajustado padrão de arquivos para evitar conflito entre `@@locale` e nome do `.arb`
+- Comentários em JSONS ARBS de cada linguagem
 
 ### Objetivo:
 - Manter a base de i18n escalável e fácil de evoluir

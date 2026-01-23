@@ -20,6 +20,12 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get authChoiceLogin => 'Login';
+
+  @override
+  String get authChoiceRegister => 'Sign up';
+
+  @override
   String get stockToday => 'Your stock today';
 
   @override
@@ -32,40 +38,40 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noProductsFound => 'No products found';
 
   @override
-  String get languageTitle => 'Idioma';
+  String get languageTitle => 'Language';
 
   @override
-  String get languageSystem => 'Idioma del sistema';
+  String get languageSystem => 'System language';
 
   @override
   String get languageSystemDescription =>
-      'Usar automáticamente el idioma de tu dispositivo';
+      'Automatically use your device language';
 
   @override
-  String get searchLanguageHint => 'Buscar idioma...';
+  String get searchLanguageHint => 'Search language...';
 
   @override
-  String get languageSectionPreferences => 'Preferencias';
+  String get languageSectionPreferences => 'Preferences';
 
   @override
-  String get languageSectionAvailable => 'Idiomas disponibles';
+  String get languageSectionAvailable => 'Available languages';
 
   @override
-  String get selectedLabel => 'Seleccionado';
+  String get selectedLabel => 'Selected';
 
   @override
-  String get noLanguageFound => 'No se encontró ningún idioma';
+  String get noLanguageFound => 'No language found';
 
   @override
-  String get languageConfirmTitle => 'Confirmar cambio';
+  String get languageConfirmTitle => 'Confirm change';
 
   @override
   String get languageConfirmMessage =>
-      '¿Quieres aplicar este idioma ahora? Puedes cambiarlo cuando quieras.';
+      'Do you want to apply this language now? You can change it again anytime.';
 
   @override
-  String get cancel => 'Cancelar';
+  String get apply => 'Apply';
 
   @override
-  String get apply => 'Aplicar';
+  String get cancel => 'Cancel';
 }

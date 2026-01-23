@@ -1,29 +1,70 @@
 {
   "@@locale": "es",
+  "@@description": "Traduções ES (Espanhol) do MyStoreDay",
 
   "appTitle": "MyStoreDay",
+  "@appTitle": { "description": "GERAL / APP — Título principal do aplicativo" },
 
   "hello": "Hola",
+  "@hello": { "description": "GERAL / APP — Saudação genérica" },
 
   "helloCompany": "Hola, {company}.",
   "@helloCompany": {
-    "placeholders": {
-      "company": {}
-    }
+    "description": "GERAL / APP — Saudação com nome da empresa",
+    "placeholders": { "company": {} }
   },
 
+  "authChoiceLogin": "Iniciar sesión",
+  "@authChoiceLogin": { "description": "TELA AUTH_CHOICE — Texto do botão Login" },
+
+  "authChoiceRegister": "Registrarse",
+  "@authChoiceRegister": { "description": "TELA AUTH_CHOICE — Texto do botão Cadastrar" },
+
   "stockToday": "Tu inventario hoy",
+  "@stockToday": { "description": "TELA ESTOQUE / HOME — Título do resumo do estoque" },
+
   "searchProductHint": "Buscar producto...",
+  "@searchProductHint": { "description": "TELA ESTOQUE / HOME — Placeholder do campo de busca de produtos" },
+
   "allCategory": "Todos",
+  "@allCategory": { "description": "TELA ESTOQUE / HOME — Filtro 'Todos' (categorias)" },
+
   "noProductsFound": "No se encontraron productos",
+  "@noProductsFound": { "description": "TELA ESTOQUE / HOME — Mensagem quando não há produtos" },
 
   "languageTitle": "Idioma",
+  "@languageTitle": { "description": "TELA IDIOMA — Título da tela de idioma" },
+
   "languageSystem": "Idioma del sistema",
-  "languageSystemDescription": "Usar el idioma del dispositivo automáticamente",
+  "@languageSystem": { "description": "TELA IDIOMA — Opção para usar idioma do sistema" },
+
+  "languageSystemDescription": "Usar automáticamente el idioma de tu dispositivo",
+  "@languageSystemDescription": { "description": "TELA IDIOMA — Descrição do idioma do sistema" },
 
   "searchLanguageHint": "Buscar idioma...",
+  "@searchLanguageHint": { "description": "TELA IDIOMA — Placeholder do campo de busca de idioma" },
+
   "languageSectionPreferences": "Preferencias",
+  "@languageSectionPreferences": { "description": "TELA IDIOMA — Título da seção de preferências" },
+
   "languageSectionAvailable": "Idiomas disponibles",
+  "@languageSectionAvailable": { "description": "TELA IDIOMA — Título da seção de idiomas disponíveis" },
+
   "selectedLabel": "Seleccionado",
-  "noLanguageFound": "No se encontró ningún idioma"
+  "@selectedLabel": { "description": "TELA IDIOMA — Label exibido quando idioma está selecionado" },
+
+  "noLanguageFound": "No se encontró ningún idioma",
+  "@noLanguageFound": { "description": "TELA IDIOMA — Mensagem quando a busca não encontra idiomas" },
+
+  "languageConfirmTitle": "Confirmar cambio",
+  "@languageConfirmTitle": { "description": "MODAL IDIOMA — Título do modal de confirmação" },
+
+  "languageConfirmMessage": "¿Deseas aplicar este idioma ahora? Puedes cambiarlo cuando quieras.",
+  "@languageConfirmMessage": { "description": "MODAL IDIOMA — Mensagem do modal de confirmação" },
+
+  "apply": "Aplicar",
+  "@apply": { "description": "MODAL / BOTÕES — Ação de confirmar/aplicar" },
+
+  "cancel": "Cancelar",
+  "@cancel": { "description": "MODAL / BOTÕES — Ação de cancelar/voltar" }
 }

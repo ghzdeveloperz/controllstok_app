@@ -1,34 +1,70 @@
 {
   "@@locale": "de_CH",
+  "@@description": "Traduções DE-CH (Alemão Suíço) do MyStoreDay",
 
   "appTitle": "MyStoreDay",
+  "@appTitle": { "description": "GERAL / APP — Título principal do aplicativo" },
 
   "hello": "Hallo",
+  "@hello": { "description": "GERAL / APP — Saudação genérica" },
 
   "helloCompany": "Hallo, {company}.",
   "@helloCompany": {
-    "placeholders": {
-      "company": {}
-    }
+    "description": "GERAL / APP — Saudação com nome da empresa",
+    "placeholders": { "company": {} }
   },
 
-  "stockToday": "Ihr Lagerbestand heute",
+  "authChoiceLogin": "Anmelden",
+  "@authChoiceLogin": { "description": "TELA AUTH_CHOICE — Texto do botão Login" },
+
+  "authChoiceRegister": "Registrieren",
+  "@authChoiceRegister": { "description": "TELA AUTH_CHOICE — Texto do botão Cadastrar" },
+
+  "stockToday": "Ihr Bestand heute",
+  "@stockToday": { "description": "TELA ESTOQUE / HOME — Título do resumo do estoque" },
+
   "searchProductHint": "Produkt suchen...",
+  "@searchProductHint": { "description": "TELA ESTOQUE / HOME — Placeholder do campo de busca de produtos" },
+
   "allCategory": "Alle",
+  "@allCategory": { "description": "TELA ESTOQUE / HOME — Filtro 'Todos' (categorias)" },
+
   "noProductsFound": "Keine Produkte gefunden",
+  "@noProductsFound": { "description": "TELA ESTOQUE / HOME — Mensagem quando não há produtos" },
 
   "languageTitle": "Sprache",
-  "languageSystem": "Systemsprache",
-  "languageSystemDescription": "Automatisch die Gerätesprache verwenden",
+  "@languageTitle": { "description": "TELA IDIOMA — Título da tela de idioma" },
 
-  "searchLanguageHint": "Sprache suchen...",
-  "languageSectionPreferences": "Einstellungen",
-  "languageSectionAvailable": "Verfügbare Sprachen",
-  "selectedLabel": "Ausgewählt",
-  "noLanguageFound": "Keine Sprache gefunden",
+  "languageSystem": "Systemsprache",
+  "@languageSystem": { "description": "TELA IDIOMA — Opção para usar idioma do sistema" },
+
+  "languageSystemDescription": "Automatisch die Gerätesprache verwenden",
+  "@languageSystemDescription": { "description": "TELA IDIOMA — Descrição do idioma do sistema" },
 
   "languageConfirmTitle": "Sprache ändern",
-  "languageConfirmMessage": "Möchten Sie diese Sprache jetzt anwenden? Sie können sie jederzeit erneut ändern.",
+  "@languageConfirmTitle": { "description": "MODAL IDIOMA — Título do modal de confirmação" },
+
+  "languageConfirmMessage": "Möchten Sie diese Sprache jetzt anwenden?",
+  "@languageConfirmMessage": { "description": "MODAL IDIOMA — Mensagem do modal de confirmação" },
+
+  "apply": "Anwenden",
+  "@apply": { "description": "MODAL / BOTÕES — Ação de confirmar/aplicar" },
+
   "cancel": "Abbrechen",
-  "apply": "Anwenden"
+  "@cancel": { "description": "MODAL / BOTÕES — Ação de cancelar/voltar" },
+
+  "searchLanguageHint": "Sprache suchen...",
+  "@searchLanguageHint": { "description": "TELA IDIOMA — Placeholder do campo de busca de idioma" },
+
+  "languageSectionPreferences": "Einstellungen",
+  "@languageSectionPreferences": { "description": "TELA IDIOMA — Título da seção de preferências" },
+
+  "languageSectionAvailable": "Verfügbare Sprachen",
+  "@languageSectionAvailable": { "description": "TELA IDIOMA — Título da seção de idiomas disponíveis" },
+
+  "selectedLabel": "Ausgewählt",
+  "@selectedLabel": { "description": "TELA IDIOMA — Label exibido quando idioma está selecionado" },
+
+  "noLanguageFound": "Keine Sprache gefunden",
+  "@noLanguageFound": { "description": "TELA IDIOMA — Mensagem quando a busca não encontra idiomas" }
 }

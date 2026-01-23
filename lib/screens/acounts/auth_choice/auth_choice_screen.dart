@@ -1,8 +1,11 @@
 // lib/screens/accounts/auth_choice/auth_choice_screen.dart
 import 'dart:async';
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../../../l10n/app_localizations.dart';
 import '../login/login_screen.dart';
 import '../register/register_screen.dart';
 
@@ -17,9 +20,9 @@ class _AuthChoiceScreenState extends State<AuthChoiceScreen>
     with TickerProviderStateMixin {
   final PageController _pageController = PageController(initialPage: 1000);
   int _currentIndex = 0;
-  late Timer _timer;
+  Timer? _timer;
 
-  final List<String> _banners = [
+  final List<String> _banners = const [
     'assets/images/banners/gif/company-banner.gif',
     'assets/images/banners/gif/relatorios-banner.gif',
     'assets/images/banners/gif/caixa-banner.gif',
@@ -31,10 +34,12 @@ class _AuthChoiceScreenState extends State<AuthChoiceScreen>
   @override
   void initState() {
     super.initState();
+
     _bannerKeys = List.generate(_banners.length, (_) => UniqueKey());
 
     // Pré-carrega GIFs
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       for (final banner in _banners) {
         if (banner.startsWith('http')) {
           precacheImage(NetworkImage(banner), context);
@@ -46,9 +51,10 @@ class _AuthChoiceScreenState extends State<AuthChoiceScreen>
 
     // Alterna banners a cada 5s
     _timer = Timer.periodic(const Duration(seconds: 5), (_) {
+      if (!mounted) return;
       if (_pageController.hasClients) {
         _pageController.nextPage(
-          duration: const Duration(milliseconds: 500),
+          duration: const Duration(milliseconds: 520),
           curve: Curves.easeInOut,
         );
       }
@@ -56,6 +62,7 @@ class _AuthChoiceScreenState extends State<AuthChoiceScreen>
 
     // Atualiza índice e reinicia GIF do banner ativo
     _pageController.addListener(() {
+      if (!mounted) return;
       final page = _pageController.page;
       if (page != null) {
         final newIndex = page.round() % _banners.length;
@@ -71,7 +78,7 @@ class _AuthChoiceScreenState extends State<AuthChoiceScreen>
 
   @override
   void dispose() {
-    _timer.cancel();
+    _timer?.cancel();
     _pageController.dispose();
     super.dispose();
   }
@@ -87,20 +94,25 @@ class _AuthChoiceScreenState extends State<AuthChoiceScreen>
         fit: BoxFit.cover,
         gaplessPlayback: true,
       );
-    } else {
-      return Image.asset(
-        bannerPath,
-        key: key,
-        fit: BoxFit.cover,
-        gaplessPlayback: true,
-      );
     }
+
+    return Image.asset(
+      bannerPath,
+      key: key,
+      fit: BoxFit.cover,
+      gaplessPlayback: true,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final screenHeight = MediaQuery.of(context).size.height;
     final isSmallScreen = screenHeight < 600;
+
+    final loginLabel = l10n.authChoiceLogin;
+    final registerLabel = l10n.authChoiceRegister;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF7F7F7),
@@ -147,7 +159,7 @@ class _AuthChoiceScreenState extends State<AuthChoiceScreen>
                       children: List.generate(
                         _banners.length,
                         (index) => AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
+                          duration: const Duration(milliseconds: 260),
                           margin: const EdgeInsets.symmetric(horizontal: 4),
                           width: _currentIndex == index ? 24 : 10,
                           height: 10,
@@ -164,8 +176,8 @@ class _AuthChoiceScreenState extends State<AuthChoiceScreen>
                 ],
               ),
             ),
-            // RODAPÉ com botões (igual ao seu código anterior)
-            // RODAPÉ com botões melhorados
+
+            // Rodapé com botões
             ClipRRect(
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(24),
@@ -177,8 +189,8 @@ class _AuthChoiceScreenState extends State<AuthChoiceScreen>
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        Colors.white.withOpacity(0.85),
-                        Colors.white.withOpacity(0.95),
+                        Colors.white.withValues(alpha: 0.85),
+                        Colors.white.withValues(alpha: 0.95),
                       ],
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
@@ -189,7 +201,7 @@ class _AuthChoiceScreenState extends State<AuthChoiceScreen>
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.12),
+                        color: Colors.black.withValues(alpha: 0.12),
                         blurRadius: 22,
                         offset: const Offset(0, -8),
                       ),
@@ -226,7 +238,7 @@ class _AuthChoiceScreenState extends State<AuthChoiceScreen>
                               borderRadius: BorderRadius.circular(16),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.3),
+                                  color: Colors.black.withValues(alpha: 0.30),
                                   blurRadius: 10,
                                   offset: const Offset(0, 4),
                                 ),
@@ -234,7 +246,7 @@ class _AuthChoiceScreenState extends State<AuthChoiceScreen>
                             ),
                             child: Center(
                               child: Text(
-                                'Login',
+                                loginLabel,
                                 style: GoogleFonts.inter(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w600,
@@ -246,6 +258,7 @@ class _AuthChoiceScreenState extends State<AuthChoiceScreen>
                         ),
                       ),
                       const SizedBox(width: 16),
+
                       // BOTÃO CADASTRAR
                       Expanded(
                         child: AnimatedButton(
@@ -260,7 +273,7 @@ class _AuthChoiceScreenState extends State<AuthChoiceScreen>
                           child: Container(
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.95),
+                              color: Colors.white.withValues(alpha: 0.95),
                               border: Border.all(
                                 color: Colors.grey.shade400,
                                 width: 1.8,
@@ -268,7 +281,7 @@ class _AuthChoiceScreenState extends State<AuthChoiceScreen>
                               borderRadius: BorderRadius.circular(16),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.08),
+                                  color: Colors.black.withValues(alpha: 0.08),
                                   blurRadius: 6,
                                   offset: const Offset(0, 2),
                                 ),
@@ -276,7 +289,7 @@ class _AuthChoiceScreenState extends State<AuthChoiceScreen>
                             ),
                             child: Center(
                               child: Text(
-                                'Cadastrar',
+                                registerLabel,
                                 style: GoogleFonts.inter(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w600,
@@ -315,8 +328,8 @@ class AnimatedButton extends StatefulWidget {
 
 class _AnimatedButtonState extends State<AnimatedButton>
     with TickerProviderStateMixin {
-  late AnimationController _scaleController;
-  late Animation<double> _scaleAnimation;
+  late final AnimationController _scaleController;
+  late final Animation<double> _scaleAnimation;
 
   @override
   void initState() {

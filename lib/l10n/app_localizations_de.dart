@@ -12,72 +12,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get appTitle => 'MyStoreDay';
 
   @override
-  String get hello => 'Olá';
-
-  @override
-  String helloCompany(Object company) {
-    return 'Olá, $company.';
-  }
-
-  @override
-  String get stockToday => 'Seu estoque hoje';
-
-  @override
-  String get searchProductHint => 'Buscar produto...';
-
-  @override
-  String get allCategory => 'Todos';
-
-  @override
-  String get noProductsFound => 'Nenhum produto encontrado';
-
-  @override
-  String get languageTitle => 'Sprache';
-
-  @override
-  String get languageSystem => 'Systemsprache';
-
-  @override
-  String get languageSystemDescription =>
-      'Automatisch die Gerätesprache verwenden';
-
-  @override
-  String get searchLanguageHint => 'Sprache suchen...';
-
-  @override
-  String get languageSectionPreferences => 'Einstellungen';
-
-  @override
-  String get languageSectionAvailable => 'Verfügbare Sprachen';
-
-  @override
-  String get selectedLabel => 'Ausgewählt';
-
-  @override
-  String get noLanguageFound => 'Keine Sprache gefunden';
-
-  @override
-  String get languageConfirmTitle => 'Sprache ändern';
-
-  @override
-  String get languageConfirmMessage =>
-      'Möchten Sie diese Sprache jetzt anwenden?';
-
-  @override
-  String get cancel => 'Abbrechen';
-
-  @override
-  String get apply => 'Anwenden';
-}
-
-/// The translations for German, as used in Switzerland (`de_CH`).
-class AppLocalizationsDeCh extends AppLocalizationsDe {
-  AppLocalizationsDeCh() : super('de_CH');
-
-  @override
-  String get appTitle => 'MyStoreDay';
-
-  @override
   String get hello => 'Hallo';
 
   @override
@@ -86,7 +20,13 @@ class AppLocalizationsDeCh extends AppLocalizationsDe {
   }
 
   @override
-  String get stockToday => 'Ihr Lagerbestand heute';
+  String get authChoiceLogin => 'Anmelden';
+
+  @override
+  String get authChoiceRegister => 'Registrieren';
+
+  @override
+  String get stockToday => 'Ihr Bestand heute';
 
   @override
   String get searchProductHint => 'Produkt suchen...';
@@ -127,11 +67,83 @@ class AppLocalizationsDeCh extends AppLocalizationsDe {
 
   @override
   String get languageConfirmMessage =>
-      'Möchten Sie diese Sprache jetzt anwenden? Sie können sie jederzeit erneut ändern.';
-
-  @override
-  String get cancel => 'Abbrechen';
+      'Möchten Sie diese Sprache jetzt anwenden? Sie können sie später jederzeit ändern.';
 
   @override
   String get apply => 'Anwenden';
+
+  @override
+  String get cancel => 'Abbrechen';
+}
+
+/// The translations for German, as used in Switzerland (`de_CH`).
+class AppLocalizationsDeCh extends AppLocalizationsDe {
+  AppLocalizationsDeCh() : super('de_CH');
+
+  @override
+  String get appTitle => 'MyStoreDay';
+
+  @override
+  String get hello => 'Hallo';
+
+  @override
+  String helloCompany(Object company) {
+    return 'Hallo, $company.';
+  }
+
+  @override
+  String get authChoiceLogin => 'Anmelden';
+
+  @override
+  String get authChoiceRegister => 'Registrieren';
+
+  @override
+  String get stockToday => 'Ihr Bestand heute';
+
+  @override
+  String get searchProductHint => 'Produkt suchen...';
+
+  @override
+  String get allCategory => 'Alle';
+
+  @override
+  String get noProductsFound => 'Keine Produkte gefunden';
+
+  @override
+  String get languageTitle => 'Sprache';
+
+  @override
+  String get languageSystem => 'Systemsprache';
+
+  @override
+  String get languageSystemDescription =>
+      'Automatisch die Gerätesprache verwenden';
+
+  @override
+  String get searchLanguageHint => 'Sprache suchen...';
+
+  @override
+  String get languageSectionPreferences => 'Einstellungen';
+
+  @override
+  String get languageSectionAvailable => 'Verfügbare Sprachen';
+
+  @override
+  String get selectedLabel => 'Ausgewählt';
+
+  @override
+  String get noLanguageFound => 'Keine Sprache gefunden';
+
+  @override
+  String get languageConfirmTitle => 'Sprache ändern';
+
+  @override
+  String get languageConfirmMessage =>
+      'Möchten Sie diese Sprache jetzt anwenden?';
+
+  @override
+  String get apply => 'Anwenden';
+
+  @override
+  String get cancel => 'Abbrechen';
 }
