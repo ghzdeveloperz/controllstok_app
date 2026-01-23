@@ -229,6 +229,168 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Cancelar'**
   String get cancel;
+
+  /// VALIDAÇÃO — Mensagem padrão de campo obrigatório
+  ///
+  /// In pt, this message translates to:
+  /// **'Campo obrigatório'**
+  String get fieldRequired;
+
+  /// TELA NOVO_PRODUTO — Título do AppBar
+  ///
+  /// In pt, this message translates to:
+  /// **'Novo Produto'**
+  String get newProductTitle;
+
+  /// TELA NOVO_PRODUTO — Título da seção principal
+  ///
+  /// In pt, this message translates to:
+  /// **'Informações do produto'**
+  String get newProductSectionInfo;
+
+  /// TELA NOVO_PRODUTO — Label do campo nome
+  ///
+  /// In pt, this message translates to:
+  /// **'Nome do produto'**
+  String get newProductNameLabel;
+
+  /// TELA NOVO_PRODUTO — Hint do campo nome
+  ///
+  /// In pt, this message translates to:
+  /// **'Ex: Arroz 5kg'**
+  String get newProductNameHint;
+
+  /// VALIDAÇÃO — Nome mínimo
+  ///
+  /// In pt, this message translates to:
+  /// **'Nome deve ter pelo menos 2 caracteres'**
+  String get newProductNameMin;
+
+  /// VALIDAÇÃO — Nome máximo
+  ///
+  /// In pt, this message translates to:
+  /// **'Nome deve ter no máximo 50 caracteres'**
+  String get newProductNameMax;
+
+  /// VALIDAÇÃO — Nome duplicado
+  ///
+  /// In pt, this message translates to:
+  /// **'Nome já existe. Escolha outro.'**
+  String get newProductNameDuplicateValidator;
+
+  /// TELA NOVO_PRODUTO — Mensagem auxiliar quando nome está duplicado
+  ///
+  /// In pt, this message translates to:
+  /// **'Este nome já existe. Você pode editá-lo.'**
+  String get newProductDuplicateNameMessage;
+
+  /// TELA NOVO_PRODUTO — Helper contagem de caracteres do nome
+  ///
+  /// In pt, this message translates to:
+  /// **'{count}/50 caracteres'**
+  String newProductNameHelperChars(int count);
+
+  /// TELA NOVO_PRODUTO — Helper quando está perto do limite
+  ///
+  /// In pt, this message translates to:
+  /// **'(Quase perto do limite)'**
+  String get newProductNameHelperNearLimit;
+
+  /// TELA NOVO_PRODUTO — Helper quando atingiu o limite
+  ///
+  /// In pt, this message translates to:
+  /// **'(limite atingido)'**
+  String get newProductNameHelperLimitReached;
+
+  /// TELA NOVO_PRODUTO — Label do campo quantidade
+  ///
+  /// In pt, this message translates to:
+  /// **'Quantidade'**
+  String get newProductQuantityLabel;
+
+  /// TELA NOVO_PRODUTO — Label do campo preço
+  ///
+  /// In pt, this message translates to:
+  /// **'Preço (R\$)'**
+  String get newProductPriceLabel;
+
+  /// SNACKBAR — Falta preencher dados
+  ///
+  /// In pt, this message translates to:
+  /// **'Preencha todos os campos'**
+  String get newProductFillAllFields;
+
+  /// SNACKBAR — Nome de produto já existe
+  ///
+  /// In pt, this message translates to:
+  /// **'Já existe um produto com este nome'**
+  String get newProductNameAlreadyExists;
+
+  /// SNACKBAR — Código de barras já cadastrado em outro produto
+  ///
+  /// In pt, this message translates to:
+  /// **'Este código de barras já está associado ao produto {name}.'**
+  String newProductBarcodeAlreadyLinked(Object name);
+
+  /// SNACKBAR — Erro genérico ao salvar
+  ///
+  /// In pt, this message translates to:
+  /// **'Erro ao salvar'**
+  String get newProductGenericSaveError;
+
+  /// SNACKBAR — Erro ao salvar com detalhes
+  ///
+  /// In pt, this message translates to:
+  /// **'Erro ao salvar: {error}'**
+  String newProductSaveErrorWithMessage(Object error);
+
+  /// TELA NOVO_PRODUTO — Botão/ação para adicionar imagem do produto
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar imagem'**
+  String get newProductImageAdd;
+
+  /// TELA NOVO_PRODUTO — Label do campo de código de barras
+  ///
+  /// In pt, this message translates to:
+  /// **'Código de barras'**
+  String get newProductBarcodeLabel;
+
+  /// TELA NOVO_PRODUTO — Hint/placeholder do campo de código de barras
+  ///
+  /// In pt, this message translates to:
+  /// **'Ex: 7891234567890'**
+  String get newProductBarcodeHint;
+
+  /// TELA NOVO_PRODUTO — Label do campo de categoria
+  ///
+  /// In pt, this message translates to:
+  /// **'Categoria'**
+  String get newProductCategoryLabel;
+
+  /// TELA NOVO_PRODUTO — Texto exibido enquanto carrega categorias
+  ///
+  /// In pt, this message translates to:
+  /// **'Carregando categorias...'**
+  String get newProductCategoryLoading;
+
+  /// TELA NOVO_PRODUTO — Hint do seletor de categoria
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione uma categoria'**
+  String get newProductCategoryHint;
+
+  /// VALIDAÇÃO — Mensagem quando a categoria não foi selecionada
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione uma categoria'**
+  String get newProductCategoryValidator;
+
+  /// TELA NOVO_PRODUTO — Texto do botão de salvar
+  ///
+  /// In pt, this message translates to:
+  /// **'Salvar produto'**
+  String get newProductSaveButton;
 }
 
 class _AppLocalizationsDelegate

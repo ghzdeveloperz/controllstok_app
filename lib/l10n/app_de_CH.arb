@@ -41,18 +41,6 @@
   "languageSystemDescription": "Automatisch die Gerätesprache verwenden",
   "@languageSystemDescription": { "description": "TELA IDIOMA — Descrição do idioma do sistema" },
 
-  "languageConfirmTitle": "Sprache ändern",
-  "@languageConfirmTitle": { "description": "MODAL IDIOMA — Título do modal de confirmação" },
-
-  "languageConfirmMessage": "Möchten Sie diese Sprache jetzt anwenden?",
-  "@languageConfirmMessage": { "description": "MODAL IDIOMA — Mensagem do modal de confirmação" },
-
-  "apply": "Anwenden",
-  "@apply": { "description": "MODAL / BOTÕES — Ação de confirmar/aplicar" },
-
-  "cancel": "Abbrechen",
-  "@cancel": { "description": "MODAL / BOTÕES — Ação de cancelar/voltar" },
-
   "searchLanguageHint": "Sprache suchen...",
   "@searchLanguageHint": { "description": "TELA IDIOMA — Placeholder do campo de busca de idioma" },
 
@@ -66,5 +54,110 @@
   "@selectedLabel": { "description": "TELA IDIOMA — Label exibido quando idioma está selecionado" },
 
   "noLanguageFound": "Keine Sprache gefunden",
-  "@noLanguageFound": { "description": "TELA IDIOMA — Mensagem quando a busca não encontra idiomas" }
+  "@noLanguageFound": { "description": "TELA IDIOMA — Mensagem quando a busca não encontra idiomas" },
+
+  "languageConfirmTitle": "Sprache ändern",
+  "@languageConfirmTitle": { "description": "MODAL IDIOMA — Título do modal de confirmação" },
+
+  "languageConfirmMessage": "Möchten Sie diese Sprache jetzt anwenden?",
+  "@languageConfirmMessage": { "description": "MODAL IDIOMA — Mensagem do modal de confirmação" },
+
+  "apply": "Anwenden",
+  "@apply": { "description": "MODAL / BOTÕES — Ação de confirmar/aplicar" },
+
+  "cancel": "Abbrechen",
+  "@cancel": { "description": "MODAL / BOTÕES — Ação de cancelar/voltar" },
+
+  "fieldRequired": "Pflichtfeld",
+  "@fieldRequired": { "description": "VALIDIERUNG — Standardmeldung für Pflichtfeld" },
+
+  "newProductTitle": "Neues Produkt",
+  "@newProductTitle": { "description": "TELA NOVO_PRODUTO — Título do AppBar" },
+
+  "newProductSectionInfo": "Produktinfos",
+  "@newProductSectionInfo": { "description": "TELA NOVO_PRODUTO — Título da seção principal" },
+
+  "newProductNameLabel": "Produktname",
+  "@newProductNameLabel": { "description": "TELA NOVO_PRODUTO — Label do campo nome" },
+
+  "newProductNameHint": "z. B. Reis 5kg",
+  "@newProductNameHint": { "description": "TELA NOVO_PRODUTO — Hint do campo nome" },
+
+  "newProductNameMin": "Der Name muss mindestens 2 Zeichen haben",
+  "@newProductNameMin": { "description": "VALIDIERUNG — Nome mínimo" },
+
+  "newProductNameMax": "Der Name darf höchstens 50 Zeichen haben",
+  "@newProductNameMax": { "description": "VALIDIERUNG — Nome máximo" },
+
+  "newProductNameDuplicateValidator": "Name existiert bereits. Bitte einen anderen wählen.",
+  "@newProductNameDuplicateValidator": { "description": "VALIDIERUNG — Nome duplicado" },
+
+  "newProductDuplicateNameMessage": "Dieser Name existiert bereits. Sie können ihn bearbeiten.",
+  "@newProductDuplicateNameMessage": { "description": "TELA NOVO_PRODUTO — Mensagem auxiliar quando nome está duplicado" },
+
+  "newProductNameHelperChars": "{count}/50 Zeichen",
+  "@newProductNameHelperChars": {
+    "description": "TELA NOVO_PRODUTO — Helper contagem de caracteres do nome",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "newProductNameHelperNearLimit": "(Fast am Limit)",
+  "@newProductNameHelperNearLimit": { "description": "TELA NOVO_PRODUTO — Helper quando está perto do limite" },
+
+  "newProductNameHelperLimitReached": "(Limit erreicht)",
+  "@newProductNameHelperLimitReached": { "description": "TELA NOVO_PRODUTO — Helper quando atingiu o limite" },
+
+  "newProductQuantityLabel": "Menge",
+  "@newProductQuantityLabel": { "description": "TELA NOVO_PRODUTO — Label do campo quantidade" },
+
+  "newProductPriceLabel": "Preis (R$)",
+  "@newProductPriceLabel": { "description": "TELA NOVO_PRODUTO — Label do campo preço" },
+
+  "newProductFillAllFields": "Bitte alle Felder ausfüllen",
+  "@newProductFillAllFields": { "description": "SNACKBAR — Falta preencher dados" },
+
+  "newProductNameAlreadyExists": "Es gibt bereits ein Produkt mit diesem Namen",
+  "@newProductNameAlreadyExists": { "description": "SNACKBAR — Nome de produto já existe" },
+
+  "newProductBarcodeAlreadyLinked": "Dieser Barcode ist bereits mit dem Produkt {name} verknüpft.",
+  "@newProductBarcodeAlreadyLinked": {
+    "description": "SNACKBAR — Código de barras já cadastrado em outro produto",
+    "placeholders": { "name": {} }
+  },
+
+  "newProductGenericSaveError": "Fehler beim Speichern",
+  "@newProductGenericSaveError": { "description": "SNACKBAR — Erro genérico ao salvar" },
+
+  "newProductSaveErrorWithMessage": "Fehler beim Speichern: {error}",
+  "@newProductSaveErrorWithMessage": {
+    "description": "SNACKBAR — Erro ao salvar com detalhes",
+    "placeholders": { "error": {} }
+  },
+
+  "newProductImageAdd": "Bild hinzufügen",
+  "@newProductImageAdd": { "description": "NEUES_PRODUKT — Aktion zum Hinzufügen eines Produktbilds (CH)" },
+
+  "newProductBarcodeLabel": "Barcode",
+  "@newProductBarcodeLabel": { "description": "NEUES_PRODUKT — Beschriftung für Barcode-Feld (CH)" },
+
+  "newProductBarcodeHint": "z. B. 7891234567890",
+  "@newProductBarcodeHint": { "description": "NEUES_PRODUKT — Platzhalter für Barcode-Feld (CH)" },
+
+  "newProductCategoryLabel": "Kategorie",
+  "@newProductCategoryLabel": { "description": "NEUES_PRODUKT — Beschriftung für Kategorie-Feld (CH)" },
+
+  "newProductCategoryLoading": "Kategorien werden geladen...",
+  "@newProductCategoryLoading": { "description": "NEUES_PRODUKT — Text während Kategorien geladen werden (CH)" },
+
+  "newProductCategoryHint": "Kategorie auswählen",
+  "@newProductCategoryHint": { "description": "NEUES_PRODUKT — Hinweis für Kategorie-Auswahl (CH)" },
+
+  "newProductCategoryValidator": "Bitte eine Kategorie auswählen",
+  "@newProductCategoryValidator": { "description": "VALIDIERUNG — Meldung, wenn keine Kategorie gewählt wurde (CH)" },
+
+  "newProductSaveButton": "Produkt speichern",
+  "@newProductSaveButton": { "description": "NEUES_PRODUKT — Text des Speichern-Buttons (CH)" }
+
 }

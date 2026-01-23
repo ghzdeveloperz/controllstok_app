@@ -246,3 +246,34 @@ Essas regras são reavaliadas a cada mudança de autenticação ou Firestore.
 - Preparar o projeto para adicionar novos idiomas sem quebrar o `gen-l10n`
 
 > Próximo commit: organizar estruturalmente todo o restante do que foi implementado (padronização de pastas/nomes/imports).
+
+## [Milestone 15] Tela Novo Produto + i18n Completo (Campos, Validações e Correções)
+**Status:** Concluído ✅
+
+### Melhorias:
+- Ajustada a tela **Novo Produto** para suportar i18n corretamente em todos os pontos de UI:
+  - Adição de imagem (placeholder)
+  - Código de barras (label, hint e validação)
+  - Categoria (label, hint, loading e validação)
+  - Botão de salvar
+- Criadas novas chaves de tradução nos arquivos `.arb` para padronizar a experiência:
+  - `newProductImageAdd`
+  - `newProductBarcodeLabel`
+  - `newProductBarcodeHint`
+  - `newProductCategoryLabel`
+  - `newProductCategoryLoading`
+  - `newProductCategoryHint`
+  - `newProductCategoryValidator`
+  - `newProductSaveButton`
+- Corrigidos erros do Dart Analyzer relacionados a **null-safety** (`unchecked_use_of_nullable_value`) ao acessar `AppLocalizations.of(context)`:
+  - Uso consistente de `l10n?.chave ?? fallback` nos pontos que acessavam `l10n.chave` diretamente
+- Corrigido erro de parâmetro inexistente (`undefined_named_parameter: text`) no `NPSaveButton`:
+  - Removido uso de `text:` na tela, alinhando com a assinatura real do widget
+  - Preparada a base para tornar o botão traduzível por `label` (l10n-ready)
+- Widgets do módulo Novo Produto ficaram **l10n-ready** e consistentes:
+  - `NPImagePicker`, `NPBarcodeField`, `NPCategoryDropdown`, `NPTextField`, `NPProductNameField`
+
+### Objetivo:
+- Garantir que a tela **Novo Produto** seja 100% traduzível, sem strings hardcoded na UI
+- Eliminar falhas de null-safety e reduzir ruído do analyzer
+- Preparar o módulo para evoluir com novas validações/fluxos mantendo consistência de idioma

@@ -74,4 +74,95 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get cancel => 'Cancelar';
+
+  @override
+  String get fieldRequired => 'Campo obligatorio';
+
+  @override
+  String get newProductTitle => 'Nuevo producto';
+
+  @override
+  String get newProductSectionInfo => 'Información del producto';
+
+  @override
+  String get newProductNameLabel => 'Nombre del producto';
+
+  @override
+  String get newProductNameHint => 'Ej: Arroz 5kg';
+
+  @override
+  String get newProductNameMin => 'El nombre debe tener al menos 2 caracteres';
+
+  @override
+  String get newProductNameMax =>
+      'El nombre debe tener como máximo 50 caracteres';
+
+  @override
+  String get newProductNameDuplicateValidator =>
+      'El nombre ya existe. Elige otro.';
+
+  @override
+  String get newProductDuplicateNameMessage =>
+      'Este nombre ya existe. Puedes editarlo.';
+
+  @override
+  String newProductNameHelperChars(int count) {
+    return '$count/50 caracteres';
+  }
+
+  @override
+  String get newProductNameHelperNearLimit => '(Cerca del límite)';
+
+  @override
+  String get newProductNameHelperLimitReached => '(límite alcanzado)';
+
+  @override
+  String get newProductQuantityLabel => 'Cantidad';
+
+  @override
+  String get newProductPriceLabel => 'Precio (R\$)';
+
+  @override
+  String get newProductFillAllFields => 'Completa todos los campos';
+
+  @override
+  String get newProductNameAlreadyExists =>
+      'Ya existe un producto con este nombre';
+
+  @override
+  String newProductBarcodeAlreadyLinked(Object name) {
+    return 'Este código de barras ya está asociado al producto $name.';
+  }
+
+  @override
+  String get newProductGenericSaveError => 'Error al guardar';
+
+  @override
+  String newProductSaveErrorWithMessage(Object error) {
+    return 'Error al guardar: $error';
+  }
+
+  @override
+  String get newProductImageAdd => 'Agregar imagen';
+
+  @override
+  String get newProductBarcodeLabel => 'Código de barras';
+
+  @override
+  String get newProductBarcodeHint => 'Ej: 7891234567890';
+
+  @override
+  String get newProductCategoryLabel => 'Categoría';
+
+  @override
+  String get newProductCategoryLoading => 'Cargando categorías...';
+
+  @override
+  String get newProductCategoryHint => 'Selecciona una categoría';
+
+  @override
+  String get newProductCategoryValidator => 'Selecciona una categoría';
+
+  @override
+  String get newProductSaveButton => 'Guardar producto';
 }

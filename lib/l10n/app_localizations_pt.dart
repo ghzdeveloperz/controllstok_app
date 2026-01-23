@@ -74,6 +74,96 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get cancel => 'Cancelar';
+
+  @override
+  String get fieldRequired => 'Campo obrigatório';
+
+  @override
+  String get newProductTitle => 'Novo Produto';
+
+  @override
+  String get newProductSectionInfo => 'Informações do produto';
+
+  @override
+  String get newProductNameLabel => 'Nome do produto';
+
+  @override
+  String get newProductNameHint => 'Ex: Arroz 5kg';
+
+  @override
+  String get newProductNameMin => 'Nome deve ter pelo menos 2 caracteres';
+
+  @override
+  String get newProductNameMax => 'Nome deve ter no máximo 50 caracteres';
+
+  @override
+  String get newProductNameDuplicateValidator =>
+      'Nome já existe. Escolha outro.';
+
+  @override
+  String get newProductDuplicateNameMessage =>
+      'Este nome já existe. Você pode editá-lo.';
+
+  @override
+  String newProductNameHelperChars(int count) {
+    return '$count/50 caracteres';
+  }
+
+  @override
+  String get newProductNameHelperNearLimit => '(Quase perto do limite)';
+
+  @override
+  String get newProductNameHelperLimitReached => '(limite atingido)';
+
+  @override
+  String get newProductQuantityLabel => 'Quantidade';
+
+  @override
+  String get newProductPriceLabel => 'Preço (R\$)';
+
+  @override
+  String get newProductFillAllFields => 'Preencha todos os campos';
+
+  @override
+  String get newProductNameAlreadyExists =>
+      'Já existe um produto com este nome';
+
+  @override
+  String newProductBarcodeAlreadyLinked(Object name) {
+    return 'Este código de barras já está associado ao produto $name.';
+  }
+
+  @override
+  String get newProductGenericSaveError => 'Erro ao salvar';
+
+  @override
+  String newProductSaveErrorWithMessage(Object error) {
+    return 'Erro ao salvar: $error';
+  }
+
+  @override
+  String get newProductImageAdd => 'Adicionar imagem';
+
+  @override
+  String get newProductBarcodeLabel => 'Código de barras';
+
+  @override
+  String get newProductBarcodeHint => 'Ex: 7891234567890';
+
+  @override
+  String get newProductCategoryLabel => 'Categoria';
+
+  @override
+  String get newProductCategoryLoading => 'Carregando categorias...';
+
+  @override
+  String get newProductCategoryHint => 'Selecione uma categoria';
+
+  @override
+  String get newProductCategoryValidator => 'Selecione uma categoria';
+
+  @override
+  String get newProductSaveButton => 'Salvar produto';
 }
 
 /// The translations for Portuguese, as used in Portugal (`pt_PT`).
@@ -146,4 +236,94 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get cancel => 'Cancelar';
+
+  @override
+  String get fieldRequired => 'Campo obrigatório';
+
+  @override
+  String get newProductTitle => 'Novo Produto';
+
+  @override
+  String get newProductSectionInfo => 'Informações do produto';
+
+  @override
+  String get newProductNameLabel => 'Nome do produto';
+
+  @override
+  String get newProductNameHint => 'Ex.: Arroz 5kg';
+
+  @override
+  String get newProductNameMin => 'O nome deve ter pelo menos 2 caracteres';
+
+  @override
+  String get newProductNameMax => 'O nome deve ter no máximo 50 caracteres';
+
+  @override
+  String get newProductNameDuplicateValidator =>
+      'O nome já existe. Escolha outro.';
+
+  @override
+  String get newProductDuplicateNameMessage =>
+      'Este nome já existe. Pode editá-lo.';
+
+  @override
+  String newProductNameHelperChars(int count) {
+    return '$count/50 caracteres';
+  }
+
+  @override
+  String get newProductNameHelperNearLimit => '(Quase no limite)';
+
+  @override
+  String get newProductNameHelperLimitReached => '(limite atingido)';
+
+  @override
+  String get newProductQuantityLabel => 'Quantidade';
+
+  @override
+  String get newProductPriceLabel => 'Preço (R\$)';
+
+  @override
+  String get newProductFillAllFields => 'Preencha todos os campos';
+
+  @override
+  String get newProductNameAlreadyExists =>
+      'Já existe um produto com este nome';
+
+  @override
+  String newProductBarcodeAlreadyLinked(Object name) {
+    return 'Este código de barras já está associado ao produto $name.';
+  }
+
+  @override
+  String get newProductGenericSaveError => 'Erro ao guardar';
+
+  @override
+  String newProductSaveErrorWithMessage(Object error) {
+    return 'Erro ao guardar: $error';
+  }
+
+  @override
+  String get newProductImageAdd => 'Adicionar imagem';
+
+  @override
+  String get newProductBarcodeLabel => 'Código de barras';
+
+  @override
+  String get newProductBarcodeHint => 'Ex.: 7891234567890';
+
+  @override
+  String get newProductCategoryLabel => 'Categoria';
+
+  @override
+  String get newProductCategoryLoading => 'A carregar categorias...';
+
+  @override
+  String get newProductCategoryHint => 'Selecione uma categoria';
+
+  @override
+  String get newProductCategoryValidator => 'Selecione uma categoria';
+
+  @override
+  String get newProductSaveButton => 'Guardar produto';
 }

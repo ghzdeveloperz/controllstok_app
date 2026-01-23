@@ -66,5 +66,98 @@
   "@apply": { "description": "MODAL / BOTÕES — Ação de confirmar/aplicar" },
 
   "cancel": "Cancelar",
-  "@cancel": { "description": "MODAL / BOTÕES — Ação de cancelar/voltar" }
+  "@cancel": { "description": "MODAL / BOTÕES — Ação de cancelar/voltar" },
+
+  "fieldRequired": "Campo obrigatório",
+  "@fieldRequired": { "description": "VALIDAÇÃO — Mensagem padrão de campo obrigatório" },
+
+  "newProductTitle": "Novo Produto",
+  "@newProductTitle": { "description": "TELA NOVO_PRODUTO — Título do AppBar" },
+
+  "newProductSectionInfo": "Informações do produto",
+  "@newProductSectionInfo": { "description": "TELA NOVO_PRODUTO — Título da seção principal" },
+
+  "newProductNameLabel": "Nome do produto",
+  "@newProductNameLabel": { "description": "TELA NOVO_PRODUTO — Label do campo nome" },
+
+  "newProductNameHint": "Ex.: Arroz 5kg",
+  "@newProductNameHint": { "description": "TELA NOVO_PRODUTO — Hint do campo nome" },
+
+  "newProductNameMin": "O nome deve ter pelo menos 2 caracteres",
+  "@newProductNameMin": { "description": "VALIDAÇÃO — Nome mínimo" },
+
+  "newProductNameMax": "O nome deve ter no máximo 50 caracteres",
+  "@newProductNameMax": { "description": "VALIDAÇÃO — Nome máximo" },
+
+  "newProductNameDuplicateValidator": "O nome já existe. Escolha outro.",
+  "@newProductNameDuplicateValidator": { "description": "VALIDAÇÃO — Nome duplicado" },
+
+  "newProductDuplicateNameMessage": "Este nome já existe. Pode editá-lo.",
+  "@newProductDuplicateNameMessage": { "description": "TELA NOVO_PRODUTO — Mensagem auxiliar quando nome está duplicado" },
+
+  "newProductNameHelperChars": "{count}/50 caracteres",
+  "@newProductNameHelperChars": {
+    "description": "TELA NOVO_PRODUTO — Helper contagem de caracteres do nome",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "newProductNameHelperNearLimit": "(Quase no limite)",
+  "@newProductNameHelperNearLimit": { "description": "TELA NOVO_PRODUTO — Helper quando está perto do limite" },
+
+  "newProductNameHelperLimitReached": "(limite atingido)",
+  "@newProductNameHelperLimitReached": { "description": "TELA NOVO_PRODUTO — Helper quando atingiu o limite" },
+
+  "newProductQuantityLabel": "Quantidade",
+  "@newProductQuantityLabel": { "description": "TELA NOVO_PRODUTO — Label do campo quantidade" },
+
+  "newProductPriceLabel": "Preço (R$)",
+  "@newProductPriceLabel": { "description": "TELA NOVO_PRODUTO — Label do campo preço" },
+
+  "newProductFillAllFields": "Preencha todos os campos",
+  "@newProductFillAllFields": { "description": "SNACKBAR — Falta preencher dados" },
+
+  "newProductNameAlreadyExists": "Já existe um produto com este nome",
+  "@newProductNameAlreadyExists": { "description": "SNACKBAR — Nome de produto já existe" },
+
+  "newProductBarcodeAlreadyLinked": "Este código de barras já está associado ao produto {name}.",
+  "@newProductBarcodeAlreadyLinked": {
+    "description": "SNACKBAR — Código de barras já cadastrado em outro produto",
+    "placeholders": { "name": {} }
+  },
+
+  "newProductGenericSaveError": "Erro ao guardar",
+  "@newProductGenericSaveError": { "description": "SNACKBAR — Erro genérico ao guardar" },
+
+  "newProductSaveErrorWithMessage": "Erro ao guardar: {error}",
+  "@newProductSaveErrorWithMessage": {
+    "description": "SNACKBAR — Erro ao guardar com detalhes",
+    "placeholders": { "error": {} }
+  },
+
+  "newProductImageAdd": "Adicionar imagem",
+  "@newProductImageAdd": { "description": "TELA NOVO_PRODUTO — Ação para adicionar imagem do produto" },
+
+  "newProductBarcodeLabel": "Código de barras",
+  "@newProductBarcodeLabel": { "description": "TELA NOVO_PRODUTO — Label do campo de código de barras" },
+
+  "newProductBarcodeHint": "Ex.: 7891234567890",
+  "@newProductBarcodeHint": { "description": "TELA NOVO_PRODUTO — Hint do campo de código de barras" },
+
+  "newProductCategoryLabel": "Categoria",
+  "@newProductCategoryLabel": { "description": "TELA NOVO_PRODUTO — Label do campo de categoria" },
+
+  "newProductCategoryLoading": "A carregar categorias...",
+  "@newProductCategoryLoading": { "description": "TELA NOVO_PRODUTO — Texto enquanto carrega categorias" },
+
+  "newProductCategoryHint": "Selecione uma categoria",
+  "@newProductCategoryHint": { "description": "TELA NOVO_PRODUTO — Hint do seletor de categoria" },
+
+  "newProductCategoryValidator": "Selecione uma categoria",
+  "@newProductCategoryValidator": { "description": "VALIDAÇÃO — Mensagem quando a categoria não foi selecionada" },
+
+  "newProductSaveButton": "Guardar produto",
+  "@newProductSaveButton": { "description": "TELA NOVO_PRODUTO — Texto do botão de guardar" }
+
 }

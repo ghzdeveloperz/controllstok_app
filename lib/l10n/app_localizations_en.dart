@@ -74,4 +74,94 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cancel => 'Cancel';
+
+  @override
+  String get fieldRequired => 'Required field';
+
+  @override
+  String get newProductTitle => 'New Product';
+
+  @override
+  String get newProductSectionInfo => 'Product information';
+
+  @override
+  String get newProductNameLabel => 'Product name';
+
+  @override
+  String get newProductNameHint => 'e.g. Rice 5kg';
+
+  @override
+  String get newProductNameMin => 'Name must be at least 2 characters';
+
+  @override
+  String get newProductNameMax => 'Name must be at most 50 characters';
+
+  @override
+  String get newProductNameDuplicateValidator =>
+      'Name already exists. Choose another.';
+
+  @override
+  String get newProductDuplicateNameMessage =>
+      'This name already exists. You can edit it.';
+
+  @override
+  String newProductNameHelperChars(int count) {
+    return '$count/50 characters';
+  }
+
+  @override
+  String get newProductNameHelperNearLimit => '(Near the limit)';
+
+  @override
+  String get newProductNameHelperLimitReached => '(limit reached)';
+
+  @override
+  String get newProductQuantityLabel => 'Quantity';
+
+  @override
+  String get newProductPriceLabel => 'Price (R\$)';
+
+  @override
+  String get newProductFillAllFields => 'Please fill in all fields';
+
+  @override
+  String get newProductNameAlreadyExists =>
+      'A product with this name already exists';
+
+  @override
+  String newProductBarcodeAlreadyLinked(Object name) {
+    return 'This barcode is already linked to product $name.';
+  }
+
+  @override
+  String get newProductGenericSaveError => 'Error while saving';
+
+  @override
+  String newProductSaveErrorWithMessage(Object error) {
+    return 'Error while saving: $error';
+  }
+
+  @override
+  String get newProductImageAdd => 'Add image';
+
+  @override
+  String get newProductBarcodeLabel => 'Barcode';
+
+  @override
+  String get newProductBarcodeHint => 'e.g. 7891234567890';
+
+  @override
+  String get newProductCategoryLabel => 'Category';
+
+  @override
+  String get newProductCategoryLoading => 'Loading categories...';
+
+  @override
+  String get newProductCategoryHint => 'Select a category';
+
+  @override
+  String get newProductCategoryValidator => 'Select a category';
+
+  @override
+  String get newProductSaveButton => 'Save product';
 }

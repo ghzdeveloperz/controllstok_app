@@ -6,65 +6,158 @@
   "@appTitle": { "description": "GERAL / APP — Título principal do aplicativo" },
 
   "hello": "Hello",
-  "@hello": { "description": "GERAL / APP — Saudação genérica" },
+  "@hello": { "description": "GERAL / APP — Generic greeting" },
 
   "helloCompany": "Hello, {company}.",
   "@helloCompany": {
-    "description": "GERAL / APP — Saudação com nome da empresa",
+    "description": "GERAL / APP — Greeting with company name",
     "placeholders": { "company": {} }
   },
 
   "authChoiceLogin": "Login",
-  "@authChoiceLogin": { "description": "TELA AUTH_CHOICE — Texto do botão Login" },
+  "@authChoiceLogin": { "description": "SCREEN AUTH_CHOICE — Login button text" },
 
   "authChoiceRegister": "Sign up",
-  "@authChoiceRegister": { "description": "TELA AUTH_CHOICE — Texto do botão Cadastrar" },
+  "@authChoiceRegister": { "description": "SCREEN AUTH_CHOICE — Register button text" },
 
   "stockToday": "Your stock today",
-  "@stockToday": { "description": "TELA ESTOQUE / HOME — Título do resumo do estoque" },
+  "@stockToday": { "description": "STOCK / HOME — Stock summary title" },
 
   "searchProductHint": "Search product...",
-  "@searchProductHint": { "description": "TELA ESTOQUE / HOME — Placeholder do campo de busca de produtos" },
+  "@searchProductHint": { "description": "STOCK / HOME — Product search placeholder" },
 
   "allCategory": "All",
-  "@allCategory": { "description": "TELA ESTOQUE / HOME — Filtro 'Todos' (categorias)" },
+  "@allCategory": { "description": "STOCK / HOME — All categories filter label" },
 
   "noProductsFound": "No products found",
-  "@noProductsFound": { "description": "TELA ESTOQUE / HOME — Mensagem quando não há produtos" },
+  "@noProductsFound": { "description": "STOCK / HOME — No products message" },
 
   "languageTitle": "Language",
-  "@languageTitle": { "description": "TELA IDIOMA — Título da tela de idioma" },
+  "@languageTitle": { "description": "LANGUAGE SCREEN — Title" },
 
   "languageSystem": "System language",
-  "@languageSystem": { "description": "TELA IDIOMA — Opção para usar idioma do sistema" },
+  "@languageSystem": { "description": "LANGUAGE SCREEN — System language option" },
 
   "languageSystemDescription": "Automatically use your device language",
-  "@languageSystemDescription": { "description": "TELA IDIOMA — Descrição do idioma do sistema" },
+  "@languageSystemDescription": { "description": "LANGUAGE SCREEN — System language description" },
 
   "searchLanguageHint": "Search language...",
-  "@searchLanguageHint": { "description": "TELA IDIOMA — Placeholder do campo de busca de idioma" },
+  "@searchLanguageHint": { "description": "LANGUAGE SCREEN — Search placeholder" },
 
   "languageSectionPreferences": "Preferences",
-  "@languageSectionPreferences": { "description": "TELA IDIOMA — Título da seção de preferências" },
+  "@languageSectionPreferences": { "description": "LANGUAGE SCREEN — Preferences section title" },
 
   "languageSectionAvailable": "Available languages",
-  "@languageSectionAvailable": { "description": "TELA IDIOMA — Título da seção de idiomas disponíveis" },
+  "@languageSectionAvailable": { "description": "LANGUAGE SCREEN — Available languages section title" },
 
   "selectedLabel": "Selected",
-  "@selectedLabel": { "description": "TELA IDIOMA — Label exibido quando idioma está selecionado" },
+  "@selectedLabel": { "description": "LANGUAGE SCREEN — Selected label" },
 
   "noLanguageFound": "No language found",
-  "@noLanguageFound": { "description": "TELA IDIOMA — Mensagem quando a busca não encontra idiomas" },
+  "@noLanguageFound": { "description": "LANGUAGE SCREEN — No language search results message" },
 
   "languageConfirmTitle": "Confirm change",
-  "@languageConfirmTitle": { "description": "MODAL IDIOMA — Título do modal de confirmação" },
+  "@languageConfirmTitle": { "description": "LANGUAGE MODAL — Title" },
 
   "languageConfirmMessage": "Do you want to apply this language now? You can change it again anytime.",
-  "@languageConfirmMessage": { "description": "MODAL IDIOMA — Mensagem do modal de confirmação" },
+  "@languageConfirmMessage": { "description": "LANGUAGE MODAL — Message" },
 
   "apply": "Apply",
-  "@apply": { "description": "MODAL / BOTÕES — Ação de confirmar/aplicar" },
+  "@apply": { "description": "MODAL / BUTTONS — Apply action" },
 
   "cancel": "Cancel",
-  "@cancel": { "description": "MODAL / BOTÕES — Ação de cancelar/voltar" }
+  "@cancel": { "description": "MODAL / BUTTONS — Cancel action" },
+
+  "fieldRequired": "Required field",
+  "@fieldRequired": { "description": "VALIDATION — Default required field message" },
+
+  "newProductTitle": "New Product",
+  "@newProductTitle": { "description": "NEW_PRODUCT SCREEN — AppBar title" },
+
+  "newProductSectionInfo": "Product information",
+  "@newProductSectionInfo": { "description": "NEW_PRODUCT SCREEN — Main section title" },
+
+  "newProductNameLabel": "Product name",
+  "@newProductNameLabel": { "description": "NEW_PRODUCT SCREEN — Name field label" },
+
+  "newProductNameHint": "e.g. Rice 5kg",
+  "@newProductNameHint": { "description": "NEW_PRODUCT SCREEN — Name field hint" },
+
+  "newProductNameMin": "Name must be at least 2 characters",
+  "@newProductNameMin": { "description": "VALIDATION — Minimum name length" },
+
+  "newProductNameMax": "Name must be at most 50 characters",
+  "@newProductNameMax": { "description": "VALIDATION — Maximum name length" },
+
+  "newProductNameDuplicateValidator": "Name already exists. Choose another.",
+  "@newProductNameDuplicateValidator": { "description": "VALIDATION — Duplicate name" },
+
+  "newProductDuplicateNameMessage": "This name already exists. You can edit it.",
+  "@newProductDuplicateNameMessage": { "description": "NEW_PRODUCT SCREEN — Helper message when name is duplicate" },
+
+  "newProductNameHelperChars": "{count}/50 characters",
+  "@newProductNameHelperChars": {
+    "description": "NEW_PRODUCT SCREEN — Name helper character counter",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "newProductNameHelperNearLimit": "(Near the limit)",
+  "@newProductNameHelperNearLimit": { "description": "NEW_PRODUCT SCREEN — Helper when near limit" },
+
+  "newProductNameHelperLimitReached": "(limit reached)",
+  "@newProductNameHelperLimitReached": { "description": "NEW_PRODUCT SCREEN — Helper when limit reached" },
+
+  "newProductQuantityLabel": "Quantity",
+  "@newProductQuantityLabel": { "description": "NEW_PRODUCT SCREEN — Quantity field label" },
+
+  "newProductPriceLabel": "Price (R$)",
+  "@newProductPriceLabel": { "description": "NEW_PRODUCT SCREEN — Price field label" },
+
+  "newProductFillAllFields": "Please fill in all fields",
+  "@newProductFillAllFields": { "description": "SNACKBAR — Missing required data" },
+
+  "newProductNameAlreadyExists": "A product with this name already exists",
+  "@newProductNameAlreadyExists": { "description": "SNACKBAR — Product name already exists" },
+
+  "newProductBarcodeAlreadyLinked": "This barcode is already linked to product {name}.",
+  "@newProductBarcodeAlreadyLinked": {
+    "description": "SNACKBAR — Barcode already linked to another product",
+    "placeholders": { "name": {} }
+  },
+
+  "newProductGenericSaveError": "Error while saving",
+  "@newProductGenericSaveError": { "description": "SNACKBAR — Generic save error" },
+
+  "newProductSaveErrorWithMessage": "Error while saving: {error}",
+  "@newProductSaveErrorWithMessage": {
+    "description": "SNACKBAR — Save error with details",
+    "placeholders": { "error": {} }
+  },
+  
+  "newProductImageAdd": "Add image",
+  "@newProductImageAdd": { "description": "NEW_PRODUCT SCREEN — Action to add a product image" },
+
+  "newProductBarcodeLabel": "Barcode",
+  "@newProductBarcodeLabel": { "description": "NEW_PRODUCT SCREEN — Barcode field label" },
+
+  "newProductBarcodeHint": "e.g. 7891234567890",
+  "@newProductBarcodeHint": { "description": "NEW_PRODUCT SCREEN — Barcode field hint/placeholder" },
+
+  "newProductCategoryLabel": "Category",
+  "@newProductCategoryLabel": { "description": "NEW_PRODUCT SCREEN — Category field label" },
+
+  "newProductCategoryLoading": "Loading categories...",
+  "@newProductCategoryLoading": { "description": "NEW_PRODUCT SCREEN — Text shown while loading categories" },
+
+  "newProductCategoryHint": "Select a category",
+  "@newProductCategoryHint": { "description": "NEW_PRODUCT SCREEN — Category selector hint" },
+
+  "newProductCategoryValidator": "Select a category",
+  "@newProductCategoryValidator": { "description": "VALIDATION — Message when category is not selected" },
+
+  "newProductSaveButton": "Save product",
+  "@newProductSaveButton": { "description": "NEW_PRODUCT SCREEN — Save button text" }
+
 }
