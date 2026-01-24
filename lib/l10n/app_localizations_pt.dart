@@ -164,6 +164,122 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get newProductSaveButton => 'Salvar produto';
+
+  @override
+  String get loginEmailHint => 'Email';
+
+  @override
+  String get loginPasswordHint => 'Senha';
+
+  @override
+  String get loginForgotPassword => 'Esqueceu a senha?';
+
+  @override
+  String get loginSubmitButton => 'Entrar';
+
+  @override
+  String get loginOrContinueWith => 'ou continue com';
+
+  @override
+  String get loginWithGoogle => 'Entre com Google';
+
+  @override
+  String get loginWithApple => 'Entre com Apple';
+
+  @override
+  String get loginWelcomeBackTitle => 'Bem-vindo de volta!';
+
+  @override
+  String get loginWelcomeBackSubtitle =>
+      'Entre, e gerencie seu estoque com facilidade.';
+
+  @override
+  String get loginNoAccountPrefix => 'Ainda não tem conta? ';
+
+  @override
+  String get loginCreateNow => 'Criar agora';
+
+  @override
+  String get loginErrorFillEmailAndPassword => 'Preencha email e senha';
+
+  @override
+  String get loginErrorGetUser => 'Erro ao obter usuário';
+
+  @override
+  String get loginErrorUserNotFound => 'Usuário não encontrado';
+
+  @override
+  String get loginErrorAccountDisabled => 'Sua conta está desativada.';
+
+  @override
+  String get loginDialogAccountDisabledTitle => 'Conta desativada';
+
+  @override
+  String get loginDialogAccountDisabledMessage =>
+      'Sua conta está desativada. Entre em contato com o suporte.';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get loginErrorCheckUser => 'Erro ao verificar usuário';
+
+  @override
+  String get loginResetPasswordEmailRequired =>
+      'Informe seu email para redefinir a senha';
+
+  @override
+  String get loginResetPasswordSuccess =>
+      'Enviamos um link de redefinição para seu e-mail.';
+
+  @override
+  String get loginResetPasswordUnexpectedError =>
+      'Erro inesperado ao redefinir senha';
+
+  @override
+  String get loginLoadingGoogle => 'Entrando com Google...';
+
+  @override
+  String get loginLoadingPrepareAccount => 'Preparando sua conta...';
+
+  @override
+  String get loginFillEmailAndPassword => 'Preencha email e senha';
+
+  @override
+  String get loginErrorGettingUser => 'Erro ao obter usuário';
+
+  @override
+  String get loginUserNotFound => 'Usuário não encontrado';
+
+  @override
+  String get loginAccountDisabledShort => 'Sua conta está desativada.';
+
+  @override
+  String get loginAccountDisabledTitle => 'Conta desativada';
+
+  @override
+  String get loginAccountDisabledMessage =>
+      'Sua conta está desativada. Entre em contato com o suporte.';
+
+  @override
+  String get loginErrorCheckingUser => 'Erro ao verificar usuário';
+
+  @override
+  String get loginEnterEmailToReset =>
+      'Informe seu email para redefinir a senha';
+
+  @override
+  String get loginResetLinkSent =>
+      'Enviamos um link de redefinição para seu e-mail.';
+
+  @override
+  String get loginUnexpectedResetError => 'Erro inesperado ao redefinir senha';
+
+  @override
+  String get loginSigningInWithGoogle => 'Entrando com Google...';
+
+  @override
+  String get loginPreparingAccount => 'Preparando sua conta...';
 }
 
 /// The translations for Portuguese, as used in Portugal (`pt_PT`).
@@ -326,4 +442,122 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get newProductSaveButton => 'Guardar produto';
+
+  @override
+  String get loginEmailHint => 'E-mail';
+
+  @override
+  String get loginPasswordHint => 'Palavra-passe';
+
+  @override
+  String get loginForgotPassword => 'Esqueceu-se da palavra-passe?';
+
+  @override
+  String get loginSubmitButton => 'Entrar';
+
+  @override
+  String get loginOrContinueWith => 'ou continue com';
+
+  @override
+  String get loginWithGoogle => 'Entrar com Google';
+
+  @override
+  String get loginWithApple => 'Entrar com Apple';
+
+  @override
+  String get loginWelcomeBackTitle => 'Bem-vindo de volta!';
+
+  @override
+  String get loginWelcomeBackSubtitle =>
+      'Entre e faça a gestão do seu stock com facilidade.';
+
+  @override
+  String get loginNoAccountPrefix => 'Ainda não tem conta? ';
+
+  @override
+  String get loginCreateNow => 'Criar agora';
+
+  @override
+  String get loginErrorFillEmailAndPassword =>
+      'Preencha o e-mail e a palavra-passe';
+
+  @override
+  String get loginErrorGetUser => 'Erro ao obter utilizador';
+
+  @override
+  String get loginErrorUserNotFound => 'Utilizador não encontrado';
+
+  @override
+  String get loginErrorAccountDisabled => 'A sua conta está desativada.';
+
+  @override
+  String get loginDialogAccountDisabledTitle => 'Conta desativada';
+
+  @override
+  String get loginDialogAccountDisabledMessage =>
+      'A sua conta está desativada. Contacte o suporte.';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get loginErrorCheckUser => 'Erro ao verificar utilizador';
+
+  @override
+  String get loginResetPasswordEmailRequired =>
+      'Indique o seu e-mail para redefinir a palavra-passe';
+
+  @override
+  String get loginResetPasswordSuccess =>
+      'Enviámos um link de redefinição para o seu e-mail.';
+
+  @override
+  String get loginResetPasswordUnexpectedError =>
+      'Erro inesperado ao redefinir a palavra-passe';
+
+  @override
+  String get loginLoadingGoogle => 'A entrar com Google...';
+
+  @override
+  String get loginLoadingPrepareAccount => 'A preparar a sua conta...';
+
+  @override
+  String get loginFillEmailAndPassword => 'Preencha o email e a palavra-passe';
+
+  @override
+  String get loginErrorGettingUser => 'Erro ao obter utilizador';
+
+  @override
+  String get loginUserNotFound => 'Utilizador não encontrado';
+
+  @override
+  String get loginAccountDisabledShort => 'A sua conta está desativada.';
+
+  @override
+  String get loginAccountDisabledTitle => 'Conta desativada';
+
+  @override
+  String get loginAccountDisabledMessage =>
+      'A sua conta está desativada. Entre em contacto com o suporte.';
+
+  @override
+  String get loginErrorCheckingUser => 'Erro ao verificar utilizador';
+
+  @override
+  String get loginEnterEmailToReset =>
+      'Introduza o seu email para redefinir a palavra-passe';
+
+  @override
+  String get loginResetLinkSent =>
+      'Enviámos um link de redefinição para o seu email.';
+
+  @override
+  String get loginUnexpectedResetError =>
+      'Erro inesperado ao redefinir a palavra-passe';
+
+  @override
+  String get loginSigningInWithGoogle => 'A iniciar sessão com Google...';
+
+  @override
+  String get loginPreparingAccount => 'A preparar a sua conta...';
 }

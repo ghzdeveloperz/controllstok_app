@@ -1,5 +1,7 @@
+// lib/screens/acounts/login/widgets/social_login_buttons.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../../../../l10n/app_localizations.dart';
 
 typedef AsyncVoidCallback = Future<void> Function();
 
@@ -23,7 +25,7 @@ class SocialLoginButtons extends StatelessWidget {
           child: _PressableButton(
             isDisabled: isDisabled,
             onTap: onGoogleTap,
-            child: _GoogleContent(isDisabled: isDisabled),
+            child: const _GoogleContent(),
           ),
         ),
         const SizedBox(width: 12),
@@ -31,7 +33,7 @@ class SocialLoginButtons extends StatelessWidget {
           child: _PressableButton(
             isDisabled: isDisabled,
             onTap: onAppleTap,
-            child: _AppleContent(isDisabled: isDisabled),
+            child: const _AppleContent(),
           ),
         ),
       ],
@@ -39,7 +41,6 @@ class SocialLoginButtons extends StatelessWidget {
   }
 }
 
-/// ✅ Wrapper genérico com animação de "press"
 class _PressableButton extends StatefulWidget {
   final bool isDisabled;
   final AsyncVoidCallback onTap;
@@ -109,11 +110,12 @@ class _PressableButtonState extends State<_PressableButton> {
 }
 
 class _AppleContent extends StatelessWidget {
-  final bool isDisabled;
-  const _AppleContent({required this.isDisabled});
+  const _AppleContent();
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
     return Container(
       height: 48,
       decoration: BoxDecoration(
@@ -141,9 +143,9 @@ class _AppleContent extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          const Text(
-            "Entre com Apple",
-            style: TextStyle(
+          Text(
+            t.loginWithApple,
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 11,
               fontWeight: FontWeight.w600,
@@ -156,11 +158,12 @@ class _AppleContent extends StatelessWidget {
 }
 
 class _GoogleContent extends StatelessWidget {
-  final bool isDisabled;
-  const _GoogleContent({required this.isDisabled});
+  const _GoogleContent();
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
     return Container(
       height: 48,
       decoration: BoxDecoration(
@@ -181,9 +184,9 @@ class _GoogleContent extends StatelessWidget {
         children: [
           SvgPicture.string(_googleSvg, height: 18),
           const SizedBox(width: 8),
-          const Text(
-            "Entre com Google",
-            style: TextStyle(
+          Text(
+            t.loginWithGoogle,
+            style: const TextStyle(
               color: Colors.black87,
               fontSize: 11,
               fontWeight: FontWeight.w600,

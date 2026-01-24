@@ -1,11 +1,14 @@
-// lib/screens/login/widgets/login_header.dart
+// lib/screens/acounts/login/widgets/login_header.dart
 import 'package:flutter/material.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class LoginHeader extends StatelessWidget {
   const LoginHeader({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -18,9 +21,9 @@ class LoginHeader extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 32),
-        const Text(
-          "Bem-vindo de volta!",
-          style: TextStyle(
+        Text(
+          t.loginWelcomeBackTitle,
+          style: const TextStyle(
             fontSize: 28,
             fontWeight: FontWeight.w800,
             letterSpacing: -0.4,
@@ -28,9 +31,9 @@ class LoginHeader extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 6),
-        const Text(
-          "Entre, e gerencie seu estoque com facilidade.",
-          style: TextStyle(
+        Text(
+          t.loginWelcomeBackSubtitle,
+          style: const TextStyle(
             fontSize: 15,
             color: Colors.black54,
             height: 1.4,

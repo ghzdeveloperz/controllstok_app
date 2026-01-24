@@ -158,6 +158,142 @@
   "@newProductCategoryValidator": { "description": "VALIDAÇÃO — Mensagem quando a categoria não foi selecionada" },
 
   "newProductSaveButton": "Salvar produto",
-  "@newProductSaveButton": { "description": "TELA NOVO_PRODUTO — Texto do botão de salvar" }
+  "@newProductSaveButton": { "description": "TELA NOVO_PRODUTO — Texto do botão de salvar" },
+
+    "loginEmailHint": "Email",
+  "@loginEmailHint": { "description": "TELA LOGIN — Hint do campo email" },
+
+  "loginPasswordHint": "Senha",
+  "@loginPasswordHint": { "description": "TELA LOGIN — Hint do campo senha" },
+
+  "loginForgotPassword": "Esqueceu a senha?",
+  "@loginForgotPassword": { "description": "TELA LOGIN — Botão/link de reset de senha" },
+
+  "loginSubmitButton": "Entrar",
+  "@loginSubmitButton": { "description": "TELA LOGIN — Texto do botão principal de entrar" },
+
+  "loginOrContinueWith": "ou continue com",
+  "@loginOrContinueWith": { "description": "TELA LOGIN — Divisor social (ou continue com)" },
+
+  "loginWithGoogle": "Entre com Google",
+  "@loginWithGoogle": { "description": "TELA LOGIN — Botão social Google" },
+
+  "loginWithApple": "Entre com Apple",
+  "@loginWithApple": { "description": "TELA LOGIN — Botão social Apple" },
+
+  "loginWelcomeBackTitle": "Bem-vindo de volta!",
+  "@loginWelcomeBackTitle": { "description": "TELA LOGIN — Título do header" },
+
+  "loginWelcomeBackSubtitle": "Entre, e gerencie seu estoque com facilidade.",
+  "@loginWelcomeBackSubtitle": { "description": "TELA LOGIN — Subtítulo do header" },
+
+  "loginNoAccountPrefix": "Ainda não tem conta? ",
+  "@loginNoAccountPrefix": { "description": "TELA LOGIN — Texto antes do link para cadastro" },
+
+  "loginCreateNow": "Criar agora",
+  "@loginCreateNow": { "description": "TELA LOGIN — Link/botão para ir ao cadastro" },
+
+  "loginErrorFillEmailAndPassword": "Preencha email e senha",
+  "@loginErrorFillEmailAndPassword": { "description": "LOGIN — Erro quando email/senha estão vazios" },
+
+  "loginErrorGetUser": "Erro ao obter usuário",
+  "@loginErrorGetUser": { "description": "LOGIN — Erro quando currentUser é null após login" },
+
+  "loginErrorUserNotFound": "Usuário não encontrado",
+  "@loginErrorUserNotFound": { "description": "LOGIN — Erro quando doc do usuário não existe no Firestore" },
+
+  "loginErrorAccountDisabled": "Sua conta está desativada.",
+  "@loginErrorAccountDisabled": { "description": "LOGIN — Erro quando conta está desativada" },
+
+  "loginDialogAccountDisabledTitle": "Conta desativada",
+  "@loginDialogAccountDisabledTitle": { "description": "DIALOG — Título do modal de conta desativada" },
+
+  "loginDialogAccountDisabledMessage": "Sua conta está desativada. Entre em contato com o suporte.",
+  "@loginDialogAccountDisabledMessage": { "description": "DIALOG — Mensagem do modal de conta desativada" },
+
+  "ok": "OK",
+  "@ok": { "description": "GERAL / BOTÕES — Ação de confirmar/fechar" },
+
+  "loginErrorCheckUser": "Erro ao verificar usuário",
+  "@loginErrorCheckUser": { "description": "LOGIN — Erro genérico ao checar status do usuário" },
+
+  "loginResetPasswordEmailRequired": "Informe seu email para redefinir a senha",
+  "@loginResetPasswordEmailRequired": { "description": "LOGIN — Erro ao tentar resetar senha sem email" },
+
+  "loginResetPasswordSuccess": "Enviamos um link de redefinição para seu e-mail.",
+  "@loginResetPasswordSuccess": { "description": "LOGIN — Mensagem de sucesso no reset de senha" },
+
+  "loginResetPasswordUnexpectedError": "Erro inesperado ao redefinir senha",
+  "@loginResetPasswordUnexpectedError": { "description": "LOGIN — Erro inesperado no reset de senha" },
+
+  "loginLoadingGoogle": "Entrando com Google...",
+  "@loginLoadingGoogle": { "description": "LOADER — Texto enquanto faz login com Google" },
+
+  "loginLoadingPrepareAccount": "Preparando sua conta...",
+  "@loginLoadingPrepareAccount": { "description": "LOADER — Texto enquanto executa warmup/bootstrap após login" },
+
+    "loginFillEmailAndPassword": "Preencha email e senha",
+  "@loginFillEmailAndPassword": {
+    "description": "LOGIN — Erro quando email ou senha estão vazios"
+  },
+
+  "loginErrorGettingUser": "Erro ao obter usuário",
+  "@loginErrorGettingUser": {
+    "description": "LOGIN — Erro ao obter usuário autenticado"
+  },
+
+  "loginUserNotFound": "Usuário não encontrado",
+  "@loginUserNotFound": {
+    "description": "LOGIN — Usuário não encontrado no Firestore"
+  },
+
+  "loginAccountDisabledShort": "Sua conta está desativada.",
+  "@loginAccountDisabledShort": {
+    "description": "LOGIN — Conta desativada (mensagem curta)"
+  },
+
+  "loginAccountDisabledTitle": "Conta desativada",
+  "@loginAccountDisabledTitle": {
+    "description": "LOGIN — Título do modal de conta desativada"
+  },
+
+  "loginAccountDisabledMessage": "Sua conta está desativada. Entre em contato com o suporte.",
+  "@loginAccountDisabledMessage": {
+    "description": "LOGIN — Mensagem do modal de conta desativada"
+  },
+
+  "loginErrorCheckingUser": "Erro ao verificar usuário",
+  "@loginErrorCheckingUser": {
+    "description": "LOGIN — Erro ao verificar status do usuário"
+  },
+
+  "loginEnterEmailToReset": "Informe seu email para redefinir a senha",
+  "@loginEnterEmailToReset": {
+    "description": "LOGIN — Erro ao tentar redefinir senha sem email"
+  },
+
+  "loginResetLinkSent": "Enviamos um link de redefinição para seu e-mail.",
+  "@loginResetLinkSent": {
+    "description": "LOGIN — Confirmação de envio de link de redefinição"
+  },
+
+  "loginUnexpectedResetError": "Erro inesperado ao redefinir senha",
+  "@loginUnexpectedResetError": {
+    "description": "LOGIN — Erro inesperado na redefinição de senha"
+  },
+
+  "ok": "OK",
+  "@ok": {
+    "description": "GERAL — Texto padrão do botão OK"
+  },
+
+
+  "loginSigningInWithGoogle": "Entrando com Google...",
+  "@loginSigningInWithGoogle": { "description": "LOGIN — Loader ao iniciar login com Google" },
+
+  "loginPreparingAccount": "Preparando sua conta...",
+  "@loginPreparingAccount": { "description": "LOGIN — Loader durante warmup/bootstrap após login" }
+
+
 
 }

@@ -164,6 +164,124 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get newProductSaveButton => 'Produkt speichern';
+
+  @override
+  String get loginEmailHint => 'E-Mail';
+
+  @override
+  String get loginPasswordHint => 'Passwort';
+
+  @override
+  String get loginForgotPassword => 'Passwort vergessen?';
+
+  @override
+  String get loginSubmitButton => 'Anmelden';
+
+  @override
+  String get loginOrContinueWith => 'oder weiter mit';
+
+  @override
+  String get loginWithGoogle => 'Mit Google anmelden';
+
+  @override
+  String get loginWithApple => 'Mit Apple anmelden';
+
+  @override
+  String get loginWelcomeBackTitle => 'Willkommen zurück!';
+
+  @override
+  String get loginWelcomeBackSubtitle =>
+      'Melden Sie sich an und verwalten Sie Ihren Bestand ganz einfach.';
+
+  @override
+  String get loginNoAccountPrefix => 'Noch kein Konto? ';
+
+  @override
+  String get loginCreateNow => 'Jetzt erstellen';
+
+  @override
+  String get loginErrorFillEmailAndPassword =>
+      'Bitte E-Mail und Passwort eingeben';
+
+  @override
+  String get loginErrorGetUser => 'Fehler beim Abrufen des Benutzers';
+
+  @override
+  String get loginErrorUserNotFound => 'Benutzer nicht gefunden';
+
+  @override
+  String get loginErrorAccountDisabled => 'Ihr Konto ist deaktiviert.';
+
+  @override
+  String get loginDialogAccountDisabledTitle => 'Konto deaktiviert';
+
+  @override
+  String get loginDialogAccountDisabledMessage =>
+      'Ihr Konto ist deaktiviert. Bitte kontaktieren Sie den Support.';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get loginErrorCheckUser => 'Fehler beim Prüfen des Benutzers';
+
+  @override
+  String get loginResetPasswordEmailRequired =>
+      'Bitte E-Mail eingeben, um das Passwort zurückzusetzen';
+
+  @override
+  String get loginResetPasswordSuccess =>
+      'Wir haben einen Link zum Zurücksetzen an Ihre E-Mail gesendet.';
+
+  @override
+  String get loginResetPasswordUnexpectedError =>
+      'Unerwarteter Fehler beim Zurücksetzen des Passworts';
+
+  @override
+  String get loginLoadingGoogle => 'Anmeldung mit Google...';
+
+  @override
+  String get loginLoadingPrepareAccount => 'Konto wird vorbereitet...';
+
+  @override
+  String get loginFillEmailAndPassword => 'Bitte E-Mail und Passwort eingeben';
+
+  @override
+  String get loginErrorGettingUser => 'Fehler beim Abrufen des Benutzers';
+
+  @override
+  String get loginUserNotFound => 'Benutzer nicht gefunden';
+
+  @override
+  String get loginAccountDisabledShort => 'Ihr Konto ist deaktiviert.';
+
+  @override
+  String get loginAccountDisabledTitle => 'Konto deaktiviert';
+
+  @override
+  String get loginAccountDisabledMessage =>
+      'Ihr Konto ist deaktiviert. Bitte kontaktieren Sie den Support.';
+
+  @override
+  String get loginErrorCheckingUser => 'Fehler bei der Benutzerprüfung';
+
+  @override
+  String get loginEnterEmailToReset =>
+      'Geben Sie Ihre E-Mail zur Passwortzurücksetzung ein';
+
+  @override
+  String get loginResetLinkSent =>
+      'Ein Link zur Passwortzurücksetzung wurde an Ihre E-Mail gesendet.';
+
+  @override
+  String get loginUnexpectedResetError =>
+      'Unerwarteter Fehler beim Zurücksetzen des Passworts';
+
+  @override
+  String get loginSigningInWithGoogle => 'Anmeldung mit Google...';
+
+  @override
+  String get loginPreparingAccount => 'Konto wird vorbereitet...';
 }
 
 /// The translations for German, as used in Switzerland (`de_CH`).
@@ -326,4 +444,122 @@ class AppLocalizationsDeCh extends AppLocalizationsDe {
 
   @override
   String get newProductSaveButton => 'Produkt speichern';
+
+  @override
+  String get loginEmailHint => 'E-Mail';
+
+  @override
+  String get loginPasswordHint => 'Passwort';
+
+  @override
+  String get loginForgotPassword => 'Passwort vergessen?';
+
+  @override
+  String get loginSubmitButton => 'Anmelden';
+
+  @override
+  String get loginOrContinueWith => 'oder weiter mit';
+
+  @override
+  String get loginWithGoogle => 'Mit Google anmelden';
+
+  @override
+  String get loginWithApple => 'Mit Apple anmelden';
+
+  @override
+  String get loginWelcomeBackTitle => 'Willkommen zurück!';
+
+  @override
+  String get loginWelcomeBackSubtitle =>
+      'Melden Sie sich an und verwalten Sie Ihren Bestand ganz einfach.';
+
+  @override
+  String get loginNoAccountPrefix => 'Noch kein Konto? ';
+
+  @override
+  String get loginCreateNow => 'Jetzt erstellen';
+
+  @override
+  String get loginErrorFillEmailAndPassword =>
+      'Bitte E-Mail und Passwort eingeben';
+
+  @override
+  String get loginErrorGetUser => 'Fehler beim Abrufen des Benutzers';
+
+  @override
+  String get loginErrorUserNotFound => 'Benutzer nicht gefunden';
+
+  @override
+  String get loginErrorAccountDisabled => 'Ihr Konto ist deaktiviert.';
+
+  @override
+  String get loginDialogAccountDisabledTitle => 'Konto deaktiviert';
+
+  @override
+  String get loginDialogAccountDisabledMessage =>
+      'Ihr Konto ist deaktiviert. Bitte kontaktieren Sie den Support.';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get loginErrorCheckUser => 'Fehler beim Prüfen des Benutzers';
+
+  @override
+  String get loginResetPasswordEmailRequired =>
+      'Bitte E-Mail eingeben, um das Passwort zurückzusetzen';
+
+  @override
+  String get loginResetPasswordSuccess =>
+      'Wir haben einen Link zum Zurücksetzen an Ihre E-Mail gesendet.';
+
+  @override
+  String get loginResetPasswordUnexpectedError =>
+      'Unerwarteter Fehler beim Zurücksetzen des Passworts';
+
+  @override
+  String get loginLoadingGoogle => 'Anmeldung mit Google...';
+
+  @override
+  String get loginLoadingPrepareAccount => 'Konto wird vorbereitet...';
+
+  @override
+  String get loginFillEmailAndPassword => 'Bitte E-Mail und Passwort eingeben';
+
+  @override
+  String get loginErrorGettingUser => 'Fehler beim Abrufen des Benutzers';
+
+  @override
+  String get loginUserNotFound => 'Benutzer nicht gefunden';
+
+  @override
+  String get loginAccountDisabledShort => 'Ihr Konto ist deaktiviert.';
+
+  @override
+  String get loginAccountDisabledTitle => 'Konto deaktiviert';
+
+  @override
+  String get loginAccountDisabledMessage =>
+      'Ihr Konto ist deaktiviert. Bitte wenden Sie sich an den Support.';
+
+  @override
+  String get loginErrorCheckingUser => 'Fehler bei der Benutzerprüfung';
+
+  @override
+  String get loginEnterEmailToReset =>
+      'Geben Sie Ihre E-Mail zur Passwortzurücksetzung ein';
+
+  @override
+  String get loginResetLinkSent =>
+      'Wir haben Ihnen einen Link zur Passwortzurücksetzung gesendet.';
+
+  @override
+  String get loginUnexpectedResetError =>
+      'Unerwarteter Fehler beim Zurücksetzen des Passworts';
+
+  @override
+  String get loginSigningInWithGoogle => 'Aamelde mit Google...';
+
+  @override
+  String get loginPreparingAccount => 'Mir bereitet dis Konto vor...';
 }

@@ -158,6 +158,122 @@
   "@newProductCategoryValidator": { "description": "VALIDAÇÃO — Mensagem quando a categoria não foi selecionada" },
 
   "newProductSaveButton": "Guardar produto",
-  "@newProductSaveButton": { "description": "TELA NOVO_PRODUTO — Texto do botão de guardar" }
+  "@newProductSaveButton": { "description": "TELA NOVO_PRODUTO — Texto do botão de guardar" },
+
+    "loginEmailHint": "E-mail",
+  "@loginEmailHint": { "description": "ECRÃ LOGIN — Placeholder do campo e-mail" },
+
+  "loginPasswordHint": "Palavra-passe",
+  "@loginPasswordHint": { "description": "ECRÃ LOGIN — Placeholder do campo palavra-passe" },
+
+  "loginForgotPassword": "Esqueceu-se da palavra-passe?",
+  "@loginForgotPassword": { "description": "ECRÃ LOGIN — Botão/link para recuperar palavra-passe" },
+
+  "loginSubmitButton": "Entrar",
+  "@loginSubmitButton": { "description": "ECRÃ LOGIN — Texto do botão principal" },
+
+  "loginOrContinueWith": "ou continue com",
+  "@loginOrContinueWith": { "description": "ECRÃ LOGIN — Divisor social" },
+
+  "loginWithGoogle": "Entrar com Google",
+  "@loginWithGoogle": { "description": "ECRÃ LOGIN — Botão social Google" },
+
+  "loginWithApple": "Entrar com Apple",
+  "@loginWithApple": { "description": "ECRÃ LOGIN — Botão social Apple" },
+
+  "loginWelcomeBackTitle": "Bem-vindo de volta!",
+  "@loginWelcomeBackTitle": { "description": "ECRÃ LOGIN — Título do cabeçalho" },
+
+  "loginWelcomeBackSubtitle": "Entre e faça a gestão do seu stock com facilidade.",
+  "@loginWelcomeBackSubtitle": { "description": "ECRÃ LOGIN — Subtítulo do cabeçalho" },
+
+  "loginNoAccountPrefix": "Ainda não tem conta? ",
+  "@loginNoAccountPrefix": { "description": "ECRÃ LOGIN — Texto antes do link de registo" },
+
+  "loginCreateNow": "Criar agora",
+  "@loginCreateNow": { "description": "ECRÃ LOGIN — Link/botão para registar" },
+
+  "loginErrorFillEmailAndPassword": "Preencha o e-mail e a palavra-passe",
+  "@loginErrorFillEmailAndPassword": { "description": "LOGIN — Erro quando e-mail/palavra-passe estão vazios" },
+
+  "loginErrorGetUser": "Erro ao obter utilizador",
+  "@loginErrorGetUser": { "description": "LOGIN — Erro quando currentUser é null após login" },
+
+  "loginErrorUserNotFound": "Utilizador não encontrado",
+  "@loginErrorUserNotFound": { "description": "LOGIN — Erro quando doc do utilizador não existe" },
+
+  "loginErrorAccountDisabled": "A sua conta está desativada.",
+  "@loginErrorAccountDisabled": { "description": "LOGIN — Erro quando conta está desativada" },
+
+  "loginDialogAccountDisabledTitle": "Conta desativada",
+  "@loginDialogAccountDisabledTitle": { "description": "DIALOG — Título do modal de conta desativada" },
+
+  "loginDialogAccountDisabledMessage": "A sua conta está desativada. Contacte o suporte.",
+  "@loginDialogAccountDisabledMessage": { "description": "DIALOG — Mensagem do modal de conta desativada" },
+
+  "ok": "OK",
+  "@ok": { "description": "GERAL / BOTÕES — Ação de confirmar/fechar" },
+
+  "loginErrorCheckUser": "Erro ao verificar utilizador",
+  "@loginErrorCheckUser": { "description": "LOGIN — Erro genérico ao verificar utilizador" },
+
+  "loginResetPasswordEmailRequired": "Indique o seu e-mail para redefinir a palavra-passe",
+  "@loginResetPasswordEmailRequired": { "description": "LOGIN — Erro ao recuperar sem e-mail" },
+
+  "loginResetPasswordSuccess": "Enviámos um link de redefinição para o seu e-mail.",
+  "@loginResetPasswordSuccess": { "description": "LOGIN — Sucesso ao recuperar palavra-passe" },
+
+  
+
+  "loginResetPasswordUnexpectedError": "Erro inesperado ao redefinir a palavra-passe",
+  "@loginResetPasswordUnexpectedError": { "description": "LOGIN — Erro inesperado ao recuperar palavra-passe" },
+
+  "loginLoadingGoogle": "A entrar com Google...",
+  "@loginLoadingGoogle": { "description": "LOADER — Texto durante login com Google" },
+
+  "loginLoadingPrepareAccount": "A preparar a sua conta...",
+  "@loginLoadingPrepareAccount": { "description": "LOADER — Texto durante warmup/bootstrap" },
+
+    "loginFillEmailAndPassword": "Preencha o email e a palavra-passe",
+  "@loginFillEmailAndPassword": { "description": "LOGIN — Campos vazios" },
+
+  "loginErrorGettingUser": "Erro ao obter utilizador",
+  "@loginErrorGettingUser": { "description": "LOGIN — Erro ao obter utilizador autenticado" },
+
+  "loginUserNotFound": "Utilizador não encontrado",
+  "@loginUserNotFound": { "description": "LOGIN — Utilizador não encontrado no Firestore" },
+
+  "loginAccountDisabledShort": "A sua conta está desativada.",
+  "@loginAccountDisabledShort": { "description": "LOGIN — Conta desativada (curto)" },
+
+  "loginAccountDisabledTitle": "Conta desativada",
+  "@loginAccountDisabledTitle": { "description": "LOGIN — Título do modal" },
+
+  "loginAccountDisabledMessage": "A sua conta está desativada. Entre em contacto com o suporte.",
+  "@loginAccountDisabledMessage": { "description": "LOGIN — Mensagem do modal" },
+
+  "loginErrorCheckingUser": "Erro ao verificar utilizador",
+  "@loginErrorCheckingUser": { "description": "LOGIN — Erro ao verificar utilizador" },
+
+  "loginEnterEmailToReset": "Introduza o seu email para redefinir a palavra-passe",
+  "@loginEnterEmailToReset": { "description": "LOGIN — Email vazio no reset" },
+
+  "loginResetLinkSent": "Enviámos um link de redefinição para o seu email.",
+  "@loginResetLinkSent": { "description": "LOGIN — Confirmação de reset" },
+
+  "loginUnexpectedResetError": "Erro inesperado ao redefinir a palavra-passe",
+  "@loginUnexpectedResetError": { "description": "LOGIN — Erro inesperado no reset" },
+
+  "ok": "OK",
+  "@ok": { "description": "GERAL — Botão OK" },
+
+  "loginSigningInWithGoogle": "A iniciar sessão com Google...",
+  "@loginSigningInWithGoogle": { "description": "LOGIN — Loader ao iniciar Google" },
+
+  "loginPreparingAccount": "A preparar a sua conta...",
+  "@loginPreparingAccount": { "description": "LOGIN — Loader durante warmup/bootstrap" }
+
+
+
 
 }

@@ -158,6 +158,120 @@
   "@newProductCategoryValidator": { "description": "VALIDATION — Message when category is not selected" },
 
   "newProductSaveButton": "Save product",
-  "@newProductSaveButton": { "description": "NEW_PRODUCT SCREEN — Save button text" }
+  "@newProductSaveButton": { "description": "NEW_PRODUCT SCREEN — Save button text" },
+
+    "loginEmailHint": "Email",
+  "@loginEmailHint": { "description": "LOGIN SCREEN — Email field hint" },
+
+  "loginPasswordHint": "Password",
+  "@loginPasswordHint": { "description": "LOGIN SCREEN — Password field hint" },
+
+  "loginForgotPassword": "Forgot your password?",
+  "@loginForgotPassword": { "description": "LOGIN SCREEN — Reset password button/link" },
+
+  "loginSubmitButton": "Sign in",
+  "@loginSubmitButton": { "description": "LOGIN SCREEN — Primary sign-in button text" },
+
+  "loginOrContinueWith": "or continue with",
+  "@loginOrContinueWith": { "description": "LOGIN SCREEN — Social divider text" },
+
+  "loginWithGoogle": "Continue with Google",
+  "@loginWithGoogle": { "description": "LOGIN SCREEN — Google button" },
+
+  "loginWithApple": "Continue with Apple",
+  "@loginWithApple": { "description": "LOGIN SCREEN — Apple button" },
+
+  "loginWelcomeBackTitle": "Welcome back!",
+  "@loginWelcomeBackTitle": { "description": "LOGIN SCREEN — Header title" },
+
+  "loginWelcomeBackSubtitle": "Sign in and manage your stock with ease.",
+  "@loginWelcomeBackSubtitle": { "description": "LOGIN SCREEN — Header subtitle" },
+
+  "loginNoAccountPrefix": "Don't have an account? ",
+  "@loginNoAccountPrefix": { "description": "LOGIN SCREEN — Text before sign-up link" },
+
+  "loginCreateNow": "Create now",
+  "@loginCreateNow": { "description": "LOGIN SCREEN — Sign-up link/button" },
+
+  "loginErrorFillEmailAndPassword": "Please enter email and password",
+  "@loginErrorFillEmailAndPassword": { "description": "LOGIN — Error when email/password are empty" },
+
+  "loginErrorGetUser": "Failed to get user",
+  "@loginErrorGetUser": { "description": "LOGIN — Error when currentUser is null after login" },
+
+  "loginErrorUserNotFound": "User not found",
+  "@loginErrorUserNotFound": { "description": "LOGIN — Error when Firestore user doc is missing" },
+
+  "loginErrorAccountDisabled": "Your account is disabled.",
+  "@loginErrorAccountDisabled": { "description": "LOGIN — Error when account is disabled" },
+
+  "loginDialogAccountDisabledTitle": "Account disabled",
+  "@loginDialogAccountDisabledTitle": { "description": "DIALOG — Disabled account modal title" },
+
+  "loginDialogAccountDisabledMessage": "Your account is disabled. Please contact support.",
+  "@loginDialogAccountDisabledMessage": { "description": "DIALOG — Disabled account modal message" },
+
+  "ok": "OK",
+  "@ok": { "description": "GENERAL / BUTTONS — Confirm/close action" },
+
+  "loginErrorCheckUser": "Error checking user",
+  "@loginErrorCheckUser": { "description": "LOGIN — Generic error while checking user status" },
+
+  "loginResetPasswordEmailRequired": "Enter your email to reset your password",
+  "@loginResetPasswordEmailRequired": { "description": "LOGIN — Error when resetting password without email" },
+
+  "loginResetPasswordSuccess": "We sent a reset link to your email.",
+  "@loginResetPasswordSuccess": { "description": "LOGIN — Password reset success message" },
+
+  "loginResetPasswordUnexpectedError": "Unexpected error while resetting password",
+  "@loginResetPasswordUnexpectedError": { "description": "LOGIN — Unexpected password reset error" },
+
+  "loginLoadingGoogle": "Signing in with Google...",
+  "@loginLoadingGoogle": { "description": "LOADER — Text while signing in with Google" },
+
+  "loginLoadingPrepareAccount": "Preparing your account...",
+  "@loginLoadingPrepareAccount": { "description": "LOADER — Text while doing warmup/bootstrap" },
+
+    "loginFillEmailAndPassword": "Please fill in email and password",
+  "@loginFillEmailAndPassword": { "description": "LOGIN — Empty email or password" },
+
+  "loginErrorGettingUser": "Error getting user",
+  "@loginErrorGettingUser": { "description": "LOGIN — Error retrieving authenticated user" },
+
+  "loginUserNotFound": "User not found",
+  "@loginUserNotFound": { "description": "LOGIN — User not found in Firestore" },
+
+  "loginAccountDisabledShort": "Your account is disabled.",
+  "@loginAccountDisabledShort": { "description": "LOGIN — Account disabled (short)" },
+
+  "loginAccountDisabledTitle": "Account disabled",
+  "@loginAccountDisabledTitle": { "description": "LOGIN — Disabled account dialog title" },
+
+  "loginAccountDisabledMessage": "Your account is disabled. Please contact support.",
+  "@loginAccountDisabledMessage": { "description": "LOGIN — Disabled account dialog message" },
+
+  "loginErrorCheckingUser": "Error checking user",
+  "@loginErrorCheckingUser": { "description": "LOGIN — Error checking user status" },
+
+  "loginEnterEmailToReset": "Enter your email to reset your password",
+  "@loginEnterEmailToReset": { "description": "LOGIN — Empty email on reset" },
+
+  "loginResetLinkSent": "We sent a password reset link to your email.",
+  "@loginResetLinkSent": { "description": "LOGIN — Reset link confirmation" },
+
+  "loginUnexpectedResetError": "Unexpected error while resetting password",
+  "@loginUnexpectedResetError": { "description": "LOGIN — Unexpected reset error" },
+
+  "ok": "OK",
+  "@ok": { "description": "GENERAL — OK button text" },
+
+  "loginSigningInWithGoogle": "Signing in with Google...",
+  "@loginSigningInWithGoogle": { "description": "LOGIN — Loader while starting Google sign-in" },
+
+  "loginPreparingAccount": "Preparing your account...",
+  "@loginPreparingAccount": { "description": "LOGIN — Loader during warmup/bootstrap after login" }
+
+
+
 
 }

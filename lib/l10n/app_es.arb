@@ -158,6 +158,120 @@
   "@newProductCategoryValidator": { "description": "VALIDACIÓN — Mensaje cuando no se selecciona la categoría" },
 
   "newProductSaveButton": "Guardar producto",
-  "@newProductSaveButton": { "description": "PANTALLA NUEVO_PRODUCTO — Texto del botón guardar" }
+  "@newProductSaveButton": { "description": "PANTALLA NUEVO_PRODUCTO — Texto del botón guardar" },
+
+    "loginEmailHint": "Correo",
+  "@loginEmailHint": { "description": "PANTALLA LOGIN — Placeholder del campo correo" },
+
+  "loginPasswordHint": "Contraseña",
+  "@loginPasswordHint": { "description": "PANTALLA LOGIN — Placeholder del campo contraseña" },
+
+  "loginForgotPassword": "¿Olvidaste tu contraseña?",
+  "@loginForgotPassword": { "description": "PANTALLA LOGIN — Botón/link para restablecer contraseña" },
+
+  "loginSubmitButton": "Entrar",
+  "@loginSubmitButton": { "description": "PANTALLA LOGIN — Texto del botón principal" },
+
+  "loginOrContinueWith": "o continúa con",
+  "@loginOrContinueWith": { "description": "PANTALLA LOGIN — Divisor social" },
+
+  "loginWithGoogle": "Entrar con Google",
+  "@loginWithGoogle": { "description": "PANTALLA LOGIN — Botón social Google" },
+
+  "loginWithApple": "Entrar con Apple",
+  "@loginWithApple": { "description": "PANTALLA LOGIN — Botón social Apple" },
+
+  "loginWelcomeBackTitle": "¡Bienvenido de vuelta!",
+  "@loginWelcomeBackTitle": { "description": "PANTALLA LOGIN — Título del header" },
+
+  "loginWelcomeBackSubtitle": "Entra y gestiona tu inventario con facilidad.",
+  "@loginWelcomeBackSubtitle": { "description": "PANTALLA LOGIN — Subtítulo del header" },
+
+  "loginNoAccountPrefix": "¿Aún no tienes cuenta? ",
+  "@loginNoAccountPrefix": { "description": "PANTALLA LOGIN — Texto antes del link de registro" },
+
+  "loginCreateNow": "Crear ahora",
+  "@loginCreateNow": { "description": "PANTALLA LOGIN — Link/botón para registrarse" },
+
+  "loginErrorFillEmailAndPassword": "Completa el correo y la contraseña",
+  "@loginErrorFillEmailAndPassword": { "description": "LOGIN — Error cuando faltan correo/contraseña" },
+
+  "loginErrorGetUser": "Error al obtener el usuario",
+  "@loginErrorGetUser": { "description": "LOGIN — Error cuando currentUser es null tras login" },
+
+  "loginErrorUserNotFound": "Usuario no encontrado",
+  "@loginErrorUserNotFound": { "description": "LOGIN — Error cuando no existe el doc del usuario" },
+
+  "loginErrorAccountDisabled": "Tu cuenta está desactivada.",
+  "@loginErrorAccountDisabled": { "description": "LOGIN — Error cuando la cuenta está desactivada" },
+
+  "loginDialogAccountDisabledTitle": "Cuenta desactivada",
+  "@loginDialogAccountDisabledTitle": { "description": "DIALOG — Título del modal de cuenta desactivada" },
+
+  "loginDialogAccountDisabledMessage": "Tu cuenta está desactivada. Ponte en contacto con soporte.",
+  "@loginDialogAccountDisabledMessage": { "description": "DIALOG — Mensaje del modal de cuenta desactivada" },
+
+  "ok": "OK",
+  "@ok": { "description": "GENERAL / BOTONES — Acción de confirmar/cerrar" },
+
+  "loginErrorCheckUser": "Error al verificar el usuario",
+  "@loginErrorCheckUser": { "description": "LOGIN — Error genérico al verificar usuario" },
+
+  "loginResetPasswordEmailRequired": "Indica tu correo para restablecer la contraseña",
+  "@loginResetPasswordEmailRequired": { "description": "LOGIN — Error al restablecer sin correo" },
+
+  "loginResetPasswordSuccess": "Enviamos un enlace de restablecimiento a tu correo.",
+  "@loginResetPasswordSuccess": { "description": "LOGIN — Éxito al restablecer contraseña" },
+
+  "loginResetPasswordUnexpectedError": "Error inesperado al restablecer la contraseña",
+  "@loginResetPasswordUnexpectedError": { "description": "LOGIN — Error inesperado al restablecer contraseña" },
+
+  "loginLoadingGoogle": "Iniciando con Google...",
+  "@loginLoadingGoogle": { "description": "LOADER — Texto durante login con Google" },
+
+  "loginLoadingPrepareAccount": "Preparando tu cuenta...",
+  "@loginLoadingPrepareAccount": { "description": "LOADER — Texto durante warmup/bootstrap" },
+
+    "loginFillEmailAndPassword": "Completa el correo y la contraseña",
+  "@loginFillEmailAndPassword": { "description": "LOGIN — Campos vacíos" },
+
+  "loginErrorGettingUser": "Error al obtener el usuario",
+  "@loginErrorGettingUser": { "description": "LOGIN — Error al obtener usuario autenticado" },
+
+  "loginUserNotFound": "Usuario no encontrado",
+  "@loginUserNotFound": { "description": "LOGIN — Usuario no encontrado en Firestore" },
+
+  "loginAccountDisabledShort": "Tu cuenta está desactivada.",
+  "@loginAccountDisabledShort": { "description": "LOGIN — Cuenta desactivada (corto)" },
+
+  "loginAccountDisabledTitle": "Cuenta desactivada",
+  "@loginAccountDisabledTitle": { "description": "LOGIN — Título del modal" },
+
+  "loginAccountDisabledMessage": "Tu cuenta está desactivada. Ponte en contacto con el soporte.",
+  "@loginAccountDisabledMessage": { "description": "LOGIN — Mensaje del modal" },
+
+  "loginErrorCheckingUser": "Error al verificar el usuario",
+  "@loginErrorCheckingUser": { "description": "LOGIN — Error al verificar usuario" },
+
+  "loginEnterEmailToReset": "Introduce tu correo para restablecer la contraseña",
+  "@loginEnterEmailToReset": { "description": "LOGIN — Email vacío en reset" },
+
+  "loginResetLinkSent": "Te enviamos un enlace para restablecer tu contraseña.",
+  "@loginResetLinkSent": { "description": "LOGIN — Confirmación de reset" },
+
+  "loginUnexpectedResetError": "Error inesperado al restablecer la contraseña",
+  "@loginUnexpectedResetError": { "description": "LOGIN — Error inesperado en reset" },
+
+  "ok": "OK",
+  "@ok": { "description": "GERAL — Botón OK" },
+
+  "loginSigningInWithGoogle": "Iniciando sesión con Google...",
+  "@loginSigningInWithGoogle": { "description": "LOGIN — Loader al iniciar Google" },
+
+  "loginPreparingAccount": "Preparando tu cuenta...",
+  "@loginPreparingAccount": { "description": "LOGIN — Loader durante warmup/bootstrap" }
+
+
+
 
 }

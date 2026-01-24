@@ -1,7 +1,10 @@
+// lib/screens/acounts/login/login_screen.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../../../l10n/app_localizations.dart';
 
 import '../../../services/auth_service.dart';
 import '../../../services/auth/google_auth_service.dart';
@@ -112,10 +115,11 @@ class _LoginScreenState extends State<LoginScreen>
 
   Future<void> _handleGoogleLoginFlow() async {
     final nav = Navigator.of(context);
+    final t = AppLocalizations.of(context)!;
 
     final credential = await BlockingLoader.run<UserCredential?>(
       context: context,
-      message: 'Entrando com Google...',
+      message: t.loginSigningInWithGoogle,
       action: () async {
         try {
           return await GoogleAuthService.instance.signInWithGoogle();
@@ -133,7 +137,7 @@ class _LoginScreenState extends State<LoginScreen>
 
     await BlockingLoader.run<void>(
       context: context,
-      message: 'Preparando sua conta...',
+      message: t.loginPreparingAccount,
       action: () async {
         try {
           await AuthBootstrapService.warmUp(context: context, user: user);
@@ -146,7 +150,6 @@ class _LoginScreenState extends State<LoginScreen>
     await _routeAfterLogin(nav);
     return;
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -169,15 +172,12 @@ class _LoginScreenState extends State<LoginScreen>
                   children: [
                     const LoginHeader(),
                     const SizedBox(height: 20),
-
                     LoginError(animation: _animation, message: state.error),
                     const SizedBox(height: 20),
-
                     LoginForm(
                       emailController: _emailController,
                       passwordController: _passwordController,
                       isLoading: state.isLoading,
-
                       onSubmit: () async {
                         final nav = Navigator.of(context);
 
@@ -186,23 +186,22 @@ class _LoginScreenState extends State<LoginScreen>
                           email: _emailController.text.trim(),
                           password: _passwordController.text,
                           onSuccess: () {
-                            // você quer roteamento async depois:
                             // ignore: discarded_futures
                             _routeAfterLogin(nav);
                           },
                         );
                       },
-
                       onGoogleTap: () async {
                         if (state.isLoading) return;
                         await _handleGoogleLoginFlow();
                       },
-
                       onResetPassword: () {
-                        controller.resetPassword(_emailController.text.trim());
+                        controller.resetPassword(
+                          context,
+                          _emailController.text.trim(),
+                        );
                       },
                     ),
-
                     const SizedBox(height: 28),
                     const LoginFooter(),
                   ],

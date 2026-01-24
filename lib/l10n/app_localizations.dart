@@ -391,6 +391,222 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Salvar produto'**
   String get newProductSaveButton;
+
+  /// TELA LOGIN — Hint do campo email
+  ///
+  /// In pt, this message translates to:
+  /// **'Email'**
+  String get loginEmailHint;
+
+  /// TELA LOGIN — Hint do campo senha
+  ///
+  /// In pt, this message translates to:
+  /// **'Senha'**
+  String get loginPasswordHint;
+
+  /// TELA LOGIN — Botão/link de reset de senha
+  ///
+  /// In pt, this message translates to:
+  /// **'Esqueceu a senha?'**
+  String get loginForgotPassword;
+
+  /// TELA LOGIN — Texto do botão principal de entrar
+  ///
+  /// In pt, this message translates to:
+  /// **'Entrar'**
+  String get loginSubmitButton;
+
+  /// TELA LOGIN — Divisor social (ou continue com)
+  ///
+  /// In pt, this message translates to:
+  /// **'ou continue com'**
+  String get loginOrContinueWith;
+
+  /// TELA LOGIN — Botão social Google
+  ///
+  /// In pt, this message translates to:
+  /// **'Entre com Google'**
+  String get loginWithGoogle;
+
+  /// TELA LOGIN — Botão social Apple
+  ///
+  /// In pt, this message translates to:
+  /// **'Entre com Apple'**
+  String get loginWithApple;
+
+  /// TELA LOGIN — Título do header
+  ///
+  /// In pt, this message translates to:
+  /// **'Bem-vindo de volta!'**
+  String get loginWelcomeBackTitle;
+
+  /// TELA LOGIN — Subtítulo do header
+  ///
+  /// In pt, this message translates to:
+  /// **'Entre, e gerencie seu estoque com facilidade.'**
+  String get loginWelcomeBackSubtitle;
+
+  /// TELA LOGIN — Texto antes do link para cadastro
+  ///
+  /// In pt, this message translates to:
+  /// **'Ainda não tem conta? '**
+  String get loginNoAccountPrefix;
+
+  /// TELA LOGIN — Link/botão para ir ao cadastro
+  ///
+  /// In pt, this message translates to:
+  /// **'Criar agora'**
+  String get loginCreateNow;
+
+  /// LOGIN — Erro quando email/senha estão vazios
+  ///
+  /// In pt, this message translates to:
+  /// **'Preencha email e senha'**
+  String get loginErrorFillEmailAndPassword;
+
+  /// LOGIN — Erro quando currentUser é null após login
+  ///
+  /// In pt, this message translates to:
+  /// **'Erro ao obter usuário'**
+  String get loginErrorGetUser;
+
+  /// LOGIN — Erro quando doc do usuário não existe no Firestore
+  ///
+  /// In pt, this message translates to:
+  /// **'Usuário não encontrado'**
+  String get loginErrorUserNotFound;
+
+  /// LOGIN — Erro quando conta está desativada
+  ///
+  /// In pt, this message translates to:
+  /// **'Sua conta está desativada.'**
+  String get loginErrorAccountDisabled;
+
+  /// DIALOG — Título do modal de conta desativada
+  ///
+  /// In pt, this message translates to:
+  /// **'Conta desativada'**
+  String get loginDialogAccountDisabledTitle;
+
+  /// DIALOG — Mensagem do modal de conta desativada
+  ///
+  /// In pt, this message translates to:
+  /// **'Sua conta está desativada. Entre em contato com o suporte.'**
+  String get loginDialogAccountDisabledMessage;
+
+  /// GERAL — Texto padrão do botão OK
+  ///
+  /// In pt, this message translates to:
+  /// **'OK'**
+  String get ok;
+
+  /// LOGIN — Erro genérico ao checar status do usuário
+  ///
+  /// In pt, this message translates to:
+  /// **'Erro ao verificar usuário'**
+  String get loginErrorCheckUser;
+
+  /// LOGIN — Erro ao tentar resetar senha sem email
+  ///
+  /// In pt, this message translates to:
+  /// **'Informe seu email para redefinir a senha'**
+  String get loginResetPasswordEmailRequired;
+
+  /// LOGIN — Mensagem de sucesso no reset de senha
+  ///
+  /// In pt, this message translates to:
+  /// **'Enviamos um link de redefinição para seu e-mail.'**
+  String get loginResetPasswordSuccess;
+
+  /// LOGIN — Erro inesperado no reset de senha
+  ///
+  /// In pt, this message translates to:
+  /// **'Erro inesperado ao redefinir senha'**
+  String get loginResetPasswordUnexpectedError;
+
+  /// LOADER — Texto enquanto faz login com Google
+  ///
+  /// In pt, this message translates to:
+  /// **'Entrando com Google...'**
+  String get loginLoadingGoogle;
+
+  /// LOADER — Texto enquanto executa warmup/bootstrap após login
+  ///
+  /// In pt, this message translates to:
+  /// **'Preparando sua conta...'**
+  String get loginLoadingPrepareAccount;
+
+  /// LOGIN — Erro quando email ou senha estão vazios
+  ///
+  /// In pt, this message translates to:
+  /// **'Preencha email e senha'**
+  String get loginFillEmailAndPassword;
+
+  /// LOGIN — Erro ao obter usuário autenticado
+  ///
+  /// In pt, this message translates to:
+  /// **'Erro ao obter usuário'**
+  String get loginErrorGettingUser;
+
+  /// LOGIN — Usuário não encontrado no Firestore
+  ///
+  /// In pt, this message translates to:
+  /// **'Usuário não encontrado'**
+  String get loginUserNotFound;
+
+  /// LOGIN — Conta desativada (mensagem curta)
+  ///
+  /// In pt, this message translates to:
+  /// **'Sua conta está desativada.'**
+  String get loginAccountDisabledShort;
+
+  /// LOGIN — Título do modal de conta desativada
+  ///
+  /// In pt, this message translates to:
+  /// **'Conta desativada'**
+  String get loginAccountDisabledTitle;
+
+  /// LOGIN — Mensagem do modal de conta desativada
+  ///
+  /// In pt, this message translates to:
+  /// **'Sua conta está desativada. Entre em contato com o suporte.'**
+  String get loginAccountDisabledMessage;
+
+  /// LOGIN — Erro ao verificar status do usuário
+  ///
+  /// In pt, this message translates to:
+  /// **'Erro ao verificar usuário'**
+  String get loginErrorCheckingUser;
+
+  /// LOGIN — Erro ao tentar redefinir senha sem email
+  ///
+  /// In pt, this message translates to:
+  /// **'Informe seu email para redefinir a senha'**
+  String get loginEnterEmailToReset;
+
+  /// LOGIN — Confirmação de envio de link de redefinição
+  ///
+  /// In pt, this message translates to:
+  /// **'Enviamos um link de redefinição para seu e-mail.'**
+  String get loginResetLinkSent;
+
+  /// LOGIN — Erro inesperado na redefinição de senha
+  ///
+  /// In pt, this message translates to:
+  /// **'Erro inesperado ao redefinir senha'**
+  String get loginUnexpectedResetError;
+
+  /// LOGIN — Loader ao iniciar login com Google
+  ///
+  /// In pt, this message translates to:
+  /// **'Entrando com Google...'**
+  String get loginSigningInWithGoogle;
+
+  /// LOGIN — Loader durante warmup/bootstrap após login
+  ///
+  /// In pt, this message translates to:
+  /// **'Preparando sua conta...'**
+  String get loginPreparingAccount;
 }
 
 class _AppLocalizationsDelegate

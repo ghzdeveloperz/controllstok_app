@@ -1,9 +1,11 @@
+// lib/screens/acounts/login/login_controller.dart
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../services/auth_service.dart';
 import '../../../services/bootstrap/auth_bootstrap_service.dart';
 import '../../widgets/desactive_acount.dart';
@@ -55,13 +57,15 @@ class LoginController extends ChangeNotifier {
   }) async {
     if (_state.isLoading) return;
 
+    final t = AppLocalizations.of(context)!;
+
     _errorTimer?.cancel();
     _setState(_state.copyWith(isLoading: true, error: null));
 
     final safeEmail = email.trim();
 
     if (safeEmail.isEmpty || password.isEmpty) {
-      _setTemporaryError("Preencha email e senha");
+      _setTemporaryError(t.loginFillEmailAndPassword);
       return;
     }
 
@@ -72,6 +76,8 @@ class LoginController extends ChangeNotifier {
     );
 
     if (message != null) {
+      // mensagem do AuthService pode vir localizada ou não — você decide.
+      // Aqui mantive como está: se vier mensagem, exibe ela.
       _setTemporaryError(message);
       return;
     }
@@ -79,7 +85,7 @@ class LoginController extends ChangeNotifier {
     // 2) valida user
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      _setTemporaryError("Erro ao obter usuário");
+      _setTemporaryError(t.loginErrorGettingUser);
       return;
     }
 
@@ -115,49 +121,53 @@ class LoginController extends ChangeNotifier {
     required BuildContext context,
     required User user,
   }) async {
+    final t = AppLocalizations.of(context)!;
+
     try {
       final doc = await FirebaseFirestore.instance
           .collection('users')
           .doc(user.uid)
           .get();
 
-      if (!doc.exists) return "Usuário não encontrado";
+      if (!doc.exists) return t.loginUserNotFound;
 
       final data = doc.data()!;
       if (data['active'] == false) {
         await FirebaseAuth.instance.signOut();
 
-        if (!context.mounted) return "Sua conta está desativada.";
+        if (!context.mounted) return t.loginAccountDisabledShort;
 
         showDialog(
           context: context,
           barrierDismissible: false,
           builder: (_) => CustomAlertDialog(
-            title: "Conta desativada",
-            message: "Sua conta está desativada. Entre em contato com o suporte.",
-            buttonText: "OK",
+            title: t.loginAccountDisabledTitle,
+            message: t.loginAccountDisabledMessage,
+            buttonText: t.ok,
             onPressed: () {
               Navigator.of(context).popUntil((route) => route.isFirst);
             },
           ),
         );
 
-        return "Sua conta está desativada.";
+        return t.loginAccountDisabledShort;
       }
 
       return null;
     } catch (_) {
-      return "Erro ao verificar usuário";
+      return t.loginErrorCheckingUser;
     }
   }
 
-  Future<void> resetPassword(String email) async {
+  Future<void> resetPassword(BuildContext context, String email) async {
+    final t = AppLocalizations.of(context)!;
+
     _errorTimer?.cancel();
 
     final safeEmail = email.trim();
 
     if (safeEmail.isEmpty) {
-      _setTemporaryError("Informe seu email para redefinir a senha");
+      _setTemporaryError(t.loginEnterEmailToReset);
       return;
     }
 
@@ -171,12 +181,9 @@ class LoginController extends ChangeNotifier {
         return;
       }
 
-      // Se seu AuthService retorna mensagem de sucesso (string),
-      // você já exibe via _setTemporaryError. Se ele retornar null no sucesso,
-      // pode mostrar algo aqui:
-      _setTemporaryError("Enviamos um link de redefinição para seu e-mail.");
+      _setTemporaryError(t.loginResetLinkSent);
     } catch (_) {
-      _setTemporaryError("Erro inesperado ao redefinir senha");
+      _setTemporaryError(t.loginUnexpectedResetError);
     }
   }
 

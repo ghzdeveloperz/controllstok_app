@@ -158,6 +158,121 @@
   "@newProductCategoryValidator": { "description": "VALIDIERUNG — Meldung, wenn keine Kategorie gewählt wurde (CH)" },
 
   "newProductSaveButton": "Produkt speichern",
-  "@newProductSaveButton": { "description": "NEUES_PRODUKT — Text des Speichern-Buttons (CH)" }
+  "@newProductSaveButton": { "description": "NEUES_PRODUKT — Text des Speichern-Buttons (CH)" },
+
+    "loginEmailHint": "E-Mail",
+  "@loginEmailHint": { "description": "LOGIN (CH) — Hinweis für E-Mail-Feld" },
+
+  "loginPasswordHint": "Passwort",
+  "@loginPasswordHint": { "description": "LOGIN (CH) — Hinweis für Passwort-Feld" },
+
+  "loginForgotPassword": "Passwort vergessen?",
+  "@loginForgotPassword": { "description": "LOGIN (CH) — Button/Link Passwort zurücksetzen" },
+
+  "loginSubmitButton": "Anmelden",
+  "@loginSubmitButton": { "description": "LOGIN (CH) — Text des Hauptbuttons" },
+
+  "loginOrContinueWith": "oder weiter mit",
+  "@loginOrContinueWith": { "description": "LOGIN (CH) — Social Divider" },
+
+  "loginWithGoogle": "Mit Google anmelden",
+  "@loginWithGoogle": { "description": "LOGIN (CH) — Google Button" },
+
+  "loginWithApple": "Mit Apple anmelden",
+  "@loginWithApple": { "description": "LOGIN (CH) — Apple Button" },
+
+  "loginWelcomeBackTitle": "Willkommen zurück!",
+  "@loginWelcomeBackTitle": { "description": "LOGIN (CH) — Header Titel" },
+
+  "loginWelcomeBackSubtitle": "Melden Sie sich an und verwalten Sie Ihren Bestand ganz einfach.",
+  "@loginWelcomeBackSubtitle": { "description": "LOGIN (CH) — Header Untertitel" },
+
+  "loginNoAccountPrefix": "Noch kein Konto? ",
+  "@loginNoAccountPrefix": { "description": "LOGIN (CH) — Text vor Registrierungslink" },
+
+  "loginCreateNow": "Jetzt erstellen",
+  "@loginCreateNow": { "description": "LOGIN (CH) — Link/Button zur Registrierung" },
+
+  "loginErrorFillEmailAndPassword": "Bitte E-Mail und Passwort eingeben",
+  "@loginErrorFillEmailAndPassword": { "description": "LOGIN (CH) — Fehler wenn E-Mail/Passwort leer sind" },
+
+  "loginErrorGetUser": "Fehler beim Abrufen des Benutzers",
+  "@loginErrorGetUser": { "description": "LOGIN (CH) — Fehler wenn currentUser nach Login null ist" },
+
+  "loginErrorUserNotFound": "Benutzer nicht gefunden",
+  "@loginErrorUserNotFound": { "description": "LOGIN (CH) — Fehler wenn Firestore-Dokument fehlt" },
+
+  "loginErrorAccountDisabled": "Ihr Konto ist deaktiviert.",
+  "@loginErrorAccountDisabled": { "description": "LOGIN (CH) — Fehler wenn Konto deaktiviert ist" },
+
+  "loginDialogAccountDisabledTitle": "Konto deaktiviert",
+  "@loginDialogAccountDisabledTitle": { "description": "DIALOG (CH) — Titel Konto deaktiviert" },
+
+  "loginDialogAccountDisabledMessage": "Ihr Konto ist deaktiviert. Bitte kontaktieren Sie den Support.",
+  "@loginDialogAccountDisabledMessage": { "description": "DIALOG (CH) — Nachricht Konto deaktiviert" },
+
+  "ok": "OK",
+  "@ok": { "description": "ALLGEMEIN (CH) — Bestätigen/Schließen" },
+
+  "loginErrorCheckUser": "Fehler beim Prüfen des Benutzers",
+  "@loginErrorCheckUser": { "description": "LOGIN (CH) — Generischer Fehler beim Prüfen" },
+
+  "loginResetPasswordEmailRequired": "Bitte E-Mail eingeben, um das Passwort zurückzusetzen",
+  "@loginResetPasswordEmailRequired": { "description": "LOGIN (CH) — Fehler beim Zurücksetzen ohne E-Mail" },
+
+  "loginResetPasswordSuccess": "Wir haben einen Link zum Zurücksetzen an Ihre E-Mail gesendet.",
+  "@loginResetPasswordSuccess": { "description": "LOGIN (CH) — Erfolgsmeldung Passwort zurücksetzen" },
+
+  "loginResetPasswordUnexpectedError": "Unerwarteter Fehler beim Zurücksetzen des Passworts",
+  "@loginResetPasswordUnexpectedError": { "description": "LOGIN (CH) — Unerwarteter Fehler Passwort zurücksetzen" },
+
+  "loginLoadingGoogle": "Anmeldung mit Google...",
+  "@loginLoadingGoogle": { "description": "LOADER (CH) — Text während Google-Login" },
+
+  "loginLoadingPrepareAccount": "Konto wird vorbereitet...",
+  "@loginLoadingPrepareAccount": { "description": "LOADER (CH) — Text während Warmup/Bootstrap" },
+
+    "loginFillEmailAndPassword": "Bitte E-Mail und Passwort eingeben",
+  "@loginFillEmailAndPassword": { "description": "LOGIN — Leere Felder (CH)" },
+
+  "loginErrorGettingUser": "Fehler beim Abrufen des Benutzers",
+  "@loginErrorGettingUser": { "description": "LOGIN — Fehler beim Abrufen des Benutzers (CH)" },
+
+  "loginUserNotFound": "Benutzer nicht gefunden",
+  "@loginUserNotFound": { "description": "LOGIN — Benutzer nicht gefunden (CH)" },
+
+  "loginAccountDisabledShort": "Ihr Konto ist deaktiviert.",
+  "@loginAccountDisabledShort": { "description": "LOGIN — Konto deaktiviert (kurz, CH)" },
+
+  "loginAccountDisabledTitle": "Konto deaktiviert",
+  "@loginAccountDisabledTitle": { "description": "LOGIN — Dialogtitel (CH)" },
+
+  "loginAccountDisabledMessage": "Ihr Konto ist deaktiviert. Bitte wenden Sie sich an den Support.",
+  "@loginAccountDisabledMessage": { "description": "LOGIN — Dialognachricht (CH)" },
+
+  "loginErrorCheckingUser": "Fehler bei der Benutzerprüfung",
+  "@loginErrorCheckingUser": { "description": "LOGIN — Fehler bei Benutzerprüfung (CH)" },
+
+  "loginEnterEmailToReset": "Geben Sie Ihre E-Mail zur Passwortzurücksetzung ein",
+  "@loginEnterEmailToReset": { "description": "LOGIN — Reset ohne E-Mail (CH)" },
+
+  "loginResetLinkSent": "Wir haben Ihnen einen Link zur Passwortzurücksetzung gesendet.",
+  "@loginResetLinkSent": { "description": "LOGIN — Reset-Link gesendet (CH)" },
+
+  "loginUnexpectedResetError": "Unerwarteter Fehler beim Zurücksetzen des Passworts",
+  "@loginUnexpectedResetError": { "description": "LOGIN — Unerwarteter Reset-Fehler (CH)" },
+
+  "ok": "OK",
+  "@ok": { "description": "ALLGEMEIN — OK Button (CH)" },
+
+
+  "loginSigningInWithGoogle": "Aamelde mit Google...",
+  "@loginSigningInWithGoogle": { "description": "LOGIN — Loader beim Google-Login (CH)" },
+
+  "loginPreparingAccount": "Mir bereitet dis Konto vor...",
+  "@loginPreparingAccount": { "description": "LOGIN — Loader während Warmup/Bootstrap (CH)" }
+
+
+
 
 }

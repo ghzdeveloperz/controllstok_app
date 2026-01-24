@@ -164,4 +164,121 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get newProductSaveButton => 'Save product';
+
+  @override
+  String get loginEmailHint => 'Email';
+
+  @override
+  String get loginPasswordHint => 'Password';
+
+  @override
+  String get loginForgotPassword => 'Forgot your password?';
+
+  @override
+  String get loginSubmitButton => 'Sign in';
+
+  @override
+  String get loginOrContinueWith => 'or continue with';
+
+  @override
+  String get loginWithGoogle => 'Continue with Google';
+
+  @override
+  String get loginWithApple => 'Continue with Apple';
+
+  @override
+  String get loginWelcomeBackTitle => 'Welcome back!';
+
+  @override
+  String get loginWelcomeBackSubtitle =>
+      'Sign in and manage your stock with ease.';
+
+  @override
+  String get loginNoAccountPrefix => 'Don\'t have an account? ';
+
+  @override
+  String get loginCreateNow => 'Create now';
+
+  @override
+  String get loginErrorFillEmailAndPassword =>
+      'Please enter email and password';
+
+  @override
+  String get loginErrorGetUser => 'Failed to get user';
+
+  @override
+  String get loginErrorUserNotFound => 'User not found';
+
+  @override
+  String get loginErrorAccountDisabled => 'Your account is disabled.';
+
+  @override
+  String get loginDialogAccountDisabledTitle => 'Account disabled';
+
+  @override
+  String get loginDialogAccountDisabledMessage =>
+      'Your account is disabled. Please contact support.';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get loginErrorCheckUser => 'Error checking user';
+
+  @override
+  String get loginResetPasswordEmailRequired =>
+      'Enter your email to reset your password';
+
+  @override
+  String get loginResetPasswordSuccess => 'We sent a reset link to your email.';
+
+  @override
+  String get loginResetPasswordUnexpectedError =>
+      'Unexpected error while resetting password';
+
+  @override
+  String get loginLoadingGoogle => 'Signing in with Google...';
+
+  @override
+  String get loginLoadingPrepareAccount => 'Preparing your account...';
+
+  @override
+  String get loginFillEmailAndPassword => 'Please fill in email and password';
+
+  @override
+  String get loginErrorGettingUser => 'Error getting user';
+
+  @override
+  String get loginUserNotFound => 'User not found';
+
+  @override
+  String get loginAccountDisabledShort => 'Your account is disabled.';
+
+  @override
+  String get loginAccountDisabledTitle => 'Account disabled';
+
+  @override
+  String get loginAccountDisabledMessage =>
+      'Your account is disabled. Please contact support.';
+
+  @override
+  String get loginErrorCheckingUser => 'Error checking user';
+
+  @override
+  String get loginEnterEmailToReset =>
+      'Enter your email to reset your password';
+
+  @override
+  String get loginResetLinkSent =>
+      'We sent a password reset link to your email.';
+
+  @override
+  String get loginUnexpectedResetError =>
+      'Unexpected error while resetting password';
+
+  @override
+  String get loginSigningInWithGoogle => 'Signing in with Google...';
+
+  @override
+  String get loginPreparingAccount => 'Preparing your account...';
 }

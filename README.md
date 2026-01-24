@@ -277,3 +277,47 @@ Essas regras são reavaliadas a cada mudança de autenticação ou Firestore.
 - Garantir que a tela **Novo Produto** seja 100% traduzível, sem strings hardcoded na UI
 - Eliminar falhas de null-safety e reduzir ruído do analyzer
 - Preparar o módulo para evoluir com novas validações/fluxos mantendo consistência de idioma
+
+## [Milestone 16] Tela de Login + i18n Completo (UI, Fluxos e Mensagens)
+**Status:** Concluído ✅
+
+### Melhorias:
+- Refatorada a **tela de Login** para suportar **i18n completo**, eliminando todas as strings hardcoded:
+  - Campos de email e senha (labels, hints e ações)
+  - Botão de login
+  - Links auxiliares (esqueci a senha, criar conta)
+  - Separadores e textos de apoio
+  - Botões de login social (Google e Apple)
+- Internacionalizado todo o **fluxo de autenticação**, incluindo:
+  - Mensagens de erro e validação (campos vazios, usuário inexistente, erro inesperado)
+  - Estados de conta desativada (título, mensagem e ação)
+  - Feedback de redefinição de senha
+- Loader e mensagens de progresso traduzidas no login social:
+  - Login com Google
+  - Preparação / warmup da conta após autenticação
+- Ajustado o **LoginController** para trabalhar corretamente com traduções:
+  - Uso explícito de `BuildContext` para resolução de textos via `AppLocalizations`
+  - Centralização das mensagens de erro traduzidas
+  - Manutenção do controller desacoplado da UI
+- Corrigidos problemas de i18n e analyzer:
+  - Removido uso incorreto de `S.of(context)`
+  - Padronizado import real: `import '../../../l10n/app_localizations.dart';`
+  - Garantida compatibilidade total com `flutter gen-l10n`
+- Criadas e padronizadas novas chaves de tradução nos arquivos `.arb`, cobrindo:
+  - Validações de login
+  - Erros de autenticação
+  - Estados de conta desativada
+  - Fluxo de redefinição de senha
+  - Mensagens de carregamento e progresso
+- Widgets do módulo de Login ficaram **l10n-ready e reutilizáveis**:
+  - `LoginForm`
+  - `LoginHeader`
+  - `LoginFooter`
+  - `LoginError`
+  - `SocialLoginButtons`
+
+### Objetivo:
+- Garantir que a tela de **Login** seja 100% traduzível em todos os fluxos (UI + lógica)
+- Eliminar strings fixas e inconsistências de idioma
+- Consolidar um padrão sólido de i18n para telas críticas de autenticação
+- Preparar a base para evolução futura (novos provedores de login, mensagens e validações) mantendo consistência linguística

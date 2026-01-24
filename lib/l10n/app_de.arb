@@ -158,6 +158,120 @@
   "@newProductCategoryValidator": { "description": "VALIDIERUNG — Meldung, wenn keine Kategorie gewählt wurde" },
 
   "newProductSaveButton": "Produkt speichern",
-  "@newProductSaveButton": { "description": "NEUES_PRODUKT — Text des Speichern-Buttons" }
+  "@newProductSaveButton": { "description": "NEUES_PRODUKT — Text des Speichern-Buttons" },
+
+    "loginEmailHint": "E-Mail",
+  "@loginEmailHint": { "description": "LOGIN — Hinweis für E-Mail-Feld" },
+
+  "loginPasswordHint": "Passwort",
+  "@loginPasswordHint": { "description": "LOGIN — Hinweis für Passwort-Feld" },
+
+  "loginForgotPassword": "Passwort vergessen?",
+  "@loginForgotPassword": { "description": "LOGIN — Button/Link zum Zurücksetzen des Passworts" },
+
+  "loginSubmitButton": "Anmelden",
+  "@loginSubmitButton": { "description": "LOGIN — Text des Hauptbuttons" },
+
+  "loginOrContinueWith": "oder weiter mit",
+  "@loginOrContinueWith": { "description": "LOGIN — Social Divider" },
+
+  "loginWithGoogle": "Mit Google anmelden",
+  "@loginWithGoogle": { "description": "LOGIN — Google Button" },
+
+  "loginWithApple": "Mit Apple anmelden",
+  "@loginWithApple": { "description": "LOGIN — Apple Button" },
+
+  "loginWelcomeBackTitle": "Willkommen zurück!",
+  "@loginWelcomeBackTitle": { "description": "LOGIN — Header Titel" },
+
+  "loginWelcomeBackSubtitle": "Melden Sie sich an und verwalten Sie Ihren Bestand ganz einfach.",
+  "@loginWelcomeBackSubtitle": { "description": "LOGIN — Header Untertitel" },
+
+  "loginNoAccountPrefix": "Noch kein Konto? ",
+  "@loginNoAccountPrefix": { "description": "LOGIN — Text vor Registrierungslink" },
+
+  "loginCreateNow": "Jetzt erstellen",
+  "@loginCreateNow": { "description": "LOGIN — Link/Button zur Registrierung" },
+
+  "loginErrorFillEmailAndPassword": "Bitte E-Mail und Passwort eingeben",
+  "@loginErrorFillEmailAndPassword": { "description": "LOGIN — Fehler wenn E-Mail/Passwort leer sind" },
+
+  "loginErrorGetUser": "Fehler beim Abrufen des Benutzers",
+  "@loginErrorGetUser": { "description": "LOGIN — Fehler wenn currentUser nach Login null ist" },
+
+  "loginErrorUserNotFound": "Benutzer nicht gefunden",
+  "@loginErrorUserNotFound": { "description": "LOGIN — Fehler wenn Firestore-Dokument fehlt" },
+
+  "loginErrorAccountDisabled": "Ihr Konto ist deaktiviert.",
+  "@loginErrorAccountDisabled": { "description": "LOGIN — Fehler wenn Konto deaktiviert ist" },
+
+  "loginDialogAccountDisabledTitle": "Konto deaktiviert",
+  "@loginDialogAccountDisabledTitle": { "description": "DIALOG — Titel Konto deaktiviert" },
+
+  "loginDialogAccountDisabledMessage": "Ihr Konto ist deaktiviert. Bitte kontaktieren Sie den Support.",
+  "@loginDialogAccountDisabledMessage": { "description": "DIALOG — Nachricht Konto deaktiviert" },
+
+  "ok": "OK",
+  "@ok": { "description": "ALLGEMEIN — Bestätigen/Schließen" },
+
+  "loginErrorCheckUser": "Fehler beim Prüfen des Benutzers",
+  "@loginErrorCheckUser": { "description": "LOGIN — Generischer Fehler beim Prüfen" },
+
+  "loginResetPasswordEmailRequired": "Bitte E-Mail eingeben, um das Passwort zurückzusetzen",
+  "@loginResetPasswordEmailRequired": { "description": "LOGIN — Fehler beim Zurücksetzen ohne E-Mail" },
+
+  "loginResetPasswordSuccess": "Wir haben einen Link zum Zurücksetzen an Ihre E-Mail gesendet.",
+  "@loginResetPasswordSuccess": { "description": "LOGIN — Erfolgsmeldung Passwort zurücksetzen" },
+
+  "loginResetPasswordUnexpectedError": "Unerwarteter Fehler beim Zurücksetzen des Passworts",
+  "@loginResetPasswordUnexpectedError": { "description": "LOGIN — Unerwarteter Fehler Passwort zurücksetzen" },
+
+  "loginLoadingGoogle": "Anmeldung mit Google...",
+  "@loginLoadingGoogle": { "description": "LOADER — Text während Google-Login" },
+
+  "loginLoadingPrepareAccount": "Konto wird vorbereitet...",
+  "@loginLoadingPrepareAccount": { "description": "LOADER — Text während Warmup/Bootstrap" },
+
+    "loginFillEmailAndPassword": "Bitte E-Mail und Passwort eingeben",
+  "@loginFillEmailAndPassword": { "description": "LOGIN — Leere Felder" },
+
+  "loginErrorGettingUser": "Fehler beim Abrufen des Benutzers",
+  "@loginErrorGettingUser": { "description": "LOGIN — Fehler beim Abrufen des Benutzers" },
+
+  "loginUserNotFound": "Benutzer nicht gefunden",
+  "@loginUserNotFound": { "description": "LOGIN — Benutzer nicht im Firestore gefunden" },
+
+  "loginAccountDisabledShort": "Ihr Konto ist deaktiviert.",
+  "@loginAccountDisabledShort": { "description": "LOGIN — Konto deaktiviert (kurz)" },
+
+  "loginAccountDisabledTitle": "Konto deaktiviert",
+  "@loginAccountDisabledTitle": { "description": "LOGIN — Titel des Dialogs" },
+
+  "loginAccountDisabledMessage": "Ihr Konto ist deaktiviert. Bitte kontaktieren Sie den Support.",
+  "@loginAccountDisabledMessage": { "description": "LOGIN — Nachricht des Dialogs" },
+
+  "loginErrorCheckingUser": "Fehler bei der Benutzerprüfung",
+  "@loginErrorCheckingUser": { "description": "LOGIN — Fehler bei Benutzerprüfung" },
+
+  "loginEnterEmailToReset": "Geben Sie Ihre E-Mail zur Passwortzurücksetzung ein",
+  "@loginEnterEmailToReset": { "description": "LOGIN — E-Mail fehlt beim Reset" },
+
+  "loginResetLinkSent": "Ein Link zur Passwortzurücksetzung wurde an Ihre E-Mail gesendet.",
+  "@loginResetLinkSent": { "description": "LOGIN — Reset-Link gesendet" },
+
+  "loginUnexpectedResetError": "Unerwarteter Fehler beim Zurücksetzen des Passworts",
+  "@loginUnexpectedResetError": { "description": "LOGIN — Unerwarteter Reset-Fehler" },
+
+  "ok": "OK",
+  "@ok": { "description": "ALLGEMEIN — OK Button" },
+
+  "loginSigningInWithGoogle": "Anmeldung mit Google...",
+  "@loginSigningInWithGoogle": { "description": "LOGIN — Loader beim Google-Login" },
+
+  "loginPreparingAccount": "Konto wird vorbereitet...",
+  "@loginPreparingAccount": { "description": "LOGIN — Loader während Warmup/Bootstrap" }
+
+
+
 
 }
