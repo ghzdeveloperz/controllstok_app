@@ -706,8 +706,105 @@
   "termsOfUseSection8Title": "8. Kontakt",
   "termsOfUseSection8Body": "Bei Fragen zu diesen Nutzungsbedingungen kontaktieren Sie uns bitte per E-Mail unter: contact@mystoreday.com.",
 
-  "termsOfUseLastUpdate": "Letzte Aktualisierung: Januar 2025"
+  "termsOfUseLastUpdate": "Letzte Aktualisierung: Januar 2025",
 
+  "reportsTitle": "Berichte",
+  "@reportsTitle": { "description": "BERICHTE BILDSCHIRM — Header-Titel (de-CH)" },
 
+  "reportsPeriodDay": "Tag",
+  "@reportsPeriodDay": { "description": "BERICHTE BILDSCHIRM — Perioden-Auswahl: Tag (de-CH)" },
+
+  "reportsTitle": "Berichte",
+  "@reportsTitle": {
+    "description": "BERICHTE — Titel der Kopfzeile (Schweiz)"
+  },
+
+  "relatoriosPercentAll": "Alle",
+  "@relatoriosPercentAll": { "description": "Berichte — Prozentfilter: Alle (CH)" },
+
+  "reportsPeriodDay": "Tag",
+  "@reportsPeriodDay": {
+    "description": "BERICHTE — Zeitraumwahl: Tag (CH)"
+  },
+
+  "relatoriosCumulativeMovementsTitle": "Kumulative Bewegungen im Tagesverlauf",
+  "relatoriosEntries": "Zugänge",
+  "relatoriosExits": "Abgänge",
+  "relatoriosAll": "Alle",
+
+  "relatoriosTimeAxisLabel": "Zeit",
+
+  "relatoriosEntry": "Zugang",
+  "relatoriosExit": "Abgang",
+
+  "relatoriosPieTitle": "Prozentuale Verteilung — {modeLabel}",
+  "@relatoriosPieTitle": {
+    "description": "Titel des Kreisdiagramms je nach ausgewähltem Modus (CH).",
+    "placeholders": {
+      "modeLabel": { "type": "String", "example": "Zugänge" }
+    }
+  },
+
+  "relatoriosChartLine": "Linie",
+  "relatoriosChartPercent": "Kreis",
+
+  "relatoriosToday": "Heute",
+
+  "relatoriosNoMovementsForDate": "Keine Bewegungen am {dateText}",
+  "@relatoriosNoMovementsForDate": {
+    "description": "Hinweis bei fehlenden Bewegungen am ausgewählten Datum (CH).",
+    "placeholders": {
+      "dateText": { "type": "String", "example": "25.01.2026" }
+    }
+  },
+
+  "relatoriosSelectAnotherDateHint": "Wählen Sie ein anderes Datum oder fügen Sie neue Bewegungen hinzu.",
+
+  "relatoriosEntryWithValue": "Zugang: {value}",
+  "@relatoriosEntryWithValue": {
+    "description": "Produktdetailkarte mit Gesamtzugängen (CH).",
+    "placeholders": {
+      "value": { "type": "int", "example": "12" }
+    }
+  },
+
+  "relatoriosExitWithValue": "Abgang: {value}",
+  "@relatoriosExitWithValue": {
+    "description": "Produktdetailkarte mit Gesamtabgängen (CH).",
+    "placeholders": {
+      "value": { "type": "int", "example": "7" }
+    }
+  },
+
+  "relatoriosEntriesWithValue": "Zugänge: {value}",
+  "@relatoriosEntriesWithValue": {
+    "description": "Bewegte Produkte mit Gesamtzugängen (CH).",
+    "placeholders": {
+      "value": { "type": "int", "example": "12" }
+    }
+  },
+
+  "relatoriosExitsWithValue": "Abgänge: {value}",
+  "@relatoriosExitsWithValue": {
+    "description": "Bewegte Produkte mit Gesamtabgängen (CH).",
+    "placeholders": {
+      "value": { "type": "int", "example": "7" }
+    }
+  },
+
+  "relatoriosMovedProductsTitle": "Bewegte Produkte",
+
+  "relatoriosExecutiveSummaryTitle": "Tägliche Zusammenfassung",
+  "relatoriosNetBalance": "Nettosaldo",
+
+  "relatoriosExportReport": "Bericht exportieren",
+
+  "relatoriosLineTooltip": "{label}: {value}",
+  "@relatoriosLineTooltip": {
+    "description": "Tooltip des Liniendiagramms (CH).",
+    "placeholders": {
+      "label": { "type": "String", "example": "Zugänge" },
+      "value": { "type": "num", "example": "12.5" }
+    }
+  }
 }
-

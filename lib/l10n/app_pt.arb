@@ -732,10 +732,100 @@
   "termsOfUseLastUpdate": "Última atualização: Janeiro de 2025",
   "@termsOfUseLastUpdate": {
     "description": "TELA TERMOS_DE_USO — Linha final com data da última atualização"
+  },
+
+  "reportsTitle": "Relatórios",
+  "@reportsTitle": {
+    "description": "TELA RELATORIOS — Título do header"
+  },
+
+  "relatoriosPercentAll": "Todos",
+  "@relatoriosPercentAll": { "description": "Relatórios — filtro percentual: Todos" },
+
+
+  "reportsPeriodDay": "Dia",
+  "@reportsPeriodDay": {
+    "description": "TELA RELATORIOS — Seletor de período: Dia"
+  },
+
+  "relatoriosCumulativeMovementsTitle": "Movimentações cumulativas ao longo do dia",
+  "relatoriosEntries": "Entradas",
+  "relatoriosExits": "Saídas",
+  "relatoriosAll": "Todos",
+
+  "relatoriosTimeAxisLabel": "Horário",
+
+  "relatoriosEntry": "Entrada",
+  "relatoriosExit": "Saída",
+
+  "relatoriosPieTitle": "Distribuição percentual — {modeLabel}",
+  "@relatoriosPieTitle": {
+    "description": "Título do gráfico de pizza, variando conforme o modo selecionado (Todos/Entradas/Saídas).",
+    "placeholders": {
+      "modeLabel": { "type": "String", "example": "Entradas" }
+    }
+  },
+
+  "relatoriosChartLine": "Linha",
+  "relatoriosChartPercent": "Pizza",
+
+  "relatoriosToday": "Hoje",
+
+  "relatoriosNoMovementsForDate": "Nenhuma movimentação em {dateText}",
+  "@relatoriosNoMovementsForDate": {
+    "description": "Mensagem de estado vazio quando não há movimentações na data selecionada.",
+    "placeholders": {
+      "dateText": { "type": "String", "example": "25/01/2026" }
+    }
+  },
+
+  "relatoriosSelectAnotherDateHint": "Selecione outra data ou adicione novas movimentações.",
+
+  "relatoriosEntryWithValue": "Entrada: {value}",
+  "@relatoriosEntryWithValue": {
+    "description": "Tag no card de detalhe do produto mostrando total de entradas.",
+    "placeholders": {
+      "value": { "type": "int", "example": "12" }
+    }
+  },
+
+  "relatoriosExitWithValue": "Saída: {value}",
+  "@relatoriosExitWithValue": {
+    "description": "Tag no card de detalhe do produto mostrando total de saídas.",
+    "placeholders": {
+      "value": { "type": "int", "example": "7" }
+    }
+  },
+
+  "relatoriosEntriesWithValue": "Entradas: {value}",
+  "@relatoriosEntriesWithValue": {
+    "description": "Tag no card 'Produtos Movimentados' mostrando total de entradas.",
+    "placeholders": {
+      "value": { "type": "int", "example": "12" }
+    }
+  },
+
+  "relatoriosExitsWithValue": "Saídas: {value}",
+  "@relatoriosExitsWithValue": {
+    "description": "Tag no card 'Produtos Movimentados' mostrando total de saídas.",
+    "placeholders": {
+      "value": { "type": "int", "example": "7" }
+    }
+  },
+
+  "relatoriosMovedProductsTitle": "Produtos movimentados",
+
+  "relatoriosExecutiveSummaryTitle": "Resumo executivo do dia",
+  "relatoriosNetBalance": "Saldo líquido",
+
+  "relatoriosExportReport": "Exportar relatório",
+
+  "relatoriosLineTooltip": "{label}: {value}",
+  "@relatoriosLineTooltip": {
+    "description": "Texto do tooltip no gráfico de linha (label + valor).",
+    "placeholders": {
+      "label": { "type": "String", "example": "Entradas" },
+      "value": { "type": "num", "example": "12.5" }
+    }
   }
-
-
-
-  
-
 }

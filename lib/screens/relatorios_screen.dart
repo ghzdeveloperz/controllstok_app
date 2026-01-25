@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 import 'dart:ui'; // Para BackdropFilter
 import 'package:google_fonts/google_fonts.dart';
+import '../../l10n/app_localizations.dart';
+
 import 'widgets/relatorios/days/relatorios_days.dart';
 
 /// =======================
@@ -48,6 +50,8 @@ class _RelatoriosScreenState extends State<RelatoriosScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF6F6F6),
       body: SafeArea(
@@ -91,7 +95,7 @@ class _RelatoriosScreenState extends State<RelatoriosScreen>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Relatórios',
+                        l10n.reportsTitle,
                         style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w600,
                           fontSize: 28,
@@ -112,6 +116,7 @@ class _RelatoriosScreenState extends State<RelatoriosScreen>
                         selected: _selectedPeriod,
                         onChange: (value) {
                           // Não faz nada, pois sempre é daily
+                          // (mantém a assinatura para quando você reativar Month/Year)
                         },
                       ),
                     ],
@@ -205,6 +210,8 @@ class _PeriodSelectorState extends State<_PeriodSelector>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return AnimatedBuilder(
       animation: _animation,
       builder: (context, child) {
@@ -228,9 +235,9 @@ class _PeriodSelectorState extends State<_PeriodSelector>
           ),
           child: Row(
             children: [
-              _buildItem('Dia', PeriodType.daily), // Apenas "Dia"
-              // _buildItem('Mês', PeriodType.monthly), // Comentado
-              // _buildItem('Ano', PeriodType.yearly), // Comentado
+              _buildItem(l10n.reportsPeriodDay, PeriodType.daily),
+              // _buildItem(l10n.reportsPeriodMonth, PeriodType.monthly), // Comentado
+              // _buildItem(l10n.reportsPeriodYear, PeriodType.yearly), // Comentado
             ],
           ),
         );

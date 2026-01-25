@@ -1381,6 +1381,156 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Última atualização: Janeiro de 2025'**
   String get termsOfUseLastUpdate;
+
+  /// TELA RELATORIOS — Título do header
+  ///
+  /// In pt, this message translates to:
+  /// **'Relatórios'**
+  String get reportsTitle;
+
+  /// Relatórios — filtro percentual: Todos
+  ///
+  /// In pt, this message translates to:
+  /// **'Todos'**
+  String get relatoriosPercentAll;
+
+  /// TELA RELATORIOS — Seletor de período: Dia
+  ///
+  /// In pt, this message translates to:
+  /// **'Dia'**
+  String get reportsPeriodDay;
+
+  /// No description provided for @relatoriosCumulativeMovementsTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Movimentações cumulativas ao longo do dia'**
+  String get relatoriosCumulativeMovementsTitle;
+
+  /// No description provided for @relatoriosEntries.
+  ///
+  /// In pt, this message translates to:
+  /// **'Entradas'**
+  String get relatoriosEntries;
+
+  /// No description provided for @relatoriosExits.
+  ///
+  /// In pt, this message translates to:
+  /// **'Saídas'**
+  String get relatoriosExits;
+
+  /// No description provided for @relatoriosAll.
+  ///
+  /// In pt, this message translates to:
+  /// **'Todos'**
+  String get relatoriosAll;
+
+  /// No description provided for @relatoriosTimeAxisLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Horário'**
+  String get relatoriosTimeAxisLabel;
+
+  /// No description provided for @relatoriosEntry.
+  ///
+  /// In pt, this message translates to:
+  /// **'Entrada'**
+  String get relatoriosEntry;
+
+  /// No description provided for @relatoriosExit.
+  ///
+  /// In pt, this message translates to:
+  /// **'Saída'**
+  String get relatoriosExit;
+
+  /// Título do gráfico de pizza, variando conforme o modo selecionado (Todos/Entradas/Saídas).
+  ///
+  /// In pt, this message translates to:
+  /// **'Distribuição percentual — {modeLabel}'**
+  String relatoriosPieTitle(String modeLabel);
+
+  /// No description provided for @relatoriosChartLine.
+  ///
+  /// In pt, this message translates to:
+  /// **'Linha'**
+  String get relatoriosChartLine;
+
+  /// No description provided for @relatoriosChartPercent.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pizza'**
+  String get relatoriosChartPercent;
+
+  /// No description provided for @relatoriosToday.
+  ///
+  /// In pt, this message translates to:
+  /// **'Hoje'**
+  String get relatoriosToday;
+
+  /// Mensagem de estado vazio quando não há movimentações na data selecionada.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhuma movimentação em {dateText}'**
+  String relatoriosNoMovementsForDate(String dateText);
+
+  /// No description provided for @relatoriosSelectAnotherDateHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione outra data ou adicione novas movimentações.'**
+  String get relatoriosSelectAnotherDateHint;
+
+  /// Tag no card de detalhe do produto mostrando total de entradas.
+  ///
+  /// In pt, this message translates to:
+  /// **'Entrada: {value}'**
+  String relatoriosEntryWithValue(int value);
+
+  /// Tag no card de detalhe do produto mostrando total de saídas.
+  ///
+  /// In pt, this message translates to:
+  /// **'Saída: {value}'**
+  String relatoriosExitWithValue(int value);
+
+  /// Tag no card 'Produtos Movimentados' mostrando total de entradas.
+  ///
+  /// In pt, this message translates to:
+  /// **'Entradas: {value}'**
+  String relatoriosEntriesWithValue(int value);
+
+  /// Tag no card 'Produtos Movimentados' mostrando total de saídas.
+  ///
+  /// In pt, this message translates to:
+  /// **'Saídas: {value}'**
+  String relatoriosExitsWithValue(int value);
+
+  /// No description provided for @relatoriosMovedProductsTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Produtos movimentados'**
+  String get relatoriosMovedProductsTitle;
+
+  /// No description provided for @relatoriosExecutiveSummaryTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Resumo executivo do dia'**
+  String get relatoriosExecutiveSummaryTitle;
+
+  /// No description provided for @relatoriosNetBalance.
+  ///
+  /// In pt, this message translates to:
+  /// **'Saldo líquido'**
+  String get relatoriosNetBalance;
+
+  /// No description provided for @relatoriosExportReport.
+  ///
+  /// In pt, this message translates to:
+  /// **'Exportar relatório'**
+  String get relatoriosExportReport;
+
+  /// Texto do tooltip no gráfico de linha (label + valor).
+  ///
+  /// In pt, this message translates to:
+  /// **'{label}: {value}'**
+  String relatoriosLineTooltip(String label, num value);
 }
 
 class _AppLocalizationsDelegate

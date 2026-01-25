@@ -714,4 +714,95 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get termsOfUseLastUpdate => 'Last updated: January 2025';
+
+  @override
+  String get reportsTitle => 'Reports';
+
+  @override
+  String get relatoriosPercentAll => 'All';
+
+  @override
+  String get reportsPeriodDay => 'Day';
+
+  @override
+  String get relatoriosCumulativeMovementsTitle =>
+      'Cumulative movements throughout the day';
+
+  @override
+  String get relatoriosEntries => 'Entries';
+
+  @override
+  String get relatoriosExits => 'Exits';
+
+  @override
+  String get relatoriosAll => 'All';
+
+  @override
+  String get relatoriosTimeAxisLabel => 'Time';
+
+  @override
+  String get relatoriosEntry => 'Entry';
+
+  @override
+  String get relatoriosExit => 'Exit';
+
+  @override
+  String relatoriosPieTitle(String modeLabel) {
+    return 'Percentage distribution — $modeLabel';
+  }
+
+  @override
+  String get relatoriosChartLine => 'Line';
+
+  @override
+  String get relatoriosChartPercent => 'Pie';
+
+  @override
+  String get relatoriosToday => 'Today';
+
+  @override
+  String relatoriosNoMovementsForDate(String dateText) {
+    return 'No movements on $dateText';
+  }
+
+  @override
+  String get relatoriosSelectAnotherDateHint =>
+      'Select another date or add new movements.';
+
+  @override
+  String relatoriosEntryWithValue(int value) {
+    return 'Entry: $value';
+  }
+
+  @override
+  String relatoriosExitWithValue(int value) {
+    return 'Exit: $value';
+  }
+
+  @override
+  String relatoriosEntriesWithValue(int value) {
+    return 'Entries: $value';
+  }
+
+  @override
+  String relatoriosExitsWithValue(int value) {
+    return 'Exits: $value';
+  }
+
+  @override
+  String get relatoriosMovedProductsTitle => 'Moved products';
+
+  @override
+  String get relatoriosExecutiveSummaryTitle => 'Daily executive summary';
+
+  @override
+  String get relatoriosNetBalance => 'Net balance';
+
+  @override
+  String get relatoriosExportReport => 'Export report';
+
+  @override
+  String relatoriosLineTooltip(String label, num value) {
+    return '$label: $value';
+  }
 }

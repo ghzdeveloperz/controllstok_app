@@ -5,10 +5,10 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../firebase/firestore/movements_days.dart';
-import '../../../models/salve_modal.dart';
-import '../../../models/report_period.dart';
-import '../../../models/month_reference.dart';
+import '../../../../../firebase/firestore/movements_days.dart';
+import '../../../../models/salve_modal.dart';
+import '../../../../models/report_period.dart';
+import '../../../../models/month_reference.dart';
 
 class RelatoriosForProducts extends StatefulWidget {
   final String productId;

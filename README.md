@@ -390,3 +390,49 @@ Essas regras são reavaliadas a cada mudança de autenticação ou Firestore.
 - Consolidar o padrão de i18n do app (Login/Registro/Onboarding) com consistência total
 - Incluir **Termos de Uso** e **Política de Privacidade** traduzíveis dentro do app (pronto para publicação)
 - Preparar o módulo para expansão de idiomas sem retrabalho estrutural
+
+
+## [Milestone 19] Tela de Relatórios (Dia) + i18n Completo
+**Status:** Concluído ✅
+
+### Melhorias:
+- Refatorada toda a **Tela de Relatórios Diários (Visão Geral)** para suportar **i18n completo**, eliminando strings hardcoded de UI, gráficos e estados.
+- Internacionalização aplicada em todo o fluxo de relatórios do dia:
+  - `relatorios_days.dart` — widget principal organizado, com separação clara entre Widget e State
+  - `relatorios_days_state.dart` — lógica, estados, filtros e labels resolvidos via `AppLocalizations`
+  - `charts/line_chart_section.dart` — títulos, eixos, legendas e tooltips totalmente traduzíveis
+  - `charts/pie_chart_section.dart` — título dinâmico conforme modo (Todos / Entradas / Saídas) integrado ao i18n
+- Padronização completa da UI da tela de relatórios:
+  - Títulos de seções (Relatórios, Produtos movimentados, Resumo executivo)
+  - Labels de gráficos (Linha / Pizza)
+  - Filtros percentuais (Todos / Entradas / Saídas)
+  - Estados vazios e mensagens de orientação ao usuário
+- Refatoração dos tooltips dos gráficos:
+  - Tooltip do gráfico de linha padronizado via chave i18n (`relatoriosLineTooltip`)
+  - Placeholders dinâmicos (label + valor), compatíveis com múltiplos idiomas
+- Consolidação da base de traduções:
+  - Chaves de relatórios organizadas e padronizadas nos arquivos `.arb`
+  - Traduções completas adicionadas para:
+    - EN (Inglês)
+    - ES (Espanhol)
+    - PT-PT (Português de Portugal)
+    - DE (Alemão)
+    - DE-CH (Alemão Suíço, com fallback em `de`)
+- Compatibilidade total garantida com `flutter gen-l10n`:
+  - `example` sempre como string
+  - Placeholders corretamente tipados (`int`, `num`, `String`)
+  - Nenhuma chave duplicada ou ausente entre idiomas
+  - Sem warnings ou quebras de locale
+
+### Fora de Escopo (Intencional):
+- **Relatório por Produto NÃO foi refatorado neste milestone**
+- Tela `RelatoriosForProducts` mantida **inalterada**, sem aplicação de i18n nesta etapa
+- Ajustes de tradução no relatório por produto ficaram planejados para um milestone futuro
+
+### Objetivo:
+- Garantir que a **Tela de Relatórios (Visão Geral do Dia)** esteja **100% traduzível**
+- Consolidar o padrão arquitetural de **i18n profissional** no módulo de relatórios
+- Criar uma base sólida para:
+  - Relatórios Mensais e Anuais
+  - Internacionalização do Relatório por Produto
+  - Evoluções futuras sem retrabalho estrutural

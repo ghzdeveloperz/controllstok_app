@@ -720,4 +720,95 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get termsOfUseLastUpdate => 'Última actualización: enero de 2025';
+
+  @override
+  String get reportsTitle => 'Informes';
+
+  @override
+  String get relatoriosPercentAll => 'Todos';
+
+  @override
+  String get reportsPeriodDay => 'Día';
+
+  @override
+  String get relatoriosCumulativeMovementsTitle =>
+      'Movimientos acumulados a lo largo del día';
+
+  @override
+  String get relatoriosEntries => 'Entradas';
+
+  @override
+  String get relatoriosExits => 'Salidas';
+
+  @override
+  String get relatoriosAll => 'Todos';
+
+  @override
+  String get relatoriosTimeAxisLabel => 'Hora';
+
+  @override
+  String get relatoriosEntry => 'Entrada';
+
+  @override
+  String get relatoriosExit => 'Salida';
+
+  @override
+  String relatoriosPieTitle(String modeLabel) {
+    return 'Distribución porcentual — $modeLabel';
+  }
+
+  @override
+  String get relatoriosChartLine => 'Línea';
+
+  @override
+  String get relatoriosChartPercent => 'Circular';
+
+  @override
+  String get relatoriosToday => 'Hoy';
+
+  @override
+  String relatoriosNoMovementsForDate(String dateText) {
+    return 'No hay movimientos en $dateText';
+  }
+
+  @override
+  String get relatoriosSelectAnotherDateHint =>
+      'Seleccione otra fecha o agregue nuevos movimientos.';
+
+  @override
+  String relatoriosEntryWithValue(int value) {
+    return 'Entrada: $value';
+  }
+
+  @override
+  String relatoriosExitWithValue(int value) {
+    return 'Salida: $value';
+  }
+
+  @override
+  String relatoriosEntriesWithValue(int value) {
+    return 'Entradas: $value';
+  }
+
+  @override
+  String relatoriosExitsWithValue(int value) {
+    return 'Salidas: $value';
+  }
+
+  @override
+  String get relatoriosMovedProductsTitle => 'Productos movidos';
+
+  @override
+  String get relatoriosExecutiveSummaryTitle => 'Resumen ejecutivo del día';
+
+  @override
+  String get relatoriosNetBalance => 'Saldo neto';
+
+  @override
+  String get relatoriosExportReport => 'Exportar informe';
+
+  @override
+  String relatoriosLineTooltip(String label, num value) {
+    return '$label: $value';
+  }
 }

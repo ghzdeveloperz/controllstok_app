@@ -696,8 +696,107 @@
   "@termsOfUseSection8Body": { "description": "TERMS_OF_USE — Section 8 body" },
 
   "termsOfUseLastUpdate": "Last updated: January 2025",
-  "@termsOfUseLastUpdate": { "description": "TERMS_OF_USE — Last update line" }
+  "@termsOfUseLastUpdate": { "description": "TERMS_OF_USE — Last update line" },
 
+  "reportsTitle": "Reports",
+  "@reportsTitle": { "description": "REPORTS SCREEN — Header title" },
 
+  "reportsPeriodDay": "Day",
+  "@reportsPeriodDay": { "description": "REPORTS SCREEN — Period selector: Day" },
 
+  "reportsTitle": "Reports",
+  "@reportsTitle": {
+    "description": "REPORTS SCREEN — Header title"
+  },
+
+  "relatoriosPercentAll": "All",
+  "@relatoriosPercentAll": { "description": "Reports — percentage filter: All" },
+
+  "reportsPeriodDay": "Day",
+  "@reportsPeriodDay": {
+    "description": "REPORTS SCREEN — Period selector: Day"
+  },
+
+  "relatoriosCumulativeMovementsTitle": "Cumulative movements throughout the day",
+  "relatoriosEntries": "Entries",
+  "relatoriosExits": "Exits",
+  "relatoriosAll": "All",
+
+  "relatoriosTimeAxisLabel": "Time",
+
+  "relatoriosEntry": "Entry",
+  "relatoriosExit": "Exit",
+
+  "relatoriosPieTitle": "Percentage distribution — {modeLabel}",
+  "@relatoriosPieTitle": {
+    "description": "Pie chart title depending on selected mode (All/Entries/Exits).",
+    "placeholders": {
+      "modeLabel": { "type": "String", "example": "Entries" }
+    }
+  },
+
+  "relatoriosChartLine": "Line",
+  "relatoriosChartPercent": "Pie",
+
+  "relatoriosToday": "Today",
+
+  "relatoriosNoMovementsForDate": "No movements on {dateText}",
+  "@relatoriosNoMovementsForDate": {
+    "description": "Empty state message when no movements exist for the selected date.",
+    "placeholders": {
+      "dateText": { "type": "String", "example": "01/25/2026" }
+    }
+  },
+
+  "relatoriosSelectAnotherDateHint": "Select another date or add new movements.",
+
+  "relatoriosEntryWithValue": "Entry: {value}",
+  "@relatoriosEntryWithValue": {
+    "description": "Product detail card showing total entries.",
+    "placeholders": {
+      "value": { "type": "int", "example": "12" }
+    }
+  },
+
+  "relatoriosExitWithValue": "Exit: {value}",
+  "@relatoriosExitWithValue": {
+    "description": "Product detail card showing total exits.",
+    "placeholders": {
+      "value": { "type": "int", "example": "7" }
+    }
+  },
+
+  "relatoriosEntriesWithValue": "Entries: {value}",
+  "@relatoriosEntriesWithValue": {
+    "description": "Moved products card showing total entries.",
+    "placeholders": {
+      "value": { "type": "int", "example": "12" }
+    }
+  },
+
+  "relatoriosExitsWithValue": "Exits: {value}",
+  "@relatoriosExitsWithValue": {
+    "description": "Moved products card showing total exits.",
+    "placeholders": {
+      "value": { "type": "int", "example": "7" }
+    }
+  },
+
+  "relatoriosMovedProductsTitle": "Moved products",
+
+  "relatoriosExecutiveSummaryTitle": "Daily executive summary",
+  "relatoriosNetBalance": "Net balance",
+
+  "relatoriosExportReport": "Export report",
+
+  "relatoriosLineTooltip": "{label}: {value}",
+  "@relatoriosLineTooltip": {
+    "description": "Line chart tooltip (label + value).",
+    "placeholders": {
+      "label": { "type": "String", "example": "Entries" },
+      "value": { "type": "num", "example": "12.5" }
+    }
+  }
 }
+
+

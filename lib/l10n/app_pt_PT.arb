@@ -670,8 +670,106 @@
   "termsOfUseSection8Title": "8. Contacto",
   "termsOfUseSection8Body": "Em caso de dúvidas relacionadas com estes Termos de Utilização, entre em contacto através do e-mail: contact@mystoreday.com.",
 
-  "termsOfUseLastUpdate": "Última actualização: Janeiro de 2025"
+  "termsOfUseLastUpdate": "Última actualização: Janeiro de 2025",
 
+  "reportsTitle": "Relatórios",
+  "@reportsTitle": { "description": "ECRÃ RELATÓRIOS — Título do cabeçalho" },
 
+  "reportsPeriodDay": "Dia",
+  "@reportsPeriodDay": { "description": "ECRÃ RELATÓRIOS — Seletor de período: Dia" },
 
+  "reportsTitle": "Relatórios",
+  "@reportsTitle": {
+    "description": "ECRÃ RELATÓRIOS — Título do cabeçalho"
+  },
+
+  "relatoriosPercentAll": "Todos",
+  "@relatoriosPercentAll": { "description": "Relatórios — filtro percentual: Todos" },
+
+  "reportsPeriodDay": "Dia",
+  "@reportsPeriodDay": {
+    "description": "ECRÃ RELATÓRIOS — Seletor de período: Dia"
+  },
+
+  "relatoriosCumulativeMovementsTitle": "Movimentações cumulativas ao longo do dia",
+  "relatoriosEntries": "Entradas",
+  "relatoriosExits": "Saídas",
+  "relatoriosAll": "Todos",
+
+  "relatoriosTimeAxisLabel": "Hora",
+
+  "relatoriosEntry": "Entrada",
+  "relatoriosExit": "Saída",
+
+  "relatoriosPieTitle": "Distribuição percentual — {modeLabel}",
+  "@relatoriosPieTitle": {
+    "description": "Título do gráfico circular conforme o modo seleccionado.",
+    "placeholders": {
+      "modeLabel": { "type": "String", "example": "Entradas" }
+    }
+  },
+
+  "relatoriosChartLine": "Linha",
+  "relatoriosChartPercent": "Circular",
+
+  "relatoriosToday": "Hoje",
+
+  "relatoriosNoMovementsForDate": "Nenhuma movimentação em {dateText}",
+  "@relatoriosNoMovementsForDate": {
+    "description": "Mensagem quando não há movimentações na data seleccionada.",
+    "placeholders": {
+      "dateText": { "type": "String", "example": "25/01/2026" }
+    }
+  },
+
+  "relatoriosSelectAnotherDateHint": "Seleccione outra data ou adicione novas movimentações.",
+
+  "relatoriosEntryWithValue": "Entrada: {value}",
+  "@relatoriosEntryWithValue": {
+    "description": "Cartão de detalhe do produto com total de entradas.",
+    "placeholders": {
+      "value": { "type": "int", "example": "12" }
+    }
+  },
+
+  "relatoriosExitWithValue": "Saída: {value}",
+  "@relatoriosExitWithValue": {
+    "description": "Cartão de detalhe do produto com total de saídas.",
+    "placeholders": {
+      "value": { "type": "int", "example": "7" }
+    }
+  },
+
+  "relatoriosEntriesWithValue": "Entradas: {value}",
+  "@relatoriosEntriesWithValue": {
+    "description": "Cartão de produtos movimentados com total de entradas.",
+    "placeholders": {
+      "value": { "type": "int", "example": "12" }
+    }
+  },
+
+  "relatoriosExitsWithValue": "Saídas: {value}",
+  "@relatoriosExitsWithValue": {
+    "description": "Cartão de produtos movimentados com total de saídas.",
+    "placeholders": {
+      "value": { "type": "int", "example": "7" }
+    }
+  },
+
+  "relatoriosMovedProductsTitle": "Produtos movimentados",
+
+  "relatoriosExecutiveSummaryTitle": "Resumo executivo do dia",
+  "relatoriosNetBalance": "Saldo líquido",
+
+  "relatoriosExportReport": "Exportar relatório",
+
+  "relatoriosLineTooltip": "{label}: {value}",
+  "@relatoriosLineTooltip": {
+    "description": "Tooltip do gráfico de linhas.",
+    "placeholders": {
+      "label": { "type": "String", "example": "Entradas" },
+      "value": { "type": "num", "example": "12.5" }
+    }
+  }
 }
+

@@ -725,6 +725,97 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get termsOfUseLastUpdate => 'Letzte Aktualisierung: Januar 2025';
+
+  @override
+  String get reportsTitle => 'Berichte';
+
+  @override
+  String get relatoriosPercentAll => 'Alle';
+
+  @override
+  String get reportsPeriodDay => 'Tag';
+
+  @override
+  String get relatoriosCumulativeMovementsTitle =>
+      'Kumulative Bewegungen im Tagesverlauf';
+
+  @override
+  String get relatoriosEntries => 'Zugänge';
+
+  @override
+  String get relatoriosExits => 'Abgänge';
+
+  @override
+  String get relatoriosAll => 'Alle';
+
+  @override
+  String get relatoriosTimeAxisLabel => 'Uhrzeit';
+
+  @override
+  String get relatoriosEntry => 'Zugang';
+
+  @override
+  String get relatoriosExit => 'Abgang';
+
+  @override
+  String relatoriosPieTitle(String modeLabel) {
+    return 'Prozentuale Verteilung — $modeLabel';
+  }
+
+  @override
+  String get relatoriosChartLine => 'Linie';
+
+  @override
+  String get relatoriosChartPercent => 'Kreis';
+
+  @override
+  String get relatoriosToday => 'Heute';
+
+  @override
+  String relatoriosNoMovementsForDate(String dateText) {
+    return 'Keine Bewegungen am $dateText';
+  }
+
+  @override
+  String get relatoriosSelectAnotherDateHint =>
+      'Wählen Sie ein anderes Datum oder fügen Sie neue Bewegungen hinzu.';
+
+  @override
+  String relatoriosEntryWithValue(int value) {
+    return 'Zugang: $value';
+  }
+
+  @override
+  String relatoriosExitWithValue(int value) {
+    return 'Abgang: $value';
+  }
+
+  @override
+  String relatoriosEntriesWithValue(int value) {
+    return 'Zugänge: $value';
+  }
+
+  @override
+  String relatoriosExitsWithValue(int value) {
+    return 'Abgänge: $value';
+  }
+
+  @override
+  String get relatoriosMovedProductsTitle => 'Bewegte Produkte';
+
+  @override
+  String get relatoriosExecutiveSummaryTitle => 'Tägliche Zusammenfassung';
+
+  @override
+  String get relatoriosNetBalance => 'Nettosaldo';
+
+  @override
+  String get relatoriosExportReport => 'Bericht exportieren';
+
+  @override
+  String relatoriosLineTooltip(String label, num value) {
+    return '$label: $value';
+  }
 }
 
 /// The translations for German, as used in Switzerland (`de_CH`).
@@ -1447,4 +1538,95 @@ class AppLocalizationsDeCh extends AppLocalizationsDe {
 
   @override
   String get termsOfUseLastUpdate => 'Letzte Aktualisierung: Januar 2025';
+
+  @override
+  String get reportsTitle => 'Berichte';
+
+  @override
+  String get relatoriosPercentAll => 'Alle';
+
+  @override
+  String get reportsPeriodDay => 'Tag';
+
+  @override
+  String get relatoriosCumulativeMovementsTitle =>
+      'Kumulative Bewegungen im Tagesverlauf';
+
+  @override
+  String get relatoriosEntries => 'Zugänge';
+
+  @override
+  String get relatoriosExits => 'Abgänge';
+
+  @override
+  String get relatoriosAll => 'Alle';
+
+  @override
+  String get relatoriosTimeAxisLabel => 'Zeit';
+
+  @override
+  String get relatoriosEntry => 'Zugang';
+
+  @override
+  String get relatoriosExit => 'Abgang';
+
+  @override
+  String relatoriosPieTitle(String modeLabel) {
+    return 'Prozentuale Verteilung — $modeLabel';
+  }
+
+  @override
+  String get relatoriosChartLine => 'Linie';
+
+  @override
+  String get relatoriosChartPercent => 'Kreis';
+
+  @override
+  String get relatoriosToday => 'Heute';
+
+  @override
+  String relatoriosNoMovementsForDate(String dateText) {
+    return 'Keine Bewegungen am $dateText';
+  }
+
+  @override
+  String get relatoriosSelectAnotherDateHint =>
+      'Wählen Sie ein anderes Datum oder fügen Sie neue Bewegungen hinzu.';
+
+  @override
+  String relatoriosEntryWithValue(int value) {
+    return 'Zugang: $value';
+  }
+
+  @override
+  String relatoriosExitWithValue(int value) {
+    return 'Abgang: $value';
+  }
+
+  @override
+  String relatoriosEntriesWithValue(int value) {
+    return 'Zugänge: $value';
+  }
+
+  @override
+  String relatoriosExitsWithValue(int value) {
+    return 'Abgänge: $value';
+  }
+
+  @override
+  String get relatoriosMovedProductsTitle => 'Bewegte Produkte';
+
+  @override
+  String get relatoriosExecutiveSummaryTitle => 'Tägliche Zusammenfassung';
+
+  @override
+  String get relatoriosNetBalance => 'Nettosaldo';
+
+  @override
+  String get relatoriosExportReport => 'Bericht exportieren';
+
+  @override
+  String relatoriosLineTooltip(String label, num value) {
+    return '$label: $value';
+  }
 }
