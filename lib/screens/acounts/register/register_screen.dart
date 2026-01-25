@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../../l10n/app_localizations.dart';
 import 'register_controller.dart';
 import 'widgets/register_form.dart';
 import 'widgets/register_alert.dart';
@@ -65,7 +66,7 @@ class _RegisterScreenState extends State<RegisterScreen>
   }
 
   Future<void> _handleSubmit() async {
-    await controller.submit();
+    await controller.submit(context);
     if (!mounted) return;
 
     final user = FirebaseAuth.instance.currentUser;
@@ -89,6 +90,9 @@ class _RegisterScreenState extends State<RegisterScreen>
 
   @override
   Widget build(BuildContext context) {
+    // força geração do l10n aqui também (garante context correto)
+    AppLocalizations.of(context)!;
+
     final hideFooter = controller.awaitingVerification || controller.emailVerified;
 
     return WillPopScope(

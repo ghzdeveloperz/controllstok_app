@@ -1,5 +1,8 @@
+// lib/screens/acounts/register/widgets/social_register_buttons.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../../../l10n/app_localizations.dart';
 
 class SocialLoginButtons extends StatelessWidget {
   final Future<void> Function()? onGoogleTap;
@@ -15,13 +18,15 @@ class SocialLoginButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Row(
       children: [
         Expanded(
           child: _PressableAsync(
             isDisabled: isDisabled,
             onTap: onGoogleTap,
-            child: const _GoogleContent(),
+            child: _GoogleContent(label: l10n.registerContinueWithGoogle),
           ),
         ),
         const SizedBox(width: 12),
@@ -29,7 +34,7 @@ class SocialLoginButtons extends StatelessWidget {
           child: _PressableSync(
             isDisabled: isDisabled,
             onTap: onAppleTap,
-            child: const _AppleContent(),
+            child: _AppleContent(label: l10n.registerContinueWithApple),
           ),
         ),
       ],
@@ -163,7 +168,8 @@ class _PressableSyncState extends State<_PressableSync> {
 }
 
 class _AppleContent extends StatelessWidget {
-  const _AppleContent();
+  final String label;
+  const _AppleContent({required this.label});
 
   @override
   Widget build(BuildContext context) {
@@ -194,9 +200,9 @@ class _AppleContent extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          const Text(
-            "Continue com Apple",
-            style: TextStyle(
+          Text(
+            label,
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 11,
               fontWeight: FontWeight.w600,
@@ -209,7 +215,8 @@ class _AppleContent extends StatelessWidget {
 }
 
 class _GoogleContent extends StatelessWidget {
-  const _GoogleContent();
+  final String label;
+  const _GoogleContent({required this.label});
 
   @override
   Widget build(BuildContext context) {
@@ -233,9 +240,9 @@ class _GoogleContent extends StatelessWidget {
         children: [
           SvgPicture.string(_googleSvg, height: 18),
           const SizedBox(width: 8),
-          const Text(
-            "Continue com Google",
-            style: TextStyle(
+          Text(
+            label,
+            style: const TextStyle(
               color: Colors.black87,
               fontSize: 11,
               fontWeight: FontWeight.w600,

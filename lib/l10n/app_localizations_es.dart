@@ -26,7 +26,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get authChoiceRegister => 'Registrarse';
 
   @override
-  String get stockToday => 'Tu inventario hoy';
+  String get stockToday => 'Tu stock hoy';
 
   @override
   String get searchProductHint => 'Buscar producto...';
@@ -67,7 +67,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get languageConfirmMessage =>
-      '¿Deseas aplicar este idioma ahora? Puedes cambiarlo cuando quieras.';
+      '¿Deseas aplicar este idioma ahora? Puedes cambiarlo nuevamente cuando quieras.';
 
   @override
   String get apply => 'Aplicar';
@@ -88,7 +88,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get newProductNameLabel => 'Nombre del producto';
 
   @override
-  String get newProductNameHint => 'Ej: Arroz 5kg';
+  String get newProductNameHint => 'Ej.: Arroz 5 kg';
 
   @override
   String get newProductNameMin => 'El nombre debe tener al menos 2 caracteres';
@@ -120,7 +120,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get newProductQuantityLabel => 'Cantidad';
 
   @override
-  String get newProductPriceLabel => 'Precio (R\$)';
+  String get newProductPriceLabel => 'Precio (\$)';
 
   @override
   String get newProductFillAllFields => 'Completa todos los campos';
@@ -149,7 +149,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get newProductBarcodeLabel => 'Código de barras';
 
   @override
-  String get newProductBarcodeHint => 'Ej: 7891234567890';
+  String get newProductBarcodeHint => 'Ej.: 7891234567890';
 
   @override
   String get newProductCategoryLabel => 'Categoría';
@@ -167,7 +167,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get newProductSaveButton => 'Guardar producto';
 
   @override
-  String get loginEmailHint => 'Correo';
+  String get loginEmailHint => 'Email';
 
   @override
   String get loginPasswordHint => 'Contraseña';
@@ -188,11 +188,11 @@ class AppLocalizationsEs extends AppLocalizations {
   String get loginWithApple => 'Entrar con Apple';
 
   @override
-  String get loginWelcomeBackTitle => '¡Bienvenido de vuelta!';
+  String get loginWelcomeBackTitle => '¡Bienvenido de nuevo!';
 
   @override
   String get loginWelcomeBackSubtitle =>
-      'Entra y gestiona tu inventario con facilidad.';
+      'Entra y gestiona tu stock con facilidad.';
 
   @override
   String get loginNoAccountPrefix => '¿Aún no tienes cuenta? ';
@@ -202,7 +202,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get loginErrorFillEmailAndPassword =>
-      'Completa el correo y la contraseña';
+      'Completa el email y la contraseña';
 
   @override
   String get loginErrorGetUser => 'Error al obtener el usuario';
@@ -228,24 +228,24 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get loginResetPasswordEmailRequired =>
-      'Indica tu correo para restablecer la contraseña';
+      'Introduce tu email para restablecer la contraseña';
 
   @override
   String get loginResetPasswordSuccess =>
-      'Enviamos un enlace de restablecimiento a tu correo.';
+      'Enviamos un enlace de restablecimiento a tu email.';
 
   @override
   String get loginResetPasswordUnexpectedError =>
       'Error inesperado al restablecer la contraseña';
 
   @override
-  String get loginLoadingGoogle => 'Iniciando con Google...';
+  String get loginLoadingGoogle => 'Entrando con Google...';
 
   @override
   String get loginLoadingPrepareAccount => 'Preparando tu cuenta...';
 
   @override
-  String get loginFillEmailAndPassword => 'Completa el correo y la contraseña';
+  String get loginFillEmailAndPassword => 'Completa el email y la contraseña';
 
   @override
   String get loginErrorGettingUser => 'Error al obtener el usuario';
@@ -261,26 +261,216 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get loginAccountDisabledMessage =>
-      'Tu cuenta está desactivada. Ponte en contacto con el soporte.';
+      'Tu cuenta está desactivada. Ponte en contacto con soporte.';
 
   @override
   String get loginErrorCheckingUser => 'Error al verificar el usuario';
 
   @override
   String get loginEnterEmailToReset =>
-      'Introduce tu correo para restablecer la contraseña';
+      'Introduce tu email para restablecer la contraseña';
 
   @override
   String get loginResetLinkSent =>
-      'Te enviamos un enlace para restablecer tu contraseña.';
+      'Enviamos un enlace de restablecimiento a tu email.';
 
   @override
   String get loginUnexpectedResetError =>
       'Error inesperado al restablecer la contraseña';
 
   @override
-  String get loginSigningInWithGoogle => 'Iniciando sesión con Google...';
+  String get loginSigningInWithGoogle => 'Entrando con Google...';
 
   @override
   String get loginPreparingAccount => 'Preparando tu cuenta...';
+
+  @override
+  String get registerHeaderTitle => 'Crea tu cuenta';
+
+  @override
+  String get registerHeaderSubtitle =>
+      'Ten control total de tu stock desde el primer día.';
+
+  @override
+  String get registerGoogleGenericFail =>
+      'No se pudo entrar con Google. Inténtalo de nuevo.';
+
+  @override
+  String get registerCancelFail =>
+      'No se pudo cancelar ahora. Inténtalo de nuevo.';
+
+  @override
+  String get registerEmailRequired => 'Completa el email.';
+
+  @override
+  String get registerSendVerificationUnexpectedError =>
+      'Error inesperado al enviar la verificación.';
+
+  @override
+  String get registerVerificationEmailResent =>
+      'Email reenviado. Revisa tu bandeja de entrada (y spam).';
+
+  @override
+  String get registerResendVerificationUnexpectedError =>
+      'Error inesperado al reenviar la verificación.';
+
+  @override
+  String get registerChangeEmailHint =>
+      'Puedes cambiar el email e intentarlo de nuevo.';
+
+  @override
+  String get registerChangeEmailFail =>
+      'No se pudo cambiar ahora. Inténtalo de nuevo.';
+
+  @override
+  String get registerPasswordAndConfirmRequired =>
+      'Completa la contraseña y la confirmación.';
+
+  @override
+  String get registerPasswordsDoNotMatch => 'Las contraseñas no coinciden.';
+
+  @override
+  String get registerCreateAccountUnexpectedError =>
+      'Error inesperado al crear la cuenta.';
+
+  @override
+  String get registerErrorEmailAlreadyInUse => 'Este email ya está en uso.';
+
+  @override
+  String get registerErrorWeakPassword => 'Contraseña débil.';
+
+  @override
+  String get registerErrorNoConnection => 'Sin conexión. Inténtalo de nuevo.';
+
+  @override
+  String get registerErrorTooManyRequests =>
+      'Demasiados intentos. Espera un momento.';
+
+  @override
+  String get registerErrorGeneric => 'Error al continuar el registro.';
+
+  @override
+  String get registerEmailLabel => 'Email';
+
+  @override
+  String get registerEmailValidatorRequired => 'Introduce el email';
+
+  @override
+  String get registerFooterHaveAccount => '¿Ya tienes cuenta? ';
+
+  @override
+  String get registerFooterLogin => 'Iniciar sesión';
+
+  @override
+  String get registerPasswordLabel => 'Contraseña';
+
+  @override
+  String get registerConfirmPasswordLabel => 'Confirmar contraseña';
+
+  @override
+  String get registerContinueWithGoogle => 'Continuar con Google';
+
+  @override
+  String get registerContinueWithApple => 'Continuar con Apple';
+
+  @override
+  String get registerGoogleCancelled =>
+      'Inicio de sesión con Google cancelado.';
+
+  @override
+  String get registerGoogleUserNotFound =>
+      'No se pudo obtener el usuario de Google.';
+
+  @override
+  String get registerInvalidEmail => 'Email inválido.';
+
+  @override
+  String get registerVerificationEmailSent =>
+      'Email de verificación enviado. Revisa tu bandeja de entrada (y spam).';
+
+  @override
+  String get registerVerifyEmailBeforeContinue =>
+      'Verifica tu email antes de continuar.';
+
+  @override
+  String get registerPasswordMustBeStrong =>
+      'La contraseña debe ser fuerte para crear la cuenta.';
+
+  @override
+  String get registerInvalidSessionRedoEmailVerification =>
+      'Sesión inválida. Repite la verificación del email.';
+
+  @override
+  String get registerEnteringWithGoogleLoading => 'Entrando con Google...';
+
+  @override
+  String get registerLoginNotCompleted =>
+      'Inicio de sesión no completado. Inténtalo de nuevo.';
+
+  @override
+  String get registerPreparingAccountLoading => 'Preparando tu cuenta...';
+
+  @override
+  String get registerEmailHint => 'Email';
+
+  @override
+  String get registerSendVerificationButton => 'Enviar email de verificación';
+
+  @override
+  String get registerResendVerificationButton =>
+      'Reenviar email de verificación';
+
+  @override
+  String registerResendInSeconds(int seconds) {
+    return 'Reenviar en ${seconds}s';
+  }
+
+  @override
+  String get registerNotThisEmail => '¿No es este email?';
+
+  @override
+  String get registerOrContinueWith => 'o continúa con';
+
+  @override
+  String get registerAppleNotImplemented => 'Apple aún no está implementado.';
+
+  @override
+  String get registerPasswordHint => 'Contraseña';
+
+  @override
+  String get registerConfirmPasswordHint => 'Confirmar contraseña';
+
+  @override
+  String get registerCreateAccountButton => 'Crear cuenta';
+
+  @override
+  String get registerDeleteRegistration => 'Eliminar registro';
+
+  @override
+  String get registerPasswordStrengthVeryWeak => 'Muy débil';
+
+  @override
+  String get registerPasswordStrengthWeak => 'Débil';
+
+  @override
+  String get registerPasswordStrengthStrong => 'Fuerte';
+
+  @override
+  String registerPasswordStrengthLine(String label) {
+    return 'Fuerza de la contraseña: $label';
+  }
+
+  @override
+  String get registerPasswordTip =>
+      'Consejo: 8+ caracteres, mayúscula, minúscula, número y símbolo.';
+
+  @override
+  String get registerEmailVerifiedStatus => 'Email verificado.';
+
+  @override
+  String get registerAwaitingUserVerification =>
+      'Esperando la verificación del usuario';
+
+  @override
+  String get registerRestoringRegistration => 'Restaurando tu registro...';
 }

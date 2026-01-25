@@ -1,3 +1,4 @@
+// lib/screens/acounts/register/register_controller.dart
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -5,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../l10n/app_localizations.dart';
 import 'utils/password_strength.dart';
 import 'package:mystoreday/services/auth/google_auth_service.dart';
 
@@ -56,7 +58,9 @@ class RegisterController extends ChangeNotifier {
   /// - true  => ir para Company (novo usuário ou onboarding incompleto)
   /// - false => ir para Home (onboarding completo)
   /// - null  => cancelado/erro (não navegar)
-  Future<bool?> registerWithGoogle() async {
+  Future<bool?> registerWithGoogle(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+
     if (isLoading) return null;
 
     _setLoading(true);
@@ -80,13 +84,13 @@ class RegisterController extends ChangeNotifier {
       final cred = await GoogleAuthService.instance.signInWithGoogle();
 
       if (cred == null) {
-        setAlertWithTimeout('Login com Google cancelado.');
+        setAlertWithTimeout(l10n.registerGoogleCancelled);
         return null;
       }
 
       final user = cred.user ?? _auth.currentUser;
       if (user == null) {
-        setAlertWithTimeout('Não foi possível obter o usuário do Google.');
+        setAlertWithTimeout(l10n.registerGoogleUserNotFound);
         return null;
       }
 
@@ -124,12 +128,10 @@ class RegisterController extends ChangeNotifier {
       if (onboardingCompleted) return false;
       return true;
     } on FirebaseAuthException catch (e) {
-      setAlertWithTimeout(_mapFirebaseError(e.code));
+      setAlertWithTimeout(_mapFirebaseError(context, e.code));
       return null;
     } catch (_) {
-      setAlertWithTimeout(
-        'Falha ao continuar com Google. Verifique sua configuração do Firebase/Google.',
-      );
+      setAlertWithTimeout(l10n.registerGoogleGenericFail);
       return null;
     } finally {
       _setLoading(false);
@@ -142,7 +144,9 @@ class RegisterController extends ChangeNotifier {
     await _clearPendingStorage();
   }
 
-  Future<void> cancelAndResetRegistration() async {
+  Future<void> cancelAndResetRegistration(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+
     if (isLoading) return;
 
     _setLoading(true);
@@ -161,7 +165,7 @@ class RegisterController extends ChangeNotifier {
       _resetResendCooldown();
       clearError();
     } catch (_) {
-      setAlertWithTimeout('Não foi possível cancelar agora. Tente novamente.');
+      setAlertWithTimeout(l10n.registerCancelFail);
     } finally {
       _setLoading(false);
       notifyListeners();
@@ -239,15 +243,16 @@ class RegisterController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> sendEmailVerification() async {
+  Future<void> sendEmailVerification(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     final email = emailController.text.trim();
 
     if (email.isEmpty) {
-      setAlertWithTimeout('Preencha o e-mail.');
+      setAlertWithTimeout(l10n.registerEmailRequired);
       return;
     }
     if (!_looksLikeEmail(email)) {
-      setAlertWithTimeout('E-mail inválido.');
+      setAlertWithTimeout(l10n.registerInvalidEmail);
       return;
     }
 
@@ -271,32 +276,32 @@ class RegisterController extends ChangeNotifier {
       emailVerified = false;
       awaitingVerification = true;
 
-      setAlertWithTimeout(
-        'E-mail de verificação enviado. Verifique sua caixa de entrada (e spam).',
-      );
+      setAlertWithTimeout(l10n.registerVerificationEmailSent);
 
       _startVerificationPolling();
       notifyListeners();
     } on FirebaseAuthException catch (e) {
-      setAlertWithTimeout(_mapFirebaseError(e.code));
+      setAlertWithTimeout(_mapFirebaseError(context, e.code));
     } catch (_) {
-      setAlertWithTimeout('Erro inesperado ao enviar verificação.');
+      setAlertWithTimeout(l10n.registerSendVerificationUnexpectedError);
     } finally {
       _setLoading(false);
     }
   }
 
-  Future<void> resendEmailVerification() async {
+  Future<void> resendEmailVerification(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+
     if (isLoading) return;
     if (resendCooldownSeconds > 0) return;
 
     final email = emailController.text.trim();
     if (email.isEmpty) {
-      setAlertWithTimeout('Preencha o e-mail.');
+      setAlertWithTimeout(l10n.registerEmailRequired);
       return;
     }
     if (!_looksLikeEmail(email)) {
-      setAlertWithTimeout('E-mail inválido.');
+      setAlertWithTimeout(l10n.registerInvalidEmail);
       return;
     }
 
@@ -322,22 +327,24 @@ class RegisterController extends ChangeNotifier {
       emailVerified = false;
       awaitingVerification = true;
 
-      setAlertWithTimeout('E-mail reenviado. Verifique a caixa de entrada (e spam).');
+      setAlertWithTimeout(l10n.registerVerificationEmailResent);
 
       _startResendCooldown(30);
 
       _startVerificationPolling();
       notifyListeners();
     } on FirebaseAuthException catch (e) {
-      setAlertWithTimeout(_mapFirebaseError(e.code));
+      setAlertWithTimeout(_mapFirebaseError(context, e.code));
     } catch (_) {
-      setAlertWithTimeout('Erro inesperado ao reenviar verificação.');
+      setAlertWithTimeout(l10n.registerResendVerificationUnexpectedError);
     } finally {
       _setLoading(false);
     }
   }
 
-  Future<void> changeEmail() async {
+  Future<void> changeEmail(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+
     if (isLoading) return;
 
     _setLoading(true);
@@ -356,10 +363,10 @@ class RegisterController extends ChangeNotifier {
 
       _resetResendCooldown();
 
-      setAlertWithTimeout('Você pode alterar o e-mail e tentar novamente.', seconds: 3);
+      setAlertWithTimeout(l10n.registerChangeEmailHint, seconds: 3);
       notifyListeners();
     } catch (_) {
-      setAlertWithTimeout('Não foi possível alterar agora. Tente novamente.');
+      setAlertWithTimeout(l10n.registerChangeEmailFail);
     } finally {
       _setLoading(false);
     }
@@ -432,9 +439,11 @@ class RegisterController extends ChangeNotifier {
     });
   }
 
-  Future<void> submit() async {
+  Future<void> submit(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+
     if (!emailVerified) {
-      setAlertWithTimeout('Verifique seu e-mail antes de continuar.');
+      setAlertWithTimeout(l10n.registerVerifyEmailBeforeContinue);
       return;
     }
 
@@ -442,22 +451,22 @@ class RegisterController extends ChangeNotifier {
     final confirm = confirmPasswordController.text.trim();
 
     if (password.isEmpty || confirm.isEmpty) {
-      setAlertWithTimeout('Preencha a senha e a confirmação.');
+      setAlertWithTimeout(l10n.registerPasswordAndConfirmRequired);
       return;
     }
 
     if (passwordStrength < 3) {
-      setAlertWithTimeout('A senha precisa ser forte para criar a conta.');
+      setAlertWithTimeout(l10n.registerPasswordMustBeStrong);
       return;
     }
 
     if (password != confirm) {
-      setAlertWithTimeout('As senhas não coincidem.');
+      setAlertWithTimeout(l10n.registerPasswordsDoNotMatch);
       return;
     }
 
     if (_tempPassword == null) {
-      setAlertWithTimeout('Sessão inválida. Refaça a verificação do e-mail.');
+      setAlertWithTimeout(l10n.registerInvalidSessionRedoEmailVerification);
       return;
     }
 
@@ -479,9 +488,9 @@ class RegisterController extends ChangeNotifier {
       clearError();
       notifyListeners();
     } on FirebaseAuthException catch (e) {
-      setAlertWithTimeout(_mapFirebaseError(e.code));
+      setAlertWithTimeout(_mapFirebaseError(context, e.code));
     } catch (_) {
-      setAlertWithTimeout('Erro inesperado ao criar conta.');
+      setAlertWithTimeout(l10n.registerCreateAccountUnexpectedError);
     } finally {
       _setLoading(false);
     }
@@ -501,20 +510,22 @@ class RegisterController extends ChangeNotifier {
     return 'Tmp@${millis}Aa1!';
   }
 
-  String _mapFirebaseError(String code) {
+  String _mapFirebaseError(BuildContext context, String code) {
+    final l10n = AppLocalizations.of(context)!;
+
     switch (code) {
       case 'email-already-in-use':
-        return 'Este e-mail já está em uso.';
+        return l10n.registerErrorEmailAlreadyInUse;
       case 'invalid-email':
-        return 'E-mail inválido.';
+        return l10n.registerInvalidEmail;
       case 'weak-password':
-        return 'Senha fraca.';
+        return l10n.registerErrorWeakPassword;
       case 'network-request-failed':
-        return 'Sem conexão. Tente novamente.';
+        return l10n.registerErrorNoConnection;
       case 'too-many-requests':
-        return 'Muitas tentativas. Aguarde um pouco.';
+        return l10n.registerErrorTooManyRequests;
       default:
-        return 'Erro ao continuar o cadastro.';
+        return l10n.registerErrorGeneric;
     }
   }
 

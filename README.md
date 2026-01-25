@@ -321,3 +321,41 @@ Essas regras são reavaliadas a cada mudança de autenticação ou Firestore.
 - Eliminar strings fixas e inconsistências de idioma
 - Consolidar um padrão sólido de i18n para telas críticas de autenticação
 - Preparar a base para evolução futura (novos provedores de login, mensagens e validações) mantendo consistência linguística
+
+## [Milestone 17] Registro de Usuário + i18n Completo (UI, Fluxos e Mensagens)
+**Status:** Concluído ✅
+
+### Melhorias:
+- Refatorado todo o **módulo de Registro** para suportar **i18n completo**, eliminando strings hardcoded em UI e lógica.
+- Internacionalização aplicada nos widgets de registro:
+  - `register_header.dart` — títulos e textos de apresentação
+  - `register_form.dart` — labels, hints, botões e validações
+  - `register_email_field.dart` — textos e mensagens de erro
+  - `register_password_field.dart` — validações, feedback de força de senha
+  - `register_footer.dart` — textos de navegação e CTA
+  - `register_alert.dart` — mensagens de alerta e confirmação
+  - `social_register_buttons.dart` — textos de registro social (Google / Apple)
+- Ajustado o **RegisterController** para trabalhar corretamente com traduções:
+  - Mensagens de erro e sucesso resolvidas via `AppLocalizations`
+  - Nenhuma string fixa dentro da lógica de controle
+- Padronização total do fluxo de validação:
+  - Campos obrigatórios
+  - Regras de senha
+  - Erros de autenticação
+  - Feedback visual consistente
+- Arquivos de tradução (`.arb`) expandidos e organizados para cobrir:
+  - Tela de registro
+  - Validações
+  - Alertas
+  - Fluxo de criação de conta
+- Garantida compatibilidade total com `flutter gen-l10n`:
+  - Sem warnings de locale
+  - Sem chaves duplicadas
+  - Sem uso incorreto de helpers antigos
+
+### Objetivo:
+- Garantir que o **registro de usuário** seja 100% traduzível (UI + lógica)
+- Manter consistência total com o padrão já aplicado na tela de Login
+- Eliminar dependência de textos fixos em widgets e controllers
+- Consolidar a base de i18n para autenticação e onboarding
+- Preparar o módulo de Registro para expansão de idiomas sem retrabalho estrutural

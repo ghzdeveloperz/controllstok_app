@@ -1,13 +1,17 @@
 // lib/screens/acounts/register/widgets/register_header.dart
 import 'package:flutter/material.dart';
 
+import '../../../../l10n/app_localizations.dart';
+
 class RegisterHeader extends StatelessWidget {
   const RegisterHeader({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start, // alinhamento igual ao LoginHeader
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Center(
           child: Image.asset(
@@ -17,10 +21,10 @@ class RegisterHeader extends StatelessWidget {
             fit: BoxFit.contain,
           ),
         ),
-        const SizedBox(height: 32), // mais espaçamento para jogar o header pra baixo
-        const Text(
-          "Crie sua conta",
-          style: TextStyle(
+        const SizedBox(height: 32),
+        Text(
+          l10n.registerHeaderTitle,
+          style: const TextStyle(
             fontSize: 28,
             fontWeight: FontWeight.w800,
             letterSpacing: -0.4,
@@ -28,9 +32,9 @@ class RegisterHeader extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 6),
-        const Text(
-          "Tenha controle total do seu estoque desde o primeiro dia.",
-          style: TextStyle(
+        Text(
+          l10n.registerHeaderSubtitle,
+          style: const TextStyle(
             fontSize: 15,
             color: Colors.black54,
             height: 1.4,

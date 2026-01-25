@@ -98,9 +98,7 @@
   "newProductNameHelperChars": "{count}/50 caracteres",
   "@newProductNameHelperChars": {
     "description": "TELA NOVO_PRODUTO — Helper contagem de caracteres do nome",
-    "placeholders": {
-      "count": { "type": "int" }
-    }
+    "placeholders": { "count": { "type": "int" } }
   },
 
   "newProductNameHelperNearLimit": "(Quase perto do limite)",
@@ -160,7 +158,7 @@
   "newProductSaveButton": "Salvar produto",
   "@newProductSaveButton": { "description": "TELA NOVO_PRODUTO — Texto do botão de salvar" },
 
-    "loginEmailHint": "Email",
+  "loginEmailHint": "Email",
   "@loginEmailHint": { "description": "TELA LOGIN — Hint do campo email" },
 
   "loginPasswordHint": "Senha",
@@ -232,68 +230,210 @@
   "loginLoadingPrepareAccount": "Preparando sua conta...",
   "@loginLoadingPrepareAccount": { "description": "LOADER — Texto enquanto executa warmup/bootstrap após login" },
 
-    "loginFillEmailAndPassword": "Preencha email e senha",
-  "@loginFillEmailAndPassword": {
-    "description": "LOGIN — Erro quando email ou senha estão vazios"
-  },
+  "loginFillEmailAndPassword": "Preencha email e senha",
+  "@loginFillEmailAndPassword": { "description": "LOGIN — Erro quando email ou senha estão vazios (alternativo)" },
 
   "loginErrorGettingUser": "Erro ao obter usuário",
-  "@loginErrorGettingUser": {
-    "description": "LOGIN — Erro ao obter usuário autenticado"
-  },
+  "@loginErrorGettingUser": { "description": "LOGIN — Erro ao obter usuário autenticado" },
 
   "loginUserNotFound": "Usuário não encontrado",
-  "@loginUserNotFound": {
-    "description": "LOGIN — Usuário não encontrado no Firestore"
-  },
+  "@loginUserNotFound": { "description": "LOGIN — Usuário não encontrado no Firestore (alternativo)" },
 
   "loginAccountDisabledShort": "Sua conta está desativada.",
-  "@loginAccountDisabledShort": {
-    "description": "LOGIN — Conta desativada (mensagem curta)"
-  },
+  "@loginAccountDisabledShort": { "description": "LOGIN — Conta desativada (mensagem curta)" },
 
   "loginAccountDisabledTitle": "Conta desativada",
-  "@loginAccountDisabledTitle": {
-    "description": "LOGIN — Título do modal de conta desativada"
-  },
+  "@loginAccountDisabledTitle": { "description": "LOGIN — Título do modal de conta desativada (alternativo)" },
 
   "loginAccountDisabledMessage": "Sua conta está desativada. Entre em contato com o suporte.",
-  "@loginAccountDisabledMessage": {
-    "description": "LOGIN — Mensagem do modal de conta desativada"
-  },
+  "@loginAccountDisabledMessage": { "description": "LOGIN — Mensagem do modal de conta desativada (alternativo)" },
 
   "loginErrorCheckingUser": "Erro ao verificar usuário",
-  "@loginErrorCheckingUser": {
-    "description": "LOGIN — Erro ao verificar status do usuário"
-  },
+  "@loginErrorCheckingUser": { "description": "LOGIN — Erro ao verificar status do usuário (alternativo)" },
 
   "loginEnterEmailToReset": "Informe seu email para redefinir a senha",
-  "@loginEnterEmailToReset": {
-    "description": "LOGIN — Erro ao tentar redefinir senha sem email"
-  },
+  "@loginEnterEmailToReset": { "description": "LOGIN — Email obrigatório para reset (alternativo)" },
 
   "loginResetLinkSent": "Enviamos um link de redefinição para seu e-mail.",
-  "@loginResetLinkSent": {
-    "description": "LOGIN — Confirmação de envio de link de redefinição"
-  },
+  "@loginResetLinkSent": { "description": "LOGIN — Confirmação de envio de link de redefinição (alternativo)" },
 
   "loginUnexpectedResetError": "Erro inesperado ao redefinir senha",
-  "@loginUnexpectedResetError": {
-    "description": "LOGIN — Erro inesperado na redefinição de senha"
-  },
-
-  "ok": "OK",
-  "@ok": {
-    "description": "GERAL — Texto padrão do botão OK"
-  },
-
+  "@loginUnexpectedResetError": { "description": "LOGIN — Erro inesperado no reset (alternativo)" },
 
   "loginSigningInWithGoogle": "Entrando com Google...",
-  "@loginSigningInWithGoogle": { "description": "LOGIN — Loader ao iniciar login com Google" },
+  "@loginSigningInWithGoogle": { "description": "LOGIN — Loader ao iniciar login com Google (alternativo)" },
 
   "loginPreparingAccount": "Preparando sua conta...",
-  "@loginPreparingAccount": { "description": "LOGIN — Loader durante warmup/bootstrap após login" }
+  "@loginPreparingAccount": { "description": "LOGIN — Loader durante warmup/bootstrap após login (alternativo)" },
 
+  "registerHeaderTitle": "Crie sua conta",
+  "@registerHeaderTitle": { "description": "REGISTER — Título do header" },
 
+  "registerHeaderSubtitle": "Tenha controle total do seu estoque desde o primeiro dia.",
+  "@registerHeaderSubtitle": { "description": "REGISTER — Subtítulo do header" },
 
+  "registerGoogleGenericFail": "Falha ao entrar com Google. Tente novamente.",
+  "@registerGoogleGenericFail": { "description": "REGISTER — Falha genérica ao entrar com Google" },
+
+  "registerCancelFail": "Não foi possível cancelar agora. Tente novamente.",
+  "@registerCancelFail": { "description": "REGISTER — Falha ao cancelar" },
+
+  "registerEmailRequired": "Preencha o e-mail.",
+  "@registerEmailRequired": { "description": "REGISTER — E-mail obrigatório" },
+
+  "registerSendVerificationUnexpectedError": "Erro inesperado ao enviar verificação.",
+  "@registerSendVerificationUnexpectedError": { "description": "REGISTER — Erro inesperado ao enviar verificação" },
+
+  "registerVerificationEmailResent": "E-mail reenviado. Verifique a caixa de entrada (e spam).",
+  "@registerVerificationEmailResent": { "description": "REGISTER — E-mail de verificação reenviado" },
+
+  "registerResendVerificationUnexpectedError": "Erro inesperado ao reenviar verificação.",
+  "@registerResendVerificationUnexpectedError": { "description": "REGISTER — Erro inesperado ao reenviar verificação" },
+
+  "registerChangeEmailHint": "Você pode alterar o e-mail e tentar novamente.",
+  "@registerChangeEmailHint": { "description": "REGISTER — Dica para alterar o e-mail" },
+
+  "registerChangeEmailFail": "Não foi possível alterar agora. Tente novamente.",
+  "@registerChangeEmailFail": { "description": "REGISTER — Falha ao alterar e-mail" },
+
+  "registerPasswordAndConfirmRequired": "Preencha a senha e a confirmação.",
+  "@registerPasswordAndConfirmRequired": { "description": "REGISTER — Senha e confirmação obrigatórias" },
+
+  "registerPasswordsDoNotMatch": "As senhas não coincidem.",
+  "@registerPasswordsDoNotMatch": { "description": "REGISTER — Senhas não coincidem" },
+
+  "registerCreateAccountUnexpectedError": "Erro inesperado ao criar conta.",
+  "@registerCreateAccountUnexpectedError": { "description": "REGISTER — Erro inesperado ao criar conta" },
+
+  "registerErrorEmailAlreadyInUse": "Este e-mail já está em uso.",
+  "@registerErrorEmailAlreadyInUse": { "description": "REGISTER — E-mail já em uso" },
+
+  "registerErrorWeakPassword": "Senha fraca.",
+  "@registerErrorWeakPassword": { "description": "REGISTER — Senha fraca" },
+
+  "registerErrorNoConnection": "Sem conexão. Tente novamente.",
+  "@registerErrorNoConnection": { "description": "REGISTER — Sem conexão" },
+
+  "registerErrorTooManyRequests": "Muitas tentativas. Aguarde um pouco.",
+  "@registerErrorTooManyRequests": { "description": "REGISTER — Muitas tentativas" },
+
+  "registerErrorGeneric": "Erro ao continuar o cadastro.",
+  "@registerErrorGeneric": { "description": "REGISTER — Erro genérico" },
+
+  "registerEmailLabel": "Email",
+  "@registerEmailLabel": { "description": "REGISTER — Label do campo e-mail" },
+
+  "registerEmailValidatorRequired": "Informe o email",
+  "@registerEmailValidatorRequired": { "description": "REGISTER — Validação: e-mail obrigatório" },
+
+  "registerFooterHaveAccount": "Já possui conta? ",
+  "@registerFooterHaveAccount": { "description": "REGISTER — Texto antes do link de login" },
+
+  "registerFooterLogin": "Fazer login",
+  "@registerFooterLogin": { "description": "REGISTER — Texto do link de login" },
+
+  "registerPasswordLabel": "Senha",
+  "@registerPasswordLabel": { "description": "REGISTER — Label do campo senha" },
+
+  "registerConfirmPasswordLabel": "Confirmar senha",
+  "@registerConfirmPasswordLabel": { "description": "REGISTER — Label do campo confirmar senha" },
+
+  "registerContinueWithGoogle": "Continue com Google",
+  "@registerContinueWithGoogle": { "description": "REGISTER — Botão social Google" },
+
+  "registerContinueWithApple": "Continue com Apple",
+  "@registerContinueWithApple": { "description": "REGISTER — Botão social Apple" },
+
+  "registerGoogleCancelled": "Login com Google cancelado.",
+  "@registerGoogleCancelled": { "description": "REGISTER — Google cancelado" },
+
+  "registerGoogleUserNotFound": "Não foi possível obter o usuário do Google.",
+  "@registerGoogleUserNotFound": { "description": "REGISTER — Usuário Google não obtido" },
+
+  "registerInvalidEmail": "E-mail inválido.",
+  "@registerInvalidEmail": { "description": "REGISTER — E-mail inválido" },
+
+  "registerVerificationEmailSent": "E-mail de verificação enviado. Verifique sua caixa de entrada (e spam).",
+  "@registerVerificationEmailSent": { "description": "REGISTER — Verificação enviada" },
+
+  "registerVerifyEmailBeforeContinue": "Verifique seu e-mail antes de continuar.",
+  "@registerVerifyEmailBeforeContinue": { "description": "REGISTER — Aviso para verificar e-mail" },
+
+  "registerPasswordMustBeStrong": "A senha precisa ser forte para criar a conta.",
+  "@registerPasswordMustBeStrong": { "description": "REGISTER — Aviso de senha forte" },
+
+  "registerInvalidSessionRedoEmailVerification": "Sessão inválida. Refaça a verificação do e-mail.",
+  "@registerInvalidSessionRedoEmailVerification": { "description": "REGISTER — Sessão inválida" },
+
+  "registerEnteringWithGoogleLoading": "Entrando com Google...",
+  "@registerEnteringWithGoogleLoading": { "description": "REGISTER — Loader ao iniciar login/cadastro com Google" },
+
+  "registerLoginNotCompleted": "Login não concluído. Tente novamente.",
+  "@registerLoginNotCompleted": { "description": "REGISTER — Erro quando currentUser é null após login/cadastro" },
+
+  "registerPreparingAccountLoading": "Preparando sua conta...",
+  "@registerPreparingAccountLoading": { "description": "REGISTER — Loader durante warmup/bootstrap após login/cadastro" },
+
+  "registerEmailHint": "Email",
+  "@registerEmailHint": { "description": "REGISTER — Hint do campo e-mail" },
+
+  "registerSendVerificationButton": "Enviar e-mail de verificação",
+  "@registerSendVerificationButton": { "description": "REGISTER — Botão para enviar e-mail de verificação" },
+
+  "registerResendVerificationButton": "Reenviar e-mail de verificação",
+  "@registerResendVerificationButton": { "description": "REGISTER — Botão para reenviar e-mail de verificação" },
+
+  "registerResendInSeconds": "Reenviar em {seconds}s",
+  "@registerResendInSeconds": {
+    "description": "REGISTER — Texto do botão de reenviar com cooldown",
+    "placeholders": { "seconds": { "type": "int" } }
+  },
+
+  "registerNotThisEmail": "Não é esse e-mail?",
+  "@registerNotThisEmail": { "description": "REGISTER — Link para trocar e-mail" },
+
+  "registerOrContinueWith": "ou continue com",
+  "@registerOrContinueWith": { "description": "REGISTER — Divisor social" },
+
+  "registerAppleNotImplemented": "Apple ainda não implementado.",
+  "@registerAppleNotImplemented": { "description": "REGISTER — Apple login não disponível" },
+
+  "registerPasswordHint": "Senha",
+  "@registerPasswordHint": { "description": "REGISTER — Hint do campo senha" },
+
+  "registerConfirmPasswordHint": "Confirmar senha",
+  "@registerConfirmPasswordHint": { "description": "REGISTER — Hint do campo confirmar senha" },
+
+  "registerCreateAccountButton": "Criar conta",
+  "@registerCreateAccountButton": { "description": "REGISTER — Botão principal de criar conta" },
+
+  "registerDeleteRegistration": "Excluir cadastro",
+  "@registerDeleteRegistration": { "description": "REGISTER — Ação para cancelar/excluir fluxo de cadastro" },
+
+  "registerPasswordStrengthVeryWeak": "Muito fraca",
+  "@registerPasswordStrengthVeryWeak": { "description": "REGISTER — Força de senha (muito fraca)" },
+
+  "registerPasswordStrengthWeak": "Fraca",
+  "@registerPasswordStrengthWeak": { "description": "REGISTER — Força de senha (fraca)" },
+
+  "registerPasswordStrengthStrong": "Forte",
+  "@registerPasswordStrengthStrong": { "description": "REGISTER — Força de senha (forte)" },
+
+  "registerPasswordStrengthLine": "Força da senha: {label}",
+  "@registerPasswordStrengthLine": {
+    "description": "REGISTER — Linha que mostra força da senha",
+    "placeholders": { "label": { "type": "String" } }
+  },
+
+  "registerPasswordTip": "Dica: 8+ chars, maiúscula, minúscula, número e símbolo.",
+  "@registerPasswordTip": { "description": "REGISTER — Dica para senha forte" },
+
+  "registerEmailVerifiedStatus": "E-mail verificado.",
+  "@registerEmailVerifiedStatus": { "description": "REGISTER — Status quando email foi verificado" },
+
+  "registerAwaitingUserVerification": "Aguardando verificação do usuário",
+  "@registerAwaitingUserVerification": { "description": "REGISTER — Status quando está aguardando o usuário verificar email" },
+
+  "registerRestoringRegistration": "Restaurando seu cadastro...",
+  "@registerRestoringRegistration": { "description": "REGISTER — Mensagem exibida ao restaurar cadastro/estado" }
 }

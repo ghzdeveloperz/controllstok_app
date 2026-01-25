@@ -23,7 +23,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authChoiceLogin => 'Login';
 
   @override
-  String get authChoiceRegister => 'Sign up';
+  String get authChoiceRegister => 'Register';
 
   @override
   String get stockToday => 'Your stock today';
@@ -45,7 +45,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get languageSystemDescription =>
-      'Automatically use your device language';
+      'Use your device language automatically';
 
   @override
   String get searchLanguageHint => 'Search language...';
@@ -67,7 +67,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get languageConfirmMessage =>
-      'Do you want to apply this language now? You can change it again anytime.';
+      'Do you want to apply this language now? You can change it again whenever you want.';
 
   @override
   String get apply => 'Apply';
@@ -88,7 +88,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get newProductNameLabel => 'Product name';
 
   @override
-  String get newProductNameHint => 'e.g. Rice 5kg';
+  String get newProductNameHint => 'e.g., Rice 5kg';
 
   @override
   String get newProductNameMin => 'Name must be at least 2 characters';
@@ -119,10 +119,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get newProductQuantityLabel => 'Quantity';
 
   @override
-  String get newProductPriceLabel => 'Price (R\$)';
+  String get newProductPriceLabel => 'Price (\$)';
 
   @override
-  String get newProductFillAllFields => 'Please fill in all fields';
+  String get newProductFillAllFields => 'Fill in all fields';
 
   @override
   String get newProductNameAlreadyExists =>
@@ -134,11 +134,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get newProductGenericSaveError => 'Error while saving';
+  String get newProductGenericSaveError => 'Error saving';
 
   @override
   String newProductSaveErrorWithMessage(Object error) {
-    return 'Error while saving: $error';
+    return 'Error saving: $error';
   }
 
   @override
@@ -148,7 +148,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get newProductBarcodeLabel => 'Barcode';
 
   @override
-  String get newProductBarcodeHint => 'e.g. 7891234567890';
+  String get newProductBarcodeHint => 'e.g., 7891234567890';
 
   @override
   String get newProductCategoryLabel => 'Category';
@@ -181,10 +181,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginOrContinueWith => 'or continue with';
 
   @override
-  String get loginWithGoogle => 'Continue with Google';
+  String get loginWithGoogle => 'Sign in with Google';
 
   @override
-  String get loginWithApple => 'Continue with Apple';
+  String get loginWithApple => 'Sign in with Apple';
 
   @override
   String get loginWelcomeBackTitle => 'Welcome back!';
@@ -194,17 +194,16 @@ class AppLocalizationsEn extends AppLocalizations {
       'Sign in and manage your stock with ease.';
 
   @override
-  String get loginNoAccountPrefix => 'Don\'t have an account? ';
+  String get loginNoAccountPrefix => 'Don’t have an account? ';
 
   @override
   String get loginCreateNow => 'Create now';
 
   @override
-  String get loginErrorFillEmailAndPassword =>
-      'Please enter email and password';
+  String get loginErrorFillEmailAndPassword => 'Enter email and password';
 
   @override
-  String get loginErrorGetUser => 'Failed to get user';
+  String get loginErrorGetUser => 'Error getting user';
 
   @override
   String get loginErrorUserNotFound => 'User not found';
@@ -243,7 +242,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginLoadingPrepareAccount => 'Preparing your account...';
 
   @override
-  String get loginFillEmailAndPassword => 'Please fill in email and password';
+  String get loginFillEmailAndPassword => 'Enter email and password';
 
   @override
   String get loginErrorGettingUser => 'Error getting user';
@@ -269,8 +268,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Enter your email to reset your password';
 
   @override
-  String get loginResetLinkSent =>
-      'We sent a password reset link to your email.';
+  String get loginResetLinkSent => 'We sent a reset link to your email.';
 
   @override
   String get loginUnexpectedResetError =>
@@ -281,4 +279,189 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loginPreparingAccount => 'Preparing your account...';
+
+  @override
+  String get registerHeaderTitle => 'Create your account';
+
+  @override
+  String get registerHeaderSubtitle =>
+      'Get full control of your stock from day one.';
+
+  @override
+  String get registerGoogleGenericFail =>
+      'Failed to sign in with Google. Try again.';
+
+  @override
+  String get registerCancelFail => 'Couldn’t cancel right now. Try again.';
+
+  @override
+  String get registerEmailRequired => 'Enter your email.';
+
+  @override
+  String get registerSendVerificationUnexpectedError =>
+      'Unexpected error sending verification.';
+
+  @override
+  String get registerVerificationEmailResent =>
+      'Email resent. Check your inbox (and spam).';
+
+  @override
+  String get registerResendVerificationUnexpectedError =>
+      'Unexpected error resending verification.';
+
+  @override
+  String get registerChangeEmailHint =>
+      'You can change the email and try again.';
+
+  @override
+  String get registerChangeEmailFail =>
+      'Couldn’t change the email right now. Try again.';
+
+  @override
+  String get registerPasswordAndConfirmRequired =>
+      'Enter password and confirmation.';
+
+  @override
+  String get registerPasswordsDoNotMatch => 'Passwords do not match.';
+
+  @override
+  String get registerCreateAccountUnexpectedError =>
+      'Unexpected error creating account.';
+
+  @override
+  String get registerErrorEmailAlreadyInUse => 'This email is already in use.';
+
+  @override
+  String get registerErrorWeakPassword => 'Weak password.';
+
+  @override
+  String get registerErrorNoConnection => 'No connection. Try again.';
+
+  @override
+  String get registerErrorTooManyRequests =>
+      'Too many attempts. Please wait a moment.';
+
+  @override
+  String get registerErrorGeneric => 'Error continuing registration.';
+
+  @override
+  String get registerEmailLabel => 'Email';
+
+  @override
+  String get registerEmailValidatorRequired => 'Enter email';
+
+  @override
+  String get registerFooterHaveAccount => 'Already have an account? ';
+
+  @override
+  String get registerFooterLogin => 'Sign in';
+
+  @override
+  String get registerPasswordLabel => 'Password';
+
+  @override
+  String get registerConfirmPasswordLabel => 'Confirm password';
+
+  @override
+  String get registerContinueWithGoogle => 'Continue with Google';
+
+  @override
+  String get registerContinueWithApple => 'Continue with Apple';
+
+  @override
+  String get registerGoogleCancelled => 'Google sign-in cancelled.';
+
+  @override
+  String get registerGoogleUserNotFound => 'Couldn’t get Google user.';
+
+  @override
+  String get registerInvalidEmail => 'Invalid email.';
+
+  @override
+  String get registerVerificationEmailSent =>
+      'Verification email sent. Check your inbox (and spam).';
+
+  @override
+  String get registerVerifyEmailBeforeContinue =>
+      'Verify your email before continuing.';
+
+  @override
+  String get registerPasswordMustBeStrong =>
+      'Password must be strong to create the account.';
+
+  @override
+  String get registerInvalidSessionRedoEmailVerification =>
+      'Invalid session. Redo email verification.';
+
+  @override
+  String get registerEnteringWithGoogleLoading => 'Signing in with Google...';
+
+  @override
+  String get registerLoginNotCompleted => 'Login not completed. Try again.';
+
+  @override
+  String get registerPreparingAccountLoading => 'Preparing your account...';
+
+  @override
+  String get registerEmailHint => 'Email';
+
+  @override
+  String get registerSendVerificationButton => 'Send verification email';
+
+  @override
+  String get registerResendVerificationButton => 'Resend verification email';
+
+  @override
+  String registerResendInSeconds(int seconds) {
+    return 'Resend in ${seconds}s';
+  }
+
+  @override
+  String get registerNotThisEmail => 'Not this email?';
+
+  @override
+  String get registerOrContinueWith => 'or continue with';
+
+  @override
+  String get registerAppleNotImplemented => 'Apple not implemented yet.';
+
+  @override
+  String get registerPasswordHint => 'Password';
+
+  @override
+  String get registerConfirmPasswordHint => 'Confirm password';
+
+  @override
+  String get registerCreateAccountButton => 'Create account';
+
+  @override
+  String get registerDeleteRegistration => 'Delete registration';
+
+  @override
+  String get registerPasswordStrengthVeryWeak => 'Very weak';
+
+  @override
+  String get registerPasswordStrengthWeak => 'Weak';
+
+  @override
+  String get registerPasswordStrengthStrong => 'Strong';
+
+  @override
+  String registerPasswordStrengthLine(String label) {
+    return 'Password strength: $label';
+  }
+
+  @override
+  String get registerPasswordTip =>
+      'Tip: 8+ chars, uppercase, lowercase, number and symbol.';
+
+  @override
+  String get registerEmailVerifiedStatus => 'Email verified.';
+
+  @override
+  String get registerAwaitingUserVerification =>
+      'Waiting for user verification';
+
+  @override
+  String get registerRestoringRegistration => 'Restoring your registration...';
 }

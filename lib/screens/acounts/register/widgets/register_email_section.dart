@@ -1,4 +1,7 @@
+// lib/screens/acounts/register/widgets/register_email_section.dart
 import 'package:flutter/material.dart';
+
+import '../../../../l10n/app_localizations.dart';
 
 class RegisterEmailSection extends StatelessWidget {
   final TextEditingController emailController;
@@ -10,13 +13,15 @@ class RegisterEmailSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return TextFormField(
       controller: emailController,
       keyboardType: TextInputType.emailAddress,
-      decoration: const InputDecoration(labelText: 'Email'),
+      decoration: InputDecoration(labelText: l10n.registerEmailLabel),
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'Informe o email';
+          return l10n.registerEmailValidatorRequired;
         }
         return null;
       },

@@ -494,7 +494,7 @@ abstract class AppLocalizations {
   /// **'Sua conta está desativada. Entre em contato com o suporte.'**
   String get loginDialogAccountDisabledMessage;
 
-  /// GERAL — Texto padrão do botão OK
+  /// GERAL / BOTÕES — Ação de confirmar/fechar
   ///
   /// In pt, this message translates to:
   /// **'OK'**
@@ -536,7 +536,7 @@ abstract class AppLocalizations {
   /// **'Preparando sua conta...'**
   String get loginLoadingPrepareAccount;
 
-  /// LOGIN — Erro quando email ou senha estão vazios
+  /// LOGIN — Erro quando email ou senha estão vazios (alternativo)
   ///
   /// In pt, this message translates to:
   /// **'Preencha email e senha'**
@@ -548,7 +548,7 @@ abstract class AppLocalizations {
   /// **'Erro ao obter usuário'**
   String get loginErrorGettingUser;
 
-  /// LOGIN — Usuário não encontrado no Firestore
+  /// LOGIN — Usuário não encontrado no Firestore (alternativo)
   ///
   /// In pt, this message translates to:
   /// **'Usuário não encontrado'**
@@ -560,53 +560,383 @@ abstract class AppLocalizations {
   /// **'Sua conta está desativada.'**
   String get loginAccountDisabledShort;
 
-  /// LOGIN — Título do modal de conta desativada
+  /// LOGIN — Título do modal de conta desativada (alternativo)
   ///
   /// In pt, this message translates to:
   /// **'Conta desativada'**
   String get loginAccountDisabledTitle;
 
-  /// LOGIN — Mensagem do modal de conta desativada
+  /// LOGIN — Mensagem do modal de conta desativada (alternativo)
   ///
   /// In pt, this message translates to:
   /// **'Sua conta está desativada. Entre em contato com o suporte.'**
   String get loginAccountDisabledMessage;
 
-  /// LOGIN — Erro ao verificar status do usuário
+  /// LOGIN — Erro ao verificar status do usuário (alternativo)
   ///
   /// In pt, this message translates to:
   /// **'Erro ao verificar usuário'**
   String get loginErrorCheckingUser;
 
-  /// LOGIN — Erro ao tentar redefinir senha sem email
+  /// LOGIN — Email obrigatório para reset (alternativo)
   ///
   /// In pt, this message translates to:
   /// **'Informe seu email para redefinir a senha'**
   String get loginEnterEmailToReset;
 
-  /// LOGIN — Confirmação de envio de link de redefinição
+  /// LOGIN — Confirmação de envio de link de redefinição (alternativo)
   ///
   /// In pt, this message translates to:
   /// **'Enviamos um link de redefinição para seu e-mail.'**
   String get loginResetLinkSent;
 
-  /// LOGIN — Erro inesperado na redefinição de senha
+  /// LOGIN — Erro inesperado no reset (alternativo)
   ///
   /// In pt, this message translates to:
   /// **'Erro inesperado ao redefinir senha'**
   String get loginUnexpectedResetError;
 
-  /// LOGIN — Loader ao iniciar login com Google
+  /// LOGIN — Loader ao iniciar login com Google (alternativo)
   ///
   /// In pt, this message translates to:
   /// **'Entrando com Google...'**
   String get loginSigningInWithGoogle;
 
-  /// LOGIN — Loader durante warmup/bootstrap após login
+  /// LOGIN — Loader durante warmup/bootstrap após login (alternativo)
   ///
   /// In pt, this message translates to:
   /// **'Preparando sua conta...'**
   String get loginPreparingAccount;
+
+  /// REGISTER — Título do header
+  ///
+  /// In pt, this message translates to:
+  /// **'Crie sua conta'**
+  String get registerHeaderTitle;
+
+  /// REGISTER — Subtítulo do header
+  ///
+  /// In pt, this message translates to:
+  /// **'Tenha controle total do seu estoque desde o primeiro dia.'**
+  String get registerHeaderSubtitle;
+
+  /// REGISTER — Falha genérica ao entrar com Google
+  ///
+  /// In pt, this message translates to:
+  /// **'Falha ao entrar com Google. Tente novamente.'**
+  String get registerGoogleGenericFail;
+
+  /// REGISTER — Falha ao cancelar
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível cancelar agora. Tente novamente.'**
+  String get registerCancelFail;
+
+  /// REGISTER — E-mail obrigatório
+  ///
+  /// In pt, this message translates to:
+  /// **'Preencha o e-mail.'**
+  String get registerEmailRequired;
+
+  /// REGISTER — Erro inesperado ao enviar verificação
+  ///
+  /// In pt, this message translates to:
+  /// **'Erro inesperado ao enviar verificação.'**
+  String get registerSendVerificationUnexpectedError;
+
+  /// REGISTER — E-mail de verificação reenviado
+  ///
+  /// In pt, this message translates to:
+  /// **'E-mail reenviado. Verifique a caixa de entrada (e spam).'**
+  String get registerVerificationEmailResent;
+
+  /// REGISTER — Erro inesperado ao reenviar verificação
+  ///
+  /// In pt, this message translates to:
+  /// **'Erro inesperado ao reenviar verificação.'**
+  String get registerResendVerificationUnexpectedError;
+
+  /// REGISTER — Dica para alterar o e-mail
+  ///
+  /// In pt, this message translates to:
+  /// **'Você pode alterar o e-mail e tentar novamente.'**
+  String get registerChangeEmailHint;
+
+  /// REGISTER — Falha ao alterar e-mail
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível alterar agora. Tente novamente.'**
+  String get registerChangeEmailFail;
+
+  /// REGISTER — Senha e confirmação obrigatórias
+  ///
+  /// In pt, this message translates to:
+  /// **'Preencha a senha e a confirmação.'**
+  String get registerPasswordAndConfirmRequired;
+
+  /// REGISTER — Senhas não coincidem
+  ///
+  /// In pt, this message translates to:
+  /// **'As senhas não coincidem.'**
+  String get registerPasswordsDoNotMatch;
+
+  /// REGISTER — Erro inesperado ao criar conta
+  ///
+  /// In pt, this message translates to:
+  /// **'Erro inesperado ao criar conta.'**
+  String get registerCreateAccountUnexpectedError;
+
+  /// REGISTER — E-mail já em uso
+  ///
+  /// In pt, this message translates to:
+  /// **'Este e-mail já está em uso.'**
+  String get registerErrorEmailAlreadyInUse;
+
+  /// REGISTER — Senha fraca
+  ///
+  /// In pt, this message translates to:
+  /// **'Senha fraca.'**
+  String get registerErrorWeakPassword;
+
+  /// REGISTER — Sem conexão
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem conexão. Tente novamente.'**
+  String get registerErrorNoConnection;
+
+  /// REGISTER — Muitas tentativas
+  ///
+  /// In pt, this message translates to:
+  /// **'Muitas tentativas. Aguarde um pouco.'**
+  String get registerErrorTooManyRequests;
+
+  /// REGISTER — Erro genérico
+  ///
+  /// In pt, this message translates to:
+  /// **'Erro ao continuar o cadastro.'**
+  String get registerErrorGeneric;
+
+  /// REGISTER — Label do campo e-mail
+  ///
+  /// In pt, this message translates to:
+  /// **'Email'**
+  String get registerEmailLabel;
+
+  /// REGISTER — Validação: e-mail obrigatório
+  ///
+  /// In pt, this message translates to:
+  /// **'Informe o email'**
+  String get registerEmailValidatorRequired;
+
+  /// REGISTER — Texto antes do link de login
+  ///
+  /// In pt, this message translates to:
+  /// **'Já possui conta? '**
+  String get registerFooterHaveAccount;
+
+  /// REGISTER — Texto do link de login
+  ///
+  /// In pt, this message translates to:
+  /// **'Fazer login'**
+  String get registerFooterLogin;
+
+  /// REGISTER — Label do campo senha
+  ///
+  /// In pt, this message translates to:
+  /// **'Senha'**
+  String get registerPasswordLabel;
+
+  /// REGISTER — Label do campo confirmar senha
+  ///
+  /// In pt, this message translates to:
+  /// **'Confirmar senha'**
+  String get registerConfirmPasswordLabel;
+
+  /// REGISTER — Botão social Google
+  ///
+  /// In pt, this message translates to:
+  /// **'Continue com Google'**
+  String get registerContinueWithGoogle;
+
+  /// REGISTER — Botão social Apple
+  ///
+  /// In pt, this message translates to:
+  /// **'Continue com Apple'**
+  String get registerContinueWithApple;
+
+  /// REGISTER — Google cancelado
+  ///
+  /// In pt, this message translates to:
+  /// **'Login com Google cancelado.'**
+  String get registerGoogleCancelled;
+
+  /// REGISTER — Usuário Google não obtido
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível obter o usuário do Google.'**
+  String get registerGoogleUserNotFound;
+
+  /// REGISTER — E-mail inválido
+  ///
+  /// In pt, this message translates to:
+  /// **'E-mail inválido.'**
+  String get registerInvalidEmail;
+
+  /// REGISTER — Verificação enviada
+  ///
+  /// In pt, this message translates to:
+  /// **'E-mail de verificação enviado. Verifique sua caixa de entrada (e spam).'**
+  String get registerVerificationEmailSent;
+
+  /// REGISTER — Aviso para verificar e-mail
+  ///
+  /// In pt, this message translates to:
+  /// **'Verifique seu e-mail antes de continuar.'**
+  String get registerVerifyEmailBeforeContinue;
+
+  /// REGISTER — Aviso de senha forte
+  ///
+  /// In pt, this message translates to:
+  /// **'A senha precisa ser forte para criar a conta.'**
+  String get registerPasswordMustBeStrong;
+
+  /// REGISTER — Sessão inválida
+  ///
+  /// In pt, this message translates to:
+  /// **'Sessão inválida. Refaça a verificação do e-mail.'**
+  String get registerInvalidSessionRedoEmailVerification;
+
+  /// REGISTER — Loader ao iniciar login/cadastro com Google
+  ///
+  /// In pt, this message translates to:
+  /// **'Entrando com Google...'**
+  String get registerEnteringWithGoogleLoading;
+
+  /// REGISTER — Erro quando currentUser é null após login/cadastro
+  ///
+  /// In pt, this message translates to:
+  /// **'Login não concluído. Tente novamente.'**
+  String get registerLoginNotCompleted;
+
+  /// REGISTER — Loader durante warmup/bootstrap após login/cadastro
+  ///
+  /// In pt, this message translates to:
+  /// **'Preparando sua conta...'**
+  String get registerPreparingAccountLoading;
+
+  /// REGISTER — Hint do campo e-mail
+  ///
+  /// In pt, this message translates to:
+  /// **'Email'**
+  String get registerEmailHint;
+
+  /// REGISTER — Botão para enviar e-mail de verificação
+  ///
+  /// In pt, this message translates to:
+  /// **'Enviar e-mail de verificação'**
+  String get registerSendVerificationButton;
+
+  /// REGISTER — Botão para reenviar e-mail de verificação
+  ///
+  /// In pt, this message translates to:
+  /// **'Reenviar e-mail de verificação'**
+  String get registerResendVerificationButton;
+
+  /// REGISTER — Texto do botão de reenviar com cooldown
+  ///
+  /// In pt, this message translates to:
+  /// **'Reenviar em {seconds}s'**
+  String registerResendInSeconds(int seconds);
+
+  /// REGISTER — Link para trocar e-mail
+  ///
+  /// In pt, this message translates to:
+  /// **'Não é esse e-mail?'**
+  String get registerNotThisEmail;
+
+  /// REGISTER — Divisor social
+  ///
+  /// In pt, this message translates to:
+  /// **'ou continue com'**
+  String get registerOrContinueWith;
+
+  /// REGISTER — Apple login não disponível
+  ///
+  /// In pt, this message translates to:
+  /// **'Apple ainda não implementado.'**
+  String get registerAppleNotImplemented;
+
+  /// REGISTER — Hint do campo senha
+  ///
+  /// In pt, this message translates to:
+  /// **'Senha'**
+  String get registerPasswordHint;
+
+  /// REGISTER — Hint do campo confirmar senha
+  ///
+  /// In pt, this message translates to:
+  /// **'Confirmar senha'**
+  String get registerConfirmPasswordHint;
+
+  /// REGISTER — Botão principal de criar conta
+  ///
+  /// In pt, this message translates to:
+  /// **'Criar conta'**
+  String get registerCreateAccountButton;
+
+  /// REGISTER — Ação para cancelar/excluir fluxo de cadastro
+  ///
+  /// In pt, this message translates to:
+  /// **'Excluir cadastro'**
+  String get registerDeleteRegistration;
+
+  /// REGISTER — Força de senha (muito fraca)
+  ///
+  /// In pt, this message translates to:
+  /// **'Muito fraca'**
+  String get registerPasswordStrengthVeryWeak;
+
+  /// REGISTER — Força de senha (fraca)
+  ///
+  /// In pt, this message translates to:
+  /// **'Fraca'**
+  String get registerPasswordStrengthWeak;
+
+  /// REGISTER — Força de senha (forte)
+  ///
+  /// In pt, this message translates to:
+  /// **'Forte'**
+  String get registerPasswordStrengthStrong;
+
+  /// REGISTER — Linha que mostra força da senha
+  ///
+  /// In pt, this message translates to:
+  /// **'Força da senha: {label}'**
+  String registerPasswordStrengthLine(String label);
+
+  /// REGISTER — Dica para senha forte
+  ///
+  /// In pt, this message translates to:
+  /// **'Dica: 8+ chars, maiúscula, minúscula, número e símbolo.'**
+  String get registerPasswordTip;
+
+  /// REGISTER — Status quando email foi verificado
+  ///
+  /// In pt, this message translates to:
+  /// **'E-mail verificado.'**
+  String get registerEmailVerifiedStatus;
+
+  /// REGISTER — Status quando está aguardando o usuário verificar email
+  ///
+  /// In pt, this message translates to:
+  /// **'Aguardando verificação do usuário'**
+  String get registerAwaitingUserVerification;
+
+  /// REGISTER — Mensagem exibida ao restaurar cadastro/estado
+  ///
+  /// In pt, this message translates to:
+  /// **'Restaurando seu cadastro...'**
+  String get registerRestoringRegistration;
 }
 
 class _AppLocalizationsDelegate

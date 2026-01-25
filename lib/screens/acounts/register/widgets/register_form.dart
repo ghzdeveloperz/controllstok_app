@@ -1,18 +1,18 @@
+// lib/screens/acounts/register/widgets/register_form.dart
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../../../../l10n/app_localizations.dart';
 
 import '../../../home_screen.dart';
-import '../../onboarding/company_screen.dart';
 import '../../auth_choice/auth_choice_screen.dart';
+import '../../onboarding/company_screen.dart';
 
 import '../register_controller.dart';
 import 'social_register_buttons.dart';
 
 import '../../../widgets/blocking_loader.dart';
-
-// ✅ NOVO
 import '../../../../services/bootstrap/auth_bootstrap_service.dart';
 
 class RegisterForm extends StatelessWidget {
@@ -28,7 +28,7 @@ class RegisterForm extends StatelessWidget {
   });
 
   Future<void> _deleteAndBackToAuthChoice(BuildContext context) async {
-    await controller.cancelAndResetRegistration();
+    await controller.cancelAndResetRegistration(context);
 
     if (!context.mounted) return;
 
@@ -41,16 +41,16 @@ class RegisterForm extends StatelessWidget {
   Future<void> _handleGoogleTap(BuildContext context) async {
     if (controller.isLoading || isLoading) return;
 
+    final l10n = AppLocalizations.of(context)!;
+
     final goToCompany = await BlockingLoader.run<bool?>(
       context: context,
-      message: 'Entrando com Google...',
+      message: l10n.registerEnteringWithGoogleLoading,
       action: () async {
         try {
-          return await controller.registerWithGoogle();
-        } catch (e) {
-          controller.setAlertWithTimeout(
-            'Falha ao entrar com Google. Tente novamente.',
-          );
+          return await controller.registerWithGoogle(context);
+        } catch (_) {
+          controller.setAlertWithTimeout(l10n.registerGoogleGenericFail);
           return null;
         }
       },
@@ -60,15 +60,13 @@ class RegisterForm extends StatelessWidget {
 
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      controller.setAlertWithTimeout('Login não concluído. Tente novamente.');
+      controller.setAlertWithTimeout(l10n.registerLoginNotCompleted);
       return;
     }
 
-    // ✅ Agora o loading vira “funcional”:
-    // segura até puxar o doc e pré-carregar imagens do user
     await BlockingLoader.run<void>(
       context: context,
-      message: 'Preparando sua conta...',
+      message: l10n.registerPreparingAccountLoading,
       action: () async {
         await AuthBootstrapService.warmUp(
           context: context,
@@ -79,7 +77,6 @@ class RegisterForm extends StatelessWidget {
 
     if (!context.mounted) return;
 
-    // ✅ mantém seu comportamento antigo (não quebra)
     if (goToCompany) {
       Navigator.pushReplacement(
         context,
@@ -96,9 +93,11 @@ class RegisterForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return AnimatedBuilder(
       animation: controller,
-      builder: (_, __) {
+      builder: (_, child) {
         final emailSent = controller.emailSent;
         final emailVerified = controller.emailVerified;
         final awaiting = controller.awaitingVerification;
@@ -122,15 +121,16 @@ class RegisterForm extends StatelessWidget {
               keyboardType: TextInputType.emailAddress,
               textInputAction: TextInputAction.done,
               decoration: _inputDecoration(
-                hint: "Email",
+                hint: l10n.registerEmailHint,
                 icon: Icons.email_outlined,
               ),
             ),
 
             if (controller.isRestoring)
-              _restoringHint()
+              _restoringHint(l10n)
             else
               _emailInlineStatus(
+                l10n: l10n,
                 emailSent: emailSent,
                 emailVerified: emailVerified,
                 awaiting: awaiting,
@@ -143,7 +143,9 @@ class RegisterForm extends StatelessWidget {
                     width: double.infinity,
                     height: 50,
                     child: OutlinedButton(
-                      onPressed: isLoading ? null : controller.sendEmailVerification,
+                      onPressed: isLoading
+                          ? null
+                          : () => controller.sendEmailVerification(context),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: Colors.black,
                         side: const BorderSide(color: Colors.black12),
@@ -157,9 +159,12 @@ class RegisterForm extends StatelessWidget {
                               height: 22,
                               child: CircularProgressIndicator(strokeWidth: 2.4),
                             )
-                          : const Text(
-                              "Enviar e-mail de verificação",
-                              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+                          : Text(
+                              l10n.registerSendVerificationButton,
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                     ),
                   ),
@@ -171,7 +176,9 @@ class RegisterForm extends StatelessWidget {
                     child: OutlinedButton(
                       onPressed: isLoading
                           ? null
-                          : (canResend ? controller.resendEmailVerification : null),
+                          : (canResend
+                              ? () => controller.resendEmailVerification(context)
+                              : null),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: Colors.black,
                         side: const BorderSide(color: Colors.black12),
@@ -187,9 +194,12 @@ class RegisterForm extends StatelessWidget {
                             )
                           : Text(
                               canResend
-                                  ? "Reenviar e-mail de verificação"
-                                  : "Reenviar em ${cooldown}s",
-                              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+                                  ? l10n.registerResendVerificationButton
+                                  : l10n.registerResendInSeconds(cooldown),
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                     ),
                   ),
@@ -197,14 +207,15 @@ class RegisterForm extends StatelessWidget {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: TextButton(
-                      onPressed: isLoading ? null : controller.changeEmail,
+                      onPressed:
+                          isLoading ? null : () => controller.changeEmail(context),
                       style: TextButton.styleFrom(
                         padding: EdgeInsets.zero,
                         foregroundColor: Colors.black87,
                       ),
-                      child: const Text(
-                        'Não é esse e-mail?',
-                        style: TextStyle(fontWeight: FontWeight.w700),
+                      child: Text(
+                        l10n.registerNotThisEmail,
+                        style: const TextStyle(fontWeight: FontWeight.w700),
                       ),
                     ),
                   ),
@@ -213,16 +224,19 @@ class RegisterForm extends StatelessWidget {
                 if (!isAwaitingVerification) ...[
                   const SizedBox(height: 26),
                   Row(
-                    children: const [
-                      Expanded(child: Divider()),
+                    children: [
+                      const Expanded(child: Divider()),
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12),
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
                         child: Text(
-                          "ou continue com",
-                          style: TextStyle(color: Colors.black54, fontSize: 13),
+                          l10n.registerOrContinueWith,
+                          style: const TextStyle(
+                            color: Colors.black54,
+                            fontSize: 13,
+                          ),
                         ),
                       ),
-                      Expanded(child: Divider()),
+                      const Expanded(child: Divider()),
                     ],
                   ),
                   const SizedBox(height: 18),
@@ -231,7 +245,9 @@ class RegisterForm extends StatelessWidget {
                     isDisabled: isLoading,
                     onGoogleTap: () => _handleGoogleTap(context),
                     onAppleTap: () {
-                      controller.setAlertWithTimeout('Apple ainda não implementado.');
+                      controller.setAlertWithTimeout(
+                        l10n.registerAppleNotImplemented,
+                      );
                     },
                   ),
                 ],
@@ -253,18 +269,21 @@ class RegisterForm extends StatelessWidget {
                           obscureText: !controller.showPassword,
                           textInputAction: TextInputAction.next,
                           decoration: _inputDecoration(
-                            hint: "Senha",
+                            hint: l10n.registerPasswordHint,
                             icon: Icons.lock_outline,
                             suffix: IconButton(
-                              onPressed: isLoading ? null : controller.toggleShowPassword,
+                              onPressed:
+                                  isLoading ? null : controller.toggleShowPassword,
                               icon: Icon(
-                                controller.showPassword ? Icons.visibility_off : Icons.visibility,
+                                controller.showPassword
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
                                 color: Colors.black54,
                               ),
                             ),
                           ),
                         ),
-                        if (hasPasswordTyped) _passwordStrengthUI(),
+                        if (hasPasswordTyped) _passwordStrengthUI(l10n),
                         const SizedBox(height: 14),
                         TextField(
                           controller: controller.confirmPasswordController,
@@ -272,12 +291,16 @@ class RegisterForm extends StatelessWidget {
                           obscureText: !controller.showConfirmPassword,
                           textInputAction: TextInputAction.done,
                           decoration: _inputDecoration(
-                            hint: "Confirmar senha",
+                            hint: l10n.registerConfirmPasswordHint,
                             icon: Icons.lock_outline,
                             suffix: IconButton(
-                              onPressed: isLoading ? null : controller.toggleShowConfirmPassword,
+                              onPressed: isLoading
+                                  ? null
+                                  : controller.toggleShowConfirmPassword,
                               icon: Icon(
-                                controller.showConfirmPassword ? Icons.visibility_off : Icons.visibility,
+                                controller.showConfirmPassword
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
                                 color: Colors.black54,
                               ),
                             ),
@@ -306,9 +329,9 @@ class RegisterForm extends StatelessWidget {
                                       color: Colors.white,
                                     ),
                                   )
-                                : const Text(
-                                    "Criar conta",
-                                    style: TextStyle(
+                                : Text(
+                                    l10n.registerCreateAccountButton,
+                                    style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w700,
                                       letterSpacing: 0.4,
@@ -321,12 +344,14 @@ class RegisterForm extends StatelessWidget {
                           alignment: Alignment.center,
                           child: GestureDetector(
                             behavior: HitTestBehavior.opaque,
-                            onTap: isLoading ? null : () => _deleteAndBackToAuthChoice(context),
-                            child: const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 6),
+                            onTap: isLoading
+                                ? null
+                                : () => _deleteAndBackToAuthChoice(context),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 6),
                               child: Text(
-                                'Excluir cadastro',
-                                style: TextStyle(
+                                l10n.registerDeleteRegistration,
+                                style: const TextStyle(
                                   color: Colors.black54,
                                   fontWeight: FontWeight.w600,
                                   decoration: TextDecoration.underline,
@@ -342,6 +367,7 @@ class RegisterForm extends StatelessWidget {
           ],
         );
       },
+      child: const SizedBox.shrink(),
     );
   }
 
@@ -378,10 +404,10 @@ class RegisterForm extends StatelessWidget {
     return true;
   }
 
-  String _strengthLabel(int strength) {
-    if (strength <= 1) return 'Muito fraca';
-    if (strength == 2) return 'Fraca';
-    return 'Forte';
+  String _strengthLabel(AppLocalizations l10n, int strength) {
+    if (strength <= 1) return l10n.registerPasswordStrengthVeryWeak;
+    if (strength == 2) return l10n.registerPasswordStrengthWeak;
+    return l10n.registerPasswordStrengthStrong;
   }
 
   double _strengthValue(int strength) => (strength.clamp(0, 3)) / 3.0;
@@ -392,7 +418,7 @@ class RegisterForm extends StatelessWidget {
     return Colors.green;
   }
 
-  Widget _passwordStrengthUI() {
+  Widget _passwordStrengthUI(AppLocalizations l10n) {
     final strength = controller.passwordStrength;
 
     return Column(
@@ -410,7 +436,7 @@ class RegisterForm extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          'Força da senha: ${_strengthLabel(strength)}',
+          l10n.registerPasswordStrengthLine(_strengthLabel(l10n, strength)),
           style: const TextStyle(
             fontSize: 12,
             color: Colors.black54,
@@ -418,9 +444,9 @@ class RegisterForm extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 6),
-        const Text(
-          'Dica: 8+ chars, maiúscula, minúscula, número e símbolo.',
-          style: TextStyle(fontSize: 12, color: Colors.black45),
+        Text(
+          l10n.registerPasswordTip,
+          style: const TextStyle(fontSize: 12, color: Colors.black45),
         ),
       ],
     );
@@ -429,6 +455,7 @@ class RegisterForm extends StatelessWidget {
   Widget _dotsLoading({TextStyle? style}) => _DotsLoadingText(style: style);
 
   Widget _emailInlineStatus({
+    required AppLocalizations l10n,
     required bool emailSent,
     required bool emailVerified,
     required bool awaiting,
@@ -440,14 +467,14 @@ class RegisterForm extends StatelessWidget {
         padding: const EdgeInsets.only(top: 10),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: const [
-            Icon(Icons.verified_rounded, size: 18, color: Colors.green),
-            SizedBox(width: 8),
+          children: [
+            const Icon(Icons.verified_rounded, size: 18, color: Colors.green),
+            const SizedBox(width: 8),
             Expanded(
               child: Text(
-                'E-mail verificado.',
+                l10n.registerEmailVerifiedStatus,
                 textAlign: TextAlign.left,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 12.5,
                   color: Colors.black54,
                   fontWeight: FontWeight.w700,
@@ -466,10 +493,10 @@ class RegisterForm extends StatelessWidget {
         children: [
           const Icon(Icons.schedule_rounded, size: 18, color: Colors.black54),
           const SizedBox(width: 8),
-          const Text(
-            'Aguardando verificação do usuário',
+          Text(
+            l10n.registerAwaitingUserVerification,
             textAlign: TextAlign.left,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 12.5,
               color: Colors.black54,
               fontWeight: FontWeight.w600,
@@ -488,21 +515,21 @@ class RegisterForm extends StatelessWidget {
     );
   }
 
-  Widget _restoringHint() {
-    return const Padding(
-      padding: EdgeInsets.only(top: 10),
+  Widget _restoringHint(AppLocalizations l10n) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10),
       child: Row(
         children: [
-          SizedBox(
+          const SizedBox(
             width: 16,
             height: 16,
             child: CircularProgressIndicator(strokeWidth: 2),
           ),
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
           Expanded(
             child: Text(
-              'Restaurando seu cadastro...',
-              style: TextStyle(
+              l10n.registerRestoringRegistration,
+              style: const TextStyle(
                 fontSize: 12.5,
                 color: Colors.black54,
                 fontWeight: FontWeight.w600,

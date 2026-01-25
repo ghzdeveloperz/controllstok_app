@@ -1,6 +1,6 @@
 {
   "@@locale": "de_CH",
-  "@@description": "Traduções DE-CH (Alemão Suíço) do MyStoreDay",
+  "@@description": "Traduções DE-CH (Deutsch, Schweiz) do MyStoreDay",
 
   "appTitle": "MyStoreDay",
   "@appTitle": { "description": "GERAL / APP — Título principal do aplicativo" },
@@ -14,13 +14,13 @@
     "placeholders": { "company": {} }
   },
 
-  "authChoiceLogin": "Anmelden",
+  "authChoiceLogin": "Login",
   "@authChoiceLogin": { "description": "TELA AUTH_CHOICE — Texto do botão Login" },
 
   "authChoiceRegister": "Registrieren",
   "@authChoiceRegister": { "description": "TELA AUTH_CHOICE — Texto do botão Cadastrar" },
 
-  "stockToday": "Ihr Bestand heute",
+  "stockToday": "Dein Bestand heute",
   "@stockToday": { "description": "TELA ESTOQUE / HOME — Título do resumo do estoque" },
 
   "searchProductHint": "Produkt suchen...",
@@ -38,7 +38,7 @@
   "languageSystem": "Systemsprache",
   "@languageSystem": { "description": "TELA IDIOMA — Opção para usar idioma do sistema" },
 
-  "languageSystemDescription": "Automatisch die Gerätesprache verwenden",
+  "languageSystemDescription": "Sprache deines Geräts automatisch verwenden",
   "@languageSystemDescription": { "description": "TELA IDIOMA — Descrição do idioma do sistema" },
 
   "searchLanguageHint": "Sprache suchen...",
@@ -56,10 +56,10 @@
   "noLanguageFound": "Keine Sprache gefunden",
   "@noLanguageFound": { "description": "TELA IDIOMA — Mensagem quando a busca não encontra idiomas" },
 
-  "languageConfirmTitle": "Sprache ändern",
+  "languageConfirmTitle": "Änderung bestätigen",
   "@languageConfirmTitle": { "description": "MODAL IDIOMA — Título do modal de confirmação" },
 
-  "languageConfirmMessage": "Möchten Sie diese Sprache jetzt anwenden?",
+  "languageConfirmMessage": "Möchtest du diese Sprache jetzt anwenden? Du kannst sie jederzeit wieder ändern.",
   "@languageConfirmMessage": { "description": "MODAL IDIOMA — Mensagem do modal de confirmação" },
 
   "apply": "Anwenden",
@@ -69,41 +69,39 @@
   "@cancel": { "description": "MODAL / BOTÕES — Ação de cancelar/voltar" },
 
   "fieldRequired": "Pflichtfeld",
-  "@fieldRequired": { "description": "VALIDIERUNG — Standardmeldung für Pflichtfeld" },
+  "@fieldRequired": { "description": "VALIDAÇÃO — Mensagem padrão de campo obrigatório" },
 
   "newProductTitle": "Neues Produkt",
   "@newProductTitle": { "description": "TELA NOVO_PRODUTO — Título do AppBar" },
 
-  "newProductSectionInfo": "Produktinfos",
+  "newProductSectionInfo": "Produktinformationen",
   "@newProductSectionInfo": { "description": "TELA NOVO_PRODUTO — Título da seção principal" },
 
   "newProductNameLabel": "Produktname",
   "@newProductNameLabel": { "description": "TELA NOVO_PRODUTO — Label do campo nome" },
 
-  "newProductNameHint": "z. B. Reis 5kg",
+  "newProductNameHint": "Z. B. Reis 5 kg",
   "@newProductNameHint": { "description": "TELA NOVO_PRODUTO — Hint do campo nome" },
 
-  "newProductNameMin": "Der Name muss mindestens 2 Zeichen haben",
-  "@newProductNameMin": { "description": "VALIDIERUNG — Nome mínimo" },
+  "newProductNameMin": "Name muss mindestens 2 Zeichen haben",
+  "@newProductNameMin": { "description": "VALIDAÇÃO — Nome mínimo" },
 
-  "newProductNameMax": "Der Name darf höchstens 50 Zeichen haben",
-  "@newProductNameMax": { "description": "VALIDIERUNG — Nome máximo" },
+  "newProductNameMax": "Name darf höchstens 50 Zeichen haben",
+  "@newProductNameMax": { "description": "VALIDAÇÃO — Nome máximo" },
 
   "newProductNameDuplicateValidator": "Name existiert bereits. Bitte einen anderen wählen.",
-  "@newProductNameDuplicateValidator": { "description": "VALIDIERUNG — Nome duplicado" },
+  "@newProductNameDuplicateValidator": { "description": "VALIDAÇÃO — Nome duplicado" },
 
-  "newProductDuplicateNameMessage": "Dieser Name existiert bereits. Sie können ihn bearbeiten.",
+  "newProductDuplicateNameMessage": "Dieser Name existiert bereits. Du kannst ihn bearbeiten.",
   "@newProductDuplicateNameMessage": { "description": "TELA NOVO_PRODUTO — Mensagem auxiliar quando nome está duplicado" },
 
   "newProductNameHelperChars": "{count}/50 Zeichen",
   "@newProductNameHelperChars": {
     "description": "TELA NOVO_PRODUTO — Helper contagem de caracteres do nome",
-    "placeholders": {
-      "count": { "type": "int" }
-    }
+    "placeholders": { "count": { "type": "int" } }
   },
 
-  "newProductNameHelperNearLimit": "(Fast am Limit)",
+  "newProductNameHelperNearLimit": "(fast am Limit)",
   "@newProductNameHelperNearLimit": { "description": "TELA NOVO_PRODUTO — Helper quando está perto do limite" },
 
   "newProductNameHelperLimitReached": "(Limit erreicht)",
@@ -121,7 +119,7 @@
   "newProductNameAlreadyExists": "Es gibt bereits ein Produkt mit diesem Namen",
   "@newProductNameAlreadyExists": { "description": "SNACKBAR — Nome de produto já existe" },
 
-  "newProductBarcodeAlreadyLinked": "Dieser Barcode ist bereits mit dem Produkt {name} verknüpft.",
+  "newProductBarcodeAlreadyLinked": "Dieser Barcode ist bereits dem Produkt {name} zugeordnet.",
   "@newProductBarcodeAlreadyLinked": {
     "description": "SNACKBAR — Código de barras já cadastrado em outro produto",
     "placeholders": { "name": {} }
@@ -137,142 +135,305 @@
   },
 
   "newProductImageAdd": "Bild hinzufügen",
-  "@newProductImageAdd": { "description": "NEUES_PRODUKT — Aktion zum Hinzufügen eines Produktbilds (CH)" },
+  "@newProductImageAdd": { "description": "TELA NOVO_PRODUTO — Botão/ação para adicionar imagem do produto" },
 
   "newProductBarcodeLabel": "Barcode",
-  "@newProductBarcodeLabel": { "description": "NEUES_PRODUKT — Beschriftung für Barcode-Feld (CH)" },
+  "@newProductBarcodeLabel": { "description": "TELA NOVO_PRODUTO — Label do campo de código de barras" },
 
-  "newProductBarcodeHint": "z. B. 7891234567890",
-  "@newProductBarcodeHint": { "description": "NEUES_PRODUKT — Platzhalter für Barcode-Feld (CH)" },
+  "newProductBarcodeHint": "Z. B. 7891234567890",
+  "@newProductBarcodeHint": { "description": "TELA NOVO_PRODUTO — Hint/placeholder do campo de código de barras" },
 
   "newProductCategoryLabel": "Kategorie",
-  "@newProductCategoryLabel": { "description": "NEUES_PRODUKT — Beschriftung für Kategorie-Feld (CH)" },
+  "@newProductCategoryLabel": { "description": "TELA NOVO_PRODUTO — Label do campo de categoria" },
 
   "newProductCategoryLoading": "Kategorien werden geladen...",
-  "@newProductCategoryLoading": { "description": "NEUES_PRODUKT — Text während Kategorien geladen werden (CH)" },
+  "@newProductCategoryLoading": { "description": "TELA NOVO_PRODUTO — Texto exibido enquanto carrega categorias" },
 
   "newProductCategoryHint": "Kategorie auswählen",
-  "@newProductCategoryHint": { "description": "NEUES_PRODUKT — Hinweis für Kategorie-Auswahl (CH)" },
+  "@newProductCategoryHint": { "description": "TELA NOVO_PRODUTO — Hint do seletor de categoria" },
 
   "newProductCategoryValidator": "Bitte eine Kategorie auswählen",
-  "@newProductCategoryValidator": { "description": "VALIDIERUNG — Meldung, wenn keine Kategorie gewählt wurde (CH)" },
+  "@newProductCategoryValidator": { "description": "VALIDAÇÃO — Mensagem quando a categoria não foi selecionada" },
 
   "newProductSaveButton": "Produkt speichern",
-  "@newProductSaveButton": { "description": "NEUES_PRODUKT — Text des Speichern-Buttons (CH)" },
+  "@newProductSaveButton": { "description": "TELA NOVO_PRODUTO — Texto do botão de salvar" },
 
-    "loginEmailHint": "E-Mail",
-  "@loginEmailHint": { "description": "LOGIN (CH) — Hinweis für E-Mail-Feld" },
+  "loginEmailHint": "E-Mail",
+  "@loginEmailHint": { "description": "TELA LOGIN — Hint do campo email" },
 
   "loginPasswordHint": "Passwort",
-  "@loginPasswordHint": { "description": "LOGIN (CH) — Hinweis für Passwort-Feld" },
+  "@loginPasswordHint": { "description": "TELA LOGIN — Hint do campo senha" },
 
   "loginForgotPassword": "Passwort vergessen?",
-  "@loginForgotPassword": { "description": "LOGIN (CH) — Button/Link Passwort zurücksetzen" },
+  "@loginForgotPassword": { "description": "TELA LOGIN — Botão/link de reset de senha" },
 
   "loginSubmitButton": "Anmelden",
-  "@loginSubmitButton": { "description": "LOGIN (CH) — Text des Hauptbuttons" },
+  "@loginSubmitButton": { "description": "TELA LOGIN — Texto do botão principal de entrar" },
 
-  "loginOrContinueWith": "oder weiter mit",
-  "@loginOrContinueWith": { "description": "LOGIN (CH) — Social Divider" },
+  "loginOrContinueWith": "oder fortfahren mit",
+  "@loginOrContinueWith": { "description": "TELA LOGIN — Divisor social (ou continue com)" },
 
   "loginWithGoogle": "Mit Google anmelden",
-  "@loginWithGoogle": { "description": "LOGIN (CH) — Google Button" },
+  "@loginWithGoogle": { "description": "TELA LOGIN — Botão social Google" },
 
   "loginWithApple": "Mit Apple anmelden",
-  "@loginWithApple": { "description": "LOGIN (CH) — Apple Button" },
+  "@loginWithApple": { "description": "TELA LOGIN — Botão social Apple" },
 
   "loginWelcomeBackTitle": "Willkommen zurück!",
-  "@loginWelcomeBackTitle": { "description": "LOGIN (CH) — Header Titel" },
+  "@loginWelcomeBackTitle": { "description": "TELA LOGIN — Título do header" },
 
-  "loginWelcomeBackSubtitle": "Melden Sie sich an und verwalten Sie Ihren Bestand ganz einfach.",
-  "@loginWelcomeBackSubtitle": { "description": "LOGIN (CH) — Header Untertitel" },
+  "loginWelcomeBackSubtitle": "Melde dich an und verwalte deinen Bestand ganz einfach.",
+  "@loginWelcomeBackSubtitle": { "description": "TELA LOGIN — Subtítulo do header" },
 
   "loginNoAccountPrefix": "Noch kein Konto? ",
-  "@loginNoAccountPrefix": { "description": "LOGIN (CH) — Text vor Registrierungslink" },
+  "@loginNoAccountPrefix": { "description": "TELA LOGIN — Texto antes do link para cadastro" },
 
   "loginCreateNow": "Jetzt erstellen",
-  "@loginCreateNow": { "description": "LOGIN (CH) — Link/Button zur Registrierung" },
+  "@loginCreateNow": { "description": "TELA LOGIN — Link/botão para ir ao cadastro" },
 
-  "loginErrorFillEmailAndPassword": "Bitte E-Mail und Passwort eingeben",
-  "@loginErrorFillEmailAndPassword": { "description": "LOGIN (CH) — Fehler wenn E-Mail/Passwort leer sind" },
+  "loginErrorFillEmailAndPassword": "E-Mail und Passwort eingeben",
+  "@loginErrorFillEmailAndPassword": { "description": "LOGIN — Erro quando email/senha estão vazios" },
 
   "loginErrorGetUser": "Fehler beim Abrufen des Benutzers",
-  "@loginErrorGetUser": { "description": "LOGIN (CH) — Fehler wenn currentUser nach Login null ist" },
+  "@loginErrorGetUser": { "description": "LOGIN — Erro quando currentUser é null após login" },
 
   "loginErrorUserNotFound": "Benutzer nicht gefunden",
-  "@loginErrorUserNotFound": { "description": "LOGIN (CH) — Fehler wenn Firestore-Dokument fehlt" },
+  "@loginErrorUserNotFound": { "description": "LOGIN — Erro quando doc do usuário não existe no Firestore" },
 
-  "loginErrorAccountDisabled": "Ihr Konto ist deaktiviert.",
-  "@loginErrorAccountDisabled": { "description": "LOGIN (CH) — Fehler wenn Konto deaktiviert ist" },
+  "loginErrorAccountDisabled": "Dein Konto ist deaktiviert.",
+  "@loginErrorAccountDisabled": { "description": "LOGIN — Erro quando conta está desativada" },
 
   "loginDialogAccountDisabledTitle": "Konto deaktiviert",
-  "@loginDialogAccountDisabledTitle": { "description": "DIALOG (CH) — Titel Konto deaktiviert" },
+  "@loginDialogAccountDisabledTitle": { "description": "DIALOG — Título do modal de conta desativada" },
 
-  "loginDialogAccountDisabledMessage": "Ihr Konto ist deaktiviert. Bitte kontaktieren Sie den Support.",
-  "@loginDialogAccountDisabledMessage": { "description": "DIALOG (CH) — Nachricht Konto deaktiviert" },
+  "loginDialogAccountDisabledMessage": "Dein Konto ist deaktiviert. Bitte kontaktiere den Support.",
+  "@loginDialogAccountDisabledMessage": { "description": "DIALOG — Mensagem do modal de conta desativada" },
 
   "ok": "OK",
-  "@ok": { "description": "ALLGEMEIN (CH) — Bestätigen/Schließen" },
+  "@ok": { "description": "GERAL / BOTÕES — Ação de confirmar/fechar" },
 
   "loginErrorCheckUser": "Fehler beim Prüfen des Benutzers",
-  "@loginErrorCheckUser": { "description": "LOGIN (CH) — Generischer Fehler beim Prüfen" },
+  "@loginErrorCheckUser": { "description": "LOGIN — Erro genérico ao checar status do usuário" },
 
-  "loginResetPasswordEmailRequired": "Bitte E-Mail eingeben, um das Passwort zurückzusetzen",
-  "@loginResetPasswordEmailRequired": { "description": "LOGIN (CH) — Fehler beim Zurücksetzen ohne E-Mail" },
+  "loginResetPasswordEmailRequired": "Gib deine E-Mail an, um das Passwort zurückzusetzen",
+  "@loginResetPasswordEmailRequired": { "description": "LOGIN — Erro ao tentar resetar senha sem email" },
 
-  "loginResetPasswordSuccess": "Wir haben einen Link zum Zurücksetzen an Ihre E-Mail gesendet.",
-  "@loginResetPasswordSuccess": { "description": "LOGIN (CH) — Erfolgsmeldung Passwort zurücksetzen" },
+  "loginResetPasswordSuccess": "Wir haben einen Link zum Zurücksetzen an deine E-Mail gesendet.",
+  "@loginResetPasswordSuccess": { "description": "LOGIN — Mensagem de sucesso no reset de senha" },
 
   "loginResetPasswordUnexpectedError": "Unerwarteter Fehler beim Zurücksetzen des Passworts",
-  "@loginResetPasswordUnexpectedError": { "description": "LOGIN (CH) — Unerwarteter Fehler Passwort zurücksetzen" },
+  "@loginResetPasswordUnexpectedError": { "description": "LOGIN — Erro inesperado no reset de senha" },
 
   "loginLoadingGoogle": "Anmeldung mit Google...",
-  "@loginLoadingGoogle": { "description": "LOADER (CH) — Text während Google-Login" },
+  "@loginLoadingGoogle": { "description": "LOADER — Texto enquanto faz login com Google" },
 
-  "loginLoadingPrepareAccount": "Konto wird vorbereitet...",
-  "@loginLoadingPrepareAccount": { "description": "LOADER (CH) — Text während Warmup/Bootstrap" },
+  "loginLoadingPrepareAccount": "Dein Konto wird vorbereitet...",
+  "@loginLoadingPrepareAccount": { "description": "LOADER — Texto enquanto executa warmup/bootstrap após login" },
 
-    "loginFillEmailAndPassword": "Bitte E-Mail und Passwort eingeben",
-  "@loginFillEmailAndPassword": { "description": "LOGIN — Leere Felder (CH)" },
+  "loginFillEmailAndPassword": "E-Mail und Passwort eingeben",
+  "@loginFillEmailAndPassword": { "description": "LOGIN — Erro quando email ou senha estão vazios (alternativo)" },
 
   "loginErrorGettingUser": "Fehler beim Abrufen des Benutzers",
-  "@loginErrorGettingUser": { "description": "LOGIN — Fehler beim Abrufen des Benutzers (CH)" },
+  "@loginErrorGettingUser": { "description": "LOGIN — Erro ao obter usuário autenticado" },
 
   "loginUserNotFound": "Benutzer nicht gefunden",
-  "@loginUserNotFound": { "description": "LOGIN — Benutzer nicht gefunden (CH)" },
+  "@loginUserNotFound": { "description": "LOGIN — Usuário não encontrado no Firestore (alternativo)" },
 
-  "loginAccountDisabledShort": "Ihr Konto ist deaktiviert.",
-  "@loginAccountDisabledShort": { "description": "LOGIN — Konto deaktiviert (kurz, CH)" },
+  "loginAccountDisabledShort": "Dein Konto ist deaktiviert.",
+  "@loginAccountDisabledShort": { "description": "LOGIN — Conta desativada (mensagem curta)" },
 
   "loginAccountDisabledTitle": "Konto deaktiviert",
-  "@loginAccountDisabledTitle": { "description": "LOGIN — Dialogtitel (CH)" },
+  "@loginAccountDisabledTitle": { "description": "LOGIN — Título do modal de conta desativada (alternativo)" },
 
-  "loginAccountDisabledMessage": "Ihr Konto ist deaktiviert. Bitte wenden Sie sich an den Support.",
-  "@loginAccountDisabledMessage": { "description": "LOGIN — Dialognachricht (CH)" },
+  "loginAccountDisabledMessage": "Dein Konto ist deaktiviert. Bitte kontaktiere den Support.",
+  "@loginAccountDisabledMessage": { "description": "LOGIN — Mensagem do modal de conta desativada (alternativo)" },
 
-  "loginErrorCheckingUser": "Fehler bei der Benutzerprüfung",
-  "@loginErrorCheckingUser": { "description": "LOGIN — Fehler bei Benutzerprüfung (CH)" },
+  "loginErrorCheckingUser": "Fehler beim Prüfen des Benutzers",
+  "@loginErrorCheckingUser": { "description": "LOGIN — Erro ao verificar status do usuário (alternativo)" },
 
-  "loginEnterEmailToReset": "Geben Sie Ihre E-Mail zur Passwortzurücksetzung ein",
-  "@loginEnterEmailToReset": { "description": "LOGIN — Reset ohne E-Mail (CH)" },
+  "loginEnterEmailToReset": "Gib deine E-Mail an, um das Passwort zurückzusetzen",
+  "@loginEnterEmailToReset": { "description": "LOGIN — Email obrigatório para reset (alternativo)" },
 
-  "loginResetLinkSent": "Wir haben Ihnen einen Link zur Passwortzurücksetzung gesendet.",
-  "@loginResetLinkSent": { "description": "LOGIN — Reset-Link gesendet (CH)" },
+  "loginResetLinkSent": "Wir haben einen Link zum Zurücksetzen an deine E-Mail gesendet.",
+  "@loginResetLinkSent": { "description": "LOGIN — Confirmação de envio de link de redefinição (alternativo)" },
 
   "loginUnexpectedResetError": "Unerwarteter Fehler beim Zurücksetzen des Passworts",
-  "@loginUnexpectedResetError": { "description": "LOGIN — Unerwarteter Reset-Fehler (CH)" },
+  "@loginUnexpectedResetError": { "description": "LOGIN — Erro inesperado no reset (alternativo)" },
 
-  "ok": "OK",
-  "@ok": { "description": "ALLGEMEIN — OK Button (CH)" },
+  "loginSigningInWithGoogle": "Anmeldung mit Google...",
+  "@loginSigningInWithGoogle": { "description": "LOGIN — Loader ao iniciar login com Google (alternativo)" },
 
+  "loginPreparingAccount": "Dein Konto wird vorbereitet...",
+  "@loginPreparingAccount": { "description": "LOGIN — Loader durante warmup/bootstrap após login (alternativo)" },
 
-  "loginSigningInWithGoogle": "Aamelde mit Google...",
-  "@loginSigningInWithGoogle": { "description": "LOGIN — Loader beim Google-Login (CH)" },
+  "registerHeaderTitle": "Konto erstellen",
+  "@registerHeaderTitle": { "description": "REGISTER — Título do header" },
 
-  "loginPreparingAccount": "Mir bereitet dis Konto vor...",
-  "@loginPreparingAccount": { "description": "LOGIN — Loader während Warmup/Bootstrap (CH)" }
+  "registerHeaderSubtitle": "Behalte deinen Bestand vom ersten Tag an vollständig im Blick.",
+  "@registerHeaderSubtitle": { "description": "REGISTER — Subtítulo do header" },
 
+  "registerGoogleGenericFail": "Anmeldung mit Google fehlgeschlagen. Bitte erneut versuchen.",
+  "@registerGoogleGenericFail": { "description": "REGISTER — Falha genérica ao entrar com Google" },
 
+  "registerCancelFail": "Abbrechen ist derzeit nicht möglich. Bitte erneut versuchen.",
+  "@registerCancelFail": { "description": "REGISTER — Falha ao cancelar" },
 
+  "registerEmailRequired": "Bitte E-Mail eingeben.",
+  "@registerEmailRequired": { "description": "REGISTER — E-mail obrigatório" },
 
+  "registerSendVerificationUnexpectedError": "Unerwarteter Fehler beim Senden der Bestätigung.",
+  "@registerSendVerificationUnexpectedError": { "description": "REGISTER — Erro inesperado ao enviar verificação" },
+
+  "registerVerificationEmailResent": "E-Mail erneut gesendet. Bitte Posteingang (und Spam) prüfen.",
+  "@registerVerificationEmailResent": { "description": "REGISTER — E-mail de verificação reenviado" },
+
+  "registerResendVerificationUnexpectedError": "Unerwarteter Fehler beim erneuten Senden der Bestätigung.",
+  "@registerResendVerificationUnexpectedError": { "description": "REGISTER — Erro inesperado ao reenviar verificação" },
+
+  "registerChangeEmailHint": "Du kannst die E-Mail ändern und es erneut versuchen.",
+  "@registerChangeEmailHint": { "description": "REGISTER — Dica para alterar o e-mail" },
+
+  "registerChangeEmailFail": "E-Mail konnte derzeit nicht geändert werden. Bitte erneut versuchen.",
+  "@registerChangeEmailFail": { "description": "REGISTER — Falha ao alterar e-mail" },
+
+  "registerPasswordAndConfirmRequired": "Bitte Passwort und Bestätigung eingeben.",
+  "@registerPasswordAndConfirmRequired": { "description": "REGISTER — Senha e confirmação obrigatórias" },
+
+  "registerPasswordsDoNotMatch": "Die Passwörter stimmen nicht überein.",
+  "@registerPasswordsDoNotMatch": { "description": "REGISTER — Senhas não coincidem" },
+
+  "registerCreateAccountUnexpectedError": "Unerwarteter Fehler beim Erstellen des Kontos.",
+  "@registerCreateAccountUnexpectedError": { "description": "REGISTER — Erro inesperado ao criar conta" },
+
+  "registerErrorEmailAlreadyInUse": "Diese E-Mail wird bereits verwendet.",
+  "@registerErrorEmailAlreadyInUse": { "description": "REGISTER — E-mail já em uso" },
+
+  "registerErrorWeakPassword": "Schwaches Passwort.",
+  "@registerErrorWeakPassword": { "description": "REGISTER — Senha fraca" },
+
+  "registerErrorNoConnection": "Keine Verbindung. Bitte erneut versuchen.",
+  "@registerErrorNoConnection": { "description": "REGISTER — Sem conexão" },
+
+  "registerErrorTooManyRequests": "Zu viele Versuche. Bitte warte kurz.",
+  "@registerErrorTooManyRequests": { "description": "REGISTER — Muitas tentativas" },
+
+  "registerErrorGeneric": "Fehler beim Fortfahren mit der Registrierung.",
+  "@registerErrorGeneric": { "description": "REGISTER — Erro genérico" },
+
+  "registerEmailLabel": "E-Mail",
+  "@registerEmailLabel": { "description": "REGISTER — Label do campo e-mail" },
+
+  "registerEmailValidatorRequired": "E-Mail angeben",
+  "@registerEmailValidatorRequired": { "description": "REGISTER — Validação: e-mail obrigatório" },
+
+  "registerFooterHaveAccount": "Schon ein Konto? ",
+  "@registerFooterHaveAccount": { "description": "REGISTER — Texto antes do link de login" },
+
+  "registerFooterLogin": "Anmelden",
+  "@registerFooterLogin": { "description": "REGISTER — Texto do link de login" },
+
+  "registerPasswordLabel": "Passwort",
+  "@registerPasswordLabel": { "description": "REGISTER — Label do campo senha" },
+
+  "registerConfirmPasswordLabel": "Passwort bestätigen",
+  "@registerConfirmPasswordLabel": { "description": "REGISTER — Label do campo confirmar senha" },
+
+  "registerContinueWithGoogle": "Mit Google fortfahren",
+  "@registerContinueWithGoogle": { "description": "REGISTER — Botão social Google" },
+
+  "registerContinueWithApple": "Mit Apple fortfahren",
+  "@registerContinueWithApple": { "description": "REGISTER — Botão social Apple" },
+
+  "registerGoogleCancelled": "Google-Anmeldung abgebrochen.",
+  "@registerGoogleCancelled": { "description": "REGISTER — Google cancelado" },
+
+  "registerGoogleUserNotFound": "Google-Benutzer konnte nicht abgerufen werden.",
+  "@registerGoogleUserNotFound": { "description": "REGISTER — Usuário Google não obtido" },
+
+  "registerInvalidEmail": "Ungültige E-Mail.",
+  "@registerInvalidEmail": { "description": "REGISTER — E-mail inválido" },
+
+  "registerVerificationEmailSent": "Bestätigungs-E-Mail gesendet. Bitte Posteingang (und Spam) prüfen.",
+  "@registerVerificationEmailSent": { "description": "REGISTER — Verificação enviada" },
+
+  "registerVerifyEmailBeforeContinue": "Bitte bestätige deine E-Mail, bevor du fortfährst.",
+  "@registerVerifyEmailBeforeContinue": { "description": "REGISTER — Aviso para verificar e-mail" },
+
+  "registerPasswordMustBeStrong": "Für die Kontoerstellung muss das Passwort stark sein.",
+  "@registerPasswordMustBeStrong": { "description": "REGISTER — Aviso de senha forte" },
+
+  "registerInvalidSessionRedoEmailVerification": "Ungültige Sitzung. Bitte E-Mail-Bestätigung erneut durchführen.",
+  "@registerInvalidSessionRedoEmailVerification": { "description": "REGISTER — Sessão inválida" },
+
+  "registerEnteringWithGoogleLoading": "Anmeldung mit Google...",
+  "@registerEnteringWithGoogleLoading": { "description": "REGISTER — Loader ao iniciar login/cadastro com Google" },
+
+  "registerLoginNotCompleted": "Anmeldung nicht abgeschlossen. Bitte erneut versuchen.",
+  "@registerLoginNotCompleted": { "description": "REGISTER — Erro quando currentUser é null após login/cadastro" },
+
+  "registerPreparingAccountLoading": "Dein Konto wird vorbereitet...",
+  "@registerPreparingAccountLoading": { "description": "REGISTER — Loader durante warmup/bootstrap após login/cadastro" },
+
+  "registerEmailHint": "E-Mail",
+  "@registerEmailHint": { "description": "REGISTER — Hint do campo e-mail" },
+
+  "registerSendVerificationButton": "Bestätigungs-E-Mail senden",
+  "@registerSendVerificationButton": { "description": "REGISTER — Botão para enviar e-mail de verificação" },
+
+  "registerResendVerificationButton": "Bestätigungs-E-Mail erneut senden",
+  "@registerResendVerificationButton": { "description": "REGISTER — Botão para reenviar e-mail de verificação" },
+
+  "registerResendInSeconds": "Erneut senden in {seconds}s",
+  "@registerResendInSeconds": {
+    "description": "REGISTER — Texto do botão de reenviar com cooldown",
+    "placeholders": { "seconds": { "type": "int" } }
+  },
+
+  "registerNotThisEmail": "Nicht diese E-Mail?",
+  "@registerNotThisEmail": { "description": "REGISTER — Link para trocar e-mail" },
+
+  "registerOrContinueWith": "oder fortfahren mit",
+  "@registerOrContinueWith": { "description": "REGISTER — Divisor social" },
+
+  "registerAppleNotImplemented": "Apple ist noch nicht implementiert.",
+  "@registerAppleNotImplemented": { "description": "REGISTER — Apple login não disponível" },
+
+  "registerPasswordHint": "Passwort",
+  "@registerPasswordHint": { "description": "REGISTER — Hint do campo senha" },
+
+  "registerConfirmPasswordHint": "Passwort bestätigen",
+  "@registerConfirmPasswordHint": { "description": "REGISTER — Hint do campo confirmar senha" },
+
+  "registerCreateAccountButton": "Konto erstellen",
+  "@registerCreateAccountButton": { "description": "REGISTER — Botão principal de criar conta" },
+
+  "registerDeleteRegistration": "Registrierung löschen",
+  "@registerDeleteRegistration": { "description": "REGISTER — Ação para cancelar/excluir fluxo de cadastro" },
+
+  "registerPasswordStrengthVeryWeak": "Sehr schwach",
+  "@registerPasswordStrengthVeryWeak": { "description": "REGISTER — Força de senha (muito fraca)" },
+
+  "registerPasswordStrengthWeak": "Schwach",
+  "@registerPasswordStrengthWeak": { "description": "REGISTER — Força de senha (fraca)" },
+
+  "registerPasswordStrengthStrong": "Stark",
+  "@registerPasswordStrengthStrong": { "description": "REGISTER — Força de senha (forte)" },
+
+  "registerPasswordStrengthLine": "Passwortstärke: {label}",
+  "@registerPasswordStrengthLine": {
+    "description": "REGISTER — Linha que mostra força da senha",
+    "placeholders": { "label": { "type": "String" } }
+  },
+
+  "registerPasswordTip": "Tipp: 8+ Zeichen, Gross-/Kleinbuchstabe, Zahl und Symbol.",
+  "@registerPasswordTip": { "description": "REGISTER — Dica para senha forte" },
+
+  "registerEmailVerifiedStatus": "E-Mail bestätigt.",
+  "@registerEmailVerifiedStatus": { "description": "REGISTER — Status quando email foi verificado" },
+
+  "registerAwaitingUserVerification": "Warten auf Benutzerbestätigung",
+  "@registerAwaitingUserVerification": { "description": "REGISTER — Status quando está aguardando o usuário verificar email" },
+
+  "registerRestoringRegistration": "Deine Registrierung wird wiederhergestellt...",
+  "@registerRestoringRegistration": { "description": "REGISTER — Mensagem exibida ao restaurar cadastro/estado" }
 }

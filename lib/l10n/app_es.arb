@@ -1,72 +1,72 @@
 {
   "@@locale": "es",
-  "@@description": "Traduções ES (Espanhol) do MyStoreDay",
+  "@@description": "Traducciones ES (Español) para MyStoreDay",
 
   "appTitle": "MyStoreDay",
-  "@appTitle": { "description": "GERAL / APP — Título principal do aplicativo" },
+  "@appTitle": { "description": "GENERAL / APP — Título principal de la aplicación" },
 
   "hello": "Hola",
-  "@hello": { "description": "GERAL / APP — Saudação genérica" },
+  "@hello": { "description": "GENERAL / APP — Saludo genérico" },
 
   "helloCompany": "Hola, {company}.",
   "@helloCompany": {
-    "description": "GERAL / APP — Saudação com nome da empresa",
+    "description": "GENERAL / APP — Saludo con el nombre de la empresa",
     "placeholders": { "company": {} }
   },
 
   "authChoiceLogin": "Iniciar sesión",
-  "@authChoiceLogin": { "description": "TELA AUTH_CHOICE — Texto do botão Login" },
+  "@authChoiceLogin": { "description": "PANTALLA AUTH_CHOICE — Texto del botón Iniciar sesión" },
 
   "authChoiceRegister": "Registrarse",
-  "@authChoiceRegister": { "description": "TELA AUTH_CHOICE — Texto do botão Cadastrar" },
+  "@authChoiceRegister": { "description": "PANTALLA AUTH_CHOICE — Texto del botón Registrarse" },
 
-  "stockToday": "Tu inventario hoy",
-  "@stockToday": { "description": "TELA ESTOQUE / HOME — Título do resumo do estoque" },
+  "stockToday": "Tu stock hoy",
+  "@stockToday": { "description": "PANTALLA STOCK / INICIO — Título del resumen de stock" },
 
   "searchProductHint": "Buscar producto...",
-  "@searchProductHint": { "description": "TELA ESTOQUE / HOME — Placeholder do campo de busca de produtos" },
+  "@searchProductHint": { "description": "PANTALLA STOCK / INICIO — Placeholder del campo de búsqueda de productos" },
 
   "allCategory": "Todos",
-  "@allCategory": { "description": "TELA ESTOQUE / HOME — Filtro 'Todos' (categorias)" },
+  "@allCategory": { "description": "PANTALLA STOCK / INICIO — Filtro 'Todos' (categorías)" },
 
   "noProductsFound": "No se encontraron productos",
-  "@noProductsFound": { "description": "TELA ESTOQUE / HOME — Mensagem quando não há produtos" },
+  "@noProductsFound": { "description": "PANTALLA STOCK / INICIO — Mensaje cuando no hay productos" },
 
   "languageTitle": "Idioma",
-  "@languageTitle": { "description": "TELA IDIOMA — Título da tela de idioma" },
+  "@languageTitle": { "description": "PANTALLA IDIOMA — Título de la pantalla de idioma" },
 
   "languageSystem": "Idioma del sistema",
-  "@languageSystem": { "description": "TELA IDIOMA — Opção para usar idioma do sistema" },
+  "@languageSystem": { "description": "PANTALLA IDIOMA — Opción para usar el idioma del sistema" },
 
   "languageSystemDescription": "Usar automáticamente el idioma de tu dispositivo",
-  "@languageSystemDescription": { "description": "TELA IDIOMA — Descrição do idioma do sistema" },
+  "@languageSystemDescription": { "description": "PANTALLA IDIOMA — Descripción del idioma del sistema" },
 
   "searchLanguageHint": "Buscar idioma...",
-  "@searchLanguageHint": { "description": "TELA IDIOMA — Placeholder do campo de busca de idioma" },
+  "@searchLanguageHint": { "description": "PANTALLA IDIOMA — Placeholder del campo de búsqueda de idioma" },
 
   "languageSectionPreferences": "Preferencias",
-  "@languageSectionPreferences": { "description": "TELA IDIOMA — Título da seção de preferências" },
+  "@languageSectionPreferences": { "description": "PANTALLA IDIOMA — Título de la sección de preferencias" },
 
   "languageSectionAvailable": "Idiomas disponibles",
-  "@languageSectionAvailable": { "description": "TELA IDIOMA — Título da seção de idiomas disponíveis" },
+  "@languageSectionAvailable": { "description": "PANTALLA IDIOMA — Título de la sección de idiomas disponibles" },
 
   "selectedLabel": "Seleccionado",
-  "@selectedLabel": { "description": "TELA IDIOMA — Label exibido quando idioma está selecionado" },
+  "@selectedLabel": { "description": "PANTALLA IDIOMA — Etiqueta mostrada cuando el idioma está seleccionado" },
 
   "noLanguageFound": "No se encontró ningún idioma",
-  "@noLanguageFound": { "description": "TELA IDIOMA — Mensagem quando a busca não encontra idiomas" },
+  "@noLanguageFound": { "description": "PANTALLA IDIOMA — Mensaje cuando la búsqueda no encuentra idiomas" },
 
   "languageConfirmTitle": "Confirmar cambio",
-  "@languageConfirmTitle": { "description": "MODAL IDIOMA — Título do modal de confirmação" },
+  "@languageConfirmTitle": { "description": "MODAL IDIOMA — Título del modal de confirmación" },
 
-  "languageConfirmMessage": "¿Deseas aplicar este idioma ahora? Puedes cambiarlo cuando quieras.",
-  "@languageConfirmMessage": { "description": "MODAL IDIOMA — Mensagem do modal de confirmação" },
+  "languageConfirmMessage": "¿Deseas aplicar este idioma ahora? Puedes cambiarlo nuevamente cuando quieras.",
+  "@languageConfirmMessage": { "description": "MODAL IDIOMA — Mensaje del modal de confirmación" },
 
   "apply": "Aplicar",
-  "@apply": { "description": "MODAL / BOTÕES — Ação de confirmar/aplicar" },
+  "@apply": { "description": "MODAL / BOTONES — Acción de confirmar/aplicar" },
 
   "cancel": "Cancelar",
-  "@cancel": { "description": "MODAL / BOTÕES — Ação de cancelar/voltar" },
+  "@cancel": { "description": "MODAL / BOTONES — Acción de cancelar/volver" },
 
   "fieldRequired": "Campo obligatorio",
   "@fieldRequired": { "description": "VALIDACIÓN — Mensaje estándar de campo obligatorio" },
@@ -80,8 +80,8 @@
   "newProductNameLabel": "Nombre del producto",
   "@newProductNameLabel": { "description": "PANTALLA NUEVO_PRODUCTO — Etiqueta del campo nombre" },
 
-  "newProductNameHint": "Ej: Arroz 5kg",
-  "@newProductNameHint": { "description": "PANTALLA NUEVO_PRODUCTO — Placeholder del campo nombre" },
+  "newProductNameHint": "Ej.: Arroz 5 kg",
+  "@newProductNameHint": { "description": "PANTALLA NUEVO_PRODUCTO — Hint del campo nombre" },
 
   "newProductNameMin": "El nombre debe tener al menos 2 caracteres",
   "@newProductNameMin": { "description": "VALIDACIÓN — Longitud mínima del nombre" },
@@ -97,33 +97,31 @@
 
   "newProductNameHelperChars": "{count}/50 caracteres",
   "@newProductNameHelperChars": {
-    "description": "PANTALLA NUEVO_PRODUCTO — Contador de caracteres del nombre",
-    "placeholders": {
-      "count": { "type": "int" }
-    }
+    "description": "PANTALLA NUEVO_PRODUCTO — Ayuda de conteo de caracteres del nombre",
+    "placeholders": { "count": { "type": "int" } }
   },
 
   "newProductNameHelperNearLimit": "(Cerca del límite)",
-  "@newProductNameHelperNearLimit": { "description": "PANTALLA NUEVO_PRODUCTO — Helper cuando está cerca del límite" },
+  "@newProductNameHelperNearLimit": { "description": "PANTALLA NUEVO_PRODUCTO — Ayuda cuando está cerca del límite" },
 
   "newProductNameHelperLimitReached": "(límite alcanzado)",
-  "@newProductNameHelperLimitReached": { "description": "PANTALLA NUEVO_PRODUCTO — Helper cuando alcanzó el límite" },
+  "@newProductNameHelperLimitReached": { "description": "PANTALLA NUEVO_PRODUCTO — Ayuda cuando alcanzó el límite" },
 
   "newProductQuantityLabel": "Cantidad",
   "@newProductQuantityLabel": { "description": "PANTALLA NUEVO_PRODUCTO — Etiqueta del campo cantidad" },
 
-  "newProductPriceLabel": "Precio (R$)",
+  "newProductPriceLabel": "Precio ($)",
   "@newProductPriceLabel": { "description": "PANTALLA NUEVO_PRODUCTO — Etiqueta del campo precio" },
 
   "newProductFillAllFields": "Completa todos los campos",
-  "@newProductFillAllFields": { "description": "SNACKBAR — Faltan datos obligatorios" },
+  "@newProductFillAllFields": { "description": "SNACKBAR — Faltan datos" },
 
   "newProductNameAlreadyExists": "Ya existe un producto con este nombre",
   "@newProductNameAlreadyExists": { "description": "SNACKBAR — El nombre del producto ya existe" },
 
   "newProductBarcodeAlreadyLinked": "Este código de barras ya está asociado al producto {name}.",
   "@newProductBarcodeAlreadyLinked": {
-    "description": "SNACKBAR — Código de barras ya vinculado a otro producto",
+    "description": "SNACKBAR — Código de barras ya registrado en otro producto",
     "placeholders": { "name": {} }
   },
 
@@ -135,45 +133,45 @@
     "description": "SNACKBAR — Error al guardar con detalles",
     "placeholders": { "error": {} }
   },
-  
+
   "newProductImageAdd": "Agregar imagen",
-  "@newProductImageAdd": { "description": "PANTALLA NUEVO_PRODUCTO — Acción para agregar imagen del producto" },
+  "@newProductImageAdd": { "description": "PANTALLA NUEVO_PRODUCTO — Acción/botón para agregar imagen del producto" },
 
   "newProductBarcodeLabel": "Código de barras",
-  "@newProductBarcodeLabel": { "description": "PANTALLA NUEVO_PRODUCTO — Etiqueta del campo de código de barras" },
+  "@newProductBarcodeLabel": { "description": "PANTALLA NUEVO_PRODUCTO — Etiqueta del campo código de barras" },
 
-  "newProductBarcodeHint": "Ej: 7891234567890",
-  "@newProductBarcodeHint": { "description": "PANTALLA NUEVO_PRODUCTO — Placeholder del campo de código de barras" },
+  "newProductBarcodeHint": "Ej.: 7891234567890",
+  "@newProductBarcodeHint": { "description": "PANTALLA NUEVO_PRODUCTO — Hint/placeholder del campo código de barras" },
 
   "newProductCategoryLabel": "Categoría",
-  "@newProductCategoryLabel": { "description": "PANTALLA NUEVO_PRODUCTO — Etiqueta del campo de categoría" },
+  "@newProductCategoryLabel": { "description": "PANTALLA NUEVO_PRODUCTO — Etiqueta del campo categoría" },
 
   "newProductCategoryLoading": "Cargando categorías...",
-  "@newProductCategoryLoading": { "description": "PANTALLA NUEVO_PRODUCTO — Texto mientras se cargan las categorías" },
+  "@newProductCategoryLoading": { "description": "PANTALLA NUEVO_PRODUCTO — Texto mientras se cargan categorías" },
 
   "newProductCategoryHint": "Selecciona una categoría",
-  "@newProductCategoryHint": { "description": "PANTALLA NUEVO_PRODUCTO — Placeholder del selector de categoría" },
+  "@newProductCategoryHint": { "description": "PANTALLA NUEVO_PRODUCTO — Hint del selector de categoría" },
 
   "newProductCategoryValidator": "Selecciona una categoría",
-  "@newProductCategoryValidator": { "description": "VALIDACIÓN — Mensaje cuando no se selecciona la categoría" },
+  "@newProductCategoryValidator": { "description": "VALIDACIÓN — Mensaje cuando no se seleccionó la categoría" },
 
   "newProductSaveButton": "Guardar producto",
   "@newProductSaveButton": { "description": "PANTALLA NUEVO_PRODUCTO — Texto del botón guardar" },
 
-    "loginEmailHint": "Correo",
-  "@loginEmailHint": { "description": "PANTALLA LOGIN — Placeholder del campo correo" },
+  "loginEmailHint": "Email",
+  "@loginEmailHint": { "description": "PANTALLA LOGIN — Hint del campo email" },
 
   "loginPasswordHint": "Contraseña",
-  "@loginPasswordHint": { "description": "PANTALLA LOGIN — Placeholder del campo contraseña" },
+  "@loginPasswordHint": { "description": "PANTALLA LOGIN — Hint del campo contraseña" },
 
   "loginForgotPassword": "¿Olvidaste tu contraseña?",
-  "@loginForgotPassword": { "description": "PANTALLA LOGIN — Botón/link para restablecer contraseña" },
+  "@loginForgotPassword": { "description": "PANTALLA LOGIN — Enlace/botón para restablecer contraseña" },
 
   "loginSubmitButton": "Entrar",
-  "@loginSubmitButton": { "description": "PANTALLA LOGIN — Texto del botón principal" },
+  "@loginSubmitButton": { "description": "PANTALLA LOGIN — Texto del botón principal de entrar" },
 
   "loginOrContinueWith": "o continúa con",
-  "@loginOrContinueWith": { "description": "PANTALLA LOGIN — Divisor social" },
+  "@loginOrContinueWith": { "description": "PANTALLA LOGIN — Divisor social (o continúa con)" },
 
   "loginWithGoogle": "Entrar con Google",
   "@loginWithGoogle": { "description": "PANTALLA LOGIN — Botón social Google" },
@@ -181,26 +179,26 @@
   "loginWithApple": "Entrar con Apple",
   "@loginWithApple": { "description": "PANTALLA LOGIN — Botón social Apple" },
 
-  "loginWelcomeBackTitle": "¡Bienvenido de vuelta!",
-  "@loginWelcomeBackTitle": { "description": "PANTALLA LOGIN — Título del header" },
+  "loginWelcomeBackTitle": "¡Bienvenido de nuevo!",
+  "@loginWelcomeBackTitle": { "description": "PANTALLA LOGIN — Título del encabezado" },
 
-  "loginWelcomeBackSubtitle": "Entra y gestiona tu inventario con facilidad.",
-  "@loginWelcomeBackSubtitle": { "description": "PANTALLA LOGIN — Subtítulo del header" },
+  "loginWelcomeBackSubtitle": "Entra y gestiona tu stock con facilidad.",
+  "@loginWelcomeBackSubtitle": { "description": "PANTALLA LOGIN — Subtítulo del encabezado" },
 
   "loginNoAccountPrefix": "¿Aún no tienes cuenta? ",
-  "@loginNoAccountPrefix": { "description": "PANTALLA LOGIN — Texto antes del link de registro" },
+  "@loginNoAccountPrefix": { "description": "PANTALLA LOGIN — Texto antes del enlace de registro" },
 
   "loginCreateNow": "Crear ahora",
-  "@loginCreateNow": { "description": "PANTALLA LOGIN — Link/botón para registrarse" },
+  "@loginCreateNow": { "description": "PANTALLA LOGIN — Enlace/botón para ir al registro" },
 
-  "loginErrorFillEmailAndPassword": "Completa el correo y la contraseña",
-  "@loginErrorFillEmailAndPassword": { "description": "LOGIN — Error cuando faltan correo/contraseña" },
+  "loginErrorFillEmailAndPassword": "Completa el email y la contraseña",
+  "@loginErrorFillEmailAndPassword": { "description": "LOGIN — Error cuando email/contraseña están vacíos" },
 
   "loginErrorGetUser": "Error al obtener el usuario",
-  "@loginErrorGetUser": { "description": "LOGIN — Error cuando currentUser es null tras login" },
+  "@loginErrorGetUser": { "description": "LOGIN — Error cuando currentUser es null después del login" },
 
   "loginErrorUserNotFound": "Usuario no encontrado",
-  "@loginErrorUserNotFound": { "description": "LOGIN — Error cuando no existe el doc del usuario" },
+  "@loginErrorUserNotFound": { "description": "LOGIN — Error cuando el documento del usuario no existe en Firestore" },
 
   "loginErrorAccountDisabled": "Tu cuenta está desactivada.",
   "@loginErrorAccountDisabled": { "description": "LOGIN — Error cuando la cuenta está desactivada" },
@@ -215,63 +213,227 @@
   "@ok": { "description": "GENERAL / BOTONES — Acción de confirmar/cerrar" },
 
   "loginErrorCheckUser": "Error al verificar el usuario",
-  "@loginErrorCheckUser": { "description": "LOGIN — Error genérico al verificar usuario" },
+  "@loginErrorCheckUser": { "description": "LOGIN — Error genérico al comprobar el estado del usuario" },
 
-  "loginResetPasswordEmailRequired": "Indica tu correo para restablecer la contraseña",
-  "@loginResetPasswordEmailRequired": { "description": "LOGIN — Error al restablecer sin correo" },
+  "loginResetPasswordEmailRequired": "Introduce tu email para restablecer la contraseña",
+  "@loginResetPasswordEmailRequired": { "description": "LOGIN — Error al intentar restablecer sin email" },
 
-  "loginResetPasswordSuccess": "Enviamos un enlace de restablecimiento a tu correo.",
-  "@loginResetPasswordSuccess": { "description": "LOGIN — Éxito al restablecer contraseña" },
+  "loginResetPasswordSuccess": "Enviamos un enlace de restablecimiento a tu email.",
+  "@loginResetPasswordSuccess": { "description": "LOGIN — Mensaje de éxito al restablecer la contraseña" },
 
   "loginResetPasswordUnexpectedError": "Error inesperado al restablecer la contraseña",
-  "@loginResetPasswordUnexpectedError": { "description": "LOGIN — Error inesperado al restablecer contraseña" },
+  "@loginResetPasswordUnexpectedError": { "description": "LOGIN — Error inesperado en el restablecimiento" },
 
-  "loginLoadingGoogle": "Iniciando con Google...",
-  "@loginLoadingGoogle": { "description": "LOADER — Texto durante login con Google" },
+  "loginLoadingGoogle": "Entrando con Google...",
+  "@loginLoadingGoogle": { "description": "LOADER — Texto mientras se inicia sesión con Google" },
 
   "loginLoadingPrepareAccount": "Preparando tu cuenta...",
-  "@loginLoadingPrepareAccount": { "description": "LOADER — Texto durante warmup/bootstrap" },
+  "@loginLoadingPrepareAccount": { "description": "LOADER — Texto durante warmup/bootstrap después del login" },
 
-    "loginFillEmailAndPassword": "Completa el correo y la contraseña",
-  "@loginFillEmailAndPassword": { "description": "LOGIN — Campos vacíos" },
+  "loginFillEmailAndPassword": "Completa el email y la contraseña",
+  "@loginFillEmailAndPassword": { "description": "LOGIN — Error cuando email o contraseña están vacíos (alternativo)" },
 
   "loginErrorGettingUser": "Error al obtener el usuario",
-  "@loginErrorGettingUser": { "description": "LOGIN — Error al obtener usuario autenticado" },
+  "@loginErrorGettingUser": { "description": "LOGIN — Error al obtener el usuario autenticado (alternativo)" },
 
   "loginUserNotFound": "Usuario no encontrado",
-  "@loginUserNotFound": { "description": "LOGIN — Usuario no encontrado en Firestore" },
+  "@loginUserNotFound": { "description": "LOGIN — Usuario no encontrado en Firestore (alternativo)" },
 
   "loginAccountDisabledShort": "Tu cuenta está desactivada.",
-  "@loginAccountDisabledShort": { "description": "LOGIN — Cuenta desactivada (corto)" },
+  "@loginAccountDisabledShort": { "description": "LOGIN — Cuenta desactivada (mensaje corto)" },
 
   "loginAccountDisabledTitle": "Cuenta desactivada",
-  "@loginAccountDisabledTitle": { "description": "LOGIN — Título del modal" },
+  "@loginAccountDisabledTitle": { "description": "LOGIN — Título del modal de cuenta desactivada (alternativo)" },
 
-  "loginAccountDisabledMessage": "Tu cuenta está desactivada. Ponte en contacto con el soporte.",
-  "@loginAccountDisabledMessage": { "description": "LOGIN — Mensaje del modal" },
+  "loginAccountDisabledMessage": "Tu cuenta está desactivada. Ponte en contacto con soporte.",
+  "@loginAccountDisabledMessage": { "description": "LOGIN — Mensaje del modal de cuenta desactivada (alternativo)" },
 
   "loginErrorCheckingUser": "Error al verificar el usuario",
-  "@loginErrorCheckingUser": { "description": "LOGIN — Error al verificar usuario" },
+  "@loginErrorCheckingUser": { "description": "LOGIN — Error al verificar el estado del usuario (alternativo)" },
 
-  "loginEnterEmailToReset": "Introduce tu correo para restablecer la contraseña",
-  "@loginEnterEmailToReset": { "description": "LOGIN — Email vacío en reset" },
+  "loginEnterEmailToReset": "Introduce tu email para restablecer la contraseña",
+  "@loginEnterEmailToReset": { "description": "LOGIN — Email obligatorio para restablecer (alternativo)" },
 
-  "loginResetLinkSent": "Te enviamos un enlace para restablecer tu contraseña.",
-  "@loginResetLinkSent": { "description": "LOGIN — Confirmación de reset" },
+  "loginResetLinkSent": "Enviamos un enlace de restablecimiento a tu email.",
+  "@loginResetLinkSent": { "description": "LOGIN — Confirmación de envío del enlace (alternativo)" },
 
   "loginUnexpectedResetError": "Error inesperado al restablecer la contraseña",
-  "@loginUnexpectedResetError": { "description": "LOGIN — Error inesperado en reset" },
+  "@loginUnexpectedResetError": { "description": "LOGIN — Error inesperado (alternativo)" },
 
-  "ok": "OK",
-  "@ok": { "description": "GERAL — Botón OK" },
-
-  "loginSigningInWithGoogle": "Iniciando sesión con Google...",
-  "@loginSigningInWithGoogle": { "description": "LOGIN — Loader al iniciar Google" },
+  "loginSigningInWithGoogle": "Entrando con Google...",
+  "@loginSigningInWithGoogle": { "description": "LOGIN — Loader al iniciar login con Google (alternativo)" },
 
   "loginPreparingAccount": "Preparando tu cuenta...",
-  "@loginPreparingAccount": { "description": "LOGIN — Loader durante warmup/bootstrap" }
+  "@loginPreparingAccount": { "description": "LOGIN — Loader durante warmup/bootstrap (alternativo)" },
 
+  "registerHeaderTitle": "Crea tu cuenta",
+  "@registerHeaderTitle": { "description": "REGISTER — Título del encabezado" },
 
+  "registerHeaderSubtitle": "Ten control total de tu stock desde el primer día.",
+  "@registerHeaderSubtitle": { "description": "REGISTER — Subtítulo del encabezado" },
 
+  "registerGoogleGenericFail": "No se pudo entrar con Google. Inténtalo de nuevo.",
+  "@registerGoogleGenericFail": { "description": "REGISTER — Fallo genérico al entrar con Google" },
 
+  "registerCancelFail": "No se pudo cancelar ahora. Inténtalo de nuevo.",
+  "@registerCancelFail": { "description": "REGISTER — Fallo al cancelar" },
+
+  "registerEmailRequired": "Completa el email.",
+  "@registerEmailRequired": { "description": "REGISTER — Email obligatorio" },
+
+  "registerSendVerificationUnexpectedError": "Error inesperado al enviar la verificación.",
+  "@registerSendVerificationUnexpectedError": { "description": "REGISTER — Error inesperado al enviar verificación" },
+
+  "registerVerificationEmailResent": "Email reenviado. Revisa tu bandeja de entrada (y spam).",
+  "@registerVerificationEmailResent": { "description": "REGISTER — Email de verificación reenviado" },
+
+  "registerResendVerificationUnexpectedError": "Error inesperado al reenviar la verificación.",
+  "@registerResendVerificationUnexpectedError": { "description": "REGISTER — Error inesperado al reenviar verificación" },
+
+  "registerChangeEmailHint": "Puedes cambiar el email e intentarlo de nuevo.",
+  "@registerChangeEmailHint": { "description": "REGISTER — Sugerencia para cambiar el email" },
+
+  "registerChangeEmailFail": "No se pudo cambiar ahora. Inténtalo de nuevo.",
+  "@registerChangeEmailFail": { "description": "REGISTER — Fallo al cambiar email" },
+
+  "registerPasswordAndConfirmRequired": "Completa la contraseña y la confirmación.",
+  "@registerPasswordAndConfirmRequired": { "description": "REGISTER — Contraseña y confirmación obligatorias" },
+
+  "registerPasswordsDoNotMatch": "Las contraseñas no coinciden.",
+  "@registerPasswordsDoNotMatch": { "description": "REGISTER — Las contraseñas no coinciden" },
+
+  "registerCreateAccountUnexpectedError": "Error inesperado al crear la cuenta.",
+  "@registerCreateAccountUnexpectedError": { "description": "REGISTER — Error inesperado al crear cuenta" },
+
+  "registerErrorEmailAlreadyInUse": "Este email ya está en uso.",
+  "@registerErrorEmailAlreadyInUse": { "description": "REGISTER — Email ya en uso" },
+
+  "registerErrorWeakPassword": "Contraseña débil.",
+  "@registerErrorWeakPassword": { "description": "REGISTER — Contraseña débil" },
+
+  "registerErrorNoConnection": "Sin conexión. Inténtalo de nuevo.",
+  "@registerErrorNoConnection": { "description": "REGISTER — Sin conexión" },
+
+  "registerErrorTooManyRequests": "Demasiados intentos. Espera un momento.",
+  "@registerErrorTooManyRequests": { "description": "REGISTER — Demasiados intentos" },
+
+  "registerErrorGeneric": "Error al continuar el registro.",
+  "@registerErrorGeneric": { "description": "REGISTER — Error genérico" },
+
+  "registerEmailLabel": "Email",
+  "@registerEmailLabel": { "description": "REGISTER — Etiqueta del campo email" },
+
+  "registerEmailValidatorRequired": "Introduce el email",
+  "@registerEmailValidatorRequired": { "description": "REGISTER — Validación: email obligatorio" },
+
+  "registerFooterHaveAccount": "¿Ya tienes cuenta? ",
+  "@registerFooterHaveAccount": { "description": "REGISTER — Texto antes del enlace de login" },
+
+  "registerFooterLogin": "Iniciar sesión",
+  "@registerFooterLogin": { "description": "REGISTER — Texto del enlace de login" },
+
+  "registerPasswordLabel": "Contraseña",
+  "@registerPasswordLabel": { "description": "REGISTER — Etiqueta del campo contraseña" },
+
+  "registerConfirmPasswordLabel": "Confirmar contraseña",
+  "@registerConfirmPasswordLabel": { "description": "REGISTER — Etiqueta del campo confirmar contraseña" },
+
+  "registerContinueWithGoogle": "Continuar con Google",
+  "@registerContinueWithGoogle": { "description": "REGISTER — Botón social Google" },
+
+  "registerContinueWithApple": "Continuar con Apple",
+  "@registerContinueWithApple": { "description": "REGISTER — Botón social Apple" },
+
+  "registerGoogleCancelled": "Inicio de sesión con Google cancelado.",
+  "@registerGoogleCancelled": { "description": "REGISTER — Google cancelado" },
+
+  "registerGoogleUserNotFound": "No se pudo obtener el usuario de Google.",
+  "@registerGoogleUserNotFound": { "description": "REGISTER — Usuario de Google no obtenido" },
+
+  "registerInvalidEmail": "Email inválido.",
+  "@registerInvalidEmail": { "description": "REGISTER — Email inválido" },
+
+  "registerVerificationEmailSent": "Email de verificación enviado. Revisa tu bandeja de entrada (y spam).",
+  "@registerVerificationEmailSent": { "description": "REGISTER — Verificación enviada" },
+
+  "registerVerifyEmailBeforeContinue": "Verifica tu email antes de continuar.",
+  "@registerVerifyEmailBeforeContinue": { "description": "REGISTER — Aviso para verificar el email" },
+
+  "registerPasswordMustBeStrong": "La contraseña debe ser fuerte para crear la cuenta.",
+  "@registerPasswordMustBeStrong": { "description": "REGISTER — Aviso de contraseña fuerte" },
+
+  "registerInvalidSessionRedoEmailVerification": "Sesión inválida. Repite la verificación del email.",
+  "@registerInvalidSessionRedoEmailVerification": { "description": "REGISTER — Sesión inválida" },
+
+  "registerEnteringWithGoogleLoading": "Entrando con Google...",
+  "@registerEnteringWithGoogleLoading": { "description": "REGISTER — Loader al iniciar login/registro con Google" },
+
+  "registerLoginNotCompleted": "Inicio de sesión no completado. Inténtalo de nuevo.",
+  "@registerLoginNotCompleted": { "description": "REGISTER — Error cuando currentUser es null después del login/registro" },
+
+  "registerPreparingAccountLoading": "Preparando tu cuenta...",
+  "@registerPreparingAccountLoading": { "description": "REGISTER — Loader durante warmup/bootstrap después del login/registro" },
+
+  "registerEmailHint": "Email",
+  "@registerEmailHint": { "description": "REGISTER — Hint del campo email" },
+
+  "registerSendVerificationButton": "Enviar email de verificación",
+  "@registerSendVerificationButton": { "description": "REGISTER — Botón para enviar email de verificación" },
+
+  "registerResendVerificationButton": "Reenviar email de verificación",
+  "@registerResendVerificationButton": { "description": "REGISTER — Botón para reenviar email de verificación" },
+
+  "registerResendInSeconds": "Reenviar en {seconds}s",
+  "@registerResendInSeconds": {
+    "description": "REGISTER — Texto del botón de reenvío con enfriamiento",
+    "placeholders": { "seconds": { "type": "int" } }
+  },
+
+  "registerNotThisEmail": "¿No es este email?",
+  "@registerNotThisEmail": { "description": "REGISTER — Enlace para cambiar email" },
+
+  "registerOrContinueWith": "o continúa con",
+  "@registerOrContinueWith": { "description": "REGISTER — Divisor social" },
+
+  "registerAppleNotImplemented": "Apple aún no está implementado.",
+  "@registerAppleNotImplemented": { "description": "REGISTER — Apple login no disponible" },
+
+  "registerPasswordHint": "Contraseña",
+  "@registerPasswordHint": { "description": "REGISTER — Hint del campo contraseña" },
+
+  "registerConfirmPasswordHint": "Confirmar contraseña",
+  "@registerConfirmPasswordHint": { "description": "REGISTER — Hint del campo confirmar contraseña" },
+
+  "registerCreateAccountButton": "Crear cuenta",
+  "@registerCreateAccountButton": { "description": "REGISTER — Botón principal para crear cuenta" },
+
+  "registerDeleteRegistration": "Eliminar registro",
+  "@registerDeleteRegistration": { "description": "REGISTER — Acción para cancelar/eliminar el flujo de registro" },
+
+  "registerPasswordStrengthVeryWeak": "Muy débil",
+  "@registerPasswordStrengthVeryWeak": { "description": "REGISTER — Fuerza de contraseña (muy débil)" },
+
+  "registerPasswordStrengthWeak": "Débil",
+  "@registerPasswordStrengthWeak": { "description": "REGISTER — Fuerza de contraseña (débil)" },
+
+  "registerPasswordStrengthStrong": "Fuerte",
+  "@registerPasswordStrengthStrong": { "description": "REGISTER — Fuerza de contraseña (fuerte)" },
+
+  "registerPasswordStrengthLine": "Fuerza de la contraseña: {label}",
+  "@registerPasswordStrengthLine": {
+    "description": "REGISTER — Línea que muestra la fuerza de la contraseña",
+    "placeholders": { "label": { "type": "String" } }
+  },
+
+  "registerPasswordTip": "Consejo: 8+ caracteres, mayúscula, minúscula, número y símbolo.",
+  "@registerPasswordTip": { "description": "REGISTER — Consejo para una contraseña fuerte" },
+
+  "registerEmailVerifiedStatus": "Email verificado.",
+  "@registerEmailVerifiedStatus": { "description": "REGISTER — Estado cuando el email fue verificado" },
+
+  "registerAwaitingUserVerification": "Esperando la verificación del usuario",
+  "@registerAwaitingUserVerification": { "description": "REGISTER — Estado cuando se espera que el usuario verifique el email" },
+
+  "registerRestoringRegistration": "Restaurando tu registro...",
+  "@registerRestoringRegistration": { "description": "REGISTER — Mensaje al restaurar registro/estado" }
 }
