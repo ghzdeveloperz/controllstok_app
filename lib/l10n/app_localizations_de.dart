@@ -477,6 +477,254 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get registerRestoringRegistration =>
       'Ihre Registrierung wird wiederhergestellt...';
+
+  @override
+  String get yes => 'Ja';
+
+  @override
+  String get no => 'Nein';
+
+  @override
+  String get companyEmailFallback => '—';
+
+  @override
+  String get companyHeaderTitle => 'Unternehmen einrichten';
+
+  @override
+  String companyHeaderAccountLine(Object email) {
+    return 'Konto: $email';
+  }
+
+  @override
+  String get companyHeaderSubtitle =>
+      'Diese Angaben helfen, dein System zu personalisieren und deine Berichte zu organisieren.';
+
+  @override
+  String get companyCompanyHint => 'Firmenname / rechtlicher Name';
+
+  @override
+  String get companyHasFantasyNameQuestion =>
+      'Hat dein Unternehmen einen Handelsnamen?';
+
+  @override
+  String get companyFantasyNameHint => 'Handelsname';
+
+  @override
+  String get companyHasOwnerQuestion =>
+      'Möchtest du eine verantwortliche Person angeben?';
+
+  @override
+  String get companyOwnerHint => 'Verantwortliche Person';
+
+  @override
+  String get companyHasPhoneQuestion => 'Möchtest du Telefon/WhatsApp angeben?';
+
+  @override
+  String get companyPhoneHint => 'Telefon / WhatsApp';
+
+  @override
+  String get companyBusinessTypeHint => 'Branche';
+
+  @override
+  String get companyBusinessTypeSelectTitle => 'Branche auswählen';
+
+  @override
+  String get companyBusinessTypeOtherHint => 'Beschreiben (bis zu 20 Zeichen)';
+
+  @override
+  String get companyBusinessTypeRestaurant => 'Restaurant';
+
+  @override
+  String get companyBusinessTypeMarket => 'Markt';
+
+  @override
+  String get companyBusinessTypeBakery => 'Bäckerei';
+
+  @override
+  String get companyBusinessTypePharmacy => 'Apotheke';
+
+  @override
+  String get companyBusinessTypeStore => 'Geschäft';
+
+  @override
+  String get companyBusinessTypeWorkshop => 'Werkstatt';
+
+  @override
+  String get companyBusinessTypeIndustry => 'Industrie';
+
+  @override
+  String get companyBusinessTypeDistributor => 'Großhändler';
+
+  @override
+  String get companyBusinessTypeOther => 'Sonstiges';
+
+  @override
+  String get companyAcceptTermsPrefix => 'Ich habe gelesen und stimme zu:';
+
+  @override
+  String get companyTermsLink => 'Nutzungsbedingungen';
+
+  @override
+  String get companyAcceptPrivacyPrefix => 'Ich habe gelesen und stimme zu:';
+
+  @override
+  String get companyPrivacyLink => 'Datenschutzerklärung';
+
+  @override
+  String get companyFinishButton => 'Einrichtung abschließen';
+
+  @override
+  String get companyErrorCompanyRequired => 'Bitte Firmenname angeben';
+
+  @override
+  String get companyErrorBusinessTypeRequired => 'Bitte eine Branche auswählen';
+
+  @override
+  String get companyErrorOtherBusinessTypeRequired =>
+      'Bitte Branche beschreiben (bis zu 20 Zeichen)';
+
+  @override
+  String get companyErrorFantasyRequired => 'Bitte Handelsnamen angeben';
+
+  @override
+  String get companyErrorOwnerRequired =>
+      'Bitte verantwortliche Person angeben';
+
+  @override
+  String get companyErrorPhoneRequired => 'Bitte Telefon/WhatsApp angeben';
+
+  @override
+  String get companyErrorAcceptLegal =>
+      'Du musst die Nutzungsbedingungen und die Datenschutzerklärung akzeptieren.';
+
+  @override
+  String get companyErrorSaveFailed =>
+      'Daten konnten nicht gespeichert werden. Bitte erneut versuchen.';
+
+  @override
+  String get privacyPolicyTitle => 'Datenschutzerklärung';
+
+  @override
+  String get privacyPolicySection1Title => '1. Einleitung';
+
+  @override
+  String get privacyPolicySection1Body =>
+      'ControllStok ist eine App zur Lagerverwaltung. Diese Datenschutzerklärung beschreibt, wie Benutzerinformationen verarbeitet und geschützt werden.';
+
+  @override
+  String get privacyPolicySection2Title => '2. Datenerhebung';
+
+  @override
+  String get privacyPolicySection2Body =>
+      'Die App kann grundlegende Informationen erfassen, die für ihren Betrieb erforderlich sind, wie z. B. Anmeldedaten und Informationen zu im Lager erfassten Produkten.';
+
+  @override
+  String get privacyPolicySection3Title => '3. Verwendung der Informationen';
+
+  @override
+  String get privacyPolicySection3Body =>
+      'Die gesammelten Informationen werden ausschließlich für den Betrieb der App, zur Verbesserung der Benutzererfahrung und zur internen Lagerkontrolle verwendet.';
+
+  @override
+  String get privacyPolicySection4Title => '4. Weitergabe von Daten';
+
+  @override
+  String get privacyPolicySection4Body =>
+      'ControllStok gibt personenbezogene Daten nicht an Dritte weiter, außer wenn dies gesetzlich vorgeschrieben ist.';
+
+  @override
+  String get privacyPolicySection5Title => '5. Sicherheit';
+
+  @override
+  String get privacyPolicySection5Body =>
+      'Wir setzen technische und organisatorische Maßnahmen ein, um gespeicherte Daten zu schützen und das Risiko eines unbefugten Zugriffs zu minimieren.';
+
+  @override
+  String get privacyPolicySection6Title =>
+      '6. Verantwortlichkeiten der Benutzer';
+
+  @override
+  String get privacyPolicySection6Body =>
+      'Die Benutzer sind dafür verantwortlich, ihre Zugangsdaten sicher aufzubewahren und für alle Aktivitäten verantwortlich, die über ihr Konto durchgeführt werden.';
+
+  @override
+  String get privacyPolicySection7Title => '7. Änderungen';
+
+  @override
+  String get privacyPolicySection7Body =>
+      'Diese Datenschutzerklärung kann regelmäßig aktualisiert werden. Wir empfehlen den Benutzern, dieses Dokument regelmäßig zu überprüfen.';
+
+  @override
+  String get privacyPolicySection8Title => '8. Kontakt';
+
+  @override
+  String get privacyPolicySection8Body =>
+      'Wenn Sie Fragen zu dieser Datenschutzerklärung haben, kontaktieren Sie uns bitte per E-Mail unter: contact@mystoreday.com.';
+
+  @override
+  String get privacyPolicyLastUpdate => 'Letzte Aktualisierung: Januar 2025';
+
+  @override
+  String get termsOfUseTitle => 'Nutzungsbedingungen';
+
+  @override
+  String get termsOfUseSection1Title => '1. Annahme der Bedingungen';
+
+  @override
+  String get termsOfUseSection1Body =>
+      'Durch die Nutzung der MyStoreDay-App erklärt sich der Benutzer vollständig mit diesen Nutzungsbedingungen einverstanden. Wenn Sie nicht einverstanden sind, wird empfohlen, die App nicht zu nutzen.';
+
+  @override
+  String get termsOfUseSection2Title => '2. Zweck der Anwendung';
+
+  @override
+  String get termsOfUseSection2Body =>
+      'MyStoreDay dient der Unterstützung bei der Lagerverwaltung und ermöglicht die Kontrolle von Produkten, Mengen und zugehörigen Informationen.';
+
+  @override
+  String get termsOfUseSection3Title => '3. Registrierung und Verantwortung';
+
+  @override
+  String get termsOfUseSection3Body =>
+      'Der Benutzer ist für die bei der Registrierung angegebenen Informationen sowie für die Vertraulichkeit seiner Zugangsdaten verantwortlich.';
+
+  @override
+  String get termsOfUseSection4Title => '4. Ordnungsgemässe Nutzung';
+
+  @override
+  String get termsOfUseSection4Body =>
+      'Es ist untersagt, die Anwendung für illegale oder betrügerische Zwecke zu verwenden oder die Sicherheit und den Betrieb des Systems zu gefährden.';
+
+  @override
+  String get termsOfUseSection5Title => '5. Haftungsbeschränkung';
+
+  @override
+  String get termsOfUseSection5Body =>
+      'MyStoreDay übernimmt keine Haftung für Verluste, Schäden oder Nachteile, die durch eine unsachgemässe Nutzung der Anwendung oder durch vom Benutzer bereitgestellte fehlerhafte Informationen entstehen.';
+
+  @override
+  String get termsOfUseSection6Title => '6. Verfügbarkeit';
+
+  @override
+  String get termsOfUseSection6Body =>
+      'Die Anwendung kann vorübergehend aufgrund von Wartungsarbeiten, Aktualisierungen oder externer Faktoren ausserhalb der Kontrolle des Entwicklers nicht verfügbar sein.';
+
+  @override
+  String get termsOfUseSection7Title => '7. Änderungen der Bedingungen';
+
+  @override
+  String get termsOfUseSection7Body =>
+      'Die Nutzungsbedingungen können jederzeit geändert werden. Es wird empfohlen, dieses Dokument regelmässig zu überprüfen.';
+
+  @override
+  String get termsOfUseSection8Title => '8. Kontakt';
+
+  @override
+  String get termsOfUseSection8Body =>
+      'Bei Fragen zu diesen Nutzungsbedingungen kontaktieren Sie uns bitte per E-Mail unter: contact@mystoreday.com.';
+
+  @override
+  String get termsOfUseLastUpdate => 'Letzte Aktualisierung: Januar 2025';
 }
 
 /// The translations for German, as used in Switzerland (`de_CH`).
@@ -952,4 +1200,251 @@ class AppLocalizationsDeCh extends AppLocalizationsDe {
   @override
   String get registerRestoringRegistration =>
       'Deine Registrierung wird wiederhergestellt...';
+
+  @override
+  String get yes => 'Ja';
+
+  @override
+  String get no => 'Nein';
+
+  @override
+  String get companyEmailFallback => '—';
+
+  @override
+  String get companyHeaderTitle => 'Unternehmen einrichten';
+
+  @override
+  String companyHeaderAccountLine(Object email) {
+    return 'Konto: $email';
+  }
+
+  @override
+  String get companyHeaderSubtitle =>
+      'Diese Angaben helfen, dein System zu personalisieren und deine Berichte zu organisieren.';
+
+  @override
+  String get companyCompanyHint => 'Firmenname / rechtlicher Name';
+
+  @override
+  String get companyHasFantasyNameQuestion =>
+      'Hat dein Unternehmen einen Handelsnamen?';
+
+  @override
+  String get companyFantasyNameHint => 'Handelsname';
+
+  @override
+  String get companyHasOwnerQuestion =>
+      'Möchtest du eine verantwortliche Person angeben?';
+
+  @override
+  String get companyOwnerHint => 'Verantwortliche Person';
+
+  @override
+  String get companyHasPhoneQuestion => 'Möchtest du Telefon/WhatsApp angeben?';
+
+  @override
+  String get companyPhoneHint => 'Telefon / WhatsApp';
+
+  @override
+  String get companyBusinessTypeHint => 'Branche';
+
+  @override
+  String get companyBusinessTypeSelectTitle => 'Branche auswählen';
+
+  @override
+  String get companyBusinessTypeOtherHint => 'Beschreiben (bis zu 20 Zeichen)';
+
+  @override
+  String get companyBusinessTypeRestaurant => 'Restaurant';
+
+  @override
+  String get companyBusinessTypeMarket => 'Markt';
+
+  @override
+  String get companyBusinessTypeBakery => 'Bäckerei';
+
+  @override
+  String get companyBusinessTypePharmacy => 'Apotheke';
+
+  @override
+  String get companyBusinessTypeStore => 'Geschäft';
+
+  @override
+  String get companyBusinessTypeWorkshop => 'Werkstatt';
+
+  @override
+  String get companyBusinessTypeIndustry => 'Industrie';
+
+  @override
+  String get companyBusinessTypeDistributor => 'Großhändler';
+
+  @override
+  String get companyBusinessTypeOther => 'Sonstiges';
+
+  @override
+  String get companyAcceptTermsPrefix => 'Ich habe gelesen und stimme zu:';
+
+  @override
+  String get companyTermsLink => 'Nutzungsbedingungen';
+
+  @override
+  String get companyAcceptPrivacyPrefix => 'Ich habe gelesen und stimme zu:';
+
+  @override
+  String get companyPrivacyLink => 'Datenschutzerklärung';
+
+  @override
+  String get companyFinishButton => 'Einrichtung abschließen';
+
+  @override
+  String get companyErrorCompanyRequired => 'Bitte Firmenname angeben';
+
+  @override
+  String get companyErrorBusinessTypeRequired => 'Bitte eine Branche auswählen';
+
+  @override
+  String get companyErrorOtherBusinessTypeRequired =>
+      'Bitte Branche beschreiben (bis zu 20 Zeichen)';
+
+  @override
+  String get companyErrorFantasyRequired => 'Bitte Handelsnamen angeben';
+
+  @override
+  String get companyErrorOwnerRequired =>
+      'Bitte verantwortliche Person angeben';
+
+  @override
+  String get companyErrorPhoneRequired => 'Bitte Telefon/WhatsApp angeben';
+
+  @override
+  String get companyErrorAcceptLegal =>
+      'Du musst die Nutzungsbedingungen und die Datenschutzerklärung akzeptieren.';
+
+  @override
+  String get companyErrorSaveFailed =>
+      'Daten konnten nicht gespeichert werden. Bitte erneut versuchen.';
+
+  @override
+  String get privacyPolicyTitle => 'Datenschutzerklärung';
+
+  @override
+  String get privacyPolicySection1Title => '1. Einleitung';
+
+  @override
+  String get privacyPolicySection1Body =>
+      'ControllStok ist eine App zur Lagerverwaltung. Diese Datenschutzerklärung beschreibt, wie die Informationen der Benutzer verarbeitet und geschützt werden.';
+
+  @override
+  String get privacyPolicySection2Title => '2. Datenerhebung';
+
+  @override
+  String get privacyPolicySection2Body =>
+      'Die App kann grundlegende Informationen erfassen, die für ihren Betrieb erforderlich sind, wie z. B. Anmeldedaten und Informationen zu im Lager erfassten Produkten.';
+
+  @override
+  String get privacyPolicySection3Title => '3. Verwendung der Informationen';
+
+  @override
+  String get privacyPolicySection3Body =>
+      'Die gesammelten Informationen werden ausschliesslich für den Betrieb der App, zur Verbesserung der Benutzererfahrung und zur internen Lagerkontrolle verwendet.';
+
+  @override
+  String get privacyPolicySection4Title => '4. Weitergabe von Daten';
+
+  @override
+  String get privacyPolicySection4Body =>
+      'ControllStok gibt keine personenbezogenen Daten an Dritte weiter, ausser wenn dies gesetzlich vorgeschrieben ist.';
+
+  @override
+  String get privacyPolicySection5Title => '5. Sicherheit';
+
+  @override
+  String get privacyPolicySection5Body =>
+      'Wir setzen technische und organisatorische Massnahmen ein, um gespeicherte Daten zu schützen und das Risiko eines unbefugten Zugriffs zu reduzieren.';
+
+  @override
+  String get privacyPolicySection6Title => '6. Verantwortung der Benutzer';
+
+  @override
+  String get privacyPolicySection6Body =>
+      'Der Benutzer ist dafür verantwortlich, seine Zugangsdaten sicher aufzubewahren und für alle Aktivitäten verantwortlich, die über sein Konto durchgeführt werden.';
+
+  @override
+  String get privacyPolicySection7Title => '7. Änderungen';
+
+  @override
+  String get privacyPolicySection7Body =>
+      'Diese Datenschutzerklärung kann regelmässig aktualisiert werden. Wir empfehlen den Benutzern, dieses Dokument regelmässig zu überprüfen.';
+
+  @override
+  String get privacyPolicySection8Title => '8. Kontakt';
+
+  @override
+  String get privacyPolicySection8Body =>
+      'Bei Fragen zu dieser Datenschutzerklärung kontaktieren Sie uns bitte per E-Mail unter: contact@mystoreday.com.';
+
+  @override
+  String get privacyPolicyLastUpdate => 'Letzte Aktualisierung: Januar 2025';
+
+  @override
+  String get termsOfUseTitle => 'Nutzungsbedingungen';
+
+  @override
+  String get termsOfUseSection1Title => '1. Annahme der Bedingungen';
+
+  @override
+  String get termsOfUseSection1Body =>
+      'Durch die Nutzung der MyStoreDay-App erklärt sich der Benutzer vollständig mit diesen Nutzungsbedingungen einverstanden. Falls Sie nicht einverstanden sind, empfehlen wir, die App nicht zu nutzen.';
+
+  @override
+  String get termsOfUseSection2Title => '2. Zweck der Anwendung';
+
+  @override
+  String get termsOfUseSection2Body =>
+      'MyStoreDay unterstützt die Lagerverwaltung und ermöglicht die Kontrolle von Produkten, Mengen und zugehörigen Informationen.';
+
+  @override
+  String get termsOfUseSection3Title => '3. Registrierung und Verantwortung';
+
+  @override
+  String get termsOfUseSection3Body =>
+      'Der Benutzer ist verantwortlich für die bei der Registrierung angegebenen Informationen sowie für die sichere Aufbewahrung seiner Zugangsdaten.';
+
+  @override
+  String get termsOfUseSection4Title => '4. Ordnungsgemässe Nutzung';
+
+  @override
+  String get termsOfUseSection4Body =>
+      'Es ist untersagt, die Anwendung für illegale oder betrügerische Zwecke zu verwenden oder die Sicherheit und den Betrieb des Systems zu beeinträchtigen.';
+
+  @override
+  String get termsOfUseSection5Title => '5. Haftungsbeschränkung';
+
+  @override
+  String get termsOfUseSection5Body =>
+      'MyStoreDay übernimmt keine Haftung für Verluste, Schäden oder Nachteile, die durch eine unsachgemässe Nutzung der Anwendung oder fehlerhafte Angaben des Benutzers entstehen.';
+
+  @override
+  String get termsOfUseSection6Title => '6. Verfügbarkeit';
+
+  @override
+  String get termsOfUseSection6Body =>
+      'Die Anwendung kann vorübergehend aufgrund von Wartungsarbeiten, Aktualisierungen oder externer Faktoren ausserhalb der Kontrolle des Entwicklers nicht verfügbar sein.';
+
+  @override
+  String get termsOfUseSection7Title => '7. Änderungen der Bedingungen';
+
+  @override
+  String get termsOfUseSection7Body =>
+      'Diese Nutzungsbedingungen können jederzeit geändert werden. Es wird empfohlen, dieses Dokument regelmässig zu überprüfen.';
+
+  @override
+  String get termsOfUseSection8Title => '8. Kontakt';
+
+  @override
+  String get termsOfUseSection8Body =>
+      'Bei Fragen zu diesen Nutzungsbedingungen kontaktieren Sie uns bitte per E-Mail unter: contact@mystoreday.com.';
+
+  @override
+  String get termsOfUseLastUpdate => 'Letzte Aktualisierung: Januar 2025';
 }

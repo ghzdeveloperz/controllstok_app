@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class PoliticPrivacityScreen extends StatelessWidget {
   const PoliticPrivacityScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text('Política de Privacidade'),
+        title: Text(l10n.privacyPolicyTitle),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         elevation: 0.5,
@@ -18,60 +21,36 @@ class PoliticPrivacityScreen extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
-            _TitleText('1. Introdução'),
-            _BodyText(
-              'O ControllStok é um aplicativo de gerenciamento de estoque. '
-              'Esta Política de Privacidade descreve como as informações dos usuários '
-              'são tratadas e protegidas.',
-            ),
+          children: [
+            _TitleText(l10n.privacyPolicySection1Title),
+            _BodyText(l10n.privacyPolicySection1Body),
 
-            _TitleText('2. Coleta de Dados'),
-            _BodyText(
-              'O aplicativo pode coletar informações básicas necessárias para o funcionamento, '
-              'como dados de login e informações relacionadas aos produtos cadastrados no estoque.',
-            ),
+            _TitleText(l10n.privacyPolicySection2Title),
+            _BodyText(l10n.privacyPolicySection2Body),
 
-            _TitleText('3. Uso das Informações'),
-            _BodyText(
-              'As informações coletadas são utilizadas exclusivamente para o funcionamento '
-              'do aplicativo, melhoria da experiência do usuário e controle interno de estoque.',
-            ),
+            _TitleText(l10n.privacyPolicySection3Title),
+            _BodyText(l10n.privacyPolicySection3Body),
 
-            _TitleText('4. Compartilhamento de Dados'),
-            _BodyText(
-              'O ControllStok não compartilha dados pessoais com terceiros, exceto quando exigido por lei.',
-            ),
+            _TitleText(l10n.privacyPolicySection4Title),
+            _BodyText(l10n.privacyPolicySection4Body),
 
-            _TitleText('5. Segurança'),
-            _BodyText(
-              'Adotamos medidas técnicas e organizacionais para proteger os dados armazenados, '
-              'reduzindo riscos de acesso não autorizado.',
-            ),
+            _TitleText(l10n.privacyPolicySection5Title),
+            _BodyText(l10n.privacyPolicySection5Body),
 
-            _TitleText('6. Responsabilidades do Usuário'),
-            _BodyText(
-              'O usuário é responsável por manter suas credenciais de acesso seguras '
-              'e por todas as atividades realizadas em sua conta.',
-            ),
+            _TitleText(l10n.privacyPolicySection6Title),
+            _BodyText(l10n.privacyPolicySection6Body),
 
-            _TitleText('7. Alterações'),
-            _BodyText(
-              'Esta Política de Privacidade pode ser atualizada periodicamente. '
-              'Recomendamos que o usuário revise este documento regularmente.',
-            ),
+            _TitleText(l10n.privacyPolicySection7Title),
+            _BodyText(l10n.privacyPolicySection7Body),
 
-            _TitleText('8. Contato'),
-            _BodyText(
-              'Em caso de dúvidas sobre esta Política de Privacidade, '
-              'entre em contato pelo e-mail: contact@mystoreday.com.',
-            ),
+            _TitleText(l10n.privacyPolicySection8Title),
+            _BodyText(l10n.privacyPolicySection8Body),
 
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
 
             Text(
-              'Última atualização: Janeiro de 2025',
-              style: TextStyle(color: Colors.black54, fontSize: 12),
+              l10n.privacyPolicyLastUpdate,
+              style: const TextStyle(color: Colors.black54, fontSize: 12),
             ),
           ],
         ),

@@ -1,9 +1,21 @@
-// lib/screens/acounts/onboarding/company_controller.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../../../l10n/app_localizations.dart';
 
 import 'company_state.dart';
+
+class CompanyBusinessTypeCodes {
+  static const restaurant = 'restaurant';
+  static const market = 'market';
+  static const bakery = 'bakery';
+  static const pharmacy = 'pharmacy';
+  static const store = 'store';
+  static const workshop = 'workshop';
+  static const industry = 'industry';
+  static const distributor = 'distributor';
+  static const other = 'other';
+}
 
 class CompanyController extends ChangeNotifier {
   // ===== Controllers =====
@@ -13,24 +25,24 @@ class CompanyController extends ChangeNotifier {
   final TextEditingController phoneController = TextEditingController();
 
   /// ✅ necessário para o "Outro" digitável
-  final TextEditingController customBusinessTypeController =
-      TextEditingController();
+  final TextEditingController customBusinessTypeController = TextEditingController();
 
   // ===== State =====
   CompanyState _state = CompanyState.initial();
   CompanyState get state => _state;
 
   // ===== Options =====
+  /// ✅ valores "estáveis" (não dependem do idioma)
   final List<String> businessTypes = const [
-    'Restaurante',
-    'Mercado',
-    'Padaria',
-    'Farmácia',
-    'Loja',
-    'Oficina',
-    'Indústria',
-    'Distribuidora',
-    'Outro',
+    CompanyBusinessTypeCodes.restaurant,
+    CompanyBusinessTypeCodes.market,
+    CompanyBusinessTypeCodes.bakery,
+    CompanyBusinessTypeCodes.pharmacy,
+    CompanyBusinessTypeCodes.store,
+    CompanyBusinessTypeCodes.workshop,
+    CompanyBusinessTypeCodes.industry,
+    CompanyBusinessTypeCodes.distributor,
+    CompanyBusinessTypeCodes.other,
   ];
 
   CompanyController() {
@@ -56,7 +68,7 @@ class CompanyController extends ChangeNotifier {
   bool get acceptPrivacy => _state.acceptPrivacy;
 
   bool get hasBusinessType => _state.businessType.trim().isNotEmpty;
-  bool get isOtherBusinessType => _state.businessType == 'Outro';
+  bool get isOtherBusinessType => _state.businessType == CompanyBusinessTypeCodes.other;
 
   // ===== Validações =====
   bool get _companyOk => companyController.text.trim().isNotEmpty;
@@ -125,7 +137,7 @@ class CompanyController extends ChangeNotifier {
   void setBusinessType(String value) {
     if (value == _state.businessType) return;
 
-    if (value != 'Outro') {
+    if (value != CompanyBusinessTypeCodes.other) {
       customBusinessTypeController.clear();
       _update(_state.copyWith(businessType: value, customBusinessType: ''));
       return;
@@ -181,41 +193,44 @@ class CompanyController extends ChangeNotifier {
   }
 
   // ===== Save onboarding =====
-  Future<bool> finish({required User user}) async {
+  Future<bool> finish({
+    required User user,
+    required AppLocalizations l10n,
+  }) async {
     final company = companyController.text.trim();
 
     if (company.isEmpty) {
-      setError('Preencha a razão social / nome da empresa');
+      setError(l10n.companyErrorCompanyRequired);
       return false;
     }
 
     if (!hasBusinessType) {
-      setError('Selecione o tipo de negócio');
+      setError(l10n.companyErrorBusinessTypeRequired);
       return false;
     }
 
     if (isOtherBusinessType && customBusinessType.trim().isEmpty) {
-      setError('Descreva o tipo de negócio (até 20 caracteres)');
+      setError(l10n.companyErrorOtherBusinessTypeRequired);
       return false;
     }
 
     if (useFantasyName && fantasyNameController.text.trim().isEmpty) {
-      setError('Preencha o nome fantasia');
+      setError(l10n.companyErrorFantasyRequired);
       return false;
     }
 
     if (useOwner && ownerController.text.trim().isEmpty) {
-      setError('Preencha o responsável');
+      setError(l10n.companyErrorOwnerRequired);
       return false;
     }
 
     if (usePhone && phoneController.text.trim().isEmpty) {
-      setError('Preencha o telefone / WhatsApp');
+      setError(l10n.companyErrorPhoneRequired);
       return false;
     }
 
     if (!acceptTerms || !acceptPrivacy) {
-      setError('Você precisa aceitar os Termos e a Política de Privacidade.');
+      setError(l10n.companyErrorAcceptLegal);
       return false;
     }
 
@@ -227,16 +242,17 @@ class CompanyController extends ChangeNotifier {
       final owner = ownerController.text.trim();
       final phone = phoneController.text.trim();
 
-      final businessToSave =
-          isOtherBusinessType ? customBusinessType.trim() : businessType;
+      final businessToSave = isOtherBusinessType
+          ? customBusinessType.trim()
+          : businessType;
 
       await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
         'email': user.email,
         'company': company,
-        'fantasyName': useFantasyName ? fantasyName : null, // ✅ agora é null
+        'fantasyName': useFantasyName ? fantasyName : null,
         'owner': useOwner ? owner : null,
         'phone': usePhone ? phone : null,
-        'businessType': businessToSave,
+        'businessType': businessToSave, // ✅ agora salva code/valor estável
         'active': true,
         'plan': 'Grátis',
         'onboardingCompleted': true,
@@ -248,7 +264,7 @@ class CompanyController extends ChangeNotifier {
 
       return true;
     } catch (_) {
-      setError('Erro ao salvar os dados. Tente novamente.');
+      setError(l10n.companyErrorSaveFailed);
       return false;
     } finally {
       _setLoading(false);

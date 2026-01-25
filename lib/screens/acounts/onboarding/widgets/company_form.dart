@@ -1,5 +1,5 @@
-// lib/screens/acounts/onboarding/widgets/company_form.dart
 import 'package:flutter/material.dart';
+import '../../../../l10n/app_localizations.dart';
 
 import '../company_controller.dart';
 
@@ -47,6 +47,8 @@ class CompanyForm extends StatelessWidget {
     required String label,
     required bool value,
     required ValueChanged<bool> onChanged,
+    required String noText,
+    required String yesText,
   }) {
     final yesSelected = value == true;
     final noSelected = value == false;
@@ -103,13 +105,13 @@ class CompanyForm extends StatelessWidget {
         Row(
           children: [
             chip(
-              text: 'Não',
+              text: noText,
               selected: noSelected,
               onTap: () => onChanged(false),
             ),
             const SizedBox(width: 10),
             chip(
-              text: 'Sim',
+              text: yesText,
               selected: yesSelected,
               onTap: () => onChanged(true),
             ),
@@ -119,7 +121,34 @@ class CompanyForm extends StatelessWidget {
     );
   }
 
+  String _businessTypeLabel(AppLocalizations l10n, String code) {
+    switch (code) {
+      case CompanyBusinessTypeCodes.restaurant:
+        return l10n.companyBusinessTypeRestaurant;
+      case CompanyBusinessTypeCodes.market:
+        return l10n.companyBusinessTypeMarket;
+      case CompanyBusinessTypeCodes.bakery:
+        return l10n.companyBusinessTypeBakery;
+      case CompanyBusinessTypeCodes.pharmacy:
+        return l10n.companyBusinessTypePharmacy;
+      case CompanyBusinessTypeCodes.store:
+        return l10n.companyBusinessTypeStore;
+      case CompanyBusinessTypeCodes.workshop:
+        return l10n.companyBusinessTypeWorkshop;
+      case CompanyBusinessTypeCodes.industry:
+        return l10n.companyBusinessTypeIndustry;
+      case CompanyBusinessTypeCodes.distributor:
+        return l10n.companyBusinessTypeDistributor;
+      case CompanyBusinessTypeCodes.other:
+        return l10n.companyBusinessTypeOther;
+      default:
+        return code; // fallback seguro
+    }
+  }
+
   Future<void> _pickBusinessType(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+
     final selected = await showModalBottomSheet<String>(
       context: context,
       backgroundColor: Colors.transparent,
@@ -145,11 +174,11 @@ class CompanyForm extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 14),
-                const Align(
+                Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Selecione o tipo de negócio',
-                    style: TextStyle(
+                    l10n.companyBusinessTypeSelectTitle,
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w800,
                       color: Colors.black87,
@@ -157,12 +186,12 @@ class CompanyForm extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                ...controller.businessTypes.map((t) {
-                  final active = t == controller.businessType;
+                ...controller.businessTypes.map((code) {
+                  final active = code == controller.businessType;
                   return ListTile(
                     contentPadding: EdgeInsets.zero,
                     title: Text(
-                      t,
+                      _businessTypeLabel(l10n, code),
                       style: TextStyle(
                         fontWeight: active ? FontWeight.w900 : FontWeight.w600,
                       ),
@@ -170,7 +199,7 @@ class CompanyForm extends StatelessWidget {
                     trailing: active
                         ? const Icon(Icons.check_rounded, color: Colors.black)
                         : null,
-                    onTap: () => Navigator.pop(context, t),
+                    onTap: () => Navigator.pop(context, code),
                   );
                 }),
                 const SizedBox(height: 6),
@@ -298,8 +327,10 @@ class CompanyForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final hasBusinessType = controller.businessType.trim().isNotEmpty;
-    final isOther = controller.businessType == 'Outro';
+    final isOther = controller.isOtherBusinessType;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -341,7 +372,7 @@ class CompanyForm extends StatelessWidget {
           controller: controller.companyController,
           enabled: !isLoading,
           decoration: _dec(
-            hint: "Razão social / nome da empresa",
+            hint: l10n.companyCompanyHint,
             icon: Icons.business_outlined,
           ),
         ),
@@ -349,9 +380,11 @@ class CompanyForm extends StatelessWidget {
 
         // Nome fantasia (pergunta)
         _yesNoToggle(
-          label: 'Sua empresa tem nome fantasia?',
+          label: l10n.companyHasFantasyNameQuestion,
           value: controller.useFantasyName,
           onChanged: isLoading ? (_) {} : controller.setUseFantasyName,
+          noText: l10n.no,
+          yesText: l10n.yes,
         ),
         AnimatedSize(
           duration: const Duration(milliseconds: 220),
@@ -363,7 +396,7 @@ class CompanyForm extends StatelessWidget {
                     controller: controller.fantasyNameController,
                     enabled: !isLoading,
                     decoration: _dec(
-                      hint: "Nome fantasia",
+                      hint: l10n.companyFantasyNameHint,
                       icon: Icons.storefront_outlined,
                     ),
                   ),
@@ -374,9 +407,11 @@ class CompanyForm extends StatelessWidget {
 
         // Responsável (pergunta)
         _yesNoToggle(
-          label: 'Deseja informar um responsável?',
+          label: l10n.companyHasOwnerQuestion,
           value: controller.useOwner,
           onChanged: isLoading ? (_) {} : controller.setUseOwner,
+          noText: l10n.no,
+          yesText: l10n.yes,
         ),
         AnimatedSize(
           duration: const Duration(milliseconds: 220),
@@ -388,7 +423,7 @@ class CompanyForm extends StatelessWidget {
                     controller: controller.ownerController,
                     enabled: !isLoading,
                     decoration: _dec(
-                      hint: "Responsável",
+                      hint: l10n.companyOwnerHint,
                       icon: Icons.person_outline,
                     ),
                   ),
@@ -399,9 +434,11 @@ class CompanyForm extends StatelessWidget {
 
         // Telefone (pergunta)
         _yesNoToggle(
-          label: 'Deseja informar telefone/WhatsApp?',
+          label: l10n.companyHasPhoneQuestion,
           value: controller.usePhone,
           onChanged: isLoading ? (_) {} : controller.setUsePhone,
+          noText: l10n.no,
+          yesText: l10n.yes,
         ),
         AnimatedSize(
           duration: const Duration(milliseconds: 220),
@@ -414,7 +451,7 @@ class CompanyForm extends StatelessWidget {
                     enabled: !isLoading,
                     keyboardType: TextInputType.phone,
                     decoration: _dec(
-                      hint: "Telefone / WhatsApp",
+                      hint: l10n.companyPhoneHint,
                       icon: Icons.phone_outlined,
                     ),
                   ),
@@ -430,11 +467,13 @@ class CompanyForm extends StatelessWidget {
             child: TextField(
               enabled: !isLoading,
               decoration: _dec(
-                hint: "Tipo de negócio",
+                hint: l10n.companyBusinessTypeHint,
                 icon: Icons.category_outlined,
                 suffix: const Icon(Icons.expand_more_rounded, color: Colors.black54),
               ).copyWith(
-                hintText: hasBusinessType ? controller.businessType : "Tipo de negócio",
+                hintText: hasBusinessType
+                    ? _businessTypeLabel(l10n, controller.businessType)
+                    : l10n.companyBusinessTypeHint,
               ),
             ),
           ),
@@ -453,7 +492,7 @@ class CompanyForm extends StatelessWidget {
                     textInputAction: TextInputAction.done,
                     maxLength: 20,
                     decoration: _dec(
-                      hint: "Descreva (até 20 caracteres)",
+                      hint: l10n.companyBusinessTypeOtherHint,
                       icon: Icons.edit_outlined,
                     ).copyWith(counterText: ""),
                     onChanged: (v) {
@@ -477,8 +516,8 @@ class CompanyForm extends StatelessWidget {
         _legalCheckbox(
           value: controller.acceptTerms,
           onChanged: (v) => controller.setAcceptTerms(v ?? false),
-          label: "Eu li e concordo com os",
-          linkText: "Termos de uso",
+          label: l10n.companyAcceptTermsPrefix,
+          linkText: l10n.companyTermsLink,
           onLinkTap: () {
             _openLegalModal(
               context: context,
@@ -490,8 +529,8 @@ class CompanyForm extends StatelessWidget {
         _legalCheckbox(
           value: controller.acceptPrivacy,
           onChanged: (v) => controller.setAcceptPrivacy(v ?? false),
-          label: "Eu li e concordo com as",
-          linkText: "Políticas de privacidade",
+          label: l10n.companyAcceptPrivacyPrefix,
+          linkText: l10n.companyPrivacyLink,
           onLinkTap: () {
             _openLegalModal(
               context: context,
@@ -522,9 +561,9 @@ class CompanyForm extends StatelessWidget {
                     height: 22,
                     child: CircularProgressIndicator(color: Colors.white),
                   )
-                : const Text(
-                    "Finalizar cadastro",
-                    style: TextStyle(
+                : Text(
+                    l10n.companyFinishButton,
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 0.4,

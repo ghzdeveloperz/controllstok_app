@@ -435,5 +435,243 @@
   "@registerAwaitingUserVerification": { "description": "REGISTER — Status quando está aguardando o usuário verificar email" },
 
   "registerRestoringRegistration": "Restaurando seu cadastro...",
-  "@registerRestoringRegistration": { "description": "REGISTER — Mensagem exibida ao restaurar cadastro/estado" }
+  "@registerRestoringRegistration": { "description": "REGISTER — Mensagem exibida ao restaurar cadastro/estado" },
+
+  "yes": "Sim",
+  "@yes": { "description": "GERAL / BOTÕES — Opção afirmativa (Sim)" },
+
+  "no": "Não",
+  "@no": { "description": "GERAL / BOTÕES — Opção negativa (Não)" },
+
+  "companyEmailFallback": "—",
+  "@companyEmailFallback": { "description": "ONBOARDING EMPRESA — Placeholder quando email está vazio" },
+
+  "companyHeaderTitle": "Configure a sua empresa",
+  "@companyHeaderTitle": { "description": "ONBOARDING EMPRESA — Título do header" },
+
+  "companyHeaderAccountLine": "Conta: {email}",
+  "@companyHeaderAccountLine": {
+    "description": "ONBOARDING EMPRESA — Linha exibindo a conta/email",
+    "placeholders": { "email": {} }
+  },
+
+  "companyHeaderSubtitle": "Estas informações ajudam a personalizar o seu sistema e a organizar os seus relatórios.",
+  "@companyHeaderSubtitle": { "description": "ONBOARDING EMPRESA — Subtítulo do header" },
+
+  "companyCompanyHint": "Razão social / nome da empresa",
+  "@companyCompanyHint": { "description": "ONBOARDING EMPRESA — Hint do campo razão social/nome da empresa" },
+
+  "companyHasFantasyNameQuestion": "A sua empresa tem nome comercial?",
+  "@companyHasFantasyNameQuestion": { "description": "ONBOARDING EMPRESA — Pergunta toggle: possui nome fantasia/nome comercial" },
+
+  "companyFantasyNameHint": "Nome comercial",
+  "@companyFantasyNameHint": { "description": "ONBOARDING EMPRESA — Hint do campo nome fantasia/nome comercial" },
+
+  "companyHasOwnerQuestion": "Pretende indicar um responsável?",
+  "@companyHasOwnerQuestion": { "description": "ONBOARDING EMPRESA — Pergunta toggle: informar responsável" },
+
+  "companyOwnerHint": "Responsável",
+  "@companyOwnerHint": { "description": "ONBOARDING EMPRESA — Hint do campo responsável" },
+
+  "companyHasPhoneQuestion": "Pretende indicar telefone/WhatsApp?",
+  "@companyHasPhoneQuestion": { "description": "ONBOARDING EMPRESA — Pergunta toggle: informar telefone/WhatsApp" },
+
+  "companyPhoneHint": "Telefone / WhatsApp",
+  "@companyPhoneHint": { "description": "ONBOARDING EMPRESA — Hint do campo telefone/WhatsApp" },
+
+  "companyBusinessTypeHint": "Tipo de negócio",
+  "@companyBusinessTypeHint": { "description": "ONBOARDING EMPRESA — Hint do seletor de tipo de negócio" },
+
+  "companyBusinessTypeSelectTitle": "Selecione o tipo de negócio",
+  "@companyBusinessTypeSelectTitle": { "description": "ONBOARDING EMPRESA — Título do modal de seleção de tipo de negócio" },
+
+  "companyBusinessTypeOtherHint": "Descreva (até 20 caracteres)",
+  "@companyBusinessTypeOtherHint": { "description": "ONBOARDING EMPRESA — Hint do campo quando tipo de negócio é 'Outro' (max 20)" },
+
+  "companyBusinessTypeRestaurant": "Restaurante",
+  "@companyBusinessTypeRestaurant": { "description": "ONBOARDING EMPRESA — Tipo de negócio: restaurante" },
+
+  "companyBusinessTypeMarket": "Mercado",
+  "@companyBusinessTypeMarket": { "description": "ONBOARDING EMPRESA — Tipo de negócio: mercado" },
+
+  "companyBusinessTypeBakery": "Padaria",
+  "@companyBusinessTypeBakery": { "description": "ONBOARDING EMPRESA — Tipo de negócio: padaria" },
+
+  "companyBusinessTypePharmacy": "Farmácia",
+  "@companyBusinessTypePharmacy": { "description": "ONBOARDING EMPRESA — Tipo de negócio: farmácia" },
+
+  "companyBusinessTypeStore": "Loja",
+  "@companyBusinessTypeStore": { "description": "ONBOARDING EMPRESA — Tipo de negócio: loja" },
+
+  "companyBusinessTypeWorkshop": "Oficina",
+  "@companyBusinessTypeWorkshop": { "description": "ONBOARDING EMPRESA — Tipo de negócio: oficina" },
+
+  "companyBusinessTypeIndustry": "Indústria",
+  "@companyBusinessTypeIndustry": { "description": "ONBOARDING EMPRESA — Tipo de negócio: indústria" },
+
+  "companyBusinessTypeDistributor": "Distribuidora",
+  "@companyBusinessTypeDistributor": { "description": "ONBOARDING EMPRESA — Tipo de negócio: distribuidora" },
+
+  "companyBusinessTypeOther": "Outro",
+  "@companyBusinessTypeOther": { "description": "ONBOARDING EMPRESA — Tipo de negócio: outro" },
+
+  "companyAcceptTermsPrefix": "Li e concordo com os",
+  "@companyAcceptTermsPrefix": { "description": "ONBOARDING EMPRESA — Checkbox termos: prefixo antes do link" },
+
+  "companyTermsLink": "Termos de utilização",
+  "@companyTermsLink": { "description": "ONBOARDING EMPRESA — Checkbox termos: texto do link" },
+
+  "companyAcceptPrivacyPrefix": "Li e concordo com a",
+  "@companyAcceptPrivacyPrefix": { "description": "ONBOARDING EMPRESA — Checkbox privacidade: prefixo antes do link" },
+
+  "companyPrivacyLink": "Política de privacidade",
+  "@companyPrivacyLink": { "description": "ONBOARDING EMPRESA — Checkbox privacidade: texto do link" },
+
+  "companyFinishButton": "Concluir registo",
+  "@companyFinishButton": { "description": "ONBOARDING EMPRESA — Texto do botão principal de finalizar" },
+
+  "companyErrorCompanyRequired": "Preencha a razão social / nome da empresa",
+  "@companyErrorCompanyRequired": { "description": "ONBOARDING EMPRESA — Erro: nome/razão social obrigatório" },
+
+  "companyErrorBusinessTypeRequired": "Selecione o tipo de negócio",
+  "@companyErrorBusinessTypeRequired": { "description": "ONBOARDING EMPRESA — Erro: tipo de negócio obrigatório" },
+
+  "companyErrorOtherBusinessTypeRequired": "Descreva o tipo de negócio (até 20 caracteres)",
+  "@companyErrorOtherBusinessTypeRequired": { "description": "ONBOARDING EMPRESA — Erro: tipo 'Outro' precisa ser descrito" },
+
+  "companyErrorFantasyRequired": "Preencha o nome comercial",
+  "@companyErrorFantasyRequired": { "description": "ONBOARDING EMPRESA — Erro: nome fantasia/nome comercial obrigatório quando habilitado" },
+
+  "companyErrorOwnerRequired": "Preencha o responsável",
+  "@companyErrorOwnerRequired": { "description": "ONBOARDING EMPRESA — Erro: responsável obrigatório quando habilitado" },
+
+  "companyErrorPhoneRequired": "Preencha o telefone / WhatsApp",
+  "@companyErrorPhoneRequired": { "description": "ONBOARDING EMPRESA — Erro: telefone obrigatório quando habilitado" },
+
+  "companyErrorAcceptLegal": "Precisa de aceitar os Termos e a Política de Privacidade.",
+  "@companyErrorAcceptLegal": { "description": "ONBOARDING EMPRESA — Erro: precisa aceitar termos e privacidade" },
+
+  "companyErrorSaveFailed": "Erro ao guardar os dados. Tente novamente.",
+  "@companyErrorSaveFailed": { "description": "ONBOARDING EMPRESA — Erro genérico ao salvar no Firestore" },
+
+  "privacyPolicyTitle": "Política de Privacidade",
+  "@privacyPolicyTitle": {
+    "description": "ECRÃ POLÍTICA_DE_PRIVACIDADE — Título da AppBar"
+  },
+
+  "privacyPolicySection1Title": "1. Introdução",
+  "@privacyPolicySection1Title": {
+    "description": "ECRÃ POLÍTICA_DE_PRIVACIDADE — Título da secção 1"
+  },
+
+  "privacyPolicySection1Body": "O ControllStok é uma aplicação de gestão de stock. Esta Política de Privacidade descreve como as informações dos utilizadores são tratadas e protegidas.",
+  "@privacyPolicySection1Body": {
+    "description": "ECRÃ POLÍTICA_DE_PRIVACIDADE — Texto da secção 1"
+  },
+
+  "privacyPolicySection2Title": "2. Recolha de Dados",
+  "@privacyPolicySection2Title": {
+    "description": "ECRÃ POLÍTICA_DE_PRIVACIDADE — Título da secção 2"
+  },
+
+  "privacyPolicySection2Body": "A aplicação pode recolher informações básicas necessárias ao seu funcionamento, como dados de início de sessão e informações relacionadas com os produtos registados no stock.",
+  "@privacyPolicySection2Body": {
+    "description": "ECRÃ POLÍTICA_DE_PRIVACIDADE — Texto da secção 2"
+  },
+
+  "privacyPolicySection3Title": "3. Utilização das Informações",
+  "@privacyPolicySection3Title": {
+    "description": "ECRÃ POLÍTICA_DE_PRIVACIDADE — Título da secção 3"
+  },
+
+  "privacyPolicySection3Body": "As informações recolhidas são utilizadas exclusivamente para o funcionamento da aplicação, melhoria da experiência do utilizador e controlo interno de stock.",
+  "@privacyPolicySection3Body": {
+    "description": "ECRÃ POLÍTICA_DE_PRIVACIDADE — Texto da secção 3"
+  },
+
+  "privacyPolicySection4Title": "4. Partilha de Dados",
+  "@privacyPolicySection4Title": {
+    "description": "ECRÃ POLÍTICA_DE_PRIVACIDADE — Título da secção 4"
+  },
+
+  "privacyPolicySection4Body": "O ControllStok não partilha dados pessoais com terceiros, excepto quando exigido por lei.",
+  "@privacyPolicySection4Body": {
+    "description": "ECRÃ POLÍTICA_DE_PRIVACIDADE — Texto da secção 4"
+  },
+
+  "privacyPolicySection5Title": "5. Segurança",
+  "@privacyPolicySection5Title": {
+    "description": "ECRÃ POLÍTICA_DE_PRIVACIDADE — Título da secção 5"
+  },
+
+  "privacyPolicySection5Body": "Adoptamos medidas técnicas e organizacionais para proteger os dados armazenados, reduzindo o risco de acesso não autorizado.",
+  "@privacyPolicySection5Body": {
+    "description": "ECRÃ POLÍTICA_DE_PRIVACIDADE — Texto da secção 5"
+  },
+
+  "privacyPolicySection6Title": "6. Responsabilidades do Utilizador",
+  "@privacyPolicySection6Title": {
+    "description": "ECRÃ POLÍTICA_DE_PRIVACIDADE — Título da secção 6"
+  },
+
+  "privacyPolicySection6Body": "O utilizador é responsável por manter as suas credenciais de acesso seguras e por todas as actividades realizadas na sua conta.",
+  "@privacyPolicySection6Body": {
+    "description": "ECRÃ POLÍTICA_DE_PRIVACIDADE — Texto da secção 6"
+  },
+
+  "privacyPolicySection7Title": "7. Alterações",
+  "@privacyPolicySection7Title": {
+    "description": "ECRÃ POLÍTICA_DE_PRIVACIDADE — Título da secção 7"
+  },
+
+  "privacyPolicySection7Body": "Esta Política de Privacidade pode ser actualizada periodicamente. Recomendamos que o utilizador reveja este documento regularmente.",
+  "@privacyPolicySection7Body": {
+    "description": "ECRÃ POLÍTICA_DE_PRIVACIDADE — Texto da secção 7"
+  },
+
+  "privacyPolicySection8Title": "8. Contactos",
+  "@privacyPolicySection8Title": {
+    "description": "ECRÃ POLÍTICA_DE_PRIVACIDADE — Título da secção 8"
+  },
+
+  "privacyPolicySection8Body": "Em caso de dúvidas sobre esta Política de Privacidade, entre em contacto através do e-mail: contact@mystoreday.com.",
+  "@privacyPolicySection8Body": {
+    "description": "ECRÃ POLÍTICA_DE_PRIVACIDADE — Texto da secção 8"
+  },
+
+  "privacyPolicyLastUpdate": "Última actualização: Janeiro de 2025",
+  "@privacyPolicyLastUpdate": {
+    "description": "ECRÃ POLÍTICA_DE_PRIVACIDADE — Linha final com a data da última actualização"
+  },
+
+  "termsOfUseTitle": "Termos de Utilização",
+
+  "termsOfUseSection1Title": "1. Aceitação dos Termos",
+  "termsOfUseSection1Body": "Ao utilizar a aplicação MyStoreDay, o utilizador concorda integralmente com estes Termos de Utilização. Caso não concorde, recomenda-se que não utilize a aplicação.",
+
+  "termsOfUseSection2Title": "2. Finalidade da Aplicação",
+  "termsOfUseSection2Body": "O MyStoreDay tem como finalidade auxiliar na gestão de stock, permitindo o controlo de produtos, quantidades e informações associadas.",
+
+  "termsOfUseSection3Title": "3. Registo e Responsabilidade",
+  "termsOfUseSection3Body": "O utilizador é responsável pelas informações fornecidas no registo e por manter a confidencialidade dos seus dados de acesso.",
+
+  "termsOfUseSection4Title": "4. Utilização Adequada",
+  "termsOfUseSection4Body": "É proibida a utilização da aplicação para fins ilícitos, fraudulentos ou que possam comprometer a segurança e o funcionamento do sistema.",
+
+  "termsOfUseSection5Title": "5. Limitação de Responsabilidade",
+  "termsOfUseSection5Body": "O MyStoreDay não se responsabiliza por perdas, danos ou prejuízos resultantes da utilização inadequada da aplicação ou de informações incorrectas fornecidas pelo utilizador.",
+
+  "termsOfUseSection6Title": "6. Disponibilidade",
+  "termsOfUseSection6Body": "A aplicação pode sofrer interrupções temporárias para manutenção, actualizações ou factores externos fora do controlo do desenvolvedor.",
+
+  "termsOfUseSection7Title": "7. Alterações aos Termos",
+  "termsOfUseSection7Body": "Os Termos de Utilização podem ser alterados a qualquer momento. Recomenda-se que o utilizador reveja este documento regularmente.",
+
+  "termsOfUseSection8Title": "8. Contacto",
+  "termsOfUseSection8Body": "Em caso de dúvidas relacionadas com estes Termos de Utilização, entre em contacto através do e-mail: contact@mystoreday.com.",
+
+  "termsOfUseLastUpdate": "Última actualização: Janeiro de 2025"
+
+
+
 }

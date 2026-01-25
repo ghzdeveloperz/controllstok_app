@@ -435,5 +435,269 @@
   "@registerAwaitingUserVerification": { "description": "REGISTER — Status when waiting for user to verify email" },
 
   "registerRestoringRegistration": "Restoring your registration...",
-  "@registerRestoringRegistration": { "description": "REGISTER — Message shown while restoring registration/state" }
+  "@registerRestoringRegistration": { "description": "REGISTER — Message shown while restoring registration/state" },
+
+  "yes": "Yes",
+  "@yes": { "description": "GENERAL / BUTTONS — Affirmative option (Yes)" },
+
+  "no": "No",
+  "@no": { "description": "GENERAL / BUTTONS — Negative option (No)" },
+
+  "companyEmailFallback": "—",
+  "@companyEmailFallback": { "description": "COMPANY ONBOARDING — Placeholder when email is empty" },
+
+  "companyHeaderTitle": "Set up your company",
+  "@companyHeaderTitle": { "description": "COMPANY ONBOARDING — Header title" },
+
+  "companyHeaderAccountLine": "Account: {email}",
+  "@companyHeaderAccountLine": {
+    "description": "COMPANY ONBOARDING — Account/email line",
+    "placeholders": { "email": {} }
+  },
+
+  "companyHeaderSubtitle": "These details help personalize your system and keep your reports organized.",
+  "@companyHeaderSubtitle": { "description": "COMPANY ONBOARDING — Header subtitle" },
+
+  "companyCompanyHint": "Legal name / company name",
+  "@companyCompanyHint": { "description": "COMPANY ONBOARDING — Hint for legal/company name field" },
+
+  "companyHasFantasyNameQuestion": "Does your company use a trade name?",
+  "@companyHasFantasyNameQuestion": { "description": "COMPANY ONBOARDING — Toggle question: has trade name" },
+
+  "companyFantasyNameHint": "Trade name",
+  "@companyFantasyNameHint": { "description": "COMPANY ONBOARDING — Hint for trade name field" },
+
+  "companyHasOwnerQuestion": "Would you like to add a person in charge?",
+  "@companyHasOwnerQuestion": { "description": "COMPANY ONBOARDING — Toggle question: add responsible person" },
+
+  "companyOwnerHint": "Person in charge",
+  "@companyOwnerHint": { "description": "COMPANY ONBOARDING — Hint for responsible person field" },
+
+  "companyHasPhoneQuestion": "Would you like to add a phone/WhatsApp number?",
+  "@companyHasPhoneQuestion": { "description": "COMPANY ONBOARDING — Toggle question: add phone/WhatsApp" },
+
+  "companyPhoneHint": "Phone / WhatsApp",
+  "@companyPhoneHint": { "description": "COMPANY ONBOARDING — Hint for phone/WhatsApp field" },
+
+  "companyBusinessTypeHint": "Business type",
+  "@companyBusinessTypeHint": { "description": "COMPANY ONBOARDING — Hint for business type selector" },
+
+  "companyBusinessTypeSelectTitle": "Select the business type",
+  "@companyBusinessTypeSelectTitle": { "description": "COMPANY ONBOARDING — Title of business type selection modal" },
+
+  "companyBusinessTypeOtherHint": "Describe (up to 20 characters)",
+  "@companyBusinessTypeOtherHint": { "description": "COMPANY ONBOARDING — Hint for 'Other' business type field (max 20)" },
+
+  "companyBusinessTypeRestaurant": "Restaurant",
+  "@companyBusinessTypeRestaurant": { "description": "COMPANY ONBOARDING — Business type: restaurant" },
+
+  "companyBusinessTypeMarket": "Market",
+  "@companyBusinessTypeMarket": { "description": "COMPANY ONBOARDING — Business type: market" },
+
+  "companyBusinessTypeBakery": "Bakery",
+  "@companyBusinessTypeBakery": { "description": "COMPANY ONBOARDING — Business type: bakery" },
+
+  "companyBusinessTypePharmacy": "Pharmacy",
+  "@companyBusinessTypePharmacy": { "description": "COMPANY ONBOARDING — Business type: pharmacy" },
+
+  "companyBusinessTypeStore": "Store",
+  "@companyBusinessTypeStore": { "description": "COMPANY ONBOARDING — Business type: store" },
+
+  "companyBusinessTypeWorkshop": "Workshop",
+  "@companyBusinessTypeWorkshop": { "description": "COMPANY ONBOARDING — Business type: workshop" },
+
+  "companyBusinessTypeIndustry": "Industry",
+  "@companyBusinessTypeIndustry": { "description": "COMPANY ONBOARDING — Business type: industry" },
+
+  "companyBusinessTypeDistributor": "Distributor",
+  "@companyBusinessTypeDistributor": { "description": "COMPANY ONBOARDING — Business type: distributor" },
+
+  "companyBusinessTypeOther": "Other",
+  "@companyBusinessTypeOther": { "description": "COMPANY ONBOARDING — Business type: other" },
+
+  "companyAcceptTermsPrefix": "I have read and agree to the",
+  "@companyAcceptTermsPrefix": { "description": "COMPANY ONBOARDING — Terms checkbox: prefix before the link" },
+
+  "companyTermsLink": "Terms of use",
+  "@companyTermsLink": { "description": "COMPANY ONBOARDING — Terms checkbox: link text" },
+
+  "companyAcceptPrivacyPrefix": "I have read and agree to the",
+  "@companyAcceptPrivacyPrefix": { "description": "COMPANY ONBOARDING — Privacy checkbox: prefix before the link" },
+
+  "companyPrivacyLink": "Privacy policy",
+  "@companyPrivacyLink": { "description": "COMPANY ONBOARDING — Privacy checkbox: link text" },
+
+  "companyFinishButton": "Finish setup",
+  "@companyFinishButton": { "description": "COMPANY ONBOARDING — Main finish button text" },
+
+  "companyErrorCompanyRequired": "Please enter the legal/company name",
+  "@companyErrorCompanyRequired": { "description": "COMPANY ONBOARDING — Error: company name required" },
+
+  "companyErrorBusinessTypeRequired": "Please select a business type",
+  "@companyErrorBusinessTypeRequired": { "description": "COMPANY ONBOARDING — Error: business type required" },
+
+  "companyErrorOtherBusinessTypeRequired": "Please describe the business type (up to 20 characters)",
+  "@companyErrorOtherBusinessTypeRequired": { "description": "COMPANY ONBOARDING — Error: 'Other' type must be described" },
+
+  "companyErrorFantasyRequired": "Please enter the trade name",
+  "@companyErrorFantasyRequired": { "description": "COMPANY ONBOARDING — Error: trade name required when enabled" },
+
+  "companyErrorOwnerRequired": "Please enter the person in charge",
+  "@companyErrorOwnerRequired": { "description": "COMPANY ONBOARDING — Error: responsible person required when enabled" },
+
+  "companyErrorPhoneRequired": "Please enter the phone/WhatsApp number",
+  "@companyErrorPhoneRequired": { "description": "COMPANY ONBOARDING — Error: phone required when enabled" },
+
+  "companyErrorAcceptLegal": "You must accept the Terms of Use and the Privacy Policy.",
+  "@companyErrorAcceptLegal": { "description": "COMPANY ONBOARDING — Error: must accept terms and privacy" },
+
+  "companyErrorSaveFailed": "Could not save your details. Please try again.",
+  "@companyErrorSaveFailed": { "description": "COMPANY ONBOARDING — Generic error when saving to Firestore" },
+
+  "privacyPolicyTitle": "Privacy Policy",
+  "@privacyPolicyTitle": {
+    "description": "PRIVACY_POLICY SCREEN — AppBar title"
+  },
+
+  "privacyPolicySection1Title": "1. Introduction",
+  "@privacyPolicySection1Title": {
+    "description": "PRIVACY_POLICY SCREEN — Section 1 title"
+  },
+
+  "privacyPolicySection1Body": "ControllStok is an inventory management app. This Privacy Policy describes how users’ information is handled and protected.",
+  "@privacyPolicySection1Body": {
+    "description": "PRIVACY_POLICY SCREEN — Section 1 body text"
+  },
+
+  "privacyPolicySection2Title": "2. Data Collection",
+  "@privacyPolicySection2Title": {
+    "description": "PRIVACY_POLICY SCREEN — Section 2 title"
+  },
+
+  "privacyPolicySection2Body": "The app may collect basic information necessary for its operation, such as login data and information related to products registered in your inventory.",
+  "@privacyPolicySection2Body": {
+    "description": "PRIVACY_POLICY SCREEN — Section 2 body text"
+  },
+
+  "privacyPolicySection3Title": "3. Use of Information",
+  "@privacyPolicySection3Title": {
+    "description": "PRIVACY_POLICY SCREEN — Section 3 title"
+  },
+
+  "privacyPolicySection3Body": "The collected information is used exclusively for the app’s operation, improving the user experience, and internal inventory control.",
+  "@privacyPolicySection3Body": {
+    "description": "PRIVACY_POLICY SCREEN — Section 3 body text"
+  },
+
+  "privacyPolicySection4Title": "4. Data Sharing",
+  "@privacyPolicySection4Title": {
+    "description": "PRIVACY_POLICY SCREEN — Section 4 title"
+  },
+
+  "privacyPolicySection4Body": "ControllStok does not share personal data with third parties, except when required by law.",
+  "@privacyPolicySection4Body": {
+    "description": "PRIVACY_POLICY SCREEN — Section 4 body text"
+  },
+
+  "privacyPolicySection5Title": "5. Security",
+  "@privacyPolicySection5Title": {
+    "description": "PRIVACY_POLICY SCREEN — Section 5 title"
+  },
+
+  "privacyPolicySection5Body": "We adopt technical and organizational measures to protect stored data, reducing the risk of unauthorized access.",
+  "@privacyPolicySection5Body": {
+    "description": "PRIVACY_POLICY SCREEN — Section 5 body text"
+  },
+
+  "privacyPolicySection6Title": "6. User Responsibilities",
+  "@privacyPolicySection6Title": {
+    "description": "PRIVACY_POLICY SCREEN — Section 6 title"
+  },
+
+  "privacyPolicySection6Body": "The user is responsible for keeping their access credentials secure and for all activities performed under their account.",
+  "@privacyPolicySection6Body": {
+    "description": "PRIVACY_POLICY SCREEN — Section 6 body text"
+  },
+
+  "privacyPolicySection7Title": "7. Changes",
+  "@privacyPolicySection7Title": {
+    "description": "PRIVACY_POLICY SCREEN — Section 7 title"
+  },
+
+  "privacyPolicySection7Body": "This Privacy Policy may be updated periodically. We recommend that the user review this document regularly.",
+  "@privacyPolicySection7Body": {
+    "description": "PRIVACY_POLICY SCREEN — Section 7 body text"
+  },
+
+  "privacyPolicySection8Title": "8. Contact",
+  "@privacyPolicySection8Title": {
+    "description": "PRIVACY_POLICY SCREEN — Section 8 title"
+  },
+
+  "privacyPolicySection8Body": "If you have questions about this Privacy Policy, please contact us at: contact@mystoreday.com.",
+  "@privacyPolicySection8Body": {
+    "description": "PRIVACY_POLICY SCREEN — Section 8 body text"
+  },
+
+  "privacyPolicyLastUpdate": "Last updated: January 2025",
+  "@privacyPolicyLastUpdate": {
+    "description": "PRIVACY_POLICY SCREEN — Footer line with the last update date"
+  },
+
+  "termsOfUseTitle": "Terms of Use",
+  "@termsOfUseTitle": { "description": "TERMS_OF_USE SCREEN — AppBar title" },
+
+  "termsOfUseSection1Title": "1. Acceptance of Terms",
+  "@termsOfUseSection1Title": { "description": "TERMS_OF_USE — Section 1 title" },
+
+  "termsOfUseSection1Body": "By using the MyStoreDay application, the user fully agrees to these Terms of Use. If you do not agree, it is recommended not to use the application.",
+  "@termsOfUseSection1Body": { "description": "TERMS_OF_USE — Section 1 body" },
+
+  "termsOfUseSection2Title": "2. Application Purpose",
+  "@termsOfUseSection2Title": { "description": "TERMS_OF_USE — Section 2 title" },
+
+  "termsOfUseSection2Body": "MyStoreDay is designed to assist with inventory management, allowing control of products, quantities, and related information.",
+  "@termsOfUseSection2Body": { "description": "TERMS_OF_USE — Section 2 body" },
+
+  "termsOfUseSection3Title": "3. Registration and Responsibility",
+  "@termsOfUseSection3Title": { "description": "TERMS_OF_USE — Section 3 title" },
+
+  "termsOfUseSection3Body": "The user is responsible for the information provided during registration and for keeping their access credentials confidential.",
+  "@termsOfUseSection3Body": { "description": "TERMS_OF_USE — Section 3 body" },
+
+  "termsOfUseSection4Title": "4. Proper Use",
+  "@termsOfUseSection4Title": { "description": "TERMS_OF_USE — Section 4 title" },
+
+  "termsOfUseSection4Body": "It is prohibited to use the application for illegal or fraudulent purposes or in ways that may compromise the security and operation of the system.",
+  "@termsOfUseSection4Body": { "description": "TERMS_OF_USE — Section 4 body" },
+
+  "termsOfUseSection5Title": "5. Limitation of Liability",
+  "@termsOfUseSection5Title": { "description": "TERMS_OF_USE — Section 5 title" },
+
+  "termsOfUseSection5Body": "MyStoreDay is not responsible for losses, damages, or harm resulting from improper use of the application or incorrect information provided by the user.",
+  "@termsOfUseSection5Body": { "description": "TERMS_OF_USE — Section 5 body" },
+
+  "termsOfUseSection6Title": "6. Availability",
+  "@termsOfUseSection6Title": { "description": "TERMS_OF_USE — Section 6 title" },
+
+  "termsOfUseSection6Body": "The application may experience temporary interruptions for maintenance, updates, or external factors beyond the developer’s control.",
+  "@termsOfUseSection6Body": { "description": "TERMS_OF_USE — Section 6 body" },
+
+  "termsOfUseSection7Title": "7. Changes to the Terms",
+  "@termsOfUseSection7Title": { "description": "TERMS_OF_USE — Section 7 title" },
+
+  "termsOfUseSection7Body": "The Terms of Use may be changed at any time. Users are advised to review this document periodically.",
+  "@termsOfUseSection7Body": { "description": "TERMS_OF_USE — Section 7 body" },
+
+  "termsOfUseSection8Title": "8. Contact",
+  "@termsOfUseSection8Title": { "description": "TERMS_OF_USE — Section 8 title" },
+
+  "termsOfUseSection8Body": "If you have questions regarding these Terms of Use, please contact us at: contact@mystoreday.com.",
+  "@termsOfUseSection8Body": { "description": "TERMS_OF_USE — Section 8 body" },
+
+  "termsOfUseLastUpdate": "Last updated: January 2025",
+  "@termsOfUseLastUpdate": { "description": "TERMS_OF_USE — Last update line" }
+
+
+
 }

@@ -359,3 +359,34 @@ Essas regras são reavaliadas a cada mudança de autenticação ou Firestore.
 - Eliminar dependência de textos fixos em widgets e controllers
 - Consolidar a base de i18n para autenticação e onboarding
 - Preparar o módulo de Registro para expansão de idiomas sem retrabalho estrutural
+
+## [Milestone 18] Onboarding da Empresa + i18n Completo (Company + Termos & Políticas)
+**Status:** Concluído ✅
+
+### Melhorias:
+- Refatorado todo o **módulo de Onboarding da Empresa** para suportar **i18n completo**, eliminando strings hardcoded em UI e mensagens de validação.
+- Internacionalização aplicada nos arquivos do fluxo de Company:
+  - `company_screen.dart` — integração correta do `AppLocalizations` no fluxo de finalização
+  - `company_controller.dart` — mensagens de erro e validações resolvidas via `AppLocalizations` (sem strings fixas)
+  - `widgets/company_header.dart` — título, subtítulo e linha de conta (com fallback de e-mail) totalmente traduzíveis
+  - `widgets/company_form.dart` — hints, perguntas (toggles), labels, modal de seleção e botão final traduzidos
+- Padronização do comportamento de UI no onboarding:
+  - Labels e placeholders consistentes em todos os idiomas
+  - Toggle “Sim/Não” e textos auxiliares centralizados em chaves i18n
+  - Modal de seleção de tipo de negócio com título traduzível
+- Expandida a base de tradução para cobrir também o conteúdo legal do app:
+  - `politic_privacity.dart` — Política de Privacidade refatorada para i18n (títulos + parágrafos)
+  - `terms_used.dart` — Termos de Uso refatorados para i18n (títulos + parágrafos)
+- Arquivos `.arb` atualizados para incluir:
+  - Chaves do onboarding de empresa (UI + validações + tipos de negócio + textos legais)
+  - Conteúdo legal completo (Política de Privacidade e Termos de Uso) em múltiplos idiomas
+- Garantida compatibilidade total com `flutter gen-l10n`:
+  - Sem warnings de locale
+  - Sem quebras por `de_CH` (fallback `de` mantido)
+  - Mesmas chaves entre idiomas para evitar inconsistências
+
+### Objetivo:
+- Garantir que o **onboarding da empresa** seja 100% traduzível (UI + lógica + validações)
+- Consolidar o padrão de i18n do app (Login/Registro/Onboarding) com consistência total
+- Incluir **Termos de Uso** e **Política de Privacidade** traduzíveis dentro do app (pronto para publicação)
+- Preparar o módulo para expansão de idiomas sem retrabalho estrutural

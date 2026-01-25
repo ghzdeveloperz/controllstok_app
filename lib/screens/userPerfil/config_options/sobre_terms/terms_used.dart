@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class TermsUsedScreen extends StatelessWidget {
   const TermsUsedScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text('Termos de Uso'),
+        title: Text(l10n.termsOfUseTitle),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         elevation: 0.5,
@@ -18,60 +21,36 @@ class TermsUsedScreen extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
-            _TitleText('1. Aceitação dos Termos'),
-            _BodyText(
-              'Ao utilizar o aplicativo ControllStok, o usuário concorda integralmente '
-              'com estes Termos de Uso. Caso não concorde, recomenda-se não utilizar o aplicativo.',
-            ),
+          children: [
+            _TitleText(l10n.termsOfUseSection1Title),
+            _BodyText(l10n.termsOfUseSection1Body),
 
-            _TitleText('2. Finalidade do Aplicativo'),
-            _BodyText(
-              'O ControllStok tem como finalidade auxiliar no gerenciamento de estoque, '
-              'permitindo o controle de produtos, quantidades e informações relacionadas.',
-            ),
+            _TitleText(l10n.termsOfUseSection2Title),
+            _BodyText(l10n.termsOfUseSection2Body),
 
-            _TitleText('3. Cadastro e Responsabilidade'),
-            _BodyText(
-              'O usuário é responsável pelas informações fornecidas no cadastro '
-              'e por manter a confidencialidade de seus dados de acesso.',
-            ),
+            _TitleText(l10n.termsOfUseSection3Title),
+            _BodyText(l10n.termsOfUseSection3Body),
 
-            _TitleText('4. Uso Adequado'),
-            _BodyText(
-              'É proibido utilizar o aplicativo para fins ilícitos, fraudulentos '
-              'ou que possam comprometer a segurança e o funcionamento do sistema.',
-            ),
+            _TitleText(l10n.termsOfUseSection4Title),
+            _BodyText(l10n.termsOfUseSection4Body),
 
-            _TitleText('5. Limitação de Responsabilidade'),
-            _BodyText(
-              'O ControllStok não se responsabiliza por perdas, danos ou prejuízos '
-              'decorrentes do uso inadequado do aplicativo ou de informações incorretas inseridas pelo usuário.',
-            ),
+            _TitleText(l10n.termsOfUseSection5Title),
+            _BodyText(l10n.termsOfUseSection5Body),
 
-            _TitleText('6. Disponibilidade'),
-            _BodyText(
-              'O aplicativo pode sofrer interrupções temporárias para manutenção, '
-              'atualizações ou por fatores externos fora do controle do desenvolvedor.',
-            ),
+            _TitleText(l10n.termsOfUseSection6Title),
+            _BodyText(l10n.termsOfUseSection6Body),
 
-            _TitleText('7. Alterações nos Termos'),
-            _BodyText(
-              'Os Termos de Uso podem ser alterados a qualquer momento. '
-              'Recomenda-se que o usuário revise este documento periodicamente.',
-            ),
+            _TitleText(l10n.termsOfUseSection7Title),
+            _BodyText(l10n.termsOfUseSection7Body),
 
-            _TitleText('8. Contato'),
-            _BodyText(
-              'Em caso de dúvidas relacionadas a estes Termos de Uso, '
-              'entre em contato pelo e-mail: contact@mystoreday.com.',
-            ),
+            _TitleText(l10n.termsOfUseSection8Title),
+            _BodyText(l10n.termsOfUseSection8Body),
 
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
 
             Text(
-              'Última atualização: Janeiro de 2025',
-              style: TextStyle(color: Colors.black54, fontSize: 12),
+              l10n.termsOfUseLastUpdate,
+              style: const TextStyle(color: Colors.black54, fontSize: 12),
             ),
           ],
         ),

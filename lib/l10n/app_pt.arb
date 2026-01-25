@@ -435,5 +435,307 @@
   "@registerAwaitingUserVerification": { "description": "REGISTER — Status quando está aguardando o usuário verificar email" },
 
   "registerRestoringRegistration": "Restaurando seu cadastro...",
-  "@registerRestoringRegistration": { "description": "REGISTER — Mensagem exibida ao restaurar cadastro/estado" }
+  "@registerRestoringRegistration": { "description": "REGISTER — Mensagem exibida ao restaurar cadastro/estado" },
+
+  "yes": "Sim",
+  "@yes": { "description": "GERAL / BOTÕES — Opção afirmativa (Sim)" },
+
+  "no": "Não",
+  "@no": { "description": "GERAL / BOTÕES — Opção negativa (Não)" },
+
+  "companyEmailFallback": "—",
+  "@companyEmailFallback": { "description": "ONBOARDING EMPRESA — Placeholder quando email está vazio" },
+
+  "companyHeaderTitle": "Configure sua empresa",
+  "@companyHeaderTitle": { "description": "ONBOARDING EMPRESA — Título do header" },
+
+  "companyHeaderAccountLine": "Conta: {email}",
+  "@companyHeaderAccountLine": {
+    "description": "ONBOARDING EMPRESA — Linha exibindo a conta/email",
+    "placeholders": { "email": {} }
+  },
+
+  "companyHeaderSubtitle": "Essas informações ajudam a personalizar seu sistema e organizar seus relatórios.",
+  "@companyHeaderSubtitle": { "description": "ONBOARDING EMPRESA — Subtítulo do header" },
+
+  "companyCompanyHint": "Razão social / nome da empresa",
+  "@companyCompanyHint": { "description": "ONBOARDING EMPRESA — Hint do campo razão social/nome da empresa" },
+
+  "companyHasFantasyNameQuestion": "Sua empresa tem nome fantasia?",
+  "@companyHasFantasyNameQuestion": { "description": "ONBOARDING EMPRESA — Pergunta toggle: possui nome fantasia" },
+
+  "companyFantasyNameHint": "Nome fantasia",
+  "@companyFantasyNameHint": { "description": "ONBOARDING EMPRESA — Hint do campo nome fantasia" },
+
+  "companyHasOwnerQuestion": "Deseja informar um responsável?",
+  "@companyHasOwnerQuestion": { "description": "ONBOARDING EMPRESA — Pergunta toggle: informar responsável" },
+
+  "companyOwnerHint": "Responsável",
+  "@companyOwnerHint": { "description": "ONBOARDING EMPRESA — Hint do campo responsável" },
+
+  "companyHasPhoneQuestion": "Deseja informar telefone/WhatsApp?",
+  "@companyHasPhoneQuestion": { "description": "ONBOARDING EMPRESA — Pergunta toggle: informar telefone/WhatsApp" },
+
+  "companyPhoneHint": "Telefone / WhatsApp",
+  "@companyPhoneHint": { "description": "ONBOARDING EMPRESA — Hint do campo telefone/WhatsApp" },
+
+  "companyBusinessTypeHint": "Tipo de negócio",
+  "@companyBusinessTypeHint": { "description": "ONBOARDING EMPRESA — Hint do seletor de tipo de negócio" },
+
+  "companyBusinessTypeSelectTitle": "Selecione o tipo de negócio",
+  "@companyBusinessTypeSelectTitle": { "description": "ONBOARDING EMPRESA — Título do modal de seleção de tipo de negócio" },
+
+  "companyBusinessTypeOtherHint": "Descreva (até 20 caracteres)",
+  "@companyBusinessTypeOtherHint": { "description": "ONBOARDING EMPRESA — Hint do campo quando tipo de negócio é 'Outro' (max 20)" },
+
+  "companyBusinessTypeRestaurant": "Restaurante",
+  "@companyBusinessTypeRestaurant": { "description": "ONBOARDING EMPRESA — Tipo de negócio: restaurante" },
+
+  "companyBusinessTypeMarket": "Mercado",
+  "@companyBusinessTypeMarket": { "description": "ONBOARDING EMPRESA — Tipo de negócio: mercado" },
+
+  "companyBusinessTypeBakery": "Padaria",
+  "@companyBusinessTypeBakery": { "description": "ONBOARDING EMPRESA — Tipo de negócio: padaria" },
+
+  "companyBusinessTypePharmacy": "Farmácia",
+  "@companyBusinessTypePharmacy": { "description": "ONBOARDING EMPRESA — Tipo de negócio: farmácia" },
+
+  "companyBusinessTypeStore": "Loja",
+  "@companyBusinessTypeStore": { "description": "ONBOARDING EMPRESA — Tipo de negócio: loja" },
+
+  "companyBusinessTypeWorkshop": "Oficina",
+  "@companyBusinessTypeWorkshop": { "description": "ONBOARDING EMPRESA — Tipo de negócio: oficina" },
+
+  "companyBusinessTypeIndustry": "Indústria",
+  "@companyBusinessTypeIndustry": { "description": "ONBOARDING EMPRESA — Tipo de negócio: indústria" },
+
+  "companyBusinessTypeDistributor": "Distribuidora",
+  "@companyBusinessTypeDistributor": { "description": "ONBOARDING EMPRESA — Tipo de negócio: distribuidora" },
+
+  "companyBusinessTypeOther": "Outro",
+  "@companyBusinessTypeOther": { "description": "ONBOARDING EMPRESA — Tipo de negócio: outro" },
+
+  "companyAcceptTermsPrefix": "Eu li e concordo com os",
+  "@companyAcceptTermsPrefix": { "description": "ONBOARDING EMPRESA — Checkbox termos: prefixo antes do link" },
+
+  "companyTermsLink": "Termos de uso",
+  "@companyTermsLink": { "description": "ONBOARDING EMPRESA — Checkbox termos: texto do link" },
+
+  "companyAcceptPrivacyPrefix": "Eu li e concordo com as",
+  "@companyAcceptPrivacyPrefix": { "description": "ONBOARDING EMPRESA — Checkbox privacidade: prefixo antes do link" },
+
+  "companyPrivacyLink": "Políticas de privacidade",
+  "@companyPrivacyLink": { "description": "ONBOARDING EMPRESA — Checkbox privacidade: texto do link" },
+
+  "companyFinishButton": "Finalizar cadastro",
+  "@companyFinishButton": { "description": "ONBOARDING EMPRESA — Texto do botão principal de finalizar" },
+
+  "companyErrorCompanyRequired": "Preencha a razão social / nome da empresa",
+  "@companyErrorCompanyRequired": { "description": "ONBOARDING EMPRESA — Erro: nome/razão social obrigatório" },
+
+  "companyErrorBusinessTypeRequired": "Selecione o tipo de negócio",
+  "@companyErrorBusinessTypeRequired": { "description": "ONBOARDING EMPRESA — Erro: tipo de negócio obrigatório" },
+
+  "companyErrorOtherBusinessTypeRequired": "Descreva o tipo de negócio (até 20 caracteres)",
+  "@companyErrorOtherBusinessTypeRequired": { "description": "ONBOARDING EMPRESA — Erro: tipo 'Outro' precisa ser descrito" },
+
+  "companyErrorFantasyRequired": "Preencha o nome fantasia",
+  "@companyErrorFantasyRequired": { "description": "ONBOARDING EMPRESA — Erro: nome fantasia obrigatório quando habilitado" },
+
+  "companyErrorOwnerRequired": "Preencha o responsável",
+  "@companyErrorOwnerRequired": { "description": "ONBOARDING EMPRESA — Erro: responsável obrigatório quando habilitado" },
+
+  "companyErrorPhoneRequired": "Preencha o telefone / WhatsApp",
+  "@companyErrorPhoneRequired": { "description": "ONBOARDING EMPRESA — Erro: telefone obrigatório quando habilitado" },
+
+  "companyErrorAcceptLegal": "Você precisa aceitar os Termos e a Política de Privacidade.",
+  "@companyErrorAcceptLegal": { "description": "ONBOARDING EMPRESA — Erro: precisa aceitar termos e privacidade" },
+
+  "companyErrorSaveFailed": "Erro ao salvar os dados. Tente novamente.",
+  "@companyErrorSaveFailed": { "description": "ONBOARDING EMPRESA — Erro genérico ao salvar no Firestore" },
+
+  "privacyPolicyTitle": "Política de Privacidade",
+  "@privacyPolicyTitle": {
+    "description": "TELA POLÍTICA_DE_PRIVACIDADE — Título do AppBar"
+  },
+
+  "privacyPolicySection1Title": "1. Introdução",
+  "@privacyPolicySection1Title": {
+    "description": "TELA POLÍTICA_DE_PRIVACIDADE — Título da seção 1"
+  },
+
+  "privacyPolicySection1Body": "O MyStoreDay é um aplicativo de gerenciamento de estoque. Esta Política de Privacidade descreve como as informações dos usuários são tratadas e protegidas.",
+  "@privacyPolicySection1Body": {
+    "description": "TELA POLÍTICA_DE_PRIVACIDADE — Texto da seção 1"
+  },
+
+  "privacyPolicySection2Title": "2. Coleta de Dados",
+  "@privacyPolicySection2Title": {
+    "description": "TELA POLÍTICA_DE_PRIVACIDADE — Título da seção 2"
+  },
+
+  "privacyPolicySection2Body": "O aplicativo pode coletar informações básicas necessárias para o funcionamento, como dados de login e informações relacionadas aos produtos cadastrados no estoque.",
+  "@privacyPolicySection2Body": {
+    "description": "TELA POLÍTICA_DE_PRIVACIDADE — Texto da seção 2"
+  },
+
+  "privacyPolicySection3Title": "3. Uso das Informações",
+  "@privacyPolicySection3Title": {
+    "description": "TELA POLÍTICA_DE_PRIVACIDADE — Título da seção 3"
+  },
+
+  "privacyPolicySection3Body": "As informações coletadas são utilizadas exclusivamente para o funcionamento do aplicativo, melhoria da experiência do usuário e controle interno de estoque.",
+  "@privacyPolicySection3Body": {
+    "description": "TELA POLÍTICA_DE_PRIVACIDADE — Texto da seção 3"
+  },
+
+  "privacyPolicySection4Title": "4. Compartilhamento de Dados",
+  "@privacyPolicySection4Title": {
+    "description": "TELA POLÍTICA_DE_PRIVACIDADE — Título da seção 4"
+  },
+
+  "privacyPolicySection4Body": "O MyStoreDay não compartilha dados pessoais com terceiros, exceto quando exigido por lei.",
+  "@privacyPolicySection4Body": {
+    "description": "TELA POLÍTICA_DE_PRIVACIDADE — Texto da seção 4"
+  },
+
+  "privacyPolicySection5Title": "5. Segurança",
+  "@privacyPolicySection5Title": {
+    "description": "TELA POLÍTICA_DE_PRIVACIDADE — Título da seção 5"
+  },
+
+  "privacyPolicySection5Body": "Adotamos medidas técnicas e organizacionais para proteger os dados armazenados, reduzindo riscos de acesso não autorizado.",
+  "@privacyPolicySection5Body": {
+    "description": "TELA POLÍTICA_DE_PRIVACIDADE — Texto da seção 5"
+  },
+
+  "privacyPolicySection6Title": "6. Responsabilidades do Usuário",
+  "@privacyPolicySection6Title": {
+    "description": "TELA POLÍTICA_DE_PRIVACIDADE — Título da seção 6"
+  },
+
+  "privacyPolicySection6Body": "O usuário é responsável por manter suas credenciais de acesso seguras e por todas as atividades realizadas em sua conta.",
+  "@privacyPolicySection6Body": {
+    "description": "TELA POLÍTICA_DE_PRIVACIDADE — Texto da seção 6"
+  },
+
+  "privacyPolicySection7Title": "7. Alterações",
+  "@privacyPolicySection7Title": {
+    "description": "TELA POLÍTICA_DE_PRIVACIDADE — Título da seção 7"
+  },
+
+  "privacyPolicySection7Body": "Esta Política de Privacidade pode ser atualizada periodicamente. Recomendamos que o usuário revise este documento regularmente.",
+  "@privacyPolicySection7Body": {
+    "description": "TELA POLÍTICA_DE_PRIVACIDADE — Texto da seção 7"
+  },
+
+  "privacyPolicySection8Title": "8. Contato",
+  "@privacyPolicySection8Title": {
+    "description": "TELA POLÍTICA_DE_PRIVACIDADE — Título da seção 8"
+  },
+
+  "privacyPolicySection8Body": "Em caso de dúvidas sobre esta Política de Privacidade, entre em contato pelo e-mail: contact@mystoreday.com.",
+  "@privacyPolicySection8Body": {
+    "description": "TELA POLÍTICA_DE_PRIVACIDADE — Texto da seção 8"
+  },
+
+  "privacyPolicyLastUpdate": "Última atualização: Janeiro de 2025",
+  "@privacyPolicyLastUpdate": {
+    "description": "TELA POLÍTICA_DE_PRIVACIDADE — Linha final com data da última atualização"
+  },
+
+  "termsOfUseTitle": "Termos de Uso",
+  "@termsOfUseTitle": {
+    "description": "TELA TERMOS_DE_USO — Título da AppBar"
+  },
+
+  "termsOfUseSection1Title": "1. Aceitação dos Termos",
+  "@termsOfUseSection1Title": {
+    "description": "TELA TERMOS_DE_USO — Título da seção 1"
+  },
+
+  "termsOfUseSection1Body": "Ao utilizar o aplicativo MyStoreDay, o usuário concorda integralmente com estes Termos de Uso. Caso não concorde, recomenda-se não utilizar o aplicativo.",
+  "@termsOfUseSection1Body": {
+    "description": "TELA TERMOS_DE_USO — Texto da seção 1"
+  },
+
+  "termsOfUseSection2Title": "2. Finalidade do Aplicativo",
+  "@termsOfUseSection2Title": {
+    "description": "TELA TERMOS_DE_USO — Título da seção 2"
+  },
+
+  "termsOfUseSection2Body": "O MyStoreDay tem como finalidade auxiliar no gerenciamento de estoque, permitindo o controle de produtos, quantidades e informações relacionadas.",
+  "@termsOfUseSection2Body": {
+    "description": "TELA TERMOS_DE_USO — Texto da seção 2"
+  },
+
+  "termsOfUseSection3Title": "3. Cadastro e Responsabilidade",
+  "@termsOfUseSection3Title": {
+    "description": "TELA TERMOS_DE_USO — Título da seção 3"
+  },
+
+  "termsOfUseSection3Body": "O usuário é responsável pelas informações fornecidas durante o cadastro e por manter a confidencialidade de seus dados de acesso.",
+  "@termsOfUseSection3Body": {
+    "description": "TELA TERMOS_DE_USO — Texto da seção 3"
+  },
+
+  "termsOfUseSection4Title": "4. Uso Adequado",
+  "@termsOfUseSection4Title": {
+    "description": "TELA TERMOS_DE_USO — Título da seção 4"
+  },
+
+  "termsOfUseSection4Body": "É proibido utilizar o aplicativo para fins ilícitos, fraudulentos ou que possam comprometer a segurança e o funcionamento do sistema.",
+  "@termsOfUseSection4Body": {
+    "description": "TELA TERMOS_DE_USO — Texto da seção 4"
+  },
+
+  "termsOfUseSection5Title": "5. Limitação de Responsabilidade",
+  "@termsOfUseSection5Title": {
+    "description": "TELA TERMOS_DE_USO — Título da seção 5"
+  },
+
+  "termsOfUseSection5Body": "O MyStoreDay não se responsabiliza por perdas, danos ou prejuízos decorrentes do uso inadequado do aplicativo ou de informações incorretas inseridas pelo usuário.",
+  "@termsOfUseSection5Body": {
+    "description": "TELA TERMOS_DE_USO — Texto da seção 5"
+  },
+
+  "termsOfUseSection6Title": "6. Disponibilidade",
+  "@termsOfUseSection6Title": {
+    "description": "TELA TERMOS_DE_USO — Título da seção 6"
+  },
+
+  "termsOfUseSection6Body": "O aplicativo pode sofrer interrupções temporárias para manutenção, atualizações ou por fatores externos fora do controle do desenvolvedor.",
+  "@termsOfUseSection6Body": {
+    "description": "TELA TERMOS_DE_USO — Texto da seção 6"
+  },
+
+  "termsOfUseSection7Title": "7. Alterações nos Termos",
+  "@termsOfUseSection7Title": {
+    "description": "TELA TERMOS_DE_USO — Título da seção 7"
+  },
+
+  "termsOfUseSection7Body": "Os Termos de Uso podem ser alterados a qualquer momento. Recomenda-se que o usuário revise este documento periodicamente.",
+  "@termsOfUseSection7Body": {
+    "description": "TELA TERMOS_DE_USO — Texto da seção 7"
+  },
+
+  "termsOfUseSection8Title": "8. Contato",
+  "@termsOfUseSection8Title": {
+    "description": "TELA TERMOS_DE_USO — Título da seção 8"
+  },
+
+  "termsOfUseSection8Body": "Em caso de dúvidas relacionadas a estes Termos de Uso, entre em contato pelo e-mail: contact@mystoreday.com.",
+  "@termsOfUseSection8Body": {
+    "description": "TELA TERMOS_DE_USO — Texto da seção 8"
+  },
+
+  "termsOfUseLastUpdate": "Última atualização: Janeiro de 2025",
+  "@termsOfUseLastUpdate": {
+    "description": "TELA TERMOS_DE_USO — Linha final com data da última atualização"
+  }
+
+
+
+  
+
 }

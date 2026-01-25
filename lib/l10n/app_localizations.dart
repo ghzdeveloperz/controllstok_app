@@ -937,6 +937,450 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Restaurando seu cadastro...'**
   String get registerRestoringRegistration;
+
+  /// GERAL / BOTÕES — Opção afirmativa (Sim)
+  ///
+  /// In pt, this message translates to:
+  /// **'Sim'**
+  String get yes;
+
+  /// GERAL / BOTÕES — Opção negativa (Não)
+  ///
+  /// In pt, this message translates to:
+  /// **'Não'**
+  String get no;
+
+  /// ONBOARDING EMPRESA — Placeholder quando email está vazio
+  ///
+  /// In pt, this message translates to:
+  /// **'—'**
+  String get companyEmailFallback;
+
+  /// ONBOARDING EMPRESA — Título do header
+  ///
+  /// In pt, this message translates to:
+  /// **'Configure sua empresa'**
+  String get companyHeaderTitle;
+
+  /// ONBOARDING EMPRESA — Linha exibindo a conta/email
+  ///
+  /// In pt, this message translates to:
+  /// **'Conta: {email}'**
+  String companyHeaderAccountLine(Object email);
+
+  /// ONBOARDING EMPRESA — Subtítulo do header
+  ///
+  /// In pt, this message translates to:
+  /// **'Essas informações ajudam a personalizar seu sistema e organizar seus relatórios.'**
+  String get companyHeaderSubtitle;
+
+  /// ONBOARDING EMPRESA — Hint do campo razão social/nome da empresa
+  ///
+  /// In pt, this message translates to:
+  /// **'Razão social / nome da empresa'**
+  String get companyCompanyHint;
+
+  /// ONBOARDING EMPRESA — Pergunta toggle: possui nome fantasia
+  ///
+  /// In pt, this message translates to:
+  /// **'Sua empresa tem nome fantasia?'**
+  String get companyHasFantasyNameQuestion;
+
+  /// ONBOARDING EMPRESA — Hint do campo nome fantasia
+  ///
+  /// In pt, this message translates to:
+  /// **'Nome fantasia'**
+  String get companyFantasyNameHint;
+
+  /// ONBOARDING EMPRESA — Pergunta toggle: informar responsável
+  ///
+  /// In pt, this message translates to:
+  /// **'Deseja informar um responsável?'**
+  String get companyHasOwnerQuestion;
+
+  /// ONBOARDING EMPRESA — Hint do campo responsável
+  ///
+  /// In pt, this message translates to:
+  /// **'Responsável'**
+  String get companyOwnerHint;
+
+  /// ONBOARDING EMPRESA — Pergunta toggle: informar telefone/WhatsApp
+  ///
+  /// In pt, this message translates to:
+  /// **'Deseja informar telefone/WhatsApp?'**
+  String get companyHasPhoneQuestion;
+
+  /// ONBOARDING EMPRESA — Hint do campo telefone/WhatsApp
+  ///
+  /// In pt, this message translates to:
+  /// **'Telefone / WhatsApp'**
+  String get companyPhoneHint;
+
+  /// ONBOARDING EMPRESA — Hint do seletor de tipo de negócio
+  ///
+  /// In pt, this message translates to:
+  /// **'Tipo de negócio'**
+  String get companyBusinessTypeHint;
+
+  /// ONBOARDING EMPRESA — Título do modal de seleção de tipo de negócio
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione o tipo de negócio'**
+  String get companyBusinessTypeSelectTitle;
+
+  /// ONBOARDING EMPRESA — Hint do campo quando tipo de negócio é 'Outro' (max 20)
+  ///
+  /// In pt, this message translates to:
+  /// **'Descreva (até 20 caracteres)'**
+  String get companyBusinessTypeOtherHint;
+
+  /// ONBOARDING EMPRESA — Tipo de negócio: restaurante
+  ///
+  /// In pt, this message translates to:
+  /// **'Restaurante'**
+  String get companyBusinessTypeRestaurant;
+
+  /// ONBOARDING EMPRESA — Tipo de negócio: mercado
+  ///
+  /// In pt, this message translates to:
+  /// **'Mercado'**
+  String get companyBusinessTypeMarket;
+
+  /// ONBOARDING EMPRESA — Tipo de negócio: padaria
+  ///
+  /// In pt, this message translates to:
+  /// **'Padaria'**
+  String get companyBusinessTypeBakery;
+
+  /// ONBOARDING EMPRESA — Tipo de negócio: farmácia
+  ///
+  /// In pt, this message translates to:
+  /// **'Farmácia'**
+  String get companyBusinessTypePharmacy;
+
+  /// ONBOARDING EMPRESA — Tipo de negócio: loja
+  ///
+  /// In pt, this message translates to:
+  /// **'Loja'**
+  String get companyBusinessTypeStore;
+
+  /// ONBOARDING EMPRESA — Tipo de negócio: oficina
+  ///
+  /// In pt, this message translates to:
+  /// **'Oficina'**
+  String get companyBusinessTypeWorkshop;
+
+  /// ONBOARDING EMPRESA — Tipo de negócio: indústria
+  ///
+  /// In pt, this message translates to:
+  /// **'Indústria'**
+  String get companyBusinessTypeIndustry;
+
+  /// ONBOARDING EMPRESA — Tipo de negócio: distribuidora
+  ///
+  /// In pt, this message translates to:
+  /// **'Distribuidora'**
+  String get companyBusinessTypeDistributor;
+
+  /// ONBOARDING EMPRESA — Tipo de negócio: outro
+  ///
+  /// In pt, this message translates to:
+  /// **'Outro'**
+  String get companyBusinessTypeOther;
+
+  /// ONBOARDING EMPRESA — Checkbox termos: prefixo antes do link
+  ///
+  /// In pt, this message translates to:
+  /// **'Eu li e concordo com os'**
+  String get companyAcceptTermsPrefix;
+
+  /// ONBOARDING EMPRESA — Checkbox termos: texto do link
+  ///
+  /// In pt, this message translates to:
+  /// **'Termos de uso'**
+  String get companyTermsLink;
+
+  /// ONBOARDING EMPRESA — Checkbox privacidade: prefixo antes do link
+  ///
+  /// In pt, this message translates to:
+  /// **'Eu li e concordo com as'**
+  String get companyAcceptPrivacyPrefix;
+
+  /// ONBOARDING EMPRESA — Checkbox privacidade: texto do link
+  ///
+  /// In pt, this message translates to:
+  /// **'Políticas de privacidade'**
+  String get companyPrivacyLink;
+
+  /// ONBOARDING EMPRESA — Texto do botão principal de finalizar
+  ///
+  /// In pt, this message translates to:
+  /// **'Finalizar cadastro'**
+  String get companyFinishButton;
+
+  /// ONBOARDING EMPRESA — Erro: nome/razão social obrigatório
+  ///
+  /// In pt, this message translates to:
+  /// **'Preencha a razão social / nome da empresa'**
+  String get companyErrorCompanyRequired;
+
+  /// ONBOARDING EMPRESA — Erro: tipo de negócio obrigatório
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione o tipo de negócio'**
+  String get companyErrorBusinessTypeRequired;
+
+  /// ONBOARDING EMPRESA — Erro: tipo 'Outro' precisa ser descrito
+  ///
+  /// In pt, this message translates to:
+  /// **'Descreva o tipo de negócio (até 20 caracteres)'**
+  String get companyErrorOtherBusinessTypeRequired;
+
+  /// ONBOARDING EMPRESA — Erro: nome fantasia obrigatório quando habilitado
+  ///
+  /// In pt, this message translates to:
+  /// **'Preencha o nome fantasia'**
+  String get companyErrorFantasyRequired;
+
+  /// ONBOARDING EMPRESA — Erro: responsável obrigatório quando habilitado
+  ///
+  /// In pt, this message translates to:
+  /// **'Preencha o responsável'**
+  String get companyErrorOwnerRequired;
+
+  /// ONBOARDING EMPRESA — Erro: telefone obrigatório quando habilitado
+  ///
+  /// In pt, this message translates to:
+  /// **'Preencha o telefone / WhatsApp'**
+  String get companyErrorPhoneRequired;
+
+  /// ONBOARDING EMPRESA — Erro: precisa aceitar termos e privacidade
+  ///
+  /// In pt, this message translates to:
+  /// **'Você precisa aceitar os Termos e a Política de Privacidade.'**
+  String get companyErrorAcceptLegal;
+
+  /// ONBOARDING EMPRESA — Erro genérico ao salvar no Firestore
+  ///
+  /// In pt, this message translates to:
+  /// **'Erro ao salvar os dados. Tente novamente.'**
+  String get companyErrorSaveFailed;
+
+  /// TELA POLÍTICA_DE_PRIVACIDADE — Título do AppBar
+  ///
+  /// In pt, this message translates to:
+  /// **'Política de Privacidade'**
+  String get privacyPolicyTitle;
+
+  /// TELA POLÍTICA_DE_PRIVACIDADE — Título da seção 1
+  ///
+  /// In pt, this message translates to:
+  /// **'1. Introdução'**
+  String get privacyPolicySection1Title;
+
+  /// TELA POLÍTICA_DE_PRIVACIDADE — Texto da seção 1
+  ///
+  /// In pt, this message translates to:
+  /// **'O MyStoreDay é um aplicativo de gerenciamento de estoque. Esta Política de Privacidade descreve como as informações dos usuários são tratadas e protegidas.'**
+  String get privacyPolicySection1Body;
+
+  /// TELA POLÍTICA_DE_PRIVACIDADE — Título da seção 2
+  ///
+  /// In pt, this message translates to:
+  /// **'2. Coleta de Dados'**
+  String get privacyPolicySection2Title;
+
+  /// TELA POLÍTICA_DE_PRIVACIDADE — Texto da seção 2
+  ///
+  /// In pt, this message translates to:
+  /// **'O aplicativo pode coletar informações básicas necessárias para o funcionamento, como dados de login e informações relacionadas aos produtos cadastrados no estoque.'**
+  String get privacyPolicySection2Body;
+
+  /// TELA POLÍTICA_DE_PRIVACIDADE — Título da seção 3
+  ///
+  /// In pt, this message translates to:
+  /// **'3. Uso das Informações'**
+  String get privacyPolicySection3Title;
+
+  /// TELA POLÍTICA_DE_PRIVACIDADE — Texto da seção 3
+  ///
+  /// In pt, this message translates to:
+  /// **'As informações coletadas são utilizadas exclusivamente para o funcionamento do aplicativo, melhoria da experiência do usuário e controle interno de estoque.'**
+  String get privacyPolicySection3Body;
+
+  /// TELA POLÍTICA_DE_PRIVACIDADE — Título da seção 4
+  ///
+  /// In pt, this message translates to:
+  /// **'4. Compartilhamento de Dados'**
+  String get privacyPolicySection4Title;
+
+  /// TELA POLÍTICA_DE_PRIVACIDADE — Texto da seção 4
+  ///
+  /// In pt, this message translates to:
+  /// **'O MyStoreDay não compartilha dados pessoais com terceiros, exceto quando exigido por lei.'**
+  String get privacyPolicySection4Body;
+
+  /// TELA POLÍTICA_DE_PRIVACIDADE — Título da seção 5
+  ///
+  /// In pt, this message translates to:
+  /// **'5. Segurança'**
+  String get privacyPolicySection5Title;
+
+  /// TELA POLÍTICA_DE_PRIVACIDADE — Texto da seção 5
+  ///
+  /// In pt, this message translates to:
+  /// **'Adotamos medidas técnicas e organizacionais para proteger os dados armazenados, reduzindo riscos de acesso não autorizado.'**
+  String get privacyPolicySection5Body;
+
+  /// TELA POLÍTICA_DE_PRIVACIDADE — Título da seção 6
+  ///
+  /// In pt, this message translates to:
+  /// **'6. Responsabilidades do Usuário'**
+  String get privacyPolicySection6Title;
+
+  /// TELA POLÍTICA_DE_PRIVACIDADE — Texto da seção 6
+  ///
+  /// In pt, this message translates to:
+  /// **'O usuário é responsável por manter suas credenciais de acesso seguras e por todas as atividades realizadas em sua conta.'**
+  String get privacyPolicySection6Body;
+
+  /// TELA POLÍTICA_DE_PRIVACIDADE — Título da seção 7
+  ///
+  /// In pt, this message translates to:
+  /// **'7. Alterações'**
+  String get privacyPolicySection7Title;
+
+  /// TELA POLÍTICA_DE_PRIVACIDADE — Texto da seção 7
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta Política de Privacidade pode ser atualizada periodicamente. Recomendamos que o usuário revise este documento regularmente.'**
+  String get privacyPolicySection7Body;
+
+  /// TELA POLÍTICA_DE_PRIVACIDADE — Título da seção 8
+  ///
+  /// In pt, this message translates to:
+  /// **'8. Contato'**
+  String get privacyPolicySection8Title;
+
+  /// TELA POLÍTICA_DE_PRIVACIDADE — Texto da seção 8
+  ///
+  /// In pt, this message translates to:
+  /// **'Em caso de dúvidas sobre esta Política de Privacidade, entre em contato pelo e-mail: contact@mystoreday.com.'**
+  String get privacyPolicySection8Body;
+
+  /// TELA POLÍTICA_DE_PRIVACIDADE — Linha final com data da última atualização
+  ///
+  /// In pt, this message translates to:
+  /// **'Última atualização: Janeiro de 2025'**
+  String get privacyPolicyLastUpdate;
+
+  /// TELA TERMOS_DE_USO — Título da AppBar
+  ///
+  /// In pt, this message translates to:
+  /// **'Termos de Uso'**
+  String get termsOfUseTitle;
+
+  /// TELA TERMOS_DE_USO — Título da seção 1
+  ///
+  /// In pt, this message translates to:
+  /// **'1. Aceitação dos Termos'**
+  String get termsOfUseSection1Title;
+
+  /// TELA TERMOS_DE_USO — Texto da seção 1
+  ///
+  /// In pt, this message translates to:
+  /// **'Ao utilizar o aplicativo MyStoreDay, o usuário concorda integralmente com estes Termos de Uso. Caso não concorde, recomenda-se não utilizar o aplicativo.'**
+  String get termsOfUseSection1Body;
+
+  /// TELA TERMOS_DE_USO — Título da seção 2
+  ///
+  /// In pt, this message translates to:
+  /// **'2. Finalidade do Aplicativo'**
+  String get termsOfUseSection2Title;
+
+  /// TELA TERMOS_DE_USO — Texto da seção 2
+  ///
+  /// In pt, this message translates to:
+  /// **'O MyStoreDay tem como finalidade auxiliar no gerenciamento de estoque, permitindo o controle de produtos, quantidades e informações relacionadas.'**
+  String get termsOfUseSection2Body;
+
+  /// TELA TERMOS_DE_USO — Título da seção 3
+  ///
+  /// In pt, this message translates to:
+  /// **'3. Cadastro e Responsabilidade'**
+  String get termsOfUseSection3Title;
+
+  /// TELA TERMOS_DE_USO — Texto da seção 3
+  ///
+  /// In pt, this message translates to:
+  /// **'O usuário é responsável pelas informações fornecidas durante o cadastro e por manter a confidencialidade de seus dados de acesso.'**
+  String get termsOfUseSection3Body;
+
+  /// TELA TERMOS_DE_USO — Título da seção 4
+  ///
+  /// In pt, this message translates to:
+  /// **'4. Uso Adequado'**
+  String get termsOfUseSection4Title;
+
+  /// TELA TERMOS_DE_USO — Texto da seção 4
+  ///
+  /// In pt, this message translates to:
+  /// **'É proibido utilizar o aplicativo para fins ilícitos, fraudulentos ou que possam comprometer a segurança e o funcionamento do sistema.'**
+  String get termsOfUseSection4Body;
+
+  /// TELA TERMOS_DE_USO — Título da seção 5
+  ///
+  /// In pt, this message translates to:
+  /// **'5. Limitação de Responsabilidade'**
+  String get termsOfUseSection5Title;
+
+  /// TELA TERMOS_DE_USO — Texto da seção 5
+  ///
+  /// In pt, this message translates to:
+  /// **'O MyStoreDay não se responsabiliza por perdas, danos ou prejuízos decorrentes do uso inadequado do aplicativo ou de informações incorretas inseridas pelo usuário.'**
+  String get termsOfUseSection5Body;
+
+  /// TELA TERMOS_DE_USO — Título da seção 6
+  ///
+  /// In pt, this message translates to:
+  /// **'6. Disponibilidade'**
+  String get termsOfUseSection6Title;
+
+  /// TELA TERMOS_DE_USO — Texto da seção 6
+  ///
+  /// In pt, this message translates to:
+  /// **'O aplicativo pode sofrer interrupções temporárias para manutenção, atualizações ou por fatores externos fora do controle do desenvolvedor.'**
+  String get termsOfUseSection6Body;
+
+  /// TELA TERMOS_DE_USO — Título da seção 7
+  ///
+  /// In pt, this message translates to:
+  /// **'7. Alterações nos Termos'**
+  String get termsOfUseSection7Title;
+
+  /// TELA TERMOS_DE_USO — Texto da seção 7
+  ///
+  /// In pt, this message translates to:
+  /// **'Os Termos de Uso podem ser alterados a qualquer momento. Recomenda-se que o usuário revise este documento periodicamente.'**
+  String get termsOfUseSection7Body;
+
+  /// TELA TERMOS_DE_USO — Título da seção 8
+  ///
+  /// In pt, this message translates to:
+  /// **'8. Contato'**
+  String get termsOfUseSection8Title;
+
+  /// TELA TERMOS_DE_USO — Texto da seção 8
+  ///
+  /// In pt, this message translates to:
+  /// **'Em caso de dúvidas relacionadas a estes Termos de Uso, entre em contato pelo e-mail: contact@mystoreday.com.'**
+  String get termsOfUseSection8Body;
+
+  /// TELA TERMOS_DE_USO — Linha final com data da última atualização
+  ///
+  /// In pt, this message translates to:
+  /// **'Última atualização: Janeiro de 2025'**
+  String get termsOfUseLastUpdate;
 }
 
 class _AppLocalizationsDelegate

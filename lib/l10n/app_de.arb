@@ -435,5 +435,243 @@
   "@registerAwaitingUserVerification": { "description": "REGISTER — Status quando está aguardando o usuário verificar email" },
 
   "registerRestoringRegistration": "Ihre Registrierung wird wiederhergestellt...",
-  "@registerRestoringRegistration": { "description": "REGISTER — Mensagem exibida ao restaurar cadastro/estado" }
+  "@registerRestoringRegistration": { "description": "REGISTER — Mensagem exibida ao restaurar cadastro/estado" },
+
+  "yes": "Ja",
+  "@yes": { "description": "ALLGEMEIN / BUTTONS — Bestätigung (Ja)" },
+
+  "no": "Nein",
+  "@no": { "description": "ALLGEMEIN / BUTTONS — Ablehnung (Nein)" },
+
+  "companyEmailFallback": "—",
+  "@companyEmailFallback": { "description": "FIRMEN-ONBOARDING — Platzhalter, wenn E-Mail leer ist" },
+
+  "companyHeaderTitle": "Unternehmen einrichten",
+  "@companyHeaderTitle": { "description": "FIRMEN-ONBOARDING — Header-Titel" },
+
+  "companyHeaderAccountLine": "Konto: {email}",
+  "@companyHeaderAccountLine": {
+    "description": "FIRMEN-ONBOARDING — Konto/E-Mail-Zeile",
+    "placeholders": { "email": {} }
+  },
+
+  "companyHeaderSubtitle": "Diese Angaben helfen, dein System zu personalisieren und deine Berichte zu organisieren.",
+  "@companyHeaderSubtitle": { "description": "FIRMEN-ONBOARDING — Header-Untertitel" },
+
+  "companyCompanyHint": "Firmenname / rechtlicher Name",
+  "@companyCompanyHint": { "description": "FIRMEN-ONBOARDING — Hinweis für Firmenname-Feld" },
+
+  "companyHasFantasyNameQuestion": "Hat dein Unternehmen einen Handelsnamen?",
+  "@companyHasFantasyNameQuestion": { "description": "FIRMEN-ONBOARDING — Toggle-Frage: Handelsname vorhanden" },
+
+  "companyFantasyNameHint": "Handelsname",
+  "@companyFantasyNameHint": { "description": "FIRMEN-ONBOARDING — Hinweis für Handelsname-Feld" },
+
+  "companyHasOwnerQuestion": "Möchtest du eine verantwortliche Person angeben?",
+  "@companyHasOwnerQuestion": { "description": "FIRMEN-ONBOARDING — Toggle-Frage: verantwortliche Person angeben" },
+
+  "companyOwnerHint": "Verantwortliche Person",
+  "@companyOwnerHint": { "description": "FIRMEN-ONBOARDING — Hinweis für verantwortliche Person" },
+
+  "companyHasPhoneQuestion": "Möchtest du Telefon/WhatsApp angeben?",
+  "@companyHasPhoneQuestion": { "description": "FIRMEN-ONBOARDING — Toggle-Frage: Telefon/WhatsApp angeben" },
+
+  "companyPhoneHint": "Telefon / WhatsApp",
+  "@companyPhoneHint": { "description": "FIRMEN-ONBOARDING — Hinweis für Telefon/WhatsApp" },
+
+  "companyBusinessTypeHint": "Branche",
+  "@companyBusinessTypeHint": { "description": "FIRMEN-ONBOARDING — Hinweis für Branchen-Auswahl" },
+
+  "companyBusinessTypeSelectTitle": "Branche auswählen",
+  "@companyBusinessTypeSelectTitle": { "description": "FIRMEN-ONBOARDING — Titel des Modals zur Branchenauswahl" },
+
+  "companyBusinessTypeOtherHint": "Beschreiben (bis zu 20 Zeichen)",
+  "@companyBusinessTypeOtherHint": { "description": "FIRMEN-ONBOARDING — Hinweis für 'Sonstiges' (max. 20)" },
+
+  "companyBusinessTypeRestaurant": "Restaurant",
+  "@companyBusinessTypeRestaurant": { "description": "FIRMEN-ONBOARDING — Branche: Restaurant" },
+
+  "companyBusinessTypeMarket": "Markt",
+  "@companyBusinessTypeMarket": { "description": "FIRMEN-ONBOARDING — Branche: Markt" },
+
+  "companyBusinessTypeBakery": "Bäckerei",
+  "@companyBusinessTypeBakery": { "description": "FIRMEN-ONBOARDING — Branche: Bäckerei" },
+
+  "companyBusinessTypePharmacy": "Apotheke",
+  "@companyBusinessTypePharmacy": { "description": "FIRMEN-ONBOARDING — Branche: Apotheke" },
+
+  "companyBusinessTypeStore": "Geschäft",
+  "@companyBusinessTypeStore": { "description": "FIRMEN-ONBOARDING — Branche: Geschäft" },
+
+  "companyBusinessTypeWorkshop": "Werkstatt",
+  "@companyBusinessTypeWorkshop": { "description": "FIRMEN-ONBOARDING — Branche: Werkstatt" },
+
+  "companyBusinessTypeIndustry": "Industrie",
+  "@companyBusinessTypeIndustry": { "description": "FIRMEN-ONBOARDING — Branche: Industrie" },
+
+  "companyBusinessTypeDistributor": "Großhändler",
+  "@companyBusinessTypeDistributor": { "description": "FIRMEN-ONBOARDING — Branche: Großhändler" },
+
+  "companyBusinessTypeOther": "Sonstiges",
+  "@companyBusinessTypeOther": { "description": "FIRMEN-ONBOARDING — Branche: Sonstiges" },
+
+  "companyAcceptTermsPrefix": "Ich habe gelesen und stimme zu:",
+  "@companyAcceptTermsPrefix": { "description": "FIRMEN-ONBOARDING — AGB-Checkbox: Prefix vor dem Link" },
+
+  "companyTermsLink": "Nutzungsbedingungen",
+  "@companyTermsLink": { "description": "FIRMEN-ONBOARDING — AGB-Checkbox: Link-Text" },
+
+  "companyAcceptPrivacyPrefix": "Ich habe gelesen und stimme zu:",
+  "@companyAcceptPrivacyPrefix": { "description": "FIRMEN-ONBOARDING — Datenschutz-Checkbox: Prefix vor dem Link" },
+
+  "companyPrivacyLink": "Datenschutzerklärung",
+  "@companyPrivacyLink": { "description": "FIRMEN-ONBOARDING — Datenschutz-Checkbox: Link-Text" },
+
+  "companyFinishButton": "Einrichtung abschließen",
+  "@companyFinishButton": { "description": "FIRMEN-ONBOARDING — Text des Hauptbuttons" },
+
+  "companyErrorCompanyRequired": "Bitte Firmenname angeben",
+  "@companyErrorCompanyRequired": { "description": "FIRMEN-ONBOARDING — Fehler: Firmenname erforderlich" },
+
+  "companyErrorBusinessTypeRequired": "Bitte eine Branche auswählen",
+  "@companyErrorBusinessTypeRequired": { "description": "FIRMEN-ONBOARDING — Fehler: Branche erforderlich" },
+
+  "companyErrorOtherBusinessTypeRequired": "Bitte Branche beschreiben (bis zu 20 Zeichen)",
+  "@companyErrorOtherBusinessTypeRequired": { "description": "FIRMEN-ONBOARDING — Fehler: 'Sonstiges' muss beschrieben werden" },
+
+  "companyErrorFantasyRequired": "Bitte Handelsnamen angeben",
+  "@companyErrorFantasyRequired": { "description": "FIRMEN-ONBOARDING — Fehler: Handelsname erforderlich" },
+
+  "companyErrorOwnerRequired": "Bitte verantwortliche Person angeben",
+  "@companyErrorOwnerRequired": { "description": "FIRMEN-ONBOARDING — Fehler: verantwortliche Person erforderlich" },
+
+  "companyErrorPhoneRequired": "Bitte Telefon/WhatsApp angeben",
+  "@companyErrorPhoneRequired": { "description": "FIRMEN-ONBOARDING — Fehler: Telefon erforderlich" },
+
+  "companyErrorAcceptLegal": "Du musst die Nutzungsbedingungen und die Datenschutzerklärung akzeptieren.",
+  "@companyErrorAcceptLegal": { "description": "FIRMEN-ONBOARDING — Fehler: AGB & Datenschutz müssen akzeptiert werden" },
+
+  "companyErrorSaveFailed": "Daten konnten nicht gespeichert werden. Bitte erneut versuchen.",
+  "@companyErrorSaveFailed": { "description": "FIRMEN-ONBOARDING — Generischer Fehler beim Speichern" },
+
+  "privacyPolicyTitle": "Datenschutzerklärung",
+  "@privacyPolicyTitle": {
+    "description": "PRIVACY_POLICY SCREEN — AppBar-Titel (de)"
+  },
+
+  "privacyPolicySection1Title": "1. Einleitung",
+  "@privacyPolicySection1Title": {
+    "description": "PRIVACY_POLICY SCREEN — Abschnitt 1 Titel (de)"
+  },
+
+  "privacyPolicySection1Body": "ControllStok ist eine App zur Lagerverwaltung. Diese Datenschutzerklärung beschreibt, wie Benutzerinformationen verarbeitet und geschützt werden.",
+  "@privacyPolicySection1Body": {
+    "description": "PRIVACY_POLICY SCREEN — Abschnitt 1 Text (de)"
+  },
+
+  "privacyPolicySection2Title": "2. Datenerhebung",
+  "@privacyPolicySection2Title": {
+    "description": "PRIVACY_POLICY SCREEN — Abschnitt 2 Titel (de)"
+  },
+
+  "privacyPolicySection2Body": "Die App kann grundlegende Informationen erfassen, die für ihren Betrieb erforderlich sind, wie z. B. Anmeldedaten und Informationen zu im Lager erfassten Produkten.",
+  "@privacyPolicySection2Body": {
+    "description": "PRIVACY_POLICY SCREEN — Abschnitt 2 Text (de)"
+  },
+
+  "privacyPolicySection3Title": "3. Verwendung der Informationen",
+  "@privacyPolicySection3Title": {
+    "description": "PRIVACY_POLICY SCREEN — Abschnitt 3 Titel (de)"
+  },
+
+  "privacyPolicySection3Body": "Die gesammelten Informationen werden ausschließlich für den Betrieb der App, zur Verbesserung der Benutzererfahrung und zur internen Lagerkontrolle verwendet.",
+  "@privacyPolicySection3Body": {
+    "description": "PRIVACY_POLICY SCREEN — Abschnitt 3 Text (de)"
+  },
+
+  "privacyPolicySection4Title": "4. Weitergabe von Daten",
+  "@privacyPolicySection4Title": {
+    "description": "PRIVACY_POLICY SCREEN — Abschnitt 4 Titel (de)"
+  },
+
+  "privacyPolicySection4Body": "ControllStok gibt personenbezogene Daten nicht an Dritte weiter, außer wenn dies gesetzlich vorgeschrieben ist.",
+  "@privacyPolicySection4Body": {
+    "description": "PRIVACY_POLICY SCREEN — Abschnitt 4 Text (de)"
+  },
+
+  "privacyPolicySection5Title": "5. Sicherheit",
+  "@privacyPolicySection5Title": {
+    "description": "PRIVACY_POLICY SCREEN — Abschnitt 5 Titel (de)"
+  },
+
+  "privacyPolicySection5Body": "Wir setzen technische und organisatorische Maßnahmen ein, um gespeicherte Daten zu schützen und das Risiko eines unbefugten Zugriffs zu minimieren.",
+  "@privacyPolicySection5Body": {
+    "description": "PRIVACY_POLICY SCREEN — Abschnitt 5 Text (de)"
+  },
+
+  "privacyPolicySection6Title": "6. Verantwortlichkeiten der Benutzer",
+  "@privacyPolicySection6Title": {
+    "description": "PRIVACY_POLICY SCREEN — Abschnitt 6 Titel (de)"
+  },
+
+  "privacyPolicySection6Body": "Die Benutzer sind dafür verantwortlich, ihre Zugangsdaten sicher aufzubewahren und für alle Aktivitäten verantwortlich, die über ihr Konto durchgeführt werden.",
+  "@privacyPolicySection6Body": {
+    "description": "PRIVACY_POLICY SCREEN — Abschnitt 6 Text (de)"
+  },
+
+  "privacyPolicySection7Title": "7. Änderungen",
+  "@privacyPolicySection7Title": {
+    "description": "PRIVACY_POLICY SCREEN — Abschnitt 7 Titel (de)"
+  },
+
+  "privacyPolicySection7Body": "Diese Datenschutzerklärung kann regelmäßig aktualisiert werden. Wir empfehlen den Benutzern, dieses Dokument regelmäßig zu überprüfen.",
+  "@privacyPolicySection7Body": {
+    "description": "PRIVACY_POLICY SCREEN — Abschnitt 7 Text (de)"
+  },
+
+  "privacyPolicySection8Title": "8. Kontakt",
+  "@privacyPolicySection8Title": {
+    "description": "PRIVACY_POLICY SCREEN — Abschnitt 8 Titel (de)"
+  },
+
+  "privacyPolicySection8Body": "Wenn Sie Fragen zu dieser Datenschutzerklärung haben, kontaktieren Sie uns bitte per E-Mail unter: contact@mystoreday.com.",
+  "@privacyPolicySection8Body": {
+    "description": "PRIVACY_POLICY SCREEN — Abschnitt 8 Text (de)"
+  },
+
+  "privacyPolicyLastUpdate": "Letzte Aktualisierung: Januar 2025",
+  "@privacyPolicyLastUpdate": {
+    "description": "PRIVACY_POLICY SCREEN — Fußzeile mit Datum der letzten Aktualisierung (de)"
+  },
+
+  "termsOfUseTitle": "Nutzungsbedingungen",
+
+  "termsOfUseSection1Title": "1. Annahme der Bedingungen",
+  "termsOfUseSection1Body": "Durch die Nutzung der MyStoreDay-App erklärt sich der Benutzer vollständig mit diesen Nutzungsbedingungen einverstanden. Wenn Sie nicht einverstanden sind, wird empfohlen, die App nicht zu nutzen.",
+
+  "termsOfUseSection2Title": "2. Zweck der Anwendung",
+  "termsOfUseSection2Body": "MyStoreDay dient der Unterstützung bei der Lagerverwaltung und ermöglicht die Kontrolle von Produkten, Mengen und zugehörigen Informationen.",
+
+  "termsOfUseSection3Title": "3. Registrierung und Verantwortung",
+  "termsOfUseSection3Body": "Der Benutzer ist für die bei der Registrierung angegebenen Informationen sowie für die Vertraulichkeit seiner Zugangsdaten verantwortlich.",
+
+  "termsOfUseSection4Title": "4. Ordnungsgemässe Nutzung",
+  "termsOfUseSection4Body": "Es ist untersagt, die Anwendung für illegale oder betrügerische Zwecke zu verwenden oder die Sicherheit und den Betrieb des Systems zu gefährden.",
+
+  "termsOfUseSection5Title": "5. Haftungsbeschränkung",
+  "termsOfUseSection5Body": "MyStoreDay übernimmt keine Haftung für Verluste, Schäden oder Nachteile, die durch eine unsachgemässe Nutzung der Anwendung oder durch vom Benutzer bereitgestellte fehlerhafte Informationen entstehen.",
+
+  "termsOfUseSection6Title": "6. Verfügbarkeit",
+  "termsOfUseSection6Body": "Die Anwendung kann vorübergehend aufgrund von Wartungsarbeiten, Aktualisierungen oder externer Faktoren ausserhalb der Kontrolle des Entwicklers nicht verfügbar sein.",
+
+  "termsOfUseSection7Title": "7. Änderungen der Bedingungen",
+  "termsOfUseSection7Body": "Die Nutzungsbedingungen können jederzeit geändert werden. Es wird empfohlen, dieses Dokument regelmässig zu überprüfen.",
+
+  "termsOfUseSection8Title": "8. Kontakt",
+  "termsOfUseSection8Body": "Bei Fragen zu diesen Nutzungsbedingungen kontaktieren Sie uns bitte per E-Mail unter: contact@mystoreday.com.",
+
+  "termsOfUseLastUpdate": "Letzte Aktualisierung: Januar 2025"
+
+
+
 }

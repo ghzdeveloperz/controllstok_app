@@ -1,6 +1,7 @@
 // lib/screens/acounts/onboarding/company_screen.dart
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../../../l10n/app_localizations.dart';
 
 import '../../home_screen.dart';
 import 'company_controller.dart';
@@ -42,7 +43,13 @@ class _CompanyScreenState extends State<CompanyScreen>
   }
 
   Future<void> _finish() async {
-    final ok = await controller.finish(user: widget.user);
+    final l10n = AppLocalizations.of(context)!;
+
+    final ok = await controller.finish(
+      user: widget.user,
+      l10n: l10n,
+    );
+
     if (!mounted) return;
 
     if (!ok) {
@@ -73,7 +80,7 @@ class _CompanyScreenState extends State<CompanyScreen>
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: controller,
-      builder: (_, __) {
+      builder: (context, _) {
         return GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
           child: Scaffold(
@@ -85,13 +92,8 @@ class _CompanyScreenState extends State<CompanyScreen>
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // ✅ header premium (você disse que quer no estilo do RegisterHeader)
-                      // Se seu CompanyHeader já está pronto, ele entra aqui.
-                      // Dica: passe o email pra mostrar qual conta está sendo configurada.
                       CompanyHeader(email: widget.user.email ?? ''),
-
                       const SizedBox(height: 16),
-
                       CompanyForm(
                         controller: controller,
                         isLoading: controller.isLoading,
