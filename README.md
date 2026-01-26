@@ -827,3 +827,5 @@ Essas regras são reavaliadas a cada mudança de autenticação ou Firestore.
 - Elevar a **Tela Sobre** ao padrão de **produto profissional**
 - Garantir **manutenção simples**, clareza arquitetural e escalabilidade
 - Consolidar a base de **i18n** e organização do MyStoreDay
+
+### Merge tradução-app
