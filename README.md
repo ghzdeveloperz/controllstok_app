@@ -658,3 +658,27 @@ Essas regras são reavaliadas a cada mudança de autenticação ou Firestore.
 - Eliminar inconsistências visuais em diferentes resoluções
 - Garantir um Bottom Navigation estável, compacto e escalável
 - Preparar a base para futuras evoluções da Home sem retrabalho de layout
+
+## [Milestone 26] Product Card Profissional — Estrutura Escalável + i18n Completo
+**Status:** Concluído ✅
+
+### Melhorias:
+- Refatorado o **ProductCard** para uma arquitetura **modular e altamente escalável**, separando responsabilidades em camadas:
+  - `ProductCardViewModel`: regras de negócio do card (status, valores, campos derivados)
+  - `ProductStockStatus`: enum centralizado para estados do estoque + extensão de cor
+  - `ProductCardFormatters`: camada de formatação **i18n-first** (labels, placeholders, moeda)
+  - `ProductCard` (UI): renderização limpa com widgets menores e reutilizáveis
+- Eliminadas todas as **strings hardcoded**, migrando para `AppLocalizations` (Flutter l10n)
+- Criadas chaves i18n para:
+  - Status do produto (disponível / crítico / indisponível)
+  - Texto com placeholder de estoque (`Stock: {value}` / `Estoque: {value}`)
+  - Exibição de moeda via string localizada (`currencyValue`)
+- Ajustado padrão dos placeholders para compatibilidade total com `flutter gen-l10n`:
+  - `example` sempre como **string não vazia**
+  - Correção de escape inválido em JSON/ARB (ex: **não** usar `\` antes de `$`)
+- Mantido o visual premium do card (imagem 1:1, overlay, bloco inferior com efeito glass e hierarquia tipográfica)
+
+### Objetivo:
+- Garantir um **ProductCard global-ready** (multilíngue) e fácil de evoluir
+- Reaproveitar regras e formatação em outras views (lista, grid, relatórios) sem duplicar lógica
+- Preparar base para futuras melhorias (formatação de moeda por locale com `intl`, novos status e variações de layout)

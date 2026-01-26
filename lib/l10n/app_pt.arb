@@ -1066,7 +1066,46 @@
   "@homeAccountDeactivatedMessage": { "description": "Mensagem do modal quando a conta é desativada" },
 
   "commonOk": "OK",
-  "@commonOk": { "description": "Botão OK genérico" }
+  "@commonOk": { "description": "Botão OK genérico" },
+
+
+  "productStatusUnavailable": "Indisponível",
+  "@productStatusUnavailable": {
+    "description": "PRODUCT CARD — Status quando o produto está zerado"
+  },
+
+  "productStatusCritical": "Estoque crítico",
+  "@productStatusCritical": {
+    "description": "PRODUCT CARD — Status quando abaixo/igual ao mínimo"
+  },
+
+  "productStatusAvailable": "Disponível",
+  "@productStatusAvailable": {
+    "description": "PRODUCT CARD — Status quando está ok"
+  },
+
+  "productStockWithValue": "Estoque: {value}",
+  "@productStockWithValue": {
+    "description": "PRODUCT CARD — Linha de estoque com valor",
+    "placeholders": {
+      "value": {
+        "type": "int",
+        "example": "12"
+      }
+    }
+  },
+
+  "currencyValue": "R$ {value}",
+  "@currencyValue": {
+    "description": "GERAL — Formatação simples de moeda via i18n",
+    "placeholders": {
+      "value": {
+        "type": "double",
+        "example": "129.90"
+      }
+    }
+  }
+
 }
 
 

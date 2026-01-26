@@ -1903,6 +1903,36 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'OK'**
   String get commonOk;
+
+  /// PRODUCT CARD — Status quando o produto está zerado
+  ///
+  /// In pt, this message translates to:
+  /// **'Indisponível'**
+  String get productStatusUnavailable;
+
+  /// PRODUCT CARD — Status quando abaixo/igual ao mínimo
+  ///
+  /// In pt, this message translates to:
+  /// **'Estoque crítico'**
+  String get productStatusCritical;
+
+  /// PRODUCT CARD — Status quando está ok
+  ///
+  /// In pt, this message translates to:
+  /// **'Disponível'**
+  String get productStatusAvailable;
+
+  /// PRODUCT CARD — Linha de estoque com valor
+  ///
+  /// In pt, this message translates to:
+  /// **'Estoque: {value}'**
+  String productStockWithValue(int value);
+
+  /// GERAL — Formatação simples de moeda via i18n
+  ///
+  /// In pt, this message translates to:
+  /// **'R\$ {value}'**
+  String currencyValue(double value);
 }
 
 class _AppLocalizationsDelegate

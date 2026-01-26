@@ -1021,6 +1021,25 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get commonOk => 'OK';
+
+  @override
+  String get productStatusUnavailable => 'Nicht verfügbar';
+
+  @override
+  String get productStatusCritical => 'Kritischer Bestand';
+
+  @override
+  String get productStatusAvailable => 'Verfügbar';
+
+  @override
+  String productStockWithValue(int value) {
+    return 'Bestand: $value';
+  }
+
+  @override
+  String currencyValue(double value) {
+    return 'CHF $value';
+  }
 }
 
 /// The translations for German, as used in Switzerland (`de_CH`).
@@ -2039,4 +2058,23 @@ class AppLocalizationsDeCh extends AppLocalizationsDe {
 
   @override
   String get commonOk => 'OK';
+
+  @override
+  String get productStatusUnavailable => 'Nicht verfügbar';
+
+  @override
+  String get productStatusCritical => 'Kritischer Bestand';
+
+  @override
+  String get productStatusAvailable => 'Verfügbar';
+
+  @override
+  String productStockWithValue(int value) {
+    return 'Bestand: $value';
+  }
+
+  @override
+  String currencyValue(double value) {
+    return 'CHF $value';
+  }
 }

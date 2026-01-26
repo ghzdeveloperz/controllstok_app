@@ -973,5 +973,43 @@
   "@homeAccountDeactivatedMessage": { "description": "Dialognachricht, wenn das Konto deaktiviert wurde" },
 
   "commonOk": "OK",
-  "@commonOk": { "description": "Generischer OK-Button" }
+  "@commonOk": { "description": "Generischer OK-Button" },
+
+
+  "productStatusUnavailable": "Nicht verfügbar",
+  "@productStatusUnavailable": {
+    "description": "PRODUCT CARD — Status wenn das Produkt auf 0 ist"
+  },
+
+  "productStatusCritical": "Kritischer Bestand",
+  "@productStatusCritical": {
+    "description": "PRODUCT CARD — Status wenn Bestand <= Mindestbestand"
+  },
+
+  "productStatusAvailable": "Verfügbar",
+  "@productStatusAvailable": {
+    "description": "PRODUCT CARD — Status wenn alles ok ist"
+  },
+
+  "productStockWithValue": "Bestand: {value}",
+  "@productStockWithValue": {
+    "description": "PRODUCT CARD — Bestandszeile mit Wert",
+    "placeholders": {
+      "value": {
+        "type": "int",
+        "example": "12"
+      }
+    }
+  },
+
+  "currencyValue": "CHF {value}",
+  "@currencyValue": {
+    "description": "GENERAL — Einfache Währungsformatierung über i18n (Fallback)",
+    "placeholders": {
+      "value": {
+        "type": "double",
+        "example": "129.90"
+      }
+    }
+  }
 }

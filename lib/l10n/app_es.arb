@@ -974,5 +974,44 @@
   "@homeAccountDeactivatedMessage": { "description": "Mensaje del diálogo cuando la cuenta está desactivada" },
 
   "commonOk": "OK",
-  "@commonOk": { "description": "Botón OK genérico" }
+  "@commonOk": { "description": "Botón OK genérico" },
+
+ 
+  "productStatusUnavailable": "No disponible",
+  "@productStatusUnavailable": {
+    "description": "PRODUCT CARD — Estado cuando el producto está agotado"
+  },
+
+  "productStatusCritical": "Stock crítico",
+  "@productStatusCritical": {
+    "description": "PRODUCT CARD — Estado cuando el stock es bajo o mínimo"
+  },
+
+  "productStatusAvailable": "Disponible",
+  "@productStatusAvailable": {
+    "description": "PRODUCT CARD — Estado cuando el producto está disponible"
+  },
+
+  "productStockWithValue": "Stock: {value}",
+  "@productStockWithValue": {
+    "description": "PRODUCT CARD — Línea de stock con valor",
+    "placeholders": {
+      "value": {
+        "type": "int",
+        "example": "12"
+      }
+    }
+  },
+
+  "currencyValue": "{value}",
+  "@currencyValue": {
+    "description": "GENERAL — Simple currency formatting (ES)",
+    "placeholders": {
+      "value": {
+        "type": "double",
+        "example": "129.90"
+      }
+    }
+  }
+
 }

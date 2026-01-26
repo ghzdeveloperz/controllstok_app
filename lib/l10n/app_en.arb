@@ -1001,6 +1001,46 @@
   "@homeAccountDeactivatedMessage": { "description": "Dialog message when the account is deactivated" },
 
   "commonOk": "OK",
-  "@commonOk": { "description": "Generic OK button" }
+  "@commonOk": { "description": "Generic OK button" },
+
+
+
+  "productStatusUnavailable": "Unavailable",
+  "@productStatusUnavailable": {
+    "description": "PRODUCT CARD — Status when the product is out of stock"
+  },
+
+  "productStatusCritical": "Low stock",
+  "@productStatusCritical": {
+    "description": "PRODUCT CARD — Status when stock is low or at minimum"
+  },
+
+  "productStatusAvailable": "Available",
+  "@productStatusAvailable": {
+    "description": "PRODUCT CARD — Status when the product is available"
+  },
+
+  "productStockWithValue": "Stock: {value}",
+  "@productStockWithValue": {
+    "description": "PRODUCT CARD — Stock line with value",
+    "placeholders": {
+      "value": {
+        "type": "int",
+        "example": "12"
+      }
+    }
+  },
+
+  "currencyValue": "$ {value}",
+  "@currencyValue": {
+    "description": "GENERAL — Simple currency formatting (EN)",
+    "placeholders": {
+      "value": {
+        "type": "double",
+        "example": "129.90"
+      }
+    }
+  }
+
 }
 

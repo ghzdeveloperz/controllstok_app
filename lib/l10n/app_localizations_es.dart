@@ -1017,4 +1017,23 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get commonOk => 'OK';
+
+  @override
+  String get productStatusUnavailable => 'No disponible';
+
+  @override
+  String get productStatusCritical => 'Stock crítico';
+
+  @override
+  String get productStatusAvailable => 'Disponible';
+
+  @override
+  String productStockWithValue(int value) {
+    return 'Stock: $value';
+  }
+
+  @override
+  String currencyValue(double value) {
+    return '$value';
+  }
 }

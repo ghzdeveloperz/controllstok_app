@@ -1010,6 +1010,25 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get commonOk => 'OK';
+
+  @override
+  String get productStatusUnavailable => 'Indisponível';
+
+  @override
+  String get productStatusCritical => 'Estoque crítico';
+
+  @override
+  String get productStatusAvailable => 'Disponível';
+
+  @override
+  String productStockWithValue(int value) {
+    return 'Estoque: $value';
+  }
+
+  @override
+  String currencyValue(double value) {
+    return 'R\$ $value';
+  }
 }
 
 /// The translations for Portuguese, as used in Portugal (`pt_PT`).
@@ -2022,4 +2041,23 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get commonOk => 'OK';
+
+  @override
+  String get productStatusUnavailable => 'Indisponível';
+
+  @override
+  String get productStatusCritical => 'Stock crítico';
+
+  @override
+  String get productStatusAvailable => 'Disponível';
+
+  @override
+  String productStockWithValue(int value) {
+    return 'Stock: $value';
+  }
+
+  @override
+  String currencyValue(double value) {
+    return '$value €';
+  }
 }

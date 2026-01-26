@@ -9,7 +9,7 @@ import '../firebase/firestore/products_firestore.dart';
 import '../firebase/firestore/categories_firestore.dart';
 import '../firebase/firestore/users_firestore.dart';
 
-import 'widgets/product_card.dart';
+import 'widgets/product_card/product_card.dart';
 import 'models/product.dart';
 import 'models/category.dart';
 import 'userPerfil/perfil_screen.dart';
