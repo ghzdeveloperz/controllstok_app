@@ -1670,7 +1670,7 @@ abstract class AppLocalizations {
   /// **'Seu estoque está em ordem!'**
   String get alertasEmptySubtitle;
 
-  /// Ação genérica: cancelar
+  /// Ação comum: cancelar
   ///
   /// In pt, this message translates to:
   /// **'Cancelar'**
@@ -1819,6 +1819,36 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Código: {code}'**
   String scannerResultCode(String code);
+
+  /// Diálogo: título para adicionar categoria
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar categoria'**
+  String get addCategoryTitle;
+
+  /// Diálogo: hint do campo nome da categoria
+  ///
+  /// In pt, this message translates to:
+  /// **'Nome da categoria'**
+  String get addCategoryHint;
+
+  /// Diálogo: botão principal para confirmar adicionar categoria
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar'**
+  String get addCategoryAction;
+
+  /// Validação: nome da categoria obrigatório
+  ///
+  /// In pt, this message translates to:
+  /// **'Digite o nome da categoria.'**
+  String get addCategoryNameRequired;
+
+  /// Erro genérico ao salvar categoria no Firestore
+  ///
+  /// In pt, this message translates to:
+  /// **'Erro ao adicionar categoria. Tente novamente.'**
+  String get addCategoryError;
 }
 
 class _AppLocalizationsDelegate

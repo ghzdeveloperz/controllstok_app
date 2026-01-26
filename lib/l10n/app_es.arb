@@ -917,5 +917,24 @@
     "placeholders": {
       "code": { "type": "String", "example": "7891234567890" }
     }
-  }
+  },
+
+
+  "addCategoryTitle": "Añadir categoría",
+  "@addCategoryTitle": { "description": "Diálogo: título para añadir categoría" },
+
+  "addCategoryHint": "Nombre de la categoría",
+  "@addCategoryHint": { "description": "Diálogo: hint del campo nombre de categoría" },
+
+  "addCategoryAction": "Añadir",
+  "@addCategoryAction": { "description": "Diálogo: botón principal para confirmar" },
+
+  "addCategoryNameRequired": "Introduce el nombre de la categoría.",
+  "@addCategoryNameRequired": { "description": "Validación: nombre obligatorio" },
+
+  "addCategoryError": "No se pudo añadir la categoría. Inténtalo de nuevo.",
+  "@addCategoryError": { "description": "Error genérico al guardar en Firestore" },
+
+  "commonCancel": "Cancelar",
+  "@commonCancel": { "description": "Acción común: cancelar" }
 }

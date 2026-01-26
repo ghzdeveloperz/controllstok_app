@@ -1,12 +1,27 @@
-// lib/screens/widgets/add_category.dart
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../../../l10n/app_localizations.dart';
+import 'services/categories_firestore_service.dart';
 
 class AddCategoryDialog extends StatefulWidget {
   final String uid;
 
-  const AddCategoryDialog({super.key, required this.uid});
+  const AddCategoryDialog({
+    super.key,
+    required this.uid,
+  });
+
+  static Future<void> show(
+    BuildContext context, {
+    required String uid,
+  }) {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (_) => AddCategoryDialog(uid: uid),
+    );
+  }
 
   @override
   State<AddCategoryDialog> createState() => _AddCategoryDialogState();
@@ -14,22 +29,26 @@ class AddCategoryDialog extends StatefulWidget {
 
 class _AddCategoryDialogState extends State<AddCategoryDialog>
     with SingleTickerProviderStateMixin {
-  final TextEditingController _newCategoryController = TextEditingController();
-  final FocusNode _focusNode = FocusNode();
+  final _controller = TextEditingController();
+  final _focusNode = FocusNode();
+
+  final CategoriesFirestoreService _service = CategoriesFirestoreService();
+
   bool _isSaving = false;
-  late final AnimationController _animationController;
-  late final Animation<double> _scaleAnimation;
+
+  late final AnimationController _anim;
+  late final Animation<double> _scale;
 
   @override
   void initState() {
     super.initState();
-    _animationController =
-        AnimationController(vsync: this, duration: const Duration(milliseconds: 200));
-    _scaleAnimation =
-        CurvedAnimation(parent: _animationController, curve: Curves.easeOutBack);
-    _animationController.forward();
+    _anim = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+    );
+    _scale = CurvedAnimation(parent: _anim, curve: Curves.easeOutBack);
+    _anim.forward();
 
-    // Foca automaticamente no campo de texto
     Future.delayed(const Duration(milliseconds: 250), () {
       if (mounted) _focusNode.requestFocus();
     });
@@ -37,36 +56,46 @@ class _AddCategoryDialogState extends State<AddCategoryDialog>
 
   @override
   void dispose() {
-    _newCategoryController.dispose();
+    _controller.dispose();
     _focusNode.dispose();
-    _animationController.dispose();
+    _anim.dispose();
     super.dispose();
   }
 
-  Future<void> _addCategory() async {
-    final name = _newCategoryController.text.trim();
-    if (name.isEmpty) return;
+  Future<void> _onSubmit() async {
+    if (_isSaving) return;
+
+    final l10n = AppLocalizations.of(context)!;
+    final name = _controller.text.trim();
+
+    if (name.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.addCategoryNameRequired),
+          backgroundColor: Colors.black,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      );
+      return;
+    }
 
     setState(() => _isSaving = true);
 
     try {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(widget.uid)
-          .collection('categories')
-          .add({
-        'name': name,
-        'createdAt': FieldValue.serverTimestamp(),
-      });
+      await _service.addCategory(uid: widget.uid, name: name);
 
       if (!mounted) return;
-      Navigator.of(context).pop(); // fecha modal
-    } catch (e) {
+      Navigator.of(context).pop();
+    } catch (_) {
       if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Erro ao adicionar categoria: $e'),
-          backgroundColor: Colors.red.shade700,
+          content: Text(l10n.addCategoryError),
+          backgroundColor: Colors.black,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
       );
     } finally {
@@ -76,8 +105,10 @@ class _AddCategoryDialogState extends State<AddCategoryDialog>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return ScaleTransition(
-      scale: _scaleAnimation,
+      scale: _scale,
       child: Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         insetPadding: const EdgeInsets.symmetric(horizontal: 24),
@@ -87,7 +118,7 @@ class _AddCategoryDialogState extends State<AddCategoryDialog>
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Adicionar Categoria',
+                l10n.addCategoryTitle,
                 style: GoogleFonts.poppins(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
@@ -95,29 +126,33 @@ class _AddCategoryDialogState extends State<AddCategoryDialog>
               ),
               const SizedBox(height: 20),
               TextField(
-                controller: _newCategoryController,
+                controller: _controller,
                 focusNode: _focusNode,
                 decoration: InputDecoration(
-                  hintText: 'Nome da categoria',
+                  hintText: l10n.addCategoryHint,
                   filled: true,
                   fillColor: Colors.grey.shade100,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
                     borderSide: BorderSide.none,
                   ),
-                  contentPadding:
-                      const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 16,
+                    horizontal: 16,
+                  ),
                 ),
                 style: GoogleFonts.poppins(fontSize: 15),
                 textCapitalization: TextCapitalization.sentences,
-                onSubmitted: (_) => _addCategory(),
+                textInputAction: TextInputAction.done,
+                onSubmitted: (_) => _onSubmit(),
               ),
               const SizedBox(height: 24),
               Row(
                 children: [
                   Expanded(
                     child: OutlinedButton(
-                      onPressed: () => Navigator.of(context).pop(),
+                      onPressed:
+                          _isSaving ? null : () => Navigator.of(context).pop(),
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(color: Colors.grey.shade300),
                         shape: RoundedRectangleBorder(
@@ -126,7 +161,7 @@ class _AddCategoryDialogState extends State<AddCategoryDialog>
                         padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
                       child: Text(
-                        'Cancelar',
+                        l10n.commonCancel,
                         style: GoogleFonts.poppins(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
@@ -138,9 +173,10 @@ class _AddCategoryDialogState extends State<AddCategoryDialog>
                   const SizedBox(width: 12),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: _isSaving ? null : _addCategory,
+                      onPressed: _isSaving ? null : _onSubmit,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.black,
+                        disabledBackgroundColor: Colors.black.withValues(alpha: 0.6),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -156,7 +192,7 @@ class _AddCategoryDialogState extends State<AddCategoryDialog>
                               ),
                             )
                           : Text(
-                              'Adicionar',
+                              l10n.addCategoryAction,
                               style: GoogleFonts.poppins(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 15,

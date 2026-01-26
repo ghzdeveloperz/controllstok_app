@@ -977,6 +977,22 @@ class AppLocalizationsDe extends AppLocalizations {
   String scannerResultCode(String code) {
     return 'Code: $code';
   }
+
+  @override
+  String get addCategoryTitle => 'Kategorie hinzufügen';
+
+  @override
+  String get addCategoryHint => 'Kategoriename';
+
+  @override
+  String get addCategoryAction => 'Hinzufügen';
+
+  @override
+  String get addCategoryNameRequired => 'Bitte gib einen Kategorienamen ein.';
+
+  @override
+  String get addCategoryError =>
+      'Kategorie konnte nicht hinzugefügt werden. Bitte erneut versuchen.';
 }
 
 /// The translations for German, as used in Switzerland (`de_CH`).
@@ -1951,4 +1967,20 @@ class AppLocalizationsDeCh extends AppLocalizationsDe {
   String scannerResultCode(String code) {
     return 'Code: $code';
   }
+
+  @override
+  String get addCategoryTitle => 'Kategorie hinzufügen';
+
+  @override
+  String get addCategoryHint => 'Kategoriename';
+
+  @override
+  String get addCategoryAction => 'Hinzufügen';
+
+  @override
+  String get addCategoryNameRequired => 'Bitte gib en Kategoriename i.';
+
+  @override
+  String get addCategoryError =>
+      'Kategorie chönnt nöd hinzuegfuegt werde. Bitte no emol versueche.';
 }

@@ -599,3 +599,39 @@ Essas regras são reavaliadas a cada mudança de autenticação ou Firestore.
   - Validação de códigos
   - Lookup automático de produtos
   - Tratamento de erros avançado e estados adicionais
+
+## [Milestone 24] Categorias — AddCategoryDialog + i18n Completo + Service Layer
+**Status:** Concluído ✅
+
+### Melhorias:
+- Refatorado o fluxo de **criação de categorias** para uma estrutura mais **profissional, modular e escalável**, separando responsabilidades entre UI e acesso ao Firestore.
+- Implementado **i18n completo** no modal de adicionar categoria (sem strings hardcoded):
+  - `add_category_dialog.dart` — UI premium com validações e mensagens via `AppLocalizations`
+  - `services/categories_firestore_service.dart` — camada de serviço dedicada para operações de categoria no Firestore
+- Padronização de UX no modal:
+  - Autofocus no input ao abrir
+  - Loading state consistente no botão de ação
+  - Snackbars com mensagens traduzíveis e aparência premium
+- Base de traduções expandida e consistente:
+  - Novas chaves adicionadas:
+    - `addCategoryTitle`
+    - `addCategoryHint`
+    - `addCategoryAction`
+    - `addCategoryNameRequired`
+    - `addCategoryError`
+    - `commonCancel`
+  - Traduções completas adicionadas para:
+    - PT
+    - EN
+    - ES
+    - PT-PT
+    - DE
+    - DE-CH (com fallback em `de`)
+
+### Objetivo:
+- Garantir que o fluxo de **Adicionar Categoria** esteja **100% traduzível** (UI + validações + erros).
+- Criar base estrutural sólida com **Service Layer** para evoluções futuras:
+  - Editar categoria
+  - Excluir categoria
+  - Regras de duplicidade/normalização de nomes
+  - Reuso do serviço em múltiplas telas sem duplicação de código

@@ -966,6 +966,22 @@ class AppLocalizationsPt extends AppLocalizations {
   String scannerResultCode(String code) {
     return 'Código: $code';
   }
+
+  @override
+  String get addCategoryTitle => 'Adicionar categoria';
+
+  @override
+  String get addCategoryHint => 'Nome da categoria';
+
+  @override
+  String get addCategoryAction => 'Adicionar';
+
+  @override
+  String get addCategoryNameRequired => 'Digite o nome da categoria.';
+
+  @override
+  String get addCategoryError =>
+      'Erro ao adicionar categoria. Tente novamente.';
 }
 
 /// The translations for Portuguese, as used in Portugal (`pt_PT`).
@@ -1934,4 +1950,20 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   String scannerResultCode(String code) {
     return 'Código: $code';
   }
+
+  @override
+  String get addCategoryTitle => 'Adicionar categoria';
+
+  @override
+  String get addCategoryHint => 'Nome da categoria';
+
+  @override
+  String get addCategoryAction => 'Adicionar';
+
+  @override
+  String get addCategoryNameRequired => 'Introduza o nome da categoria.';
+
+  @override
+  String get addCategoryError =>
+      'Não foi possível adicionar a categoria. Tente novamente.';
 }

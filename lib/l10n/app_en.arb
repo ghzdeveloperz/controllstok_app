@@ -943,5 +943,24 @@
     "placeholders": {
       "code": { "type": "String", "example": "7891234567890" }
     }
-  }
+  }, 
+
+
+  "addCategoryTitle": "Add category",
+  "@addCategoryTitle": { "description": "Dialog: title for adding category" },
+
+  "addCategoryHint": "Category name",
+  "@addCategoryHint": { "description": "Dialog: hint for category name field" },
+
+  "addCategoryAction": "Add",
+  "@addCategoryAction": { "description": "Dialog: primary button to confirm adding category" },
+
+  "addCategoryNameRequired": "Please enter a category name.",
+  "@addCategoryNameRequired": { "description": "Validation: category name required" },
+
+  "addCategoryError": "Could not add category. Please try again.",
+  "@addCategoryError": { "description": "Generic error when saving category to Firestore" },
+
+  "commonCancel": "Cancel",
+  "@commonCancel": { "description": "Common action: cancel" }
 }

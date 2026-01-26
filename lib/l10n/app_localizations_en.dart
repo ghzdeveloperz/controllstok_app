@@ -966,4 +966,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String scannerResultCode(String code) {
     return 'Code: $code';
   }
+
+  @override
+  String get addCategoryTitle => 'Add category';
+
+  @override
+  String get addCategoryHint => 'Category name';
+
+  @override
+  String get addCategoryAction => 'Add';
+
+  @override
+  String get addCategoryNameRequired => 'Please enter a category name.';
+
+  @override
+  String get addCategoryError => 'Could not add category. Please try again.';
 }
