@@ -993,6 +993,34 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get addCategoryError =>
       'Kategorie konnte nicht hinzugefügt werden. Bitte erneut versuchen.';
+
+  @override
+  String get homeTabStock => 'Bestand';
+
+  @override
+  String get homeTabNew => 'Neu';
+
+  @override
+  String get homeTabScanner => 'Scanner';
+
+  @override
+  String get homeTabReports => 'Berichte';
+
+  @override
+  String get homeTabAlerts => 'Warnungen';
+
+  @override
+  String get homeProductSavedSuccess => 'Produkt erfolgreich gespeichert';
+
+  @override
+  String get homeAccountDeactivatedTitle => 'Konto deaktiviert';
+
+  @override
+  String get homeAccountDeactivatedMessage =>
+      'Dein Konto wurde deaktiviert. Bitte wende dich an den Support.';
+
+  @override
+  String get commonOk => 'OK';
 }
 
 /// The translations for German, as used in Switzerland (`de_CH`).
@@ -1983,4 +2011,32 @@ class AppLocalizationsDeCh extends AppLocalizationsDe {
   @override
   String get addCategoryError =>
       'Kategorie chönnt nöd hinzuegfuegt werde. Bitte no emol versueche.';
+
+  @override
+  String get homeTabStock => 'Lager';
+
+  @override
+  String get homeTabNew => 'Neu';
+
+  @override
+  String get homeTabScanner => 'Scanner';
+
+  @override
+  String get homeTabReports => 'Berichte';
+
+  @override
+  String get homeTabAlerts => 'Warnungen';
+
+  @override
+  String get homeProductSavedSuccess => 'Produkt erfolgreich gespeichert';
+
+  @override
+  String get homeAccountDeactivatedTitle => 'Konto deaktiviert';
+
+  @override
+  String get homeAccountDeactivatedMessage =>
+      'Dis Konto isch deaktiviert worde. Bitte meldig di bi em Support.';
+
+  @override
+  String get commonOk => 'OK';
 }

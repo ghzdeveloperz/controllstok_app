@@ -989,4 +989,32 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get addCategoryError =>
       'No se pudo añadir la categoría. Inténtalo de nuevo.';
+
+  @override
+  String get homeTabStock => 'Stock';
+
+  @override
+  String get homeTabNew => 'Nuevo';
+
+  @override
+  String get homeTabScanner => 'Escáner';
+
+  @override
+  String get homeTabReports => 'Informes';
+
+  @override
+  String get homeTabAlerts => 'Alertas';
+
+  @override
+  String get homeProductSavedSuccess => 'Producto guardado con éxito';
+
+  @override
+  String get homeAccountDeactivatedTitle => 'Cuenta desactivada';
+
+  @override
+  String get homeAccountDeactivatedMessage =>
+      'Tu cuenta ha sido desactivada. Ponte en contacto con soporte.';
+
+  @override
+  String get commonOk => 'OK';
 }

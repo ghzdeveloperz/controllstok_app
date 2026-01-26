@@ -962,5 +962,45 @@
   "@addCategoryError": { "description": "Generic error when saving category to Firestore" },
 
   "commonCancel": "Cancel",
-  "@commonCancel": { "description": "Common action: cancel" }
+  "@commonCancel": { "description": "Common action: cancel" },
+
+
+  "homeTabStock": "Stock",
+  "@homeTabStock": {
+    "description": "Bottom navigation — Stock tab"
+  },
+
+  "homeTabNew": "New",
+  "@homeTabNew": {
+    "description": "Bottom navigation — New Product tab"
+  },
+
+  "homeTabScanner": "Scanner",
+  "@homeTabScanner": {
+    "description": "Bottom navigation — Scanner action (center button)"
+  },
+
+  "homeTabReports": "Reports",
+  "@homeTabReports": {
+    "description": "Bottom navigation — Reports tab"
+  },
+
+  "homeTabAlerts": "Alerts",
+  "@homeTabAlerts": {
+    "description": "Bottom navigation — Alerts tab"
+  },
+
+
+  "homeProductSavedSuccess": "Product saved successfully",
+  "@homeProductSavedSuccess": { "description": "Snackbar shown after saving a product and returning to stock" },
+
+  "homeAccountDeactivatedTitle": "Account deactivated",
+  "@homeAccountDeactivatedTitle": { "description": "Dialog title when the account is deactivated" },
+
+  "homeAccountDeactivatedMessage": "Your account has been deactivated. Please contact support.",
+  "@homeAccountDeactivatedMessage": { "description": "Dialog message when the account is deactivated" },
+
+  "commonOk": "OK",
+  "@commonOk": { "description": "Generic OK button" }
 }
+

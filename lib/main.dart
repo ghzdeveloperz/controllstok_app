@@ -18,7 +18,7 @@ import 'services/firebase_service.dart';
 import 'notifications/notification_service.dart';
 import 'notifications/save_fcm_token.dart';
 
-import 'screens/home_screen.dart';
+import 'screens/home/home_screen.dart';
 import 'screens/acounts/auth_choice/auth_choice_screen.dart';
 import 'screens/acounts/register/register_screen.dart';
 import 'screens/acounts/onboarding/company_screen.dart';

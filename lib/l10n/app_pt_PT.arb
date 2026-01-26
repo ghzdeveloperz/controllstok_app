@@ -938,5 +938,45 @@
   "@addCategoryError": { "description": "Erro genérico ao guardar no Firestore" },
 
   "commonCancel": "Cancelar",
-  "@commonCancel": { "description": "Ação comum: cancelar" }
+  "@commonCancel": { "description": "Ação comum: cancelar" },
+
+
+  "homeTabStock": "Stock",
+  "@homeTabStock": {
+    "description": "Navegação inferior — separador Stock"
+  },
+
+  "homeTabNew": "Novo",
+  "@homeTabNew": {
+    "description": "Navegação inferior — separador Novo Produto"
+  },
+
+  "homeTabScanner": "Scanner",
+  "@homeTabScanner": {
+    "description": "Navegação inferior — ação Scanner (botão central)"
+  },
+
+  "homeTabReports": "Relatórios",
+  "@homeTabReports": {
+    "description": "Navegação inferior — separador Relatórios"
+  },
+
+  "homeTabAlerts": "Alertas",
+  "@homeTabAlerts": {
+    "description": "Navegação inferior — separador Alertas"
+  },
+
+
+  "homeProductSavedSuccess": "Produto guardado com sucesso",
+  "@homeProductSavedSuccess": { "description": "Snackbar ao guardar um produto e voltar ao stock" },
+
+  "homeAccountDeactivatedTitle": "Conta desativada",
+  "@homeAccountDeactivatedTitle": { "description": "Título do diálogo quando a conta é desativada" },
+
+  "homeAccountDeactivatedMessage": "A sua conta foi desativada. Contacte o suporte.",
+  "@homeAccountDeactivatedMessage": { "description": "Mensagem do diálogo quando a conta é desativada" },
+
+  "commonOk": "OK",
+  "@commonOk": { "description": "Botão OK genérico" }
 }
+

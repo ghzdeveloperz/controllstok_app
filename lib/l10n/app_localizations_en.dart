@@ -981,4 +981,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addCategoryError => 'Could not add category. Please try again.';
+
+  @override
+  String get homeTabStock => 'Stock';
+
+  @override
+  String get homeTabNew => 'New';
+
+  @override
+  String get homeTabScanner => 'Scanner';
+
+  @override
+  String get homeTabReports => 'Reports';
+
+  @override
+  String get homeTabAlerts => 'Alerts';
+
+  @override
+  String get homeProductSavedSuccess => 'Product saved successfully';
+
+  @override
+  String get homeAccountDeactivatedTitle => 'Account deactivated';
+
+  @override
+  String get homeAccountDeactivatedMessage =>
+      'Your account has been deactivated. Please contact support.';
+
+  @override
+  String get commonOk => 'OK';
 }

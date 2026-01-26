@@ -1849,6 +1849,60 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Erro ao adicionar categoria. Tente novamente.'**
   String get addCategoryError;
+
+  /// Bottom navigation — aba Estoque
+  ///
+  /// In pt, this message translates to:
+  /// **'Estoque'**
+  String get homeTabStock;
+
+  /// Bottom navigation — aba Novo Produto
+  ///
+  /// In pt, this message translates to:
+  /// **'Novo'**
+  String get homeTabNew;
+
+  /// Bottom navigation — ação/aba Scanner (botão central)
+  ///
+  /// In pt, this message translates to:
+  /// **'Scanner'**
+  String get homeTabScanner;
+
+  /// Bottom navigation — aba Relatórios
+  ///
+  /// In pt, this message translates to:
+  /// **'Relatórios'**
+  String get homeTabReports;
+
+  /// Bottom navigation — aba Alertas
+  ///
+  /// In pt, this message translates to:
+  /// **'Alertas'**
+  String get homeTabAlerts;
+
+  /// Snackbar ao salvar produto e voltar para o estoque
+  ///
+  /// In pt, this message translates to:
+  /// **'Produto salvo com sucesso'**
+  String get homeProductSavedSuccess;
+
+  /// Título do modal quando a conta é desativada
+  ///
+  /// In pt, this message translates to:
+  /// **'Conta desativada'**
+  String get homeAccountDeactivatedTitle;
+
+  /// Mensagem do modal quando a conta é desativada
+  ///
+  /// In pt, this message translates to:
+  /// **'Sua conta foi desativada. Entre em contato com o suporte.'**
+  String get homeAccountDeactivatedMessage;
+
+  /// Botão OK genérico
+  ///
+  /// In pt, this message translates to:
+  /// **'OK'**
+  String get commonOk;
 }
 
 class _AppLocalizationsDelegate

@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../../l10n/app_localizations.dart';
 
-import '../../home_screen.dart';
+import '../../home/home_screen.dart';
 import 'company_controller.dart';
 import 'widgets/company_header.dart';
 import 'widgets/company_form.dart';

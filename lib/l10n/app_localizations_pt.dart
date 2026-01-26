@@ -982,6 +982,34 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get addCategoryError =>
       'Erro ao adicionar categoria. Tente novamente.';
+
+  @override
+  String get homeTabStock => 'Estoque';
+
+  @override
+  String get homeTabNew => 'Novo';
+
+  @override
+  String get homeTabScanner => 'Scanner';
+
+  @override
+  String get homeTabReports => 'Relatórios';
+
+  @override
+  String get homeTabAlerts => 'Alertas';
+
+  @override
+  String get homeProductSavedSuccess => 'Produto salvo com sucesso';
+
+  @override
+  String get homeAccountDeactivatedTitle => 'Conta desativada';
+
+  @override
+  String get homeAccountDeactivatedMessage =>
+      'Sua conta foi desativada. Entre em contato com o suporte.';
+
+  @override
+  String get commonOk => 'OK';
 }
 
 /// The translations for Portuguese, as used in Portugal (`pt_PT`).
@@ -1966,4 +1994,32 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   @override
   String get addCategoryError =>
       'Não foi possível adicionar a categoria. Tente novamente.';
+
+  @override
+  String get homeTabStock => 'Stock';
+
+  @override
+  String get homeTabNew => 'Novo';
+
+  @override
+  String get homeTabScanner => 'Scanner';
+
+  @override
+  String get homeTabReports => 'Relatórios';
+
+  @override
+  String get homeTabAlerts => 'Alertas';
+
+  @override
+  String get homeProductSavedSuccess => 'Produto guardado com sucesso';
+
+  @override
+  String get homeAccountDeactivatedTitle => 'Conta desativada';
+
+  @override
+  String get homeAccountDeactivatedMessage =>
+      'A sua conta foi desativada. Contacte o suporte.';
+
+  @override
+  String get commonOk => 'OK';
 }

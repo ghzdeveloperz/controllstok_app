@@ -11,7 +11,7 @@ import '../../../services/auth/google_auth_service.dart';
 import '../../../services/bootstrap/auth_bootstrap_service.dart';
 import '../../../screens/widgets/blocking_loader.dart';
 
-import '../../home_screen.dart';
+import '../../home/home_screen.dart';
 import '../onboarding/company_screen.dart';
 
 import 'login_controller.dart';

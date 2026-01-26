@@ -970,5 +970,43 @@
   "@addCategoryError": { "description": "Generic error when saving category to Firestore (Swiss German style)" },
 
   "commonCancel": "Abbräche",
-  "@commonCancel": { "description": "Common action: cancel (Swiss German style)" }
+  "@commonCancel": { "description": "Common action: cancel (Swiss German style)" },
+
+
+  "homeTabStock": "Lager",
+  "@homeTabStock": {
+    "description": "Untere Navigation — Register Lager (Schweiz)"
+  },
+
+  "homeTabNew": "Neu",
+  "@homeTabNew": {
+    "description": "Untere Navigation — Register Neues Produkt (Schweiz)"
+  },
+
+  "homeTabScanner": "Scanner",
+  "@homeTabScanner": {
+    "description": "Untere Navigation — Scanner-Aktion (mittlere Taste, Schweiz)"
+  },
+
+  "homeTabReports": "Berichte",
+  "@homeTabReports": {
+    "description": "Untere Navigation — Register Berichte (Schweiz)"
+  },
+
+  "homeTabAlerts": "Warnungen",
+  "@homeTabAlerts": {
+    "description": "Untere Navigation — Register Warnungen (Schweiz)"
+  },
+
+  "homeProductSavedSuccess": "Produkt erfolgreich gespeichert",
+  "@homeProductSavedSuccess": { "description": "Snackbar nach dem Speichern eines Produkts und Rückkehr zum Lager" },
+
+  "homeAccountDeactivatedTitle": "Konto deaktiviert",
+  "@homeAccountDeactivatedTitle": { "description": "Dialogtitel, wenn das Konto deaktiviert wurde" },
+
+  "homeAccountDeactivatedMessage": "Dis Konto isch deaktiviert worde. Bitte meldig di bi em Support.",
+  "@homeAccountDeactivatedMessage": { "description": "Dialognachricht, wenn das Konto deaktiviert wurde" },
+
+  "commonOk": "OK",
+  "@commonOk": { "description": "Generischer OK-Button" }
 }

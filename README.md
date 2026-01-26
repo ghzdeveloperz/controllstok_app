@@ -635,3 +635,26 @@ Essas regras são reavaliadas a cada mudança de autenticação ou Firestore.
   - Excluir categoria
   - Regras de duplicidade/normalização de nomes
   - Reuso do serviço em múltiplas telas sem duplicação de código
+
+
+## [Milestone 25] Home Refinado — Bottom Navigation Premium
+**Status:** Concluído ✅
+
+### Melhorias:
+- Refatorado o **Bottom Navigation da Home** com foco em **compactação vertical**, mantendo visual premium
+- Ajustada a **altura total do rodapé** para eliminar excesso de espaço e evitar overflow em telas menores
+- Correção do **overflow inferior do botão Scanner** (3px), garantindo renderização perfeita sem quebrar layout
+- Scanner central mantido em destaque, com:
+  - Dimensões ajustadas
+  - Elevação visual controlada
+  - Sombras refinadas e proporcionais
+- Reduzidos espaçamentos verticais internos (ícone, label e indicador ativo) para maior densidade visual
+- Indicador ativo (barra inferior) refinado para não impactar altura total do componente
+- Preservada a hierarquia visual entre tabs padrão e ação principal (Scanner)
+- Layout validado sem alterações na largura, focando exclusivamente em **ajustes verticais**
+
+### Objetivo:
+- Tornar a Home mais elegante e profissional
+- Eliminar inconsistências visuais em diferentes resoluções
+- Garantir um Bottom Navigation estável, compacto e escalável
+- Preparar a base para futuras evoluções da Home sem retrabalho de layout
