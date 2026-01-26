@@ -1183,5 +1183,49 @@
   "@settingsAboutTitle": { "description": "CONFIG — Título da opção Sobre" },
 
   "settingsAboutSubtitle": "App-Version und Informationen",
-  "@settingsAboutSubtitle": { "description": "CONFIG — Subtítulo da opção Sobre" }
+  "@settingsAboutSubtitle": { "description": "CONFIG — Subtítulo da opção Sobre" },
+  
+
+  "categoriesTitle": "Kategorien",
+  "@categoriesTitle": { "description": "KATEGORIEN — Titel der Kategorien-Seite (Schweiz)" },
+
+  "categoriesAddTooltip": "Kategorie hinzufügen",
+  "@categoriesAddTooltip": { "description": "KATEGORIEN — Tooltip zum Hinzufügen (CH)" },
+
+  "categoriesEmpty": "Keine Kategorien erstellt",
+  "@categoriesEmpty": { "description": "KATEGORIEN — Leerer Zustand (CH)" },
+
+  "categoriesAddTitle": "Neue Kategorie",
+  "@categoriesAddTitle": { "description": "KATEGORIEN — Titel Dialog Kategorie hinzufügen (CH)" },
+
+  "categoriesAddHint": "Kategoriename",
+  "@categoriesAddHint": { "description": "KATEGORIEN — Hinweis Kategoriename (CH)" },
+
+  "categoriesDeleteTitle": "Kategorie löschen",
+  "@categoriesDeleteTitle": { "description": "KATEGORIEN — Titel Dialog Löschen (CH)" },
+
+  "categoriesDeleteConfirmWithValue": "Möchten Sie die Kategorie \"{value}\" löschen?",
+  "@categoriesDeleteConfirmWithValue": {
+    "description": "KATEGORIEN — Bestätigung Löschen (CH)",
+    "placeholders": {
+      "value": { "type": "String", "example": "Getränke" }
+    }
+  },
+
+  "categoriesDeleteButton": "Löschen",
+  "@categoriesDeleteButton": { "description": "KATEGORIEN — Button Löschen (CH)" },
+
+  "categoriesInUseTitle": "Löschen nicht möglich",
+  "@categoriesInUseTitle": { "description": "KATEGORIEN — Kategorie in Benutzung (CH)" },
+
+  "categoriesInUseMessageWithValue": "Die Kategorie \"{value}\" kann nicht gelöscht werden, da Produkte damit verknüpft sind.",
+  "@categoriesInUseMessageWithValue": {
+    "description": "KATEGORIEN — Kategorie in Benutzung Nachricht (CH)",
+    "placeholders": {
+      "value": { "type": "String", "example": "Getränke" }
+    }
+  },
+
+  "actionOk": "OK",
+  "@actionOk": { "description": "ALLGEMEIN — Bestätigungsbutton (CH)" }
 }

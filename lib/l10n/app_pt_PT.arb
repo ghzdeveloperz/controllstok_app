@@ -1151,6 +1151,50 @@
   "@settingsAboutTitle": { "description": "CONFIG — Título da opção Sobre" },
 
   "settingsAboutSubtitle": "Versão e informações da app",
-  "@settingsAboutSubtitle": { "description": "CONFIG — Subtítulo da opção Sobre" }
+  "@settingsAboutSubtitle": { "description": "CONFIG — Subtítulo da opção Sobre" },
+
+
+  "categoriesTitle": "Categorias",
+  "@categoriesTitle": { "description": "CATEGORIAS — Título da tela de categorias" },
+
+  "categoriesAddTooltip": "Adicionar categoria",
+  "@categoriesAddTooltip": { "description": "CATEGORIAS — Tooltip do botão de adicionar categoria" },
+
+  "categoriesEmpty": "Nenhuma categoria criada",
+  "@categoriesEmpty": { "description": "CATEGORIAS — Estado vazio sem categorias" },
+
+  "categoriesAddTitle": "Nova categoria",
+  "@categoriesAddTitle": { "description": "CATEGORIAS — Título do diálogo de adicionar categoria" },
+
+  "categoriesAddHint": "Nome da categoria",
+  "@categoriesAddHint": { "description": "CATEGORIAS — Hint do campo nome da categoria" },
+
+  "categoriesDeleteTitle": "Eliminar categoria",
+  "@categoriesDeleteTitle": { "description": "CATEGORIAS — Título do diálogo de eliminação" },
+
+  "categoriesDeleteConfirmWithValue": "Deseja eliminar a categoria \"{value}\"?",
+  "@categoriesDeleteConfirmWithValue": {
+    "description": "CATEGORIAS — Confirmação de eliminação com nome da categoria",
+    "placeholders": {
+      "value": { "type": "String", "example": "Bebidas" }
+    }
+  },
+
+  "categoriesDeleteButton": "Eliminar",
+  "@categoriesDeleteButton": { "description": "CATEGORIAS — Botão confirmar eliminação" },
+
+  "categoriesInUseTitle": "Não é possível eliminar",
+  "@categoriesInUseTitle": { "description": "CATEGORIAS — Título do alerta de categoria em uso" },
+
+  "categoriesInUseMessageWithValue": "A categoria \"{value}\" não pode ser eliminada porque existem produtos associados.",
+  "@categoriesInUseMessageWithValue": {
+    "description": "CATEGORIAS — Mensagem quando categoria está em uso",
+    "placeholders": {
+      "value": { "type": "String", "example": "Bebidas" }
+    }
+  },
+
+  "actionOk": "Compreendi",
+  "@actionOk": { "description": "GERAL — Botão de confirmação/OK" }
 }
 

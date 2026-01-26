@@ -762,3 +762,33 @@ Essas regras são reavaliadas a cada mudança de autenticação ou Firestore.
 - Garantir **escalabilidade real**, evitando refatorações custosas no futuro
 - Consolidar a base de **i18n** e arquitetura para crescimento do MyStoreDay
 
+
+## [Milestone 28] Tela de Categorias — Refatoração Estrutural + i18n Completo
+**Status:** Concluído ✅
+
+### Melhorias:
+- Refatorada a **tela de Categorias** para uma estrutura **mais escalável e profissional**, separando responsabilidades:
+  - Lógica de UI desacoplada de diálogos
+  - Métodos de ação (add / delete / alertas) organizados
+  - Preparação para evolução futura (edição, ordenação, permissões)
+- Implementado **i18n completo** na tela de Categorias, eliminando todas as strings hardcoded:
+  - Título da tela
+  - Estados vazios
+  - Diálogo de criação de categoria
+  - Confirmação de exclusão
+  - Alerta de categoria em uso
+  - Botões de ação (Salvar, Cancelar, Excluir, OK)
+- Criadas traduções consistentes para os idiomas:
+  - 🇧🇷 Português (pt)
+  - 🇵🇹 Português de Portugal (pt_PT)
+  - 🇺🇸 Inglês (en)
+  - 🇪🇸 Espanhol (es)
+  - 🇩🇪 Alemão (fallback `de`)
+  - 🇨🇭 Alemão Suíço (`de_CH`)
+- Padronização de **keys semânticas** (`categories*`, `action*`) para facilitar manutenção e reutilização
+- Mantido suporte total ao `flutter gen-l10n`, sem conflitos de locale ou fallback
+
+### Objetivo:
+- Garantir que a tela de Categorias esteja pronta para **crescer sem retrabalho**
+- Facilitar adição de novas funcionalidades (editar categoria, permissões, analytics)
+- Manter o app **100% internacionalizado**, profissional e preparado para distribuição global

@@ -1159,4 +1159,41 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsAboutSubtitle => 'App version and information';
+
+  @override
+  String get categoriesTitle => 'Categories';
+
+  @override
+  String get categoriesAddTooltip => 'Add category';
+
+  @override
+  String get categoriesEmpty => 'No categories created';
+
+  @override
+  String get categoriesAddTitle => 'New category';
+
+  @override
+  String get categoriesAddHint => 'Category name';
+
+  @override
+  String get categoriesDeleteTitle => 'Delete category';
+
+  @override
+  String categoriesDeleteConfirmWithValue(String value) {
+    return 'Do you want to delete the category \"$value\"?';
+  }
+
+  @override
+  String get categoriesDeleteButton => 'Delete';
+
+  @override
+  String get categoriesInUseTitle => 'Cannot delete';
+
+  @override
+  String categoriesInUseMessageWithValue(String value) {
+    return 'The category \"$value\" cannot be deleted because there are products linked to it.';
+  }
+
+  @override
+  String get actionOk => 'OK';
 }

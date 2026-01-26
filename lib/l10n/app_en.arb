@@ -1152,7 +1152,7 @@
 
   "actionCancel": "Cancel",
   "@actionCancel": { "description": "AÇÕES — Botão cancelar (padrão do app)" },
-  
+
 
   "settingsTitle": "Settings",
   "@settingsTitle": { "description": "CONFIG — Título da tela de configurações" },
@@ -1173,7 +1173,51 @@
   "@settingsAboutTitle": { "description": "CONFIG — Título da opção Sobre" },
 
   "settingsAboutSubtitle": "App version and information",
-  "@settingsAboutSubtitle": { "description": "CONFIG — Subtítulo da opção Sobre" }
+  "@settingsAboutSubtitle": { "description": "CONFIG — Subtítulo da opção Sobre" },
+
+
+  "categoriesTitle": "Categories",
+  "@categoriesTitle": { "description": "CATEGORIES — Screen title" },
+
+  "categoriesAddTooltip": "Add category",
+  "@categoriesAddTooltip": { "description": "CATEGORIES — Tooltip for add category button" },
+
+  "categoriesEmpty": "No categories created",
+  "@categoriesEmpty": { "description": "CATEGORIES — Empty state" },
+
+  "categoriesAddTitle": "New category",
+  "@categoriesAddTitle": { "description": "CATEGORIES — Add category dialog title" },
+
+  "categoriesAddHint": "Category name",
+  "@categoriesAddHint": { "description": "CATEGORIES — Category name field hint" },
+
+  "categoriesDeleteTitle": "Delete category",
+  "@categoriesDeleteTitle": { "description": "CATEGORIES — Delete dialog title" },
+
+  "categoriesDeleteConfirmWithValue": "Do you want to delete the category \"{value}\"?",
+  "@categoriesDeleteConfirmWithValue": {
+    "description": "CATEGORIES — Delete confirmation with category name",
+    "placeholders": {
+      "value": { "type": "String", "example": "Drinks" }
+    }
+  },
+
+  "categoriesDeleteButton": "Delete",
+  "@categoriesDeleteButton": { "description": "CATEGORIES — Confirm delete button" },
+
+  "categoriesInUseTitle": "Cannot delete",
+  "@categoriesInUseTitle": { "description": "CATEGORIES — Category in use title" },
+
+  "categoriesInUseMessageWithValue": "The category \"{value}\" cannot be deleted because there are products linked to it.",
+  "@categoriesInUseMessageWithValue": {
+    "description": "CATEGORIES — Category in use message",
+    "placeholders": {
+      "value": { "type": "String", "example": "Drinks" }
+    }
+  },
+
+  "actionOk": "OK",
+  "@actionOk": { "description": "GENERAL — Confirmation button" }
 }
 
 

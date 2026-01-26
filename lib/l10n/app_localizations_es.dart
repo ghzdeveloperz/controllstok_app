@@ -1170,4 +1170,41 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsAboutSubtitle => 'Versión e información de la app';
+
+  @override
+  String get categoriesTitle => 'Categorías';
+
+  @override
+  String get categoriesAddTooltip => 'Agregar categoría';
+
+  @override
+  String get categoriesEmpty => 'No hay categorías creadas';
+
+  @override
+  String get categoriesAddTitle => 'Nueva categoría';
+
+  @override
+  String get categoriesAddHint => 'Nombre de la categoría';
+
+  @override
+  String get categoriesDeleteTitle => 'Eliminar categoría';
+
+  @override
+  String categoriesDeleteConfirmWithValue(String value) {
+    return '¿Desea eliminar la categoría \"$value\"?';
+  }
+
+  @override
+  String get categoriesDeleteButton => 'Eliminar';
+
+  @override
+  String get categoriesInUseTitle => 'No se puede eliminar';
+
+  @override
+  String categoriesInUseMessageWithValue(String value) {
+    return 'La categoría \"$value\" no se puede eliminar porque hay productos vinculados a ella.';
+  }
+
+  @override
+  String get actionOk => 'Entendido';
 }

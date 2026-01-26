@@ -1174,6 +1174,43 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get settingsAboutSubtitle => 'App-Version und Informationen';
+
+  @override
+  String get categoriesTitle => 'Kategorien';
+
+  @override
+  String get categoriesAddTooltip => 'Kategorie hinzufügen';
+
+  @override
+  String get categoriesEmpty => 'Keine Kategorien erstellt';
+
+  @override
+  String get categoriesAddTitle => 'Neue Kategorie';
+
+  @override
+  String get categoriesAddHint => 'Kategoriename';
+
+  @override
+  String get categoriesDeleteTitle => 'Kategorie löschen';
+
+  @override
+  String categoriesDeleteConfirmWithValue(String value) {
+    return 'Möchten Sie die Kategorie \"$value\" löschen?';
+  }
+
+  @override
+  String get categoriesDeleteButton => 'Löschen';
+
+  @override
+  String get categoriesInUseTitle => 'Löschen nicht möglich';
+
+  @override
+  String categoriesInUseMessageWithValue(String value) {
+    return 'Die Kategorie \"$value\" kann nicht gelöscht werden, da Produkte damit verknüpft sind.';
+  }
+
+  @override
+  String get actionOk => 'OK';
 }
 
 /// The translations for German, as used in Switzerland (`de_CH`).
@@ -2345,4 +2382,41 @@ class AppLocalizationsDeCh extends AppLocalizationsDe {
 
   @override
   String get settingsAboutSubtitle => 'App-Version und Informationen';
+
+  @override
+  String get categoriesTitle => 'Kategorien';
+
+  @override
+  String get categoriesAddTooltip => 'Kategorie hinzufügen';
+
+  @override
+  String get categoriesEmpty => 'Keine Kategorien erstellt';
+
+  @override
+  String get categoriesAddTitle => 'Neue Kategorie';
+
+  @override
+  String get categoriesAddHint => 'Kategoriename';
+
+  @override
+  String get categoriesDeleteTitle => 'Kategorie löschen';
+
+  @override
+  String categoriesDeleteConfirmWithValue(String value) {
+    return 'Möchten Sie die Kategorie \"$value\" löschen?';
+  }
+
+  @override
+  String get categoriesDeleteButton => 'Löschen';
+
+  @override
+  String get categoriesInUseTitle => 'Löschen nicht möglich';
+
+  @override
+  String categoriesInUseMessageWithValue(String value) {
+    return 'Die Kategorie \"$value\" kann nicht gelöscht werden, da Produkte damit verknüpft sind.';
+  }
+
+  @override
+  String get actionOk => 'OK';
 }

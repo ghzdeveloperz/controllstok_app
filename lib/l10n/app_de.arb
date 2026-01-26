@@ -1129,7 +1129,7 @@
   "actionCancel": "Abbrechen",
   "@actionCancel": { "description": "AÇÕES — Botão cancelar (padrão do app)" },
 
-  
+
 
   "settingsTitle": "Einstellungen",
   "@settingsTitle": { "description": "CONFIG — Título da tela de configurações" },
@@ -1150,5 +1150,49 @@
   "@settingsAboutTitle": { "description": "CONFIG — Título da opção Sobre" },
 
   "settingsAboutSubtitle": "App-Version und Informationen",
-  "@settingsAboutSubtitle": { "description": "CONFIG — Subtítulo da opção Sobre" }
+  "@settingsAboutSubtitle": { "description": "CONFIG — Subtítulo da opção Sobre" },
+
+
+  "categoriesTitle": "Kategorien",
+  "@categoriesTitle": { "description": "KATEGORIEN — Titel der Kategorien-Seite" },
+
+  "categoriesAddTooltip": "Kategorie hinzufügen",
+  "@categoriesAddTooltip": { "description": "KATEGORIEN — Tooltip zum Hinzufügen" },
+
+  "categoriesEmpty": "Keine Kategorien erstellt",
+  "@categoriesEmpty": { "description": "KATEGORIEN — Leerer Zustand" },
+
+  "categoriesAddTitle": "Neue Kategorie",
+  "@categoriesAddTitle": { "description": "KATEGORIEN — Titel Dialog Kategorie hinzufügen" },
+
+  "categoriesAddHint": "Kategoriename",
+  "@categoriesAddHint": { "description": "KATEGORIEN — Hinweis Kategoriename" },
+
+  "categoriesDeleteTitle": "Kategorie löschen",
+  "@categoriesDeleteTitle": { "description": "KATEGORIEN — Titel Dialog Löschen" },
+
+  "categoriesDeleteConfirmWithValue": "Möchten Sie die Kategorie \"{value}\" löschen?",
+  "@categoriesDeleteConfirmWithValue": {
+    "description": "KATEGORIEN — Bestätigung Löschen",
+    "placeholders": {
+      "value": { "type": "String", "example": "Getränke" }
+    }
+  },
+
+  "categoriesDeleteButton": "Löschen",
+  "@categoriesDeleteButton": { "description": "KATEGORIEN — Button Löschen" },
+
+  "categoriesInUseTitle": "Löschen nicht möglich",
+  "@categoriesInUseTitle": { "description": "KATEGORIEN — Kategorie in Benutzung" },
+
+  "categoriesInUseMessageWithValue": "Die Kategorie \"{value}\" kann nicht gelöscht werden, da Produkte damit verknüpft sind.",
+  "@categoriesInUseMessageWithValue": {
+    "description": "KATEGORIEN — Kategorie in Benutzung Nachricht",
+    "placeholders": {
+      "value": { "type": "String", "example": "Getränke" }
+    }
+  },
+
+  "actionOk": "OK",
+  "@actionOk": { "description": "ALLGEMEIN — Bestätigungsbutton" }
 }

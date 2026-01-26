@@ -2185,6 +2185,72 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Versão e informações do app'**
   String get settingsAboutSubtitle;
+
+  /// CATEGORIAS — Título da tela de categorias
+  ///
+  /// In pt, this message translates to:
+  /// **'Categorias'**
+  String get categoriesTitle;
+
+  /// CATEGORIAS — Tooltip do botão de adicionar categoria
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar categoria'**
+  String get categoriesAddTooltip;
+
+  /// CATEGORIAS — Estado vazio sem categorias
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhuma categoria criada'**
+  String get categoriesEmpty;
+
+  /// CATEGORIAS — Título do diálogo de adicionar categoria
+  ///
+  /// In pt, this message translates to:
+  /// **'Nova categoria'**
+  String get categoriesAddTitle;
+
+  /// CATEGORIAS — Hint do campo nome da categoria
+  ///
+  /// In pt, this message translates to:
+  /// **'Nome da categoria'**
+  String get categoriesAddHint;
+
+  /// CATEGORIAS — Título do diálogo de exclusão
+  ///
+  /// In pt, this message translates to:
+  /// **'Excluir categoria'**
+  String get categoriesDeleteTitle;
+
+  /// CATEGORIAS — Confirmação de exclusão com nome da categoria
+  ///
+  /// In pt, this message translates to:
+  /// **'Deseja excluir a categoria \"{value}\"?'**
+  String categoriesDeleteConfirmWithValue(String value);
+
+  /// CATEGORIAS — Botão confirmar exclusão
+  ///
+  /// In pt, this message translates to:
+  /// **'Excluir'**
+  String get categoriesDeleteButton;
+
+  /// CATEGORIAS — Título do alerta de categoria em uso
+  ///
+  /// In pt, this message translates to:
+  /// **'Não é possível excluir'**
+  String get categoriesInUseTitle;
+
+  /// CATEGORIAS — Mensagem quando categoria está em uso
+  ///
+  /// In pt, this message translates to:
+  /// **'A categoria \"{value}\" não pode ser excluída porque existem produtos vinculados a ela.'**
+  String categoriesInUseMessageWithValue(String value);
+
+  /// GERAL — Botão de confirmação/OK
+  ///
+  /// In pt, this message translates to:
+  /// **'Entendi'**
+  String get actionOk;
 }
 
 class _AppLocalizationsDelegate

@@ -1161,6 +1161,43 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get settingsAboutSubtitle => 'Versão e informações do app';
+
+  @override
+  String get categoriesTitle => 'Categorias';
+
+  @override
+  String get categoriesAddTooltip => 'Adicionar categoria';
+
+  @override
+  String get categoriesEmpty => 'Nenhuma categoria criada';
+
+  @override
+  String get categoriesAddTitle => 'Nova categoria';
+
+  @override
+  String get categoriesAddHint => 'Nome da categoria';
+
+  @override
+  String get categoriesDeleteTitle => 'Excluir categoria';
+
+  @override
+  String categoriesDeleteConfirmWithValue(String value) {
+    return 'Deseja excluir a categoria \"$value\"?';
+  }
+
+  @override
+  String get categoriesDeleteButton => 'Excluir';
+
+  @override
+  String get categoriesInUseTitle => 'Não é possível excluir';
+
+  @override
+  String categoriesInUseMessageWithValue(String value) {
+    return 'A categoria \"$value\" não pode ser excluída porque existem produtos vinculados a ela.';
+  }
+
+  @override
+  String get actionOk => 'Entendi';
 }
 
 /// The translations for Portuguese, as used in Portugal (`pt_PT`).
@@ -2325,4 +2362,41 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get settingsAboutSubtitle => 'Versão e informações da app';
+
+  @override
+  String get categoriesTitle => 'Categorias';
+
+  @override
+  String get categoriesAddTooltip => 'Adicionar categoria';
+
+  @override
+  String get categoriesEmpty => 'Nenhuma categoria criada';
+
+  @override
+  String get categoriesAddTitle => 'Nova categoria';
+
+  @override
+  String get categoriesAddHint => 'Nome da categoria';
+
+  @override
+  String get categoriesDeleteTitle => 'Eliminar categoria';
+
+  @override
+  String categoriesDeleteConfirmWithValue(String value) {
+    return 'Deseja eliminar a categoria \"$value\"?';
+  }
+
+  @override
+  String get categoriesDeleteButton => 'Eliminar';
+
+  @override
+  String get categoriesInUseTitle => 'Não é possível eliminar';
+
+  @override
+  String categoriesInUseMessageWithValue(String value) {
+    return 'A categoria \"$value\" não pode ser eliminada porque existem produtos associados.';
+  }
+
+  @override
+  String get actionOk => 'Compreendi';
 }
