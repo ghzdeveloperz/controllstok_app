@@ -11,7 +11,7 @@ import '../../../../../l10n/app_localizations.dart';
 import '../../../../firebase/firestore/movements_days.dart';
 import '../../../models/report_period.dart';
 import '../../../models/salve_modal.dart';
-import '../days/for_product/relatorios_for_products_days.dart';
+import 'for_product/relatorios_for_products_days.dart';
 
 import 'relatorios_days.dart'; // ✅ IMPORTA O WIDGET DO MESMO MÓDULO
 
@@ -27,8 +27,6 @@ import 'widgets/product_detail_card.dart';
 
 import 'charts/line_chart_section.dart';
 import 'charts/pie_chart_section.dart';
-
-
 
 class RelatoriosDaysState extends State<RelatoriosDays>
     with TickerProviderStateMixin {
@@ -47,7 +45,7 @@ class RelatoriosDaysState extends State<RelatoriosDays>
   late Animation<double> _fadeAnimation;
 
   int _pieTouchedIndex = -1;
- 
+
   String? _pieTouchedImageUrl;
 
   late ValueNotifier<List<Movement>> _movementsNotifier;
@@ -132,7 +130,7 @@ class RelatoriosDaysState extends State<RelatoriosDays>
         _selectedProductId = null;
 
         _pieTouchedIndex = -1;
-       
+
         _pieTouchedImageUrl = null;
       });
     }
@@ -150,7 +148,7 @@ class RelatoriosDaysState extends State<RelatoriosDays>
   }) {
     setState(() {
       _pieTouchedIndex = touchedIndex;
-      
+
       _pieTouchedImageUrl = imageUrl;
     });
   }
@@ -164,9 +162,7 @@ class RelatoriosDaysState extends State<RelatoriosDays>
     });
   }
 
-  void _goToProductDetails({
-    required String productId,
-  }) {
+  void _goToProductDetails({required String productId}) {
     final period = ReportPeriod.day(_displayDate);
 
     Navigator.push(
@@ -238,6 +234,7 @@ class RelatoriosDaysState extends State<RelatoriosDays>
       displayDate: _displayDate,
       now: DateTime.now(),
       l10n: l10n,
+      context: context,
     );
 
     return Scaffold(
@@ -260,8 +257,9 @@ class RelatoriosDaysState extends State<RelatoriosDays>
                 if (!snapshot.hasData) {
                   return const Center(
                     child: CircularProgressIndicator(
-                      valueColor:
-                          AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Color(0xFF4CAF50),
+                      ),
                     ),
                   );
                 }
@@ -325,10 +323,10 @@ class RelatoriosDaysState extends State<RelatoriosDays>
                 if (minX < 0) minX = 0;
                 if (maxX > 24) maxX = 24;
 
-                final maxCumulative =
-                    [cumulativeAdd, cumulativeRemove].reduce(
-                  (a, b) => a > b ? a : b,
-                );
+                final maxCumulative = [
+                  cumulativeAdd,
+                  cumulativeRemove,
+                ].reduce((a, b) => a > b ? a : b);
                 final maxY = (maxCumulative + 10).toDouble();
 
                 // ================== PIE (percentual) ==================
@@ -342,13 +340,14 @@ class RelatoriosDaysState extends State<RelatoriosDays>
                     return true;
                   });
 
-                  final total =
-                      filtered.fold<int>(0, (p, e) => p + e.quantity);
+                  final total = filtered.fold<int>(0, (p, e) => p + e.quantity);
                   if (total > 0) productTotals[productId] = total;
                 }
 
-                final totalMovements =
-                    productTotals.values.fold<int>(0, (p, e) => p + e);
+                final totalMovements = productTotals.values.fold<int>(
+                  0,
+                  (p, e) => p + e,
+                );
 
                 // ✅ gera sections aqui (sem buildPieChartModel)
                 final pieSections = _buildPieSections(
@@ -357,7 +356,11 @@ class RelatoriosDaysState extends State<RelatoriosDays>
                   touchedIndex: _pieTouchedIndex,
                 );
 
-                final title = relatoriosFormatDateTitle(_displayDate);
+                final title = relatoriosFormatDateTitle(
+  date: _displayDate,
+  context: context,
+);
+
 
                 return ListView(
                   padding: const EdgeInsets.symmetric(vertical: 8),
@@ -377,7 +380,9 @@ class RelatoriosDaysState extends State<RelatoriosDays>
 
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
                       child: ChartTypeSelector(
                         selectedChartType: _selectedChartType,
                         onSelect: (value) =>
@@ -420,11 +425,14 @@ class RelatoriosDaysState extends State<RelatoriosDays>
 
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 8),
+                        horizontal: 8,
+                        vertical: 8,
+                      ),
                       child: LayoutBuilder(
                         builder: (context, constraints) {
-                          final screenHeight =
-                              MediaQuery.of(context).size.height;
+                          final screenHeight = MediaQuery.of(
+                            context,
+                          ).size.height;
                           final chartHeight = screenHeight * 0.4;
 
                           return Container(
@@ -438,7 +446,9 @@ class RelatoriosDaysState extends State<RelatoriosDays>
                               ),
                               borderRadius: BorderRadius.circular(24),
                               border: Border.all(
-                                  color: const Color(0xFFE0E0E0), width: 1.5),
+                                color: const Color(0xFFE0E0E0),
+                                width: 1.5,
+                              ),
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.black.withValues(alpha: 0.05),

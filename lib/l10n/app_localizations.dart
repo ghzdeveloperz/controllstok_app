@@ -1531,6 +1531,72 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'{label}: {value}'**
   String relatoriosLineTooltip(String label, num value);
+
+  /// Título do AppBar do relatório por produto
+  ///
+  /// In pt, this message translates to:
+  /// **'Relatório do Produto'**
+  String get relatoriosProductReportTitle;
+
+  /// Estado vazio do relatório por produto, com descrição do período
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhuma movimentação em {periodDescription}'**
+  String relatoriosNoMovementsForPeriod(String periodDescription);
+
+  /// Hint do estado vazio quando o período é mês
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione outro mês ou adicione novas movimentações.'**
+  String get relatoriosSelectAnotherMonthHint;
+
+  /// Tag de disponibilidade do produto
+  ///
+  /// In pt, this message translates to:
+  /// **'Disponível'**
+  String get relatoriosAvailabilityAvailable;
+
+  /// Tag de indisponibilidade do produto
+  ///
+  /// In pt, this message translates to:
+  /// **'Indisponível'**
+  String get relatoriosAvailabilityUnavailable;
+
+  /// Tag do estoque atual do produto
+  ///
+  /// In pt, this message translates to:
+  /// **'Estoque atual: {value}'**
+  String relatoriosCurrentStockWithValue(int value);
+
+  /// Título do gráfico (dia) no relatório por produto
+  ///
+  /// In pt, this message translates to:
+  /// **'Movimentações cumulativas de {productName}'**
+  String relatoriosCumulativeMovementsOfProduct(String productName);
+
+  /// Título do gráfico (mês) no relatório por produto
+  ///
+  /// In pt, this message translates to:
+  /// **'Movimentações cumulativas de {productName} no mês'**
+  String relatoriosCumulativeMovementsOfProductInMonth(String productName);
+
+  /// Título do card de resumo executivo do produto
+  ///
+  /// In pt, this message translates to:
+  /// **'Resumo executivo do produto'**
+  String get relatoriosExecutiveSummaryProductTitle;
+
+  /// Título do card de lista de movimentações do produto
+  ///
+  /// In pt, this message translates to:
+  /// **'Movimentações detalhadas'**
+  String get relatoriosDetailedMovementsTitle;
+
+  /// Label 'Horário:' na lista detalhada
+  ///
+  /// In pt, this message translates to:
+  /// **'Horário'**
+  String get relatoriosTimeLabel;
 }
 
 class _AppLocalizationsDelegate

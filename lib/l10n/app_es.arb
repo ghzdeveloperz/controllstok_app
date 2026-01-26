@@ -771,5 +771,58 @@
       "label": { "type": "String", "example": "Entradas" },
       "value": { "type": "num", "example": "12.5" }
     }
-  }
+  },
+
+  "relatoriosProductReportTitle": "Informe del producto",
+  "@relatoriosProductReportTitle": { "description": "Título del AppBar del informe por producto" },
+
+  "relatoriosNoMovementsForPeriod": "Ningún movimiento en {periodDescription}",
+  "@relatoriosNoMovementsForPeriod": {
+    "description": "Estado vacío del informe por producto, con descripción del período",
+    "placeholders": {
+      "periodDescription": { "type": "String", "example": "25/01/2026" }
+    }
+  },
+
+  "relatoriosSelectAnotherMonthHint": "Selecciona otro mes o añade nuevos movimientos.",
+  "@relatoriosSelectAnotherMonthHint": { "description": "Hint del estado vacío cuando el período es mes" },
+
+  "relatoriosAvailabilityAvailable": "Disponible",
+  "@relatoriosAvailabilityAvailable": { "description": "Etiqueta de disponibilidad del producto" },
+
+  "relatoriosAvailabilityUnavailable": "No disponible",
+  "@relatoriosAvailabilityUnavailable": { "description": "Etiqueta de no disponibilidad del producto" },
+
+  "relatoriosCurrentStockWithValue": "Stock actual: {value}",
+  "@relatoriosCurrentStockWithValue": {
+    "description": "Etiqueta del stock actual del producto",
+    "placeholders": {
+      "value": { "type": "int", "example": "12" }
+    }
+  },
+
+  "relatoriosCumulativeMovementsOfProduct": "Movimientos acumulados de {productName}",
+  "@relatoriosCumulativeMovementsOfProduct": {
+    "description": "Título del gráfico (día) en el informe por producto",
+    "placeholders": {
+      "productName": { "type": "String", "example": "Salmón" }
+    }
+  },
+
+  "relatoriosCumulativeMovementsOfProductInMonth": "Movimientos acumulados de {productName} en el mes",
+  "@relatoriosCumulativeMovementsOfProductInMonth": {
+    "description": "Título del gráfico (mes) en el informe por producto",
+    "placeholders": {
+      "productName": { "type": "String", "example": "Salmón" }
+    }
+  },
+
+  "relatoriosExecutiveSummaryProductTitle": "Resumen ejecutivo del producto",
+  "@relatoriosExecutiveSummaryProductTitle": { "description": "Título de la tarjeta de resumen ejecutivo del producto" },
+
+  "relatoriosDetailedMovementsTitle": "Movimientos detallados",
+  "@relatoriosDetailedMovementsTitle": { "description": "Título de la lista de movimientos del producto" },
+
+  "relatoriosTimeLabel": "Hora",
+  "@relatoriosTimeLabel": { "description": "Etiqueta 'Hora:' en la lista detallada" }
 }

@@ -816,6 +816,48 @@ class AppLocalizationsDe extends AppLocalizations {
   String relatoriosLineTooltip(String label, num value) {
     return '$label: $value';
   }
+
+  @override
+  String get relatoriosProductReportTitle => 'Produktbericht';
+
+  @override
+  String relatoriosNoMovementsForPeriod(String periodDescription) {
+    return 'Keine Bewegungen in $periodDescription';
+  }
+
+  @override
+  String get relatoriosSelectAnotherMonthHint =>
+      'Wählen Sie einen anderen Monat oder fügen Sie neue Bewegungen hinzu.';
+
+  @override
+  String get relatoriosAvailabilityAvailable => 'Verfügbar';
+
+  @override
+  String get relatoriosAvailabilityUnavailable => 'Nicht verfügbar';
+
+  @override
+  String relatoriosCurrentStockWithValue(int value) {
+    return 'Aktueller Bestand: $value';
+  }
+
+  @override
+  String relatoriosCumulativeMovementsOfProduct(String productName) {
+    return 'Kumulierte Bewegungen für $productName';
+  }
+
+  @override
+  String relatoriosCumulativeMovementsOfProductInMonth(String productName) {
+    return 'Kumulierte Bewegungen für $productName im Monat';
+  }
+
+  @override
+  String get relatoriosExecutiveSummaryProductTitle => 'Produktübersicht';
+
+  @override
+  String get relatoriosDetailedMovementsTitle => 'Detaillierte Bewegungen';
+
+  @override
+  String get relatoriosTimeLabel => 'Uhrzeit';
 }
 
 /// The translations for German, as used in Switzerland (`de_CH`).
@@ -1629,4 +1671,46 @@ class AppLocalizationsDeCh extends AppLocalizationsDe {
   String relatoriosLineTooltip(String label, num value) {
     return '$label: $value';
   }
+
+  @override
+  String get relatoriosProductReportTitle => 'Produktbericht';
+
+  @override
+  String relatoriosNoMovementsForPeriod(String periodDescription) {
+    return 'Kei Bewegige i $periodDescription';
+  }
+
+  @override
+  String get relatoriosSelectAnotherMonthHint =>
+      'Wähl en andere Monet oder füeg neui Bewegige dezue.';
+
+  @override
+  String get relatoriosAvailabilityAvailable => 'Verfügbar';
+
+  @override
+  String get relatoriosAvailabilityUnavailable => 'Nöd verfügbar';
+
+  @override
+  String relatoriosCurrentStockWithValue(int value) {
+    return 'Aktuelle Bestand: $value';
+  }
+
+  @override
+  String relatoriosCumulativeMovementsOfProduct(String productName) {
+    return 'Kumulierti Bewegige für $productName';
+  }
+
+  @override
+  String relatoriosCumulativeMovementsOfProductInMonth(String productName) {
+    return 'Kumulierti Bewegige für $productName im Monet';
+  }
+
+  @override
+  String get relatoriosExecutiveSummaryProductTitle => 'Produkt-Zämefassig';
+
+  @override
+  String get relatoriosDetailedMovementsTitle => 'Detaillierti Bewegige';
+
+  @override
+  String get relatoriosTimeLabel => 'Ziit';
 }

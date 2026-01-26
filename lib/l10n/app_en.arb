@@ -796,7 +796,62 @@
       "label": { "type": "String", "example": "Entries" },
       "value": { "type": "num", "example": "12.5" }
     }
-  }
+  },
+
+  "relatoriosProductReportTitle": "Product report",
+  "@relatoriosProductReportTitle": { "description": "AppBar title for product report" },
+
+  "relatoriosNoMovementsForPeriod": "No movements in {periodDescription}",
+  "@relatoriosNoMovementsForPeriod": {
+    "description": "Empty state message for product report, with period description",
+    "placeholders": {
+      "periodDescription": { "type": "String", "example": "01/25/2026" }
+    }
+  },
+
+  "relatoriosSelectAnotherMonthHint": "Select another month or add new movements.",
+  "@relatoriosSelectAnotherMonthHint": { "description": "Empty state hint when period is month" },
+
+  "relatoriosAvailabilityAvailable": "Available",
+  "@relatoriosAvailabilityAvailable": { "description": "Product availability tag" },
+
+  "relatoriosAvailabilityUnavailable": "Unavailable",
+  "@relatoriosAvailabilityUnavailable": { "description": "Product unavailability tag" },
+
+  "relatoriosCurrentStockWithValue": "Current stock: {value}",
+  "@relatoriosCurrentStockWithValue": {
+    "description": "Current stock tag for product report",
+    "placeholders": {
+      "value": { "type": "int", "example": "12" }
+    }
+  },
+
+  "relatoriosCumulativeMovementsOfProduct": "Cumulative movements for {productName}",
+  "@relatoriosCumulativeMovementsOfProduct": {
+    "description": "Chart title (day) in product report",
+    "placeholders": {
+      "productName": { "type": "String", "example": "Salmon" }
+    }
+  },
+
+  "relatoriosCumulativeMovementsOfProductInMonth": "Cumulative movements for {productName} this month",
+  "@relatoriosCumulativeMovementsOfProductInMonth": {
+    "description": "Chart title (month) in product report",
+    "placeholders": {
+      "productName": { "type": "String", "example": "Salmon" }
+    }
+  },
+
+  "relatoriosExecutiveSummaryProductTitle": "Product executive summary",
+  "@relatoriosExecutiveSummaryProductTitle": { "description": "Title of product executive summary card" },
+
+  "relatoriosDetailedMovementsTitle": "Detailed movements",
+  "@relatoriosDetailedMovementsTitle": { "description": "Title of detailed movements list card" },
+
+  "relatoriosTimeLabel": "Time",
+  "@relatoriosTimeLabel": { "description": "Label 'Time:' in detailed list" }
 }
+
+
 
 

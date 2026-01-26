@@ -805,6 +805,49 @@ class AppLocalizationsPt extends AppLocalizations {
   String relatoriosLineTooltip(String label, num value) {
     return '$label: $value';
   }
+
+  @override
+  String get relatoriosProductReportTitle => 'Relatório do Produto';
+
+  @override
+  String relatoriosNoMovementsForPeriod(String periodDescription) {
+    return 'Nenhuma movimentação em $periodDescription';
+  }
+
+  @override
+  String get relatoriosSelectAnotherMonthHint =>
+      'Selecione outro mês ou adicione novas movimentações.';
+
+  @override
+  String get relatoriosAvailabilityAvailable => 'Disponível';
+
+  @override
+  String get relatoriosAvailabilityUnavailable => 'Indisponível';
+
+  @override
+  String relatoriosCurrentStockWithValue(int value) {
+    return 'Estoque atual: $value';
+  }
+
+  @override
+  String relatoriosCumulativeMovementsOfProduct(String productName) {
+    return 'Movimentações cumulativas de $productName';
+  }
+
+  @override
+  String relatoriosCumulativeMovementsOfProductInMonth(String productName) {
+    return 'Movimentações cumulativas de $productName no mês';
+  }
+
+  @override
+  String get relatoriosExecutiveSummaryProductTitle =>
+      'Resumo executivo do produto';
+
+  @override
+  String get relatoriosDetailedMovementsTitle => 'Movimentações detalhadas';
+
+  @override
+  String get relatoriosTimeLabel => 'Horário';
 }
 
 /// The translations for Portuguese, as used in Portugal (`pt_PT`).
@@ -1610,4 +1653,47 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   String relatoriosLineTooltip(String label, num value) {
     return '$label: $value';
   }
+
+  @override
+  String get relatoriosProductReportTitle => 'Relatório do produto';
+
+  @override
+  String relatoriosNoMovementsForPeriod(String periodDescription) {
+    return 'Nenhuma movimentação em $periodDescription';
+  }
+
+  @override
+  String get relatoriosSelectAnotherMonthHint =>
+      'Selecione outro mês ou adicione novas movimentações.';
+
+  @override
+  String get relatoriosAvailabilityAvailable => 'Disponível';
+
+  @override
+  String get relatoriosAvailabilityUnavailable => 'Indisponível';
+
+  @override
+  String relatoriosCurrentStockWithValue(int value) {
+    return 'Stock atual: $value';
+  }
+
+  @override
+  String relatoriosCumulativeMovementsOfProduct(String productName) {
+    return 'Movimentações cumulativas de $productName';
+  }
+
+  @override
+  String relatoriosCumulativeMovementsOfProductInMonth(String productName) {
+    return 'Movimentações cumulativas de $productName no mês';
+  }
+
+  @override
+  String get relatoriosExecutiveSummaryProductTitle =>
+      'Resumo executivo do produto';
+
+  @override
+  String get relatoriosDetailedMovementsTitle => 'Movimentações detalhadas';
+
+  @override
+  String get relatoriosTimeLabel => 'Hora';
 }

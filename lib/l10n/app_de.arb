@@ -770,6 +770,59 @@
       "label": { "type": "String", "example": "Zugänge" },
       "value": { "type": "num", "example": "12.5" }
     }
-  }
+  },
+
+  "relatoriosProductReportTitle": "Produktbericht",
+  "@relatoriosProductReportTitle": { "description": "AppBar-Titel für den Produktbericht" },
+
+  "relatoriosNoMovementsForPeriod": "Keine Bewegungen in {periodDescription}",
+  "@relatoriosNoMovementsForPeriod": {
+    "description": "Leerer Zustand im Produktbericht, mit Periodenbeschreibung",
+    "placeholders": {
+      "periodDescription": { "type": "String", "example": "25.01.2026" }
+    }
+  },
+
+  "relatoriosSelectAnotherMonthHint": "Wählen Sie einen anderen Monat oder fügen Sie neue Bewegungen hinzu.",
+  "@relatoriosSelectAnotherMonthHint": { "description": "Hinweis im leeren Zustand, wenn der Zeitraum ein Monat ist" },
+
+  "relatoriosAvailabilityAvailable": "Verfügbar",
+  "@relatoriosAvailabilityAvailable": { "description": "Verfügbarkeits-Tag für Produkt" },
+
+  "relatoriosAvailabilityUnavailable": "Nicht verfügbar",
+  "@relatoriosAvailabilityUnavailable": { "description": "Nichtverfügbarkeits-Tag für Produkt" },
+
+  "relatoriosCurrentStockWithValue": "Aktueller Bestand: {value}",
+  "@relatoriosCurrentStockWithValue": {
+    "description": "Aktueller Bestand im Produktbericht",
+    "placeholders": {
+      "value": { "type": "int", "example": "12" }
+    }
+  },
+
+  "relatoriosCumulativeMovementsOfProduct": "Kumulierte Bewegungen für {productName}",
+  "@relatoriosCumulativeMovementsOfProduct": {
+    "description": "Diagrammtitel (Tag) im Produktbericht",
+    "placeholders": {
+      "productName": { "type": "String", "example": "Lachs" }
+    }
+  },
+
+  "relatoriosCumulativeMovementsOfProductInMonth": "Kumulierte Bewegungen für {productName} im Monat",
+  "@relatoriosCumulativeMovementsOfProductInMonth": {
+    "description": "Diagrammtitel (Monat) im Produktbericht",
+    "placeholders": {
+      "productName": { "type": "String", "example": "Lachs" }
+    }
+  },
+
+  "relatoriosExecutiveSummaryProductTitle": "Produktübersicht",
+  "@relatoriosExecutiveSummaryProductTitle": { "description": "Titel der Produkt-Zusammenfassungskarte" },
+
+  "relatoriosDetailedMovementsTitle": "Detaillierte Bewegungen",
+  "@relatoriosDetailedMovementsTitle": { "description": "Titel der Liste detaillierter Bewegungen" },
+
+  "relatoriosTimeLabel": "Uhrzeit",
+  "@relatoriosTimeLabel": { "description": "Label 'Uhrzeit:' in der Detail-Liste" }
 }
 

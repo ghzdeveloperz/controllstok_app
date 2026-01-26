@@ -392,11 +392,11 @@ Essas regras são reavaliadas a cada mudança de autenticação ou Firestore.
 - Preparar o módulo para expansão de idiomas sem retrabalho estrutural
 
 
-## [Milestone 19] Tela de Relatórios (Dia) + i18n Completo
+## [Milestone 19] Tela de Relatórios (Dia) + i18n Completo + Datas Dinâmicas por Locale
 **Status:** Concluído ✅
 
 ### Melhorias:
-- Refatorada toda a **Tela de Relatórios Diários (Visão Geral)** para suportar **i18n completo**, eliminando strings hardcoded de UI, gráficos e estados.
+- Refatorada toda a **Tela de Relatórios Diários (Visão Geral)** para suportar **i18n completo**, eliminando completamente strings hardcoded de UI, gráficos, tooltips e estados.
 - Internacionalização aplicada em todo o fluxo de relatórios do dia:
   - `relatorios_days.dart` — widget principal organizado, com separação clara entre Widget e State
   - `relatorios_days_state.dart` — lógica, estados, filtros e labels resolvidos via `AppLocalizations`
@@ -410,6 +410,11 @@ Essas regras são reavaliadas a cada mudança de autenticação ou Firestore.
 - Refatoração dos tooltips dos gráficos:
   - Tooltip do gráfico de linha padronizado via chave i18n (`relatoriosLineTooltip`)
   - Placeholders dinâmicos (label + valor), compatíveis com múltiplos idiomas
+- **Correção estrutural de datas dependentes de idioma**:
+  - `relatorios_days_date.dart` refatorado para **usar o locale ativo do app**
+  - Removido uso fixo de `pt_BR` no `DateFormat`
+  - Datas agora respeitam corretamente idioma e região (ex: EN / DE / ES / PT)
+  - Exibição consistente de **dia, mês e ano conforme locale**
 - Consolidação da base de traduções:
   - Chaves de relatórios organizadas e padronizadas nos arquivos `.arb`
   - Traduções completas adicionadas para:
@@ -424,24 +429,59 @@ Essas regras são reavaliadas a cada mudança de autenticação ou Firestore.
   - Nenhuma chave duplicada ou ausente entre idiomas
   - Sem warnings ou quebras de locale
 
-### Fora de Escopo (Intencional):
-- **Relatório por Produto NÃO foi refatorado neste milestone**
-- Tela `RelatoriosForProducts` mantida **inalterada**, sem aplicação de i18n nesta etapa
-- Ajustes de tradução no relatório por produto ficaram planejados para um milestone futuro
 
 ### Objetivo:
 - Garantir que a **Tela de Relatórios (Visão Geral do Dia)** esteja **100% traduzível**
+- Corrigir definitivamente problemas de datas presas em `pt_BR`
 - Consolidar o padrão arquitetural de **i18n profissional** no módulo de relatórios
-- Criar uma base sólida para:
+- Preparar a base para:
   - Relatórios Mensais e Anuais
   - Internacionalização do Relatório por Produto
   - Evoluções futuras sem retrabalho estrutural
 
-## [Milestone 20] Tela de Relatórios por Produto + i18n Completo
-**Status:** apenas arquivos criados e código único
+
+## [Milestone 20] Relatórios por Produto (Dia / Mês) + i18n + Refatoração Estrutural
+**Status:** Concluído ✅
 
 ### Melhorias:
-- separar estrutura do código
+- Refatorado o **Relatório por Produto** para seguir o mesmo padrão arquitetural e de i18n da tela de relatórios gerais.
+- Internacionalização aplicada em toda a tela `RelatoriosForProducts`:
+  - AppBar, títulos, subtítulos e estados vazios resolvidos via `AppLocalizations`
+  - Labels de gráficos, legendas e tooltips traduzíveis
+  - Textos de resumo executivo e lista detalhada sem strings hardcoded
+- Refatoração estrutural do código:
+  - Separação clara entre:
+    - Lógica de datas (`utils/relatorios_for_products_date.dart`)
+    - UI principal
+    - Estados e streams
+  - Código reorganizado para facilitar manutenção e escalabilidade
+- Padronização de datas por locale:
+  - Datas agora respeitam **idioma e região do app**
+  - Suporte correto a:
+    - Relatório diário
+    - Relatório mensal
+  - Exibição consistente de **dia, mês e ano conforme locale ativo**
+- Integração completa com `ReportPeriod`:
+  - Diferenciação clara entre dia e mês
+  - Preparação para períodos customizados futuros
+- Consolidação das traduções:
+  - Novas chaves adicionadas aos arquivos `.arb`
+  - Traduções completas para:
+    - EN (Inglês)
+    - ES (Espanhol)
+    - PT-PT (Português de Portugal)
+    - DE (Alemão)
+    - DE-CH (Alemão Suíço, com fallback em `de`)
+- Compatibilidade total com `flutter gen-l10n`:
+  - Placeholders padronizados
+  - `example` sempre como string
+  - Nenhuma quebra entre idiomas
+  - Build estável e sem warnings
 
 ### Objetivo:
-- separar estrutura do código
+- Tornar o **Relatório por Produto** totalmente traduzível e profissional
+- Alinhar o padrão de datas, UI e arquitetura com o restante do módulo de relatórios
+- Garantir escalabilidade para:
+  - Relatórios mensais e anuais por produto
+  - Comparações futuras
+  - Expansão de idiomas sem refatorações pesadas

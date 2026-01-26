@@ -805,4 +805,47 @@ class AppLocalizationsEn extends AppLocalizations {
   String relatoriosLineTooltip(String label, num value) {
     return '$label: $value';
   }
+
+  @override
+  String get relatoriosProductReportTitle => 'Product report';
+
+  @override
+  String relatoriosNoMovementsForPeriod(String periodDescription) {
+    return 'No movements in $periodDescription';
+  }
+
+  @override
+  String get relatoriosSelectAnotherMonthHint =>
+      'Select another month or add new movements.';
+
+  @override
+  String get relatoriosAvailabilityAvailable => 'Available';
+
+  @override
+  String get relatoriosAvailabilityUnavailable => 'Unavailable';
+
+  @override
+  String relatoriosCurrentStockWithValue(int value) {
+    return 'Current stock: $value';
+  }
+
+  @override
+  String relatoriosCumulativeMovementsOfProduct(String productName) {
+    return 'Cumulative movements for $productName';
+  }
+
+  @override
+  String relatoriosCumulativeMovementsOfProductInMonth(String productName) {
+    return 'Cumulative movements for $productName this month';
+  }
+
+  @override
+  String get relatoriosExecutiveSummaryProductTitle =>
+      'Product executive summary';
+
+  @override
+  String get relatoriosDetailedMovementsTitle => 'Detailed movements';
+
+  @override
+  String get relatoriosTimeLabel => 'Time';
 }

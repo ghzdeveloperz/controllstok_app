@@ -806,5 +806,58 @@
       "label": { "type": "String", "example": "Zugänge" },
       "value": { "type": "num", "example": "12.5" }
     }
-  }
+  },
+
+  "relatoriosProductReportTitle": "Produktbericht",
+  "@relatoriosProductReportTitle": { "description": "AppBar-Titel für den Produktbericht (Schweiz)" },
+
+  "relatoriosNoMovementsForPeriod": "Kei Bewegige i {periodDescription}",
+  "@relatoriosNoMovementsForPeriod": {
+    "description": "Leerer Zustand im Produktbericht, mit Periodenbeschreibung (de-CH)",
+    "placeholders": {
+      "periodDescription": { "type": "String", "example": "25.01.2026" }
+    }
+  },
+
+  "relatoriosSelectAnotherMonthHint": "Wähl en andere Monet oder füeg neui Bewegige dezue.",
+  "@relatoriosSelectAnotherMonthHint": { "description": "Hinweis im leeren Zustand, wenn der Zeitraum ein Monat ist (de-CH)" },
+
+  "relatoriosAvailabilityAvailable": "Verfügbar",
+  "@relatoriosAvailabilityAvailable": { "description": "Verfügbarkeits-Tag für Produkt (de-CH)" },
+
+  "relatoriosAvailabilityUnavailable": "Nöd verfügbar",
+  "@relatoriosAvailabilityUnavailable": { "description": "Nichtverfügbarkeits-Tag für Produkt (de-CH)" },
+
+  "relatoriosCurrentStockWithValue": "Aktuelle Bestand: {value}",
+  "@relatoriosCurrentStockWithValue": {
+    "description": "Aktueller Bestand im Produktbericht (de-CH)",
+    "placeholders": {
+      "value": { "type": "int", "example": "12" }
+    }
+  },
+
+  "relatoriosCumulativeMovementsOfProduct": "Kumulierti Bewegige für {productName}",
+  "@relatoriosCumulativeMovementsOfProduct": {
+    "description": "Diagrammtitel (Tag) im Produktbericht (de-CH)",
+    "placeholders": {
+      "productName": { "type": "String", "example": "Lachs" }
+    }
+  },
+
+  "relatoriosCumulativeMovementsOfProductInMonth": "Kumulierti Bewegige für {productName} im Monet",
+  "@relatoriosCumulativeMovementsOfProductInMonth": {
+    "description": "Diagrammtitel (Monat) im Produktbericht (de-CH)",
+    "placeholders": {
+      "productName": { "type": "String", "example": "Lachs" }
+    }
+  },
+
+  "relatoriosExecutiveSummaryProductTitle": "Produkt-Zämefassig",
+  "@relatoriosExecutiveSummaryProductTitle": { "description": "Titel der Produkt-Zusammenfassungskarte (de-CH)" },
+
+  "relatoriosDetailedMovementsTitle": "Detaillierti Bewegige",
+  "@relatoriosDetailedMovementsTitle": { "description": "Titel der Liste detaillierter Bewegungen (de-CH)" },
+
+  "relatoriosTimeLabel": "Ziit",
+  "@relatoriosTimeLabel": { "description": "Label 'Ziit:' in der Detail-Liste (de-CH)" }
 }

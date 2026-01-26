@@ -827,5 +827,59 @@
       "label": { "type": "String", "example": "Entradas" },
       "value": { "type": "num", "example": "12.5" }
     }
+  },
+
+"relatoriosProductReportTitle": "Relatório do Produto",
+"@relatoriosProductReportTitle": { "description": "Título do AppBar do relatório por produto" },
+
+"relatoriosNoMovementsForPeriod": "Nenhuma movimentação em {periodDescription}",
+"@relatoriosNoMovementsForPeriod": {
+  "description": "Estado vazio do relatório por produto, com descrição do período",
+  "placeholders": {
+    "periodDescription": { "type": "String", "example": "25/01/2026" }
   }
+},
+
+"relatoriosSelectAnotherMonthHint": "Selecione outro mês ou adicione novas movimentações.",
+"@relatoriosSelectAnotherMonthHint": { "description": "Hint do estado vazio quando o período é mês" },
+
+"relatoriosAvailabilityAvailable": "Disponível",
+"@relatoriosAvailabilityAvailable": { "description": "Tag de disponibilidade do produto" },
+
+"relatoriosAvailabilityUnavailable": "Indisponível",
+"@relatoriosAvailabilityUnavailable": { "description": "Tag de indisponibilidade do produto" },
+
+"relatoriosCurrentStockWithValue": "Estoque atual: {value}",
+"@relatoriosCurrentStockWithValue": {
+  "description": "Tag do estoque atual do produto",
+  "placeholders": {
+    "value": { "type": "int", "example": "12" }
+  }
+},
+
+"relatoriosCumulativeMovementsOfProduct": "Movimentações cumulativas de {productName}",
+"@relatoriosCumulativeMovementsOfProduct": {
+  "description": "Título do gráfico (dia) no relatório por produto",
+  "placeholders": {
+    "productName": { "type": "String", "example": "Salmão" }
+  }
+},
+
+"relatoriosCumulativeMovementsOfProductInMonth": "Movimentações cumulativas de {productName} no mês",
+"@relatoriosCumulativeMovementsOfProductInMonth": {
+  "description": "Título do gráfico (mês) no relatório por produto",
+  "placeholders": {
+    "productName": { "type": "String", "example": "Salmão" }
+  }
+},
+
+"relatoriosExecutiveSummaryProductTitle": "Resumo executivo do produto",
+"@relatoriosExecutiveSummaryProductTitle": { "description": "Título do card de resumo executivo do produto" },
+
+"relatoriosDetailedMovementsTitle": "Movimentações detalhadas",
+"@relatoriosDetailedMovementsTitle": { "description": "Título do card de lista de movimentações do produto" },
+
+"relatoriosTimeLabel": "Horário",
+"@relatoriosTimeLabel": { "description": "Label 'Horário:' na lista detalhada" }
+
 }
