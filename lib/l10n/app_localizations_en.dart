@@ -848,4 +848,42 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get relatoriosTimeLabel => 'Time';
+
+  @override
+  String get alertasTitle => 'Stock alerts';
+
+  @override
+  String get alertasSearchHint => 'Search product...';
+
+  @override
+  String get alertasFilterAll => 'All';
+
+  @override
+  String get alertasFilterZero => 'Out of stock';
+
+  @override
+  String get alertasFilterCritical => 'Critical';
+
+  @override
+  String get alertasSectionZero => 'Out of stock';
+
+  @override
+  String get alertasSectionCritical => 'Critical stock';
+
+  @override
+  String alertasQuantityWithValue(String value) {
+    return 'Quantity: $value';
+  }
+
+  @override
+  String get alertasOrderNow => 'Order now';
+
+  @override
+  String get alertasNotify => 'Notify';
+
+  @override
+  String get alertasEmptyTitle => 'No active alerts';
+
+  @override
+  String get alertasEmptySubtitle => 'Your stock is in order!';
 }

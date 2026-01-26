@@ -858,6 +858,44 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get relatoriosTimeLabel => 'Uhrzeit';
+
+  @override
+  String get alertasTitle => 'Bestandswarnungen';
+
+  @override
+  String get alertasSearchHint => 'Produkt suchen...';
+
+  @override
+  String get alertasFilterAll => 'Alle';
+
+  @override
+  String get alertasFilterZero => 'Ausverkauft';
+
+  @override
+  String get alertasFilterCritical => 'Kritisch';
+
+  @override
+  String get alertasSectionZero => 'Bestand 0';
+
+  @override
+  String get alertasSectionCritical => 'Kritischer Bestand';
+
+  @override
+  String alertasQuantityWithValue(String value) {
+    return 'Menge: $value';
+  }
+
+  @override
+  String get alertasOrderNow => 'Jetzt bestellen';
+
+  @override
+  String get alertasNotify => 'Benachrichtigen';
+
+  @override
+  String get alertasEmptyTitle => 'Keine aktiven Warnungen';
+
+  @override
+  String get alertasEmptySubtitle => 'Ihr Bestand ist in Ordnung!';
 }
 
 /// The translations for German, as used in Switzerland (`de_CH`).
@@ -1713,4 +1751,42 @@ class AppLocalizationsDeCh extends AppLocalizationsDe {
 
   @override
   String get relatoriosTimeLabel => 'Ziit';
+
+  @override
+  String get alertasTitle => 'Bestandswarnige';
+
+  @override
+  String get alertasSearchHint => 'Produkt sueche...';
+
+  @override
+  String get alertasFilterAll => 'Alli';
+
+  @override
+  String get alertasFilterZero => 'Uusverkauft';
+
+  @override
+  String get alertasFilterCritical => 'Kritisch';
+
+  @override
+  String get alertasSectionZero => 'Bestand 0';
+
+  @override
+  String get alertasSectionCritical => 'Kritische Bestand';
+
+  @override
+  String alertasQuantityWithValue(String value) {
+    return 'Mengi: $value';
+  }
+
+  @override
+  String get alertasOrderNow => 'Jetzt bstelle';
+
+  @override
+  String get alertasNotify => 'Benachrichtigä';
+
+  @override
+  String get alertasEmptyTitle => 'Kei aktivi Warnige';
+
+  @override
+  String get alertasEmptySubtitle => 'Dä Bestand isch i Ordnig!';
 }

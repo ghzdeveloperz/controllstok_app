@@ -1597,6 +1597,78 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Horário'**
   String get relatoriosTimeLabel;
+
+  /// Título da tela de alertas de estoque
+  ///
+  /// In pt, this message translates to:
+  /// **'Alertas de Estoque'**
+  String get alertasTitle;
+
+  /// Hint do campo de busca na tela de alertas
+  ///
+  /// In pt, this message translates to:
+  /// **'Buscar produto...'**
+  String get alertasSearchHint;
+
+  /// Filtro: Todos
+  ///
+  /// In pt, this message translates to:
+  /// **'Todos'**
+  String get alertasFilterAll;
+
+  /// Filtro: Estoque zerado
+  ///
+  /// In pt, this message translates to:
+  /// **'Zerado'**
+  String get alertasFilterZero;
+
+  /// Filtro: Estoque crítico
+  ///
+  /// In pt, this message translates to:
+  /// **'Crítico'**
+  String get alertasFilterCritical;
+
+  /// Título da seção de produtos com estoque zerado
+  ///
+  /// In pt, this message translates to:
+  /// **'Estoque Zerado'**
+  String get alertasSectionZero;
+
+  /// Título da seção de produtos com estoque crítico
+  ///
+  /// In pt, this message translates to:
+  /// **'Estoque Crítico'**
+  String get alertasSectionCritical;
+
+  /// Label de quantidade com valor
+  ///
+  /// In pt, this message translates to:
+  /// **'Quantidade: {value}'**
+  String alertasQuantityWithValue(String value);
+
+  /// Botão: pedir agora
+  ///
+  /// In pt, this message translates to:
+  /// **'Pedir Agora'**
+  String get alertasOrderNow;
+
+  /// Botão: notificar
+  ///
+  /// In pt, this message translates to:
+  /// **'Notificar'**
+  String get alertasNotify;
+
+  /// Título do estado vazio na tela de alertas
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum alerta ativo'**
+  String get alertasEmptyTitle;
+
+  /// Subtítulo do estado vazio na tela de alertas
+  ///
+  /// In pt, this message translates to:
+  /// **'Seu estoque está em ordem!'**
+  String get alertasEmptySubtitle;
 }
 
 class _AppLocalizationsDelegate

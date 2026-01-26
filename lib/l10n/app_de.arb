@@ -823,6 +823,46 @@
   "@relatoriosDetailedMovementsTitle": { "description": "Titel der Liste detaillierter Bewegungen" },
 
   "relatoriosTimeLabel": "Uhrzeit",
-  "@relatoriosTimeLabel": { "description": "Label 'Uhrzeit:' in der Detail-Liste" }
-}
+  "@relatoriosTimeLabel": { "description": "Label 'Uhrzeit:' in der Detail-Liste" },
 
+  "alertasTitle": "Bestandswarnungen",
+  "@alertasTitle": { "description": "Titel des Warnungsbildschirms" },
+
+  "alertasSearchHint": "Produkt suchen...",
+  "@alertasSearchHint": { "description": "Suchfeld-Hinweistext" },
+
+  "alertasFilterAll": "Alle",
+  "@alertasFilterAll": { "description": "Filter: alle" },
+
+  "alertasFilterZero": "Ausverkauft",
+  "@alertasFilterZero": { "description": "Filter: Bestand 0" },
+
+  "alertasFilterCritical": "Kritisch",
+  "@alertasFilterCritical": { "description": "Filter: kritischer Bestand" },
+
+  "alertasSectionZero": "Bestand 0",
+  "@alertasSectionZero": { "description": "Abschnitt: Bestand 0" },
+
+  "alertasSectionCritical": "Kritischer Bestand",
+  "@alertasSectionCritical": { "description": "Abschnitt: kritischer Bestand" },
+
+  "alertasQuantityWithValue": "Menge: {value}",
+  "@alertasQuantityWithValue": {
+    "description": "Mengenlabel mit Wert",
+    "placeholders": {
+      "value": { "type": "String", "example": "7" }
+    }
+  },
+
+  "alertasOrderNow": "Jetzt bestellen",
+  "@alertasOrderNow": { "description": "CTA: jetzt bestellen" },
+
+  "alertasNotify": "Benachrichtigen",
+  "@alertasNotify": { "description": "CTA: benachrichtigen" },
+
+  "alertasEmptyTitle": "Keine aktiven Warnungen",
+  "@alertasEmptyTitle": { "description": "Leerzustand Titel" },
+
+  "alertasEmptySubtitle": "Ihr Bestand ist in Ordnung!",
+  "@alertasEmptySubtitle": { "description": "Leerzustand Untertitel" }
+}

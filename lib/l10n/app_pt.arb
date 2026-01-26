@@ -829,57 +829,97 @@
     }
   },
 
-"relatoriosProductReportTitle": "Relatório do Produto",
-"@relatoriosProductReportTitle": { "description": "Título do AppBar do relatório por produto" },
+  "relatoriosProductReportTitle": "Relatório do Produto",
+  "@relatoriosProductReportTitle": { "description": "Título do AppBar do relatório por produto" },
 
-"relatoriosNoMovementsForPeriod": "Nenhuma movimentação em {periodDescription}",
-"@relatoriosNoMovementsForPeriod": {
-  "description": "Estado vazio do relatório por produto, com descrição do período",
-  "placeholders": {
-    "periodDescription": { "type": "String", "example": "25/01/2026" }
-  }
-},
+  "relatoriosNoMovementsForPeriod": "Nenhuma movimentação em {periodDescription}",
+  "@relatoriosNoMovementsForPeriod": {
+    "description": "Estado vazio do relatório por produto, com descrição do período",
+    "placeholders": {
+      "periodDescription": { "type": "String", "example": "25/01/2026" }
+    }
+  },
 
-"relatoriosSelectAnotherMonthHint": "Selecione outro mês ou adicione novas movimentações.",
-"@relatoriosSelectAnotherMonthHint": { "description": "Hint do estado vazio quando o período é mês" },
+  "relatoriosSelectAnotherMonthHint": "Selecione outro mês ou adicione novas movimentações.",
+  "@relatoriosSelectAnotherMonthHint": { "description": "Hint do estado vazio quando o período é mês" },
 
-"relatoriosAvailabilityAvailable": "Disponível",
-"@relatoriosAvailabilityAvailable": { "description": "Tag de disponibilidade do produto" },
+  "relatoriosAvailabilityAvailable": "Disponível",
+  "@relatoriosAvailabilityAvailable": { "description": "Tag de disponibilidade do produto" },
 
-"relatoriosAvailabilityUnavailable": "Indisponível",
-"@relatoriosAvailabilityUnavailable": { "description": "Tag de indisponibilidade do produto" },
+  "relatoriosAvailabilityUnavailable": "Indisponível",
+  "@relatoriosAvailabilityUnavailable": { "description": "Tag de indisponibilidade do produto" },
 
-"relatoriosCurrentStockWithValue": "Estoque atual: {value}",
-"@relatoriosCurrentStockWithValue": {
-  "description": "Tag do estoque atual do produto",
-  "placeholders": {
-    "value": { "type": "int", "example": "12" }
-  }
-},
+  "relatoriosCurrentStockWithValue": "Estoque atual: {value}",
+  "@relatoriosCurrentStockWithValue": {
+    "description": "Tag do estoque atual do produto",
+    "placeholders": {
+      "value": { "type": "int", "example": "12" }
+    }
+  },
 
-"relatoriosCumulativeMovementsOfProduct": "Movimentações cumulativas de {productName}",
-"@relatoriosCumulativeMovementsOfProduct": {
-  "description": "Título do gráfico (dia) no relatório por produto",
-  "placeholders": {
-    "productName": { "type": "String", "example": "Salmão" }
-  }
-},
+  "relatoriosCumulativeMovementsOfProduct": "Movimentações cumulativas de {productName}",
+  "@relatoriosCumulativeMovementsOfProduct": {
+    "description": "Título do gráfico (dia) no relatório por produto",
+    "placeholders": {
+      "productName": { "type": "String", "example": "Salmão" }
+    }
+  },
 
-"relatoriosCumulativeMovementsOfProductInMonth": "Movimentações cumulativas de {productName} no mês",
-"@relatoriosCumulativeMovementsOfProductInMonth": {
-  "description": "Título do gráfico (mês) no relatório por produto",
-  "placeholders": {
-    "productName": { "type": "String", "example": "Salmão" }
-  }
-},
+  "relatoriosCumulativeMovementsOfProductInMonth": "Movimentações cumulativas de {productName} no mês",
+  "@relatoriosCumulativeMovementsOfProductInMonth": {
+    "description": "Título do gráfico (mês) no relatório por produto",
+    "placeholders": {
+      "productName": { "type": "String", "example": "Salmão" }
+    }
+  },
 
-"relatoriosExecutiveSummaryProductTitle": "Resumo executivo do produto",
-"@relatoriosExecutiveSummaryProductTitle": { "description": "Título do card de resumo executivo do produto" },
+  "relatoriosExecutiveSummaryProductTitle": "Resumo executivo do produto",
+  "@relatoriosExecutiveSummaryProductTitle": { "description": "Título do card de resumo executivo do produto" },
 
-"relatoriosDetailedMovementsTitle": "Movimentações detalhadas",
-"@relatoriosDetailedMovementsTitle": { "description": "Título do card de lista de movimentações do produto" },
+  "relatoriosDetailedMovementsTitle": "Movimentações detalhadas",
+  "@relatoriosDetailedMovementsTitle": { "description": "Título do card de lista de movimentações do produto" },
 
-"relatoriosTimeLabel": "Horário",
-"@relatoriosTimeLabel": { "description": "Label 'Horário:' na lista detalhada" }
+  "relatoriosTimeLabel": "Horário",
+  "@relatoriosTimeLabel": { "description": "Label 'Horário:' na lista detalhada" },
 
+  "alertasTitle": "Alertas de Estoque",
+  "@alertasTitle": { "description": "Título da tela de alertas de estoque" },
+
+  "alertasSearchHint": "Buscar produto...",
+  "@alertasSearchHint": { "description": "Hint do campo de busca na tela de alertas" },
+
+  "alertasFilterAll": "Todos",
+  "@alertasFilterAll": { "description": "Filtro: Todos" },
+
+  "alertasFilterZero": "Zerado",
+  "@alertasFilterZero": { "description": "Filtro: Estoque zerado" },
+
+  "alertasFilterCritical": "Crítico",
+  "@alertasFilterCritical": { "description": "Filtro: Estoque crítico" },
+
+  "alertasSectionZero": "Estoque Zerado",
+  "@alertasSectionZero": { "description": "Título da seção de produtos com estoque zerado" },
+
+  "alertasSectionCritical": "Estoque Crítico",
+  "@alertasSectionCritical": { "description": "Título da seção de produtos com estoque crítico" },
+
+  "alertasQuantityWithValue": "Quantidade: {value}",
+  "@alertasQuantityWithValue": {
+    "description": "Label de quantidade com valor",
+    "placeholders": {
+      "value": { "type": "String", "example": "7" }
+    }
+  },
+
+  "alertasOrderNow": "Pedir Agora",
+  "@alertasOrderNow": { "description": "Botão: pedir agora" },
+
+  "alertasNotify": "Notificar",
+  "@alertasNotify": { "description": "Botão: notificar" },
+
+  "alertasEmptyTitle": "Nenhum alerta ativo",
+  "@alertasEmptyTitle": { "description": "Título do estado vazio na tela de alertas" },
+
+  "alertasEmptySubtitle": "Seu estoque está em ordem!",
+  "@alertasEmptySubtitle": { "description": "Subtítulo do estado vazio na tela de alertas" }
 }

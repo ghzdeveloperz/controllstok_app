@@ -824,5 +824,46 @@
   "@relatoriosDetailedMovementsTitle": { "description": "Título de la lista de movimientos del producto" },
 
   "relatoriosTimeLabel": "Hora",
-  "@relatoriosTimeLabel": { "description": "Etiqueta 'Hora:' en la lista detallada" }
+  "@relatoriosTimeLabel": { "description": "Etiqueta 'Hora:' en la lista detallada" },
+
+  "alertasTitle": "Alertas de stock",
+  "@alertasTitle": { "description": "Título de la pantalla de alertas" },
+
+  "alertasSearchHint": "Buscar producto...",
+  "@alertasSearchHint": { "description": "Hint del campo de búsqueda" },
+
+  "alertasFilterAll": "Todos",
+  "@alertasFilterAll": { "description": "Filtro: todos" },
+
+  "alertasFilterZero": "Sin stock",
+  "@alertasFilterZero": { "description": "Filtro: stock cero" },
+
+  "alertasFilterCritical": "Crítico",
+  "@alertasFilterCritical": { "description": "Filtro: stock crítico" },
+
+  "alertasSectionZero": "Stock agotado",
+  "@alertasSectionZero": { "description": "Sección: stock cero" },
+
+  "alertasSectionCritical": "Stock crítico",
+  "@alertasSectionCritical": { "description": "Sección: stock crítico" },
+
+  "alertasQuantityWithValue": "Cantidad: {value}",
+  "@alertasQuantityWithValue": {
+    "description": "Etiqueta de cantidad con valor",
+    "placeholders": {
+      "value": { "type": "String", "example": "7" }
+    }
+  },
+
+  "alertasOrderNow": "Pedir ahora",
+  "@alertasOrderNow": { "description": "Botón: pedir ahora" },
+
+  "alertasNotify": "Notificar",
+  "@alertasNotify": { "description": "Botón: notificar" },
+
+  "alertasEmptyTitle": "Ninguna alerta activa",
+  "@alertasEmptyTitle": { "description": "Título de estado vacío" },
+
+  "alertasEmptySubtitle": "¡Tu stock está en orden!",
+  "@alertasEmptySubtitle": { "description": "Subtítulo de estado vacío" }
 }

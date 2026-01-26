@@ -824,5 +824,46 @@
   "@relatoriosDetailedMovementsTitle": { "description": "Título do card de lista detalhada" },
 
   "relatoriosTimeLabel": "Hora",
-  "@relatoriosTimeLabel": { "description": "Label 'Hora:' na lista detalhada" }
+  "@relatoriosTimeLabel": { "description": "Label 'Hora:' na lista detalhada" },
+
+  "alertasTitle": "Alertas de stock",
+  "@alertasTitle": { "description": "Título da tela de alertas" },
+
+  "alertasSearchHint": "Procurar produto...",
+  "@alertasSearchHint": { "description": "Hint do campo de pesquisa" },
+
+  "alertasFilterAll": "Todos",
+  "@alertasFilterAll": { "description": "Filtro: todos" },
+
+  "alertasFilterZero": "Esgotado",
+  "@alertasFilterZero": { "description": "Filtro: stock zero" },
+
+  "alertasFilterCritical": "Crítico",
+  "@alertasFilterCritical": { "description": "Filtro: stock crítico" },
+
+  "alertasSectionZero": "Stock esgotado",
+  "@alertasSectionZero": { "description": "Seção: stock zero" },
+
+  "alertasSectionCritical": "Stock crítico",
+  "@alertasSectionCritical": { "description": "Seção: stock crítico" },
+
+  "alertasQuantityWithValue": "Quantidade: {value}",
+  "@alertasQuantityWithValue": {
+    "description": "Etiqueta de quantidade com valor",
+    "placeholders": {
+      "value": { "type": "String", "example": "7" }
+    }
+  },
+
+  "alertasOrderNow": "Pedir agora",
+  "@alertasOrderNow": { "description": "Botão: pedir agora" },
+
+  "alertasNotify": "Notificar",
+  "@alertasNotify": { "description": "Botão: notificar" },
+
+  "alertasEmptyTitle": "Sem alertas ativos",
+  "@alertasEmptyTitle": { "description": "Título do estado vazio" },
+
+  "alertasEmptySubtitle": "O seu stock está em ordem!",
+  "@alertasEmptySubtitle": { "description": "Subtítulo do estado vazio" }
 }

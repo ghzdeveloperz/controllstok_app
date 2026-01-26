@@ -848,6 +848,44 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get relatoriosTimeLabel => 'Horário';
+
+  @override
+  String get alertasTitle => 'Alertas de Estoque';
+
+  @override
+  String get alertasSearchHint => 'Buscar produto...';
+
+  @override
+  String get alertasFilterAll => 'Todos';
+
+  @override
+  String get alertasFilterZero => 'Zerado';
+
+  @override
+  String get alertasFilterCritical => 'Crítico';
+
+  @override
+  String get alertasSectionZero => 'Estoque Zerado';
+
+  @override
+  String get alertasSectionCritical => 'Estoque Crítico';
+
+  @override
+  String alertasQuantityWithValue(String value) {
+    return 'Quantidade: $value';
+  }
+
+  @override
+  String get alertasOrderNow => 'Pedir Agora';
+
+  @override
+  String get alertasNotify => 'Notificar';
+
+  @override
+  String get alertasEmptyTitle => 'Nenhum alerta ativo';
+
+  @override
+  String get alertasEmptySubtitle => 'Seu estoque está em ordem!';
 }
 
 /// The translations for Portuguese, as used in Portugal (`pt_PT`).
@@ -1696,4 +1734,42 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get relatoriosTimeLabel => 'Hora';
+
+  @override
+  String get alertasTitle => 'Alertas de stock';
+
+  @override
+  String get alertasSearchHint => 'Procurar produto...';
+
+  @override
+  String get alertasFilterAll => 'Todos';
+
+  @override
+  String get alertasFilterZero => 'Esgotado';
+
+  @override
+  String get alertasFilterCritical => 'Crítico';
+
+  @override
+  String get alertasSectionZero => 'Stock esgotado';
+
+  @override
+  String get alertasSectionCritical => 'Stock crítico';
+
+  @override
+  String alertasQuantityWithValue(String value) {
+    return 'Quantidade: $value';
+  }
+
+  @override
+  String get alertasOrderNow => 'Pedir agora';
+
+  @override
+  String get alertasNotify => 'Notificar';
+
+  @override
+  String get alertasEmptyTitle => 'Sem alertas ativos';
+
+  @override
+  String get alertasEmptySubtitle => 'O seu stock está em ordem!';
 }

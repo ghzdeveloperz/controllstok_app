@@ -849,7 +849,48 @@
   "@relatoriosDetailedMovementsTitle": { "description": "Title of detailed movements list card" },
 
   "relatoriosTimeLabel": "Time",
-  "@relatoriosTimeLabel": { "description": "Label 'Time:' in detailed list" }
+  "@relatoriosTimeLabel": { "description": "Label 'Time:' in detailed list" },
+
+  "alertasTitle": "Stock alerts",
+  "@alertasTitle": { "description": "Alerts screen title" },
+
+  "alertasSearchHint": "Search product...",
+  "@alertasSearchHint": { "description": "Search input hint on alerts screen" },
+
+  "alertasFilterAll": "All",
+  "@alertasFilterAll": { "description": "Filter option: all" },
+
+  "alertasFilterZero": "Out of stock",
+  "@alertasFilterZero": { "description": "Filter option: zero stock" },
+
+  "alertasFilterCritical": "Critical",
+  "@alertasFilterCritical": { "description": "Filter option: critical stock" },
+
+  "alertasSectionZero": "Out of stock",
+  "@alertasSectionZero": { "description": "Section header: zero stock" },
+
+  "alertasSectionCritical": "Critical stock",
+  "@alertasSectionCritical": { "description": "Section header: critical stock" },
+
+  "alertasQuantityWithValue": "Quantity: {value}",
+  "@alertasQuantityWithValue": {
+    "description": "Label showing quantity with value",
+    "placeholders": {
+      "value": { "type": "String", "example": "7" }
+    }
+  },
+
+  "alertasOrderNow": "Order now",
+  "@alertasOrderNow": { "description": "CTA button: order now" },
+
+  "alertasNotify": "Notify",
+  "@alertasNotify": { "description": "CTA button: notify" },
+
+  "alertasEmptyTitle": "No active alerts",
+  "@alertasEmptyTitle": { "description": "Empty state title" },
+
+  "alertasEmptySubtitle": "Your stock is in order!",
+  "@alertasEmptySubtitle": { "description": "Empty state subtitle" }
 }
 
 

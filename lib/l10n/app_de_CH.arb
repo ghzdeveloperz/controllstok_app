@@ -859,5 +859,46 @@
   "@relatoriosDetailedMovementsTitle": { "description": "Titel der Liste detaillierter Bewegungen (de-CH)" },
 
   "relatoriosTimeLabel": "Ziit",
-  "@relatoriosTimeLabel": { "description": "Label 'Ziit:' in der Detail-Liste (de-CH)" }
+  "@relatoriosTimeLabel": { "description": "Label 'Ziit:' in der Detail-Liste (de-CH)" },
+
+  "alertasTitle": "Bestandswarnige",
+  "@alertasTitle": { "description": "Titel vom Warnige-Screen (de-CH)" },
+
+  "alertasSearchHint": "Produkt sueche...",
+  "@alertasSearchHint": { "description": "Hint im Suechfeld (de-CH)" },
+
+  "alertasFilterAll": "Alli",
+  "@alertasFilterAll": { "description": "Filter: alli (de-CH)" },
+
+  "alertasFilterZero": "Uusverkauft",
+  "@alertasFilterZero": { "description": "Filter: Bestand 0 (de-CH)" },
+
+  "alertasFilterCritical": "Kritisch",
+  "@alertasFilterCritical": { "description": "Filter: kritisch (de-CH)" },
+
+  "alertasSectionZero": "Bestand 0",
+  "@alertasSectionZero": { "description": "Abschnitt: Bestand 0 (de-CH)" },
+
+  "alertasSectionCritical": "Kritische Bestand",
+  "@alertasSectionCritical": { "description": "Abschnitt: kritische Bestand (de-CH)" },
+
+  "alertasQuantityWithValue": "Mengi: {value}",
+  "@alertasQuantityWithValue": {
+    "description": "Mengi-Label mit Wert (de-CH)",
+    "placeholders": {
+      "value": { "type": "String", "example": "7" }
+    }
+  },
+
+  "alertasOrderNow": "Jetzt bstelle",
+  "@alertasOrderNow": { "description": "CTA: jetzt bstelle (de-CH)" },
+
+  "alertasNotify": "Benachrichtigä",
+  "@alertasNotify": { "description": "CTA: benachrichtigä (de-CH)" },
+
+  "alertasEmptyTitle": "Kei aktivi Warnige",
+  "@alertasEmptyTitle": { "description": "Leerzustand Titel (de-CH)" },
+
+  "alertasEmptySubtitle": "Dä Bestand isch i Ordnig!",
+  "@alertasEmptySubtitle": { "description": "Leerzustand Untertitel (de-CH)" }
 }

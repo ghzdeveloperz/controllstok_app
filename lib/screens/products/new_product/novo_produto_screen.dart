@@ -10,7 +10,7 @@ import '../../../screens/widgets/add_category.dart';
 import '../../../screens/widgets/scanner_code_new_product.dart';
 import '../../models/product_overlay.dart';
 
-import '../new_product/data/new_product_state.dart';
+import '../data/new_product_state.dart';
 import '../new_product/services/new_product_firestore_service.dart';
 import '../new_product/services/new_product_image_service.dart';
 import '../new_product/utils/product_name_utils.dart';

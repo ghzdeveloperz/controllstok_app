@@ -7,7 +7,7 @@
   import 'products/new_product/novo_produto_screen.dart';
   import 'scanner_screen.dart';
   import 'relatorios_screen.dart';
-  import 'alertas_screen.dart';
+  import 'alertas/alertas_screen.dart';
   import 'acounts/login/login_screen.dart';
 
   import '../screens/widgets/desactive_acount.dart';

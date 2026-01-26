@@ -485,3 +485,45 @@ Essas regras são reavaliadas a cada mudança de autenticação ou Firestore.
   - Relatórios mensais e anuais por produto
   - Comparações futuras
   - Expansão de idiomas sem refatorações pesadas
+
+
+## [Milestone 21] Tela de Alertas de Estoque + i18n Completo
+**Status:** Concluído ✅
+
+### Melhorias:
+- Refatorada a **Tela de Alertas de Estoque** para suportar **i18n completo**, eliminando strings hardcoded de UI, filtros e estados vazios.
+- Internacionalização aplicada em todo o fluxo da tela de alertas:
+  - `alertas_screen.dart` — título da tela, busca, filtros e seções totalmente resolvidos via `AppLocalizations`
+  - Estados visuais (carregamento e vazio) com textos traduzíveis
+- Padronização da experiência de alertas:
+  - Barra de busca com hint traduzível
+  - Filtros de estoque (**Todos / Zerado / Crítico**) centralizados em chaves i18n
+  - Títulos de seção (**Estoque Zerado / Estoque Crítico**) padronizados
+- Refatoração dos cards de alerta:
+  - Labels de quantidade com placeholder dinâmico (`alertasQuantityWithValue`)
+  - Botões de ação traduzíveis (**Pedir Agora / Notificar**)
+- Estados vazios profissionais:
+  - Mensagem principal e subtítulo totalmente internacionalizados
+  - Comunicação clara quando não há alertas ativos
+- Consolidação da base de traduções:
+  - Chaves de alertas organizadas nos arquivos `.arb`
+  - Traduções completas adicionadas para:
+    - EN (Inglês)
+    - ES (Espanhol)
+    - PT-PT (Português de Portugal)
+    - PT (Português do Brasil)
+    - DE (Alemão)
+    - DE-CH (Alemão Suíço, com fallback em `de`)
+- Compatibilidade total com `flutter gen-l10n`:
+  - `example` sempre definido como string
+  - Placeholders corretamente tipados
+  - Nenhuma chave duplicada ou ausente entre idiomas
+  - Sem warnings de locale
+
+### Objetivo:
+- Garantir que a **Tela de Alertas de Estoque** seja **100% traduzível**
+- Manter o padrão arquitetural de i18n profissional no app
+- Preparar a tela para futuras evoluções:
+  - Ações automatizadas de reposição
+  - Notificações inteligentes
+  - Regras de alerta personalizáveis
