@@ -1,0 +1,3 @@
+typedef ScannerResultPayload = ({
+  String code,
+});

@@ -568,3 +568,34 @@ Essas regras são reavaliadas a cada mudança de autenticação ou Firestore.
 - Criar uma base sólida para expansão futura:
   - Reaproveitar widgets em outras telas (cadastro/edição/listagem)
   - Padronizar feedbacks e validações com i18n consistente
+
+## [Milestone 23] Scanner de Código de Barras + Overlay de Resultado (i18n + Fix)
+**Status:** Concluído ✅
+
+### Melhorias:
+- Corrigido o comportamento do **overlay de resultado** após escanear:
+  - O título “Código escaneado / Sucesso” voltou a aparecer corretamente no card (evitando título vazio).
+  - Padronizado para usar chave i18n já existente: `scannerResultSuccessTitle`.
+- Aplicado **i18n no fluxo do scanner** (textos de instrução e resultado), eliminando strings hardcoded.
+- Organização estrutural do módulo do scanner para manutenção e evolução:
+  - Separação de responsabilidades entre **modal do scanner** e **card de resultado**
+  - Fluxo de estado mais claro (`_showResult`, `_scannedCode`, `_isError`, dismiss/popup seguro)
+- Ajustes de robustez:
+  - Prevenção de múltiplos `pop` com flag de segurança
+  - Controle de animação (pausa ao detectar código + retorno via dismiss)
+  - Toggle de flash funcional com `MobileScannerController`
+
+### Compatibilidade i18n:
+- Mantida compatibilidade total com `flutter gen-l10n`
+- Reutilizadas chaves já existentes entre idiomas (sem quebrar `.arb`)
+
+### Fora de Escopo (Intencional):
+- Não foi implementada busca automática de produto pelo código (somente leitura + retorno do valor).
+- Não foi alterado o fluxo de cadastro/validação de produto após o scan (somente UI/UX + i18n do scanner).
+
+### Objetivo:
+- Garantir uma experiência de scanner **premium**, confiável e totalmente traduzível
+- Consolidar padrão de i18n e estrutura escalável para:
+  - Validação de códigos
+  - Lookup automático de produtos
+  - Tratamento de erros avançado e estados adicionais

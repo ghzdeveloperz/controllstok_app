@@ -959,6 +959,24 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get productDetailsPasswordWrong =>
       'Falsches Passwort. Versuche es erneut.';
+
+  @override
+  String get scannerBarcodeInstruction =>
+      'Platziere den Barcode innerhalb des markierten Bereichs';
+
+  @override
+  String get scannerBarcodeScannedLabel => 'Gescannter Code';
+
+  @override
+  String get scannerResultSuccessTitle => 'Code gescannt';
+
+  @override
+  String get scannerResultErrorTitle => 'Scan-Fehler';
+
+  @override
+  String scannerResultCode(String code) {
+    return 'Code: $code';
+  }
 }
 
 /// The translations for German, as used in Switzerland (`de_CH`).
@@ -1915,4 +1933,22 @@ class AppLocalizationsDeCh extends AppLocalizationsDe {
   @override
   String get productDetailsPasswordWrong =>
       'Falschs Passwort. Probier s nomol.';
+
+  @override
+  String get scannerBarcodeInstruction =>
+      'Platziere de Barcode im markierte Bereich';
+
+  @override
+  String get scannerBarcodeScannedLabel => 'Gscannte Code';
+
+  @override
+  String get scannerResultSuccessTitle => 'Code gscannt';
+
+  @override
+  String get scannerResultErrorTitle => 'Scan-Fehler';
+
+  @override
+  String scannerResultCode(String code) {
+    return 'Code: $code';
+  }
 }

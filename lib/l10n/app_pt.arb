@@ -981,5 +981,34 @@
   "@productDetailsPasswordVerifyError": { "description": "Erro genérico ao verificar senha" },
 
   "productDetailsPasswordWrong": "Senha incorreta. Tente novamente.",
-  "@productDetailsPasswordWrong": { "description": "Erro: senha incorreta" }
+  "@productDetailsPasswordWrong": { "description": "Erro: senha incorreta" },
+
+
+  "scannerBarcodeInstruction": "Posicione o código de barras dentro da área destacada",
+  "@scannerBarcodeInstruction": {
+    "description": "Instrução exibida no topo do modal de scanner"
+  },
+
+  "scannerBarcodeScannedLabel": "Código escaneado",
+  "@scannerBarcodeScannedLabel": {
+    "description": "Label exibida no card de resultado do scanner"
+  },
+
+  "scannerResultSuccessTitle": "Código escaneado",
+  "@scannerResultSuccessTitle": {
+    "description": "Título do card quando o scanner detecta um código com sucesso"
+  },
+
+  "scannerResultErrorTitle": "Erro ao escanear",
+  "@scannerResultErrorTitle": {
+    "description": "Título do card quando ocorre erro no scanner"
+  },
+
+  "scannerResultCode": "Código: {code}",
+  "@scannerResultCode": {
+    "description": "Linha exibindo o código escaneado (geralmente em caso de erro)",
+    "placeholders": {
+      "code": { "type": "String", "example": "7891234567890" }
+    }
+  }
 }

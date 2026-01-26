@@ -955,4 +955,22 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get productDetailsPasswordWrong =>
       'Contraseña incorrecta. Inténtalo de nuevo.';
+
+  @override
+  String get scannerBarcodeInstruction =>
+      'Coloca el código de barras dentro del área resaltada';
+
+  @override
+  String get scannerBarcodeScannedLabel => 'Código escaneado';
+
+  @override
+  String get scannerResultSuccessTitle => 'Código escaneado';
+
+  @override
+  String get scannerResultErrorTitle => 'Error al escanear';
+
+  @override
+  String scannerResultCode(String code) {
+    return 'Código: $code';
+  }
 }

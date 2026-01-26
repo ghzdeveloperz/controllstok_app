@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
-// Importe o arquivo scan_result.dart aqui
-import 'scan_result_card.dart'; // Ajuste o caminho se necessário
+import '../../../l10n/app_localizations.dart';
+import '../scan_result_card.dart';
+
+// mantém (se você usa em outros lugares)
+export 'barcode_scanner_modal.dart';
 
 class BarcodeScannerModal extends StatefulWidget {
   const BarcodeScannerModal({super.key});
@@ -13,26 +16,23 @@ class BarcodeScannerModal extends StatefulWidget {
 
 class _BarcodeScannerModalState extends State<BarcodeScannerModal>
     with TickerProviderStateMixin {
-  late AnimationController _animationController;
-  late Animation<double> _scanLineAnimation;
+  late final AnimationController _animationController;
+  late final Animation<double> _scanLineAnimation;
 
-  // Novo: Controller para o scanner
-  late MobileScannerController _scannerController;
-  bool _isTorchOn = false; // Estado do flash
+  late final MobileScannerController _scannerController;
+  bool _isTorchOn = false;
 
-  // Novo: variável para controlar a exibição do resultado
   bool _showResult = false;
   String? _scannedCode;
-  String? _productName;
   bool _isError = false;
 
-  // Flag to prevent multiple pops
   bool _hasPopped = false;
 
   @override
   void initState() {
     super.initState();
-    _scannerController = MobileScannerController(); // Inicializar controller
+
+    _scannerController = MobileScannerController();
 
     _animationController = AnimationController(
       duration: const Duration(seconds: 2),
@@ -47,34 +47,32 @@ class _BarcodeScannerModalState extends State<BarcodeScannerModal>
   @override
   void dispose() {
     _animationController.dispose();
-    _scannerController.dispose(); // Dispose do controller
+    _scannerController.dispose();
     super.dispose();
   }
 
   void _onBarcodeDetected(String code) {
-    if (_hasPopped) return; // Prevent further actions if already popped
+    if (_hasPopped) return;
+
     _animationController.stop();
+
     setState(() {
       _scannedCode = code;
-      _productName = 'Código escaneado'; // Ou busque o nome do produto se disponível
-      _isError = false; // Assumindo sucesso; ajuste se houver validação
+      _isError = false; // aqui você pode validar e mudar pra true se precisar
       _showResult = true;
     });
   }
 
   void _onResultDismiss() {
     if (_hasPopped) return;
-    setState(() {
-      _showResult = false;
-    });
+
+    setState(() => _showResult = false);
     _safePop(_scannedCode);
   }
 
   void _toggleTorch() {
     _scannerController.toggleTorch();
-    setState(() {
-      _isTorchOn = !_isTorchOn;
-    });
+    setState(() => _isTorchOn = !_isTorchOn);
   }
 
   void _safePop([dynamic result]) {
@@ -86,6 +84,8 @@ class _BarcodeScannerModalState extends State<BarcodeScannerModal>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       backgroundColor: Colors.black,
@@ -96,17 +96,18 @@ class _BarcodeScannerModalState extends State<BarcodeScannerModal>
           children: [
             if (!_showResult) ...[
               MobileScanner(
-                controller: _scannerController, // Passar o controller
+                controller: _scannerController,
                 onDetect: (capture) {
                   final barcodes = capture.barcodes;
-                  if (barcodes.isNotEmpty) {
-                    final code = barcodes.first.rawValue ?? '';
-                    if (code.isNotEmpty) {
-                      _onBarcodeDetected(code);
-                    }
-                  }
+                  if (barcodes.isEmpty) return;
+
+                  final code = barcodes.first.rawValue ?? '';
+                  if (code.isEmpty) return;
+
+                  _onBarcodeDetected(code);
                 },
               ),
+
               // Overlay com gradiente para foco
               Container(
                 decoration: BoxDecoration(
@@ -117,12 +118,13 @@ class _BarcodeScannerModalState extends State<BarcodeScannerModal>
                       Colors.black.withAlpha(20),
                       Colors.transparent,
                       Colors.transparent,
-                      Colors.black.withAlpha(20)
+                      Colors.black.withAlpha(20),
                     ],
-                    stops: [0.0, 0.3, 0.7, 1.0],
+                    stops: const [0.0, 0.3, 0.7, 1.0],
                   ),
                 ),
               ),
+
               // Retângulo de foco central
               Center(
                 child: Container(
@@ -160,21 +162,24 @@ class _BarcodeScannerModalState extends State<BarcodeScannerModal>
                   ),
                 ),
               ),
-              // Instruções no topo
+
+              // Instruções no topo (i18n)
               Positioned(
                 top: 20,
                 left: 20,
                 right: 20,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                   decoration: BoxDecoration(
                     color: Colors.black.withAlpha(179),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.white.withAlpha(77), width: 1),
+                    border:
+                        Border.all(color: Colors.white.withAlpha(77), width: 1),
                   ),
-                  child: const Text(
-                    'Posicione o código de barras dentro da área destacada',
-                    style: TextStyle(
+                  child: Text(
+                    l10n.scannerBarcodeInstruction,
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
@@ -183,7 +188,8 @@ class _BarcodeScannerModalState extends State<BarcodeScannerModal>
                   ),
                 ),
               ),
-              // Botão de fechar premium
+
+              // Botão de fechar (sem texto, ok)
               Positioned(
                 top: 12,
                 right: 12,
@@ -198,7 +204,10 @@ class _BarcodeScannerModalState extends State<BarcodeScannerModal>
                     decoration: BoxDecoration(
                       color: Colors.black.withAlpha(20),
                       shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white.withAlpha(128), width: 1),
+                      border: Border.all(
+                        color: Colors.white.withAlpha(128),
+                        width: 1,
+                      ),
                     ),
                     child: const Icon(
                       Icons.close,
@@ -208,7 +217,8 @@ class _BarcodeScannerModalState extends State<BarcodeScannerModal>
                   ),
                 ),
               ),
-              // Botão de flash (agora funcional)
+
+              // Botão de flash
               Positioned(
                 bottom: 20,
                 left: 20,
@@ -220,10 +230,15 @@ class _BarcodeScannerModalState extends State<BarcodeScannerModal>
                     decoration: BoxDecoration(
                       color: Colors.black.withAlpha(20),
                       shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white.withAlpha(128), width: 1),
+                      border: Border.all(
+                        color: Colors.white.withAlpha(128),
+                        width: 1,
+                      ),
                     ),
                     child: Icon(
-                      _isTorchOn ? Icons.flashlight_off : Icons.flashlight_on,
+                      _isTorchOn
+                          ? Icons.flashlight_off
+                          : Icons.flashlight_on,
                       color: Colors.white,
                       size: 24,
                     ),
@@ -231,9 +246,9 @@ class _BarcodeScannerModalState extends State<BarcodeScannerModal>
                 ),
               ),
             ] else
-              // Exibir o ScanResultCard quando _showResult for true
+              // Resultado (deixa o título vir do ScanResultCard via i18n)
               ScanResultCard(
-                productName: _productName ?? 'Produto',
+                productName: l10n.scannerResultSuccessTitle,
                 scannedCode: _scannedCode ?? '',
                 isError: _isError,
                 onDismiss: _onResultDismiss,

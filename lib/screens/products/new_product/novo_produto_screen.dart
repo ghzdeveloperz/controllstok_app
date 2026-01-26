@@ -7,7 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../l10n/app_localizations.dart';
 
 import '../../../screens/widgets/add_category.dart';
-import '../../../screens/widgets/scanner_code_new_product.dart';
+import '../../widgets/scanner_new_product/scanner_code_new_product.dart';
 import '../../models/product_overlay.dart';
 
 import '../data/new_product_state.dart';

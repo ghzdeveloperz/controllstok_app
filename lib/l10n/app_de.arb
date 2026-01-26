@@ -887,5 +887,34 @@
   "productDetailsPasswordLabel": "Passwort",
   "productDetailsPasswordEmpty": "Bitte gib dein Passwort ein.",
   "productDetailsPasswordVerifyError": "Passwort konnte nicht überprüft werden. Versuche es erneut.",
-  "productDetailsPasswordWrong": "Falsches Passwort. Versuche es erneut."
+  "productDetailsPasswordWrong": "Falsches Passwort. Versuche es erneut.",
+
+  "scannerBarcodeInstruction": "Platziere den Barcode innerhalb des markierten Bereichs",
+  "@scannerBarcodeInstruction": {
+    "description": "Anweisung oben im Barcode-Scanner-Dialog"
+  },
+
+  "scannerBarcodeScannedLabel": "Gescannter Code",
+  "@scannerBarcodeScannedLabel": {
+    "description": "Label auf der Ergebnis-Karte des Scanners"
+  },
+
+
+  "scannerResultSuccessTitle": "Code gescannt",
+  "@scannerResultSuccessTitle": {
+    "description": "Titel, wenn ein Code erfolgreich gescannt wurde"
+  },
+
+  "scannerResultErrorTitle": "Scan-Fehler",
+  "@scannerResultErrorTitle": {
+    "description": "Titel, wenn beim Scannen ein Fehler auftritt"
+  },
+
+  "scannerResultCode": "Code: {code}",
+  "@scannerResultCode": {
+    "description": "Zeile mit dem gescannten Code (meist im Fehlerzustand)",
+    "placeholders": {
+      "code": { "type": "String", "example": "7891234567890" }
+    }
+  }
 }

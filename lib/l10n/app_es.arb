@@ -888,6 +888,34 @@
   "productDetailsPasswordLabel": "Contraseña",
   "productDetailsPasswordEmpty": "Por favor, ingresa tu contraseña.",
   "productDetailsPasswordVerifyError": "Error al verificar la contraseña. Inténtalo de nuevo.",
-  "productDetailsPasswordWrong": "Contraseña incorrecta. Inténtalo de nuevo."
-}
+  "productDetailsPasswordWrong": "Contraseña incorrecta. Inténtalo de nuevo.",
 
+  "scannerBarcodeInstruction": "Coloca el código de barras dentro del área resaltada",
+  "@scannerBarcodeInstruction": {
+    "description": "Instrucción mostrada en la parte superior del modal del escáner"
+  },
+
+  "scannerBarcodeScannedLabel": "Código escaneado",
+  "@scannerBarcodeScannedLabel": {
+    "description": "Etiqueta mostrada en la tarjeta de resultado del escáner"
+  },
+
+
+  "scannerResultSuccessTitle": "Código escaneado",
+  "@scannerResultSuccessTitle": {
+    "description": "Título cuando se escanea un código correctamente"
+  },
+
+  "scannerResultErrorTitle": "Error al escanear",
+  "@scannerResultErrorTitle": {
+    "description": "Título cuando ocurre un error durante el escaneo"
+  },
+
+  "scannerResultCode": "Código: {code}",
+  "@scannerResultCode": {
+    "description": "Línea que muestra el código escaneado (normalmente en error)",
+    "placeholders": {
+      "code": { "type": "String", "example": "7891234567890" }
+    }
+  }
+}

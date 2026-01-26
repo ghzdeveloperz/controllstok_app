@@ -948,4 +948,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get productDetailsPasswordWrong => 'Wrong password. Try again.';
+
+  @override
+  String get scannerBarcodeInstruction =>
+      'Place the barcode inside the highlighted area';
+
+  @override
+  String get scannerBarcodeScannedLabel => 'Scanned code';
+
+  @override
+  String get scannerResultSuccessTitle => 'Code scanned';
+
+  @override
+  String get scannerResultErrorTitle => 'Scan error';
+
+  @override
+  String scannerResultCode(String code) {
+    return 'Code: $code';
+  }
 }

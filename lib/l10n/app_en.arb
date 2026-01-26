@@ -914,5 +914,34 @@
   "productDetailsPasswordLabel": "Password",
   "productDetailsPasswordEmpty": "Please enter your password.",
   "productDetailsPasswordVerifyError": "Could not verify password. Try again.",
-  "productDetailsPasswordWrong": "Wrong password. Try again."
+  "productDetailsPasswordWrong": "Wrong password. Try again.",
+
+
+  "scannerBarcodeInstruction": "Place the barcode inside the highlighted area",
+  "@scannerBarcodeInstruction": {
+    "description": "Instruction shown at the top of the barcode scanner modal"
+  },
+
+  "scannerBarcodeScannedLabel": "Scanned code",
+  "@scannerBarcodeScannedLabel": {
+    "description": "Label displayed on the scanner result card"
+  },
+
+  "scannerResultSuccessTitle": "Code scanned",
+  "@scannerResultSuccessTitle": {
+    "description": "Title shown when a code is scanned successfully"
+  },
+
+  "scannerResultErrorTitle": "Scan error",
+  "@scannerResultErrorTitle": {
+    "description": "Title shown when an error occurs while scanning"
+  },
+
+  "scannerResultCode": "Code: {code}",
+  "@scannerResultCode": {
+    "description": "Line showing the scanned code (usually on error state)",
+    "placeholders": {
+      "code": { "type": "String", "example": "7891234567890" }
+    }
+  }
 }

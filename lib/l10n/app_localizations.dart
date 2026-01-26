@@ -1789,6 +1789,36 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Senha incorreta. Tente novamente.'**
   String get productDetailsPasswordWrong;
+
+  /// Instrução exibida no topo do modal de scanner
+  ///
+  /// In pt, this message translates to:
+  /// **'Posicione o código de barras dentro da área destacada'**
+  String get scannerBarcodeInstruction;
+
+  /// Label exibida no card de resultado do scanner
+  ///
+  /// In pt, this message translates to:
+  /// **'Código escaneado'**
+  String get scannerBarcodeScannedLabel;
+
+  /// Título do card quando o scanner detecta um código com sucesso
+  ///
+  /// In pt, this message translates to:
+  /// **'Código escaneado'**
+  String get scannerResultSuccessTitle;
+
+  /// Título do card quando ocorre erro no scanner
+  ///
+  /// In pt, this message translates to:
+  /// **'Erro ao escanear'**
+  String get scannerResultErrorTitle;
+
+  /// Linha exibindo o código escaneado (geralmente em caso de erro)
+  ///
+  /// In pt, this message translates to:
+  /// **'Código: {code}'**
+  String scannerResultCode(String code);
 }
 
 class _AppLocalizationsDelegate

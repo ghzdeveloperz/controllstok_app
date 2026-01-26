@@ -889,5 +889,35 @@
   "productDetailsPasswordLabel": "Palavra-passe",
   "productDetailsPasswordEmpty": "Por favor, introduza a sua palavra-passe.",
   "productDetailsPasswordVerifyError": "Erro ao verificar a palavra-passe. Tente novamente.",
-  "productDetailsPasswordWrong": "Palavra-passe incorreta. Tente novamente."
+  "productDetailsPasswordWrong": "Palavra-passe incorreta. Tente novamente.",
+
+
+  "scannerBarcodeInstruction": "Coloque o código de barras dentro da área destacada",
+  "@scannerBarcodeInstruction": {
+    "description": "Instrução exibida no topo do modal de scanner"
+  },
+
+  "scannerBarcodeScannedLabel": "Código digitalizado",
+  "@scannerBarcodeScannedLabel": {
+    "description": "Label exibida no cartão de resultado do scanner"
+  },
+
+
+  "scannerResultSuccessTitle": "Código digitalizado",
+  "@scannerResultSuccessTitle": {
+    "description": "Título quando o código é digitalizado com sucesso"
+  },
+
+  "scannerResultErrorTitle": "Erro ao digitalizar",
+  "@scannerResultErrorTitle": {
+    "description": "Título quando ocorre erro durante a digitalização"
+  },
+
+  "scannerResultCode": "Código: {code}",
+  "@scannerResultCode": {
+    "description": "Linha com o código lido (normalmente em erro)",
+    "placeholders": {
+      "code": { "type": "String", "example": "7891234567890" }
+    }
+  }
 }

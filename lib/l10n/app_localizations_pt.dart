@@ -948,6 +948,24 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get productDetailsPasswordWrong => 'Senha incorreta. Tente novamente.';
+
+  @override
+  String get scannerBarcodeInstruction =>
+      'Posicione o código de barras dentro da área destacada';
+
+  @override
+  String get scannerBarcodeScannedLabel => 'Código escaneado';
+
+  @override
+  String get scannerResultSuccessTitle => 'Código escaneado';
+
+  @override
+  String get scannerResultErrorTitle => 'Erro ao escanear';
+
+  @override
+  String scannerResultCode(String code) {
+    return 'Código: $code';
+  }
 }
 
 /// The translations for Portuguese, as used in Portugal (`pt_PT`).
@@ -1898,4 +1916,22 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   @override
   String get productDetailsPasswordWrong =>
       'Palavra-passe incorreta. Tente novamente.';
+
+  @override
+  String get scannerBarcodeInstruction =>
+      'Coloque o código de barras dentro da área destacada';
+
+  @override
+  String get scannerBarcodeScannedLabel => 'Código digitalizado';
+
+  @override
+  String get scannerResultSuccessTitle => 'Código digitalizado';
+
+  @override
+  String get scannerResultErrorTitle => 'Erro ao digitalizar';
+
+  @override
+  String scannerResultCode(String code) {
+    return 'Código: $code';
+  }
 }

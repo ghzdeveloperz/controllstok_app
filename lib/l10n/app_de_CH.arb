@@ -923,5 +923,34 @@
   "productDetailsPasswordLabel": "Passwort",
   "productDetailsPasswordEmpty": "Bitte gib dis Passwort ii.",
   "productDetailsPasswordVerifyError": "Passwort het nöd chöne überprüeft werde. Probier s nomol.",
-  "productDetailsPasswordWrong": "Falschs Passwort. Probier s nomol."
+  "productDetailsPasswordWrong": "Falschs Passwort. Probier s nomol.",
+
+  "scannerBarcodeInstruction": "Platziere de Barcode im markierte Bereich",
+  "@scannerBarcodeInstruction": {
+    "description": "Anweisung oben im Barcode-Scanner-Dialog (Schweiz)"
+  },
+
+  "scannerBarcodeScannedLabel": "Gscannte Code",
+  "@scannerBarcodeScannedLabel": {
+    "description": "Label uf de Ergebnis-Karte vom Scanner (Schweiz)"
+  },
+
+
+  "scannerResultSuccessTitle": "Code gscannt",
+  "@scannerResultSuccessTitle": {
+    "description": "Titel, wenn de Code erfolgrich gscannt worde isch (Schwiiz)"
+  },
+
+  "scannerResultErrorTitle": "Scan-Fehler",
+  "@scannerResultErrorTitle": {
+    "description": "Titel, wenn bim Scanne en Fehler passiert (Schwiiz)"
+  },
+
+  "scannerResultCode": "Code: {code}",
+  "@scannerResultCode": {
+    "description": "Zeile mit em gscannten Code (meist im Fehler-Modus)",
+    "placeholders": {
+      "code": { "type": "String", "example": "7891234567890" }
+    }
+  }
 }
