@@ -886,6 +886,68 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get alertasEmptySubtitle => 'Seu estoque está em ordem!';
+
+  @override
+  String get commonCancel => 'Cancelar';
+
+  @override
+  String get commonConfirm => 'Confirmar';
+
+  @override
+  String get productDetailsProductName => 'Nome do produto';
+
+  @override
+  String get productDetailsCategory => 'Categoria';
+
+  @override
+  String get productDetailsTotalCostInStock => 'Custo total em estoque';
+
+  @override
+  String get productDetailsMinStock => 'Estoque mínimo';
+
+  @override
+  String get productDetailsStockQuantity => 'Quantidade em estoque';
+
+  @override
+  String get productDetailsUnitPrice => 'Preço unitário';
+
+  @override
+  String get productDetailsAvgCost => 'Custo médio';
+
+  @override
+  String get productDetailsBarcode => 'Código de barras';
+
+  @override
+  String get productDetailsSaveChanges => 'Salvar alterações';
+
+  @override
+  String get productDetailsDeleteProduct => 'Excluir produto';
+
+  @override
+  String get productDetailsMinStockInvalid => 'Estoque mínimo inválido';
+
+  @override
+  String get productDetailsDeletedSuccess => 'Produto excluído com sucesso';
+
+  @override
+  String get productDetailsConfirmDeletionTitle => 'Confirmar exclusão';
+
+  @override
+  String get productDetailsConfirmDeletionMessage =>
+      'Por segurança, digite sua senha para continuar.';
+
+  @override
+  String get productDetailsPasswordLabel => 'Senha';
+
+  @override
+  String get productDetailsPasswordEmpty => 'Por favor, digite sua senha.';
+
+  @override
+  String get productDetailsPasswordVerifyError =>
+      'Erro ao verificar senha. Tente novamente.';
+
+  @override
+  String get productDetailsPasswordWrong => 'Senha incorreta. Tente novamente.';
 }
 
 /// The translations for Portuguese, as used in Portugal (`pt_PT`).
@@ -1772,4 +1834,68 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get alertasEmptySubtitle => 'O seu stock está em ordem!';
+
+  @override
+  String get commonCancel => 'Cancelar';
+
+  @override
+  String get commonConfirm => 'Confirmar';
+
+  @override
+  String get productDetailsProductName => 'Nome do produto';
+
+  @override
+  String get productDetailsCategory => 'Categoria';
+
+  @override
+  String get productDetailsTotalCostInStock => 'Custo total em stock';
+
+  @override
+  String get productDetailsMinStock => 'Stock mínimo';
+
+  @override
+  String get productDetailsStockQuantity => 'Quantidade em stock';
+
+  @override
+  String get productDetailsUnitPrice => 'Preço unitário';
+
+  @override
+  String get productDetailsAvgCost => 'Custo médio';
+
+  @override
+  String get productDetailsBarcode => 'Código de barras';
+
+  @override
+  String get productDetailsSaveChanges => 'Guardar alterações';
+
+  @override
+  String get productDetailsDeleteProduct => 'Eliminar produto';
+
+  @override
+  String get productDetailsMinStockInvalid => 'Stock mínimo inválido';
+
+  @override
+  String get productDetailsDeletedSuccess => 'Produto eliminado com sucesso';
+
+  @override
+  String get productDetailsConfirmDeletionTitle => 'Confirmar eliminação';
+
+  @override
+  String get productDetailsConfirmDeletionMessage =>
+      'Por segurança, introduza a sua palavra-passe para continuar.';
+
+  @override
+  String get productDetailsPasswordLabel => 'Palavra-passe';
+
+  @override
+  String get productDetailsPasswordEmpty =>
+      'Por favor, introduza a sua palavra-passe.';
+
+  @override
+  String get productDetailsPasswordVerifyError =>
+      'Erro ao verificar a palavra-passe. Tente novamente.';
+
+  @override
+  String get productDetailsPasswordWrong =>
+      'Palavra-passe incorreta. Tente novamente.';
 }

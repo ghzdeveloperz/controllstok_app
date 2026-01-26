@@ -886,4 +886,66 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get alertasEmptySubtitle => 'Your stock is in order!';
+
+  @override
+  String get commonCancel => 'Cancel';
+
+  @override
+  String get commonConfirm => 'Confirm';
+
+  @override
+  String get productDetailsProductName => 'Product name';
+
+  @override
+  String get productDetailsCategory => 'Category';
+
+  @override
+  String get productDetailsTotalCostInStock => 'Total stock cost';
+
+  @override
+  String get productDetailsMinStock => 'Minimum stock';
+
+  @override
+  String get productDetailsStockQuantity => 'Stock quantity';
+
+  @override
+  String get productDetailsUnitPrice => 'Unit price';
+
+  @override
+  String get productDetailsAvgCost => 'Average cost';
+
+  @override
+  String get productDetailsBarcode => 'Barcode';
+
+  @override
+  String get productDetailsSaveChanges => 'Save changes';
+
+  @override
+  String get productDetailsDeleteProduct => 'Delete product';
+
+  @override
+  String get productDetailsMinStockInvalid => 'Invalid minimum stock';
+
+  @override
+  String get productDetailsDeletedSuccess => 'Product deleted successfully';
+
+  @override
+  String get productDetailsConfirmDeletionTitle => 'Confirm deletion';
+
+  @override
+  String get productDetailsConfirmDeletionMessage =>
+      'For security, enter your password to continue.';
+
+  @override
+  String get productDetailsPasswordLabel => 'Password';
+
+  @override
+  String get productDetailsPasswordEmpty => 'Please enter your password.';
+
+  @override
+  String get productDetailsPasswordVerifyError =>
+      'Could not verify password. Try again.';
+
+  @override
+  String get productDetailsPasswordWrong => 'Wrong password. Try again.';
 }

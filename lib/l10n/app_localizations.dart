@@ -1669,6 +1669,126 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Seu estoque está em ordem!'**
   String get alertasEmptySubtitle;
+
+  /// Ação genérica: cancelar
+  ///
+  /// In pt, this message translates to:
+  /// **'Cancelar'**
+  String get commonCancel;
+
+  /// Ação genérica: confirmar
+  ///
+  /// In pt, this message translates to:
+  /// **'Confirmar'**
+  String get commonConfirm;
+
+  /// Label do campo: nome do produto
+  ///
+  /// In pt, this message translates to:
+  /// **'Nome do produto'**
+  String get productDetailsProductName;
+
+  /// Label do campo: categoria
+  ///
+  /// In pt, this message translates to:
+  /// **'Categoria'**
+  String get productDetailsCategory;
+
+  /// Card: custo total do estoque
+  ///
+  /// In pt, this message translates to:
+  /// **'Custo total em estoque'**
+  String get productDetailsTotalCostInStock;
+
+  /// Label do campo: estoque mínimo
+  ///
+  /// In pt, this message translates to:
+  /// **'Estoque mínimo'**
+  String get productDetailsMinStock;
+
+  /// Card: quantidade em estoque
+  ///
+  /// In pt, this message translates to:
+  /// **'Quantidade em estoque'**
+  String get productDetailsStockQuantity;
+
+  /// Card: preço unitário
+  ///
+  /// In pt, this message translates to:
+  /// **'Preço unitário'**
+  String get productDetailsUnitPrice;
+
+  /// Card: custo médio
+  ///
+  /// In pt, this message translates to:
+  /// **'Custo médio'**
+  String get productDetailsAvgCost;
+
+  /// Seção: código de barras
+  ///
+  /// In pt, this message translates to:
+  /// **'Código de barras'**
+  String get productDetailsBarcode;
+
+  /// Botão: salvar alterações
+  ///
+  /// In pt, this message translates to:
+  /// **'Salvar alterações'**
+  String get productDetailsSaveChanges;
+
+  /// Botão: excluir produto
+  ///
+  /// In pt, this message translates to:
+  /// **'Excluir produto'**
+  String get productDetailsDeleteProduct;
+
+  /// Erro: estoque mínimo inválido
+  ///
+  /// In pt, this message translates to:
+  /// **'Estoque mínimo inválido'**
+  String get productDetailsMinStockInvalid;
+
+  /// Snackbar: produto excluído com sucesso
+  ///
+  /// In pt, this message translates to:
+  /// **'Produto excluído com sucesso'**
+  String get productDetailsDeletedSuccess;
+
+  /// Título do modal de confirmação por senha
+  ///
+  /// In pt, this message translates to:
+  /// **'Confirmar exclusão'**
+  String get productDetailsConfirmDeletionTitle;
+
+  /// Texto do modal de confirmação por senha
+  ///
+  /// In pt, this message translates to:
+  /// **'Por segurança, digite sua senha para continuar.'**
+  String get productDetailsConfirmDeletionMessage;
+
+  /// Label do campo senha
+  ///
+  /// In pt, this message translates to:
+  /// **'Senha'**
+  String get productDetailsPasswordLabel;
+
+  /// Erro quando a senha está vazia
+  ///
+  /// In pt, this message translates to:
+  /// **'Por favor, digite sua senha.'**
+  String get productDetailsPasswordEmpty;
+
+  /// Erro genérico ao verificar senha
+  ///
+  /// In pt, this message translates to:
+  /// **'Erro ao verificar senha. Tente novamente.'**
+  String get productDetailsPasswordVerifyError;
+
+  /// Erro: senha incorreta
+  ///
+  /// In pt, this message translates to:
+  /// **'Senha incorreta. Tente novamente.'**
+  String get productDetailsPasswordWrong;
 }
 
 class _AppLocalizationsDelegate

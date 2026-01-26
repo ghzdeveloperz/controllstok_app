@@ -864,5 +864,28 @@
   "@alertasEmptyTitle": { "description": "Leerzustand Titel" },
 
   "alertasEmptySubtitle": "Ihr Bestand ist in Ordnung!",
-  "@alertasEmptySubtitle": { "description": "Leerzustand Untertitel" }
+  "@alertasEmptySubtitle": { "description": "Leerzustand Untertitel" },
+
+  "commonCancel": "Abbrechen",
+  "commonConfirm": "Bestätigen",
+
+  "productDetailsProductName": "Produktname",
+  "productDetailsCategory": "Kategorie",
+  "productDetailsTotalCostInStock": "Gesamtkosten im Lager",
+  "productDetailsMinStock": "Mindestbestand",
+  "productDetailsStockQuantity": "Bestand",
+  "productDetailsUnitPrice": "Stückpreis",
+  "productDetailsAvgCost": "Durchschnittskosten",
+  "productDetailsBarcode": "Barcode",
+  "productDetailsSaveChanges": "Änderungen speichern",
+  "productDetailsDeleteProduct": "Produkt löschen",
+  "productDetailsMinStockInvalid": "Ungültiger Mindestbestand",
+  "productDetailsDeletedSuccess": "Produkt erfolgreich gelöscht",
+
+  "productDetailsConfirmDeletionTitle": "Löschen bestätigen",
+  "productDetailsConfirmDeletionMessage": "Gib aus Sicherheitsgründen dein Passwort ein, um fortzufahren.",
+  "productDetailsPasswordLabel": "Passwort",
+  "productDetailsPasswordEmpty": "Bitte gib dein Passwort ein.",
+  "productDetailsPasswordVerifyError": "Passwort konnte nicht überprüft werden. Versuche es erneut.",
+  "productDetailsPasswordWrong": "Falsches Passwort. Versuche es erneut."
 }

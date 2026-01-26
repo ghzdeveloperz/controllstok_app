@@ -527,3 +527,44 @@ Essas regras são reavaliadas a cada mudança de autenticação ou Firestore.
   - Ações automatizadas de reposição
   - Notificações inteligentes
   - Regras de alerta personalizáveis
+
+## [Milestone 22] Product Details Modal + Estrutura Escalável (Product Card) + i18n Completo
+**Status:** Concluído ✅
+
+### Melhorias:
+- Refatorado o **Product Details Modal (Card de Detalhes do Produto)** para uma arquitetura **modular e escalável**, eliminando um arquivo monolítico difícil de manter.
+- Separação estrutural em múltiplos arquivos, seguindo padrão de responsabilidade única:
+  - `product_details_modal.dart` — composição principal do modal (UI + fluxo)
+  - `confirmation_pass_modal.dart` — confirmação de senha para exclusão (reauth)
+  - `widgets/sheet_handle.dart` — handle/drag do bottom sheet
+  - `widgets/product_image.dart` — exibição premium da imagem (loading/error/placeholder)
+  - `widgets/editable_field_row.dart` — linha editável reutilizável (nome/estoque mínimo)
+  - `widgets/category_dropdown.dart` — dropdown de categorias via stream (mantível)
+  - `widgets/info_card.dart` — cards informativos (quantidade, custo médio, preço unitário etc.)
+  - `widgets/barcode_section.dart` — seção de código de barras organizada
+  - `widgets/action_buttons.dart` — botões de ação (salvar/excluir) padronizados
+- Implementado **i18n completo** em todos os textos do modal:
+  - Labels (Nome do produto, Categoria, Estoque mínimo etc.)
+  - Botões (Salvar alterações, Excluir produto, Confirmar, Cancelar)
+  - Mensagens e validações (senha vazia, senha incorreta, erro ao verificar)
+  - Snackbars e feedbacks (exclusão bem-sucedida, erro de estoque mínimo inválido)
+- Aplicada formatação de moeda **por locale** (sem hardcode `R$`):
+  - `NumberFormat.simpleCurrency(locale: ...)` usando `Localizations.localeOf(context).toLanguageTag()`
+- Consolidação das chaves nos arquivos `.arb` com tradução completa para:
+  - EN (Inglês)
+  - ES (Espanhol)
+  - PT-PT (Português de Portugal)
+  - PT (Português do Brasil)
+  - DE (Alemão)
+  - DE-CH (Alemão Suíço, mantendo fallback `de`)
+- Garantida compatibilidade total com `flutter gen-l10n`:
+  - Mesmas chaves em todos os idiomas
+  - Sem strings hardcoded em UI/validação
+  - Sem warnings de locale / placeholders inválidos
+
+### Objetivo:
+- Transformar o **Product Card (Detalhes do Produto)** em um módulo **profissional, sustentável e escalável**
+- Garantir que o modal seja **100% traduzível**, pronto para publicação internacional
+- Criar uma base sólida para expansão futura:
+  - Reaproveitar widgets em outras telas (cadastro/edição/listagem)
+  - Padronizar feedbacks e validações com i18n consistente

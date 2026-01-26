@@ -890,9 +890,29 @@
   "@alertasEmptyTitle": { "description": "Empty state title" },
 
   "alertasEmptySubtitle": "Your stock is in order!",
-  "@alertasEmptySubtitle": { "description": "Empty state subtitle" }
+  "@alertasEmptySubtitle": { "description": "Empty state subtitle" },
+
+
+  "commonCancel": "Cancel",
+  "commonConfirm": "Confirm",
+
+  "productDetailsProductName": "Product name",
+  "productDetailsCategory": "Category",
+  "productDetailsTotalCostInStock": "Total stock cost",
+  "productDetailsMinStock": "Minimum stock",
+  "productDetailsStockQuantity": "Stock quantity",
+  "productDetailsUnitPrice": "Unit price",
+  "productDetailsAvgCost": "Average cost",
+  "productDetailsBarcode": "Barcode",
+  "productDetailsSaveChanges": "Save changes",
+  "productDetailsDeleteProduct": "Delete product",
+  "productDetailsMinStockInvalid": "Invalid minimum stock",
+  "productDetailsDeletedSuccess": "Product deleted successfully",
+
+  "productDetailsConfirmDeletionTitle": "Confirm deletion",
+  "productDetailsConfirmDeletionMessage": "For security, enter your password to continue.",
+  "productDetailsPasswordLabel": "Password",
+  "productDetailsPasswordEmpty": "Please enter your password.",
+  "productDetailsPasswordVerifyError": "Could not verify password. Try again.",
+  "productDetailsPasswordWrong": "Wrong password. Try again."
 }
-
-
-
-

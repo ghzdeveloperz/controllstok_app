@@ -865,5 +865,29 @@
   "@alertasEmptyTitle": { "description": "Título do estado vazio" },
 
   "alertasEmptySubtitle": "O seu stock está em ordem!",
-  "@alertasEmptySubtitle": { "description": "Subtítulo do estado vazio" }
+  "@alertasEmptySubtitle": { "description": "Subtítulo do estado vazio" },
+
+
+  "commonCancel": "Cancelar",
+  "commonConfirm": "Confirmar",
+
+  "productDetailsProductName": "Nome do produto",
+  "productDetailsCategory": "Categoria",
+  "productDetailsTotalCostInStock": "Custo total em stock",
+  "productDetailsMinStock": "Stock mínimo",
+  "productDetailsStockQuantity": "Quantidade em stock",
+  "productDetailsUnitPrice": "Preço unitário",
+  "productDetailsAvgCost": "Custo médio",
+  "productDetailsBarcode": "Código de barras",
+  "productDetailsSaveChanges": "Guardar alterações",
+  "productDetailsDeleteProduct": "Eliminar produto",
+  "productDetailsMinStockInvalid": "Stock mínimo inválido",
+  "productDetailsDeletedSuccess": "Produto eliminado com sucesso",
+
+  "productDetailsConfirmDeletionTitle": "Confirmar eliminação",
+  "productDetailsConfirmDeletionMessage": "Por segurança, introduza a sua palavra-passe para continuar.",
+  "productDetailsPasswordLabel": "Palavra-passe",
+  "productDetailsPasswordEmpty": "Por favor, introduza a sua palavra-passe.",
+  "productDetailsPasswordVerifyError": "Erro ao verificar a palavra-passe. Tente novamente.",
+  "productDetailsPasswordWrong": "Palavra-passe incorreta. Tente novamente."
 }

@@ -896,6 +896,69 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get alertasEmptySubtitle => 'Ihr Bestand ist in Ordnung!';
+
+  @override
+  String get commonCancel => 'Abbrechen';
+
+  @override
+  String get commonConfirm => 'Bestätigen';
+
+  @override
+  String get productDetailsProductName => 'Produktname';
+
+  @override
+  String get productDetailsCategory => 'Kategorie';
+
+  @override
+  String get productDetailsTotalCostInStock => 'Gesamtkosten im Lager';
+
+  @override
+  String get productDetailsMinStock => 'Mindestbestand';
+
+  @override
+  String get productDetailsStockQuantity => 'Bestand';
+
+  @override
+  String get productDetailsUnitPrice => 'Stückpreis';
+
+  @override
+  String get productDetailsAvgCost => 'Durchschnittskosten';
+
+  @override
+  String get productDetailsBarcode => 'Barcode';
+
+  @override
+  String get productDetailsSaveChanges => 'Änderungen speichern';
+
+  @override
+  String get productDetailsDeleteProduct => 'Produkt löschen';
+
+  @override
+  String get productDetailsMinStockInvalid => 'Ungültiger Mindestbestand';
+
+  @override
+  String get productDetailsDeletedSuccess => 'Produkt erfolgreich gelöscht';
+
+  @override
+  String get productDetailsConfirmDeletionTitle => 'Löschen bestätigen';
+
+  @override
+  String get productDetailsConfirmDeletionMessage =>
+      'Gib aus Sicherheitsgründen dein Passwort ein, um fortzufahren.';
+
+  @override
+  String get productDetailsPasswordLabel => 'Passwort';
+
+  @override
+  String get productDetailsPasswordEmpty => 'Bitte gib dein Passwort ein.';
+
+  @override
+  String get productDetailsPasswordVerifyError =>
+      'Passwort konnte nicht überprüft werden. Versuche es erneut.';
+
+  @override
+  String get productDetailsPasswordWrong =>
+      'Falsches Passwort. Versuche es erneut.';
 }
 
 /// The translations for German, as used in Switzerland (`de_CH`).
@@ -1789,4 +1852,67 @@ class AppLocalizationsDeCh extends AppLocalizationsDe {
 
   @override
   String get alertasEmptySubtitle => 'Dä Bestand isch i Ordnig!';
+
+  @override
+  String get commonCancel => 'Abbräche';
+
+  @override
+  String get commonConfirm => 'Bestätige';
+
+  @override
+  String get productDetailsProductName => 'Produktname';
+
+  @override
+  String get productDetailsCategory => 'Kategorie';
+
+  @override
+  String get productDetailsTotalCostInStock => 'Gsamtkoschte im Lager';
+
+  @override
+  String get productDetailsMinStock => 'Mindestbestand';
+
+  @override
+  String get productDetailsStockQuantity => 'Bestand';
+
+  @override
+  String get productDetailsUnitPrice => 'Stückpriis';
+
+  @override
+  String get productDetailsAvgCost => 'Durchschnittskoschte';
+
+  @override
+  String get productDetailsBarcode => 'Barcode';
+
+  @override
+  String get productDetailsSaveChanges => 'Änderige speichere';
+
+  @override
+  String get productDetailsDeleteProduct => 'Produkt lösche';
+
+  @override
+  String get productDetailsMinStockInvalid => 'Ungültige Mindestbestand';
+
+  @override
+  String get productDetailsDeletedSuccess => 'Produkt erfolgreich glöscht';
+
+  @override
+  String get productDetailsConfirmDeletionTitle => 'Lösche bestätige';
+
+  @override
+  String get productDetailsConfirmDeletionMessage =>
+      'Gib us Sicherheitsgründ dis Passwort ii, zum wiitermache.';
+
+  @override
+  String get productDetailsPasswordLabel => 'Passwort';
+
+  @override
+  String get productDetailsPasswordEmpty => 'Bitte gib dis Passwort ii.';
+
+  @override
+  String get productDetailsPasswordVerifyError =>
+      'Passwort het nöd chöne überprüeft werde. Probier s nomol.';
+
+  @override
+  String get productDetailsPasswordWrong =>
+      'Falschs Passwort. Probier s nomol.';
 }

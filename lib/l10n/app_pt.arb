@@ -921,5 +921,65 @@
   "@alertasEmptyTitle": { "description": "Título do estado vazio na tela de alertas" },
 
   "alertasEmptySubtitle": "Seu estoque está em ordem!",
-  "@alertasEmptySubtitle": { "description": "Subtítulo do estado vazio na tela de alertas" }
+  "@alertasEmptySubtitle": { "description": "Subtítulo do estado vazio na tela de alertas" },
+
+  "commonCancel": "Cancelar",
+  "@commonCancel": { "description": "Ação genérica: cancelar" },
+
+  "commonConfirm": "Confirmar",
+  "@commonConfirm": { "description": "Ação genérica: confirmar" },
+
+  "productDetailsProductName": "Nome do produto",
+  "@productDetailsProductName": { "description": "Label do campo: nome do produto" },
+
+  "productDetailsCategory": "Categoria",
+  "@productDetailsCategory": { "description": "Label do campo: categoria" },
+
+  "productDetailsTotalCostInStock": "Custo total em estoque",
+  "@productDetailsTotalCostInStock": { "description": "Card: custo total do estoque" },
+
+  "productDetailsMinStock": "Estoque mínimo",
+  "@productDetailsMinStock": { "description": "Label do campo: estoque mínimo" },
+
+  "productDetailsStockQuantity": "Quantidade em estoque",
+  "@productDetailsStockQuantity": { "description": "Card: quantidade em estoque" },
+
+  "productDetailsUnitPrice": "Preço unitário",
+  "@productDetailsUnitPrice": { "description": "Card: preço unitário" },
+
+  "productDetailsAvgCost": "Custo médio",
+  "@productDetailsAvgCost": { "description": "Card: custo médio" },
+
+  "productDetailsBarcode": "Código de barras",
+  "@productDetailsBarcode": { "description": "Seção: código de barras" },
+
+  "productDetailsSaveChanges": "Salvar alterações",
+  "@productDetailsSaveChanges": { "description": "Botão: salvar alterações" },
+
+  "productDetailsDeleteProduct": "Excluir produto",
+  "@productDetailsDeleteProduct": { "description": "Botão: excluir produto" },
+
+  "productDetailsMinStockInvalid": "Estoque mínimo inválido",
+  "@productDetailsMinStockInvalid": { "description": "Erro: estoque mínimo inválido" },
+
+  "productDetailsDeletedSuccess": "Produto excluído com sucesso",
+  "@productDetailsDeletedSuccess": { "description": "Snackbar: produto excluído com sucesso" },
+
+  "productDetailsConfirmDeletionTitle": "Confirmar exclusão",
+  "@productDetailsConfirmDeletionTitle": { "description": "Título do modal de confirmação por senha" },
+
+  "productDetailsConfirmDeletionMessage": "Por segurança, digite sua senha para continuar.",
+  "@productDetailsConfirmDeletionMessage": { "description": "Texto do modal de confirmação por senha" },
+
+  "productDetailsPasswordLabel": "Senha",
+  "@productDetailsPasswordLabel": { "description": "Label do campo senha" },
+
+  "productDetailsPasswordEmpty": "Por favor, digite sua senha.",
+  "@productDetailsPasswordEmpty": { "description": "Erro quando a senha está vazia" },
+
+  "productDetailsPasswordVerifyError": "Erro ao verificar senha. Tente novamente.",
+  "@productDetailsPasswordVerifyError": { "description": "Erro genérico ao verificar senha" },
+
+  "productDetailsPasswordWrong": "Senha incorreta. Tente novamente.",
+  "@productDetailsPasswordWrong": { "description": "Erro: senha incorreta" }
 }

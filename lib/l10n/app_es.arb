@@ -865,5 +865,29 @@
   "@alertasEmptyTitle": { "description": "Título de estado vacío" },
 
   "alertasEmptySubtitle": "¡Tu stock está en orden!",
-  "@alertasEmptySubtitle": { "description": "Subtítulo de estado vacío" }
+  "@alertasEmptySubtitle": { "description": "Subtítulo de estado vacío" },
+
+  "commonCancel": "Cancelar",
+  "commonConfirm": "Confirmar",
+
+  "productDetailsProductName": "Nombre del producto",
+  "productDetailsCategory": "Categoría",
+  "productDetailsTotalCostInStock": "Costo total en stock",
+  "productDetailsMinStock": "Stock mínimo",
+  "productDetailsStockQuantity": "Cantidad en stock",
+  "productDetailsUnitPrice": "Precio unitario",
+  "productDetailsAvgCost": "Costo promedio",
+  "productDetailsBarcode": "Código de barras",
+  "productDetailsSaveChanges": "Guardar cambios",
+  "productDetailsDeleteProduct": "Eliminar producto",
+  "productDetailsMinStockInvalid": "Stock mínimo inválido",
+  "productDetailsDeletedSuccess": "Producto eliminado con éxito",
+
+  "productDetailsConfirmDeletionTitle": "Confirmar eliminación",
+  "productDetailsConfirmDeletionMessage": "Por seguridad, ingresa tu contraseña para continuar.",
+  "productDetailsPasswordLabel": "Contraseña",
+  "productDetailsPasswordEmpty": "Por favor, ingresa tu contraseña.",
+  "productDetailsPasswordVerifyError": "Error al verificar la contraseña. Inténtalo de nuevo.",
+  "productDetailsPasswordWrong": "Contraseña incorrecta. Inténtalo de nuevo."
 }
+

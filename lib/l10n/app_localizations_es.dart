@@ -892,4 +892,67 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get alertasEmptySubtitle => '¡Tu stock está en orden!';
+
+  @override
+  String get commonCancel => 'Cancelar';
+
+  @override
+  String get commonConfirm => 'Confirmar';
+
+  @override
+  String get productDetailsProductName => 'Nombre del producto';
+
+  @override
+  String get productDetailsCategory => 'Categoría';
+
+  @override
+  String get productDetailsTotalCostInStock => 'Costo total en stock';
+
+  @override
+  String get productDetailsMinStock => 'Stock mínimo';
+
+  @override
+  String get productDetailsStockQuantity => 'Cantidad en stock';
+
+  @override
+  String get productDetailsUnitPrice => 'Precio unitario';
+
+  @override
+  String get productDetailsAvgCost => 'Costo promedio';
+
+  @override
+  String get productDetailsBarcode => 'Código de barras';
+
+  @override
+  String get productDetailsSaveChanges => 'Guardar cambios';
+
+  @override
+  String get productDetailsDeleteProduct => 'Eliminar producto';
+
+  @override
+  String get productDetailsMinStockInvalid => 'Stock mínimo inválido';
+
+  @override
+  String get productDetailsDeletedSuccess => 'Producto eliminado con éxito';
+
+  @override
+  String get productDetailsConfirmDeletionTitle => 'Confirmar eliminación';
+
+  @override
+  String get productDetailsConfirmDeletionMessage =>
+      'Por seguridad, ingresa tu contraseña para continuar.';
+
+  @override
+  String get productDetailsPasswordLabel => 'Contraseña';
+
+  @override
+  String get productDetailsPasswordEmpty => 'Por favor, ingresa tu contraseña.';
+
+  @override
+  String get productDetailsPasswordVerifyError =>
+      'Error al verificar la contraseña. Inténtalo de nuevo.';
+
+  @override
+  String get productDetailsPasswordWrong =>
+      'Contraseña incorrecta. Inténtalo de nuevo.';
 }

@@ -900,5 +900,28 @@
   "@alertasEmptyTitle": { "description": "Leerzustand Titel (de-CH)" },
 
   "alertasEmptySubtitle": "Dä Bestand isch i Ordnig!",
-  "@alertasEmptySubtitle": { "description": "Leerzustand Untertitel (de-CH)" }
+  "@alertasEmptySubtitle": { "description": "Leerzustand Untertitel (de-CH)" },
+
+  "commonCancel": "Abbräche",
+  "commonConfirm": "Bestätige",
+
+  "productDetailsProductName": "Produktname",
+  "productDetailsCategory": "Kategorie",
+  "productDetailsTotalCostInStock": "Gsamtkoschte im Lager",
+  "productDetailsMinStock": "Mindestbestand",
+  "productDetailsStockQuantity": "Bestand",
+  "productDetailsUnitPrice": "Stückpriis",
+  "productDetailsAvgCost": "Durchschnittskoschte",
+  "productDetailsBarcode": "Barcode",
+  "productDetailsSaveChanges": "Änderige speichere",
+  "productDetailsDeleteProduct": "Produkt lösche",
+  "productDetailsMinStockInvalid": "Ungültige Mindestbestand",
+  "productDetailsDeletedSuccess": "Produkt erfolgreich glöscht",
+
+  "productDetailsConfirmDeletionTitle": "Lösche bestätige",
+  "productDetailsConfirmDeletionMessage": "Gib us Sicherheitsgründ dis Passwort ii, zum wiitermache.",
+  "productDetailsPasswordLabel": "Passwort",
+  "productDetailsPasswordEmpty": "Bitte gib dis Passwort ii.",
+  "productDetailsPasswordVerifyError": "Passwort het nöd chöne überprüeft werde. Probier s nomol.",
+  "productDetailsPasswordWrong": "Falschs Passwort. Probier s nomol."
 }
