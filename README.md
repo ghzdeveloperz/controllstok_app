@@ -436,3 +436,12 @@ Essas regras são reavaliadas a cada mudança de autenticação ou Firestore.
   - Relatórios Mensais e Anuais
   - Internacionalização do Relatório por Produto
   - Evoluções futuras sem retrabalho estrutural
+
+## [Milestone 20] Tela de Relatórios por Produto + i18n Completo
+**Status:** apenas arquivos criados e código único
+
+### Melhorias:
+- separar estrutura do código
+
+### Objetivo:
+- separar estrutura do código
