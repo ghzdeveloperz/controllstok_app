@@ -1028,4 +1028,114 @@ class AppLocalizationsEn extends AppLocalizations {
   String currencyValue(double value) {
     return '\$ $value';
   }
+
+  @override
+  String get profileTitle => 'Profile';
+
+  @override
+  String get profileOpenSettings => 'Open settings';
+
+  @override
+  String profileLoadErrorWithValue(String value) {
+    return 'Error loading data: $value';
+  }
+
+  @override
+  String get actionTryAgain => 'Try again';
+
+  @override
+  String get profileNoUser => 'No user logged in';
+
+  @override
+  String get profileUserFallback => 'User';
+
+  @override
+  String get profileNoEmail => 'No email';
+
+  @override
+  String get profileEditCompanyTitle => 'Edit company';
+
+  @override
+  String get profileCompanyNameLabel => 'Company name';
+
+  @override
+  String get profileAvatarUpdated => 'Image updated successfully!';
+
+  @override
+  String get profileAvatarUpdateError => 'Error updating image.';
+
+  @override
+  String get profilePlanFree => 'FREE';
+
+  @override
+  String get profilePlanPro => 'PRO';
+
+  @override
+  String get profilePlanMax => 'MAX';
+
+  @override
+  String get profileAccountInfoTitle => 'Account information';
+
+  @override
+  String get profileEmailLabel => 'Email';
+
+  @override
+  String get profileUidLabel => 'UID';
+
+  @override
+  String get profileCreatedAtLabel => 'Created at';
+
+  @override
+  String get profileLastLoginLabel => 'Last login';
+
+  @override
+  String get commonNotAvailable => 'N/A';
+
+  @override
+  String profileCopiedWithValue(String value) {
+    return '$value copied to clipboard';
+  }
+
+  @override
+  String get profileSecurityTitle => 'Security';
+
+  @override
+  String get profileSignOutTitle => 'Sign out';
+
+  @override
+  String get profileSignOutConfirm => 'Are you sure you want to sign out?';
+
+  @override
+  String get profileSignOutButton => 'Sign out';
+
+  @override
+  String get profileDeactivateTitle => 'Deactivate account';
+
+  @override
+  String get profileDeactivateHint =>
+      'To deactivate your account, please confirm your password. This action is irreversible.';
+
+  @override
+  String get profilePasswordLabel => 'Password';
+
+  @override
+  String get profilePasswordRequired => 'Enter your password';
+
+  @override
+  String get profileWrongPassword => 'Incorrect password. Please try again.';
+
+  @override
+  String get profileNoEmailError => 'User email not found.';
+
+  @override
+  String get profileDeactivateGenericError => 'Error deactivating account.';
+
+  @override
+  String get profileDeactivateButton => 'Deactivate';
+
+  @override
+  String get actionSave => 'Save';
+
+  @override
+  String get actionCancel => 'Cancel';
 }

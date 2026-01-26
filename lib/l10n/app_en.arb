@@ -1040,7 +1040,120 @@
         "example": "129.90"
       }
     }
-  }
+  },
 
+  "profileTitle": "Profile",
+  "@profileTitle": { "description": "PERFIL — Título da tela de perfil" },
+
+  "profileOpenSettings": "Open settings",
+  "@profileOpenSettings": { "description": "PERFIL — Tooltip do botão de configurações" },
+
+  "profileLoadErrorWithValue": "Error loading data: {value}",
+  "@profileLoadErrorWithValue": {
+    "description": "PERFIL — Erro ao carregar dados com detalhe",
+    "placeholders": { "value": { "type": "String", "example": "timeout" } }
+  },
+
+  "actionTryAgain": "Try again",
+  "@actionTryAgain": { "description": "GERAL — Botão tentar novamente" },
+
+  "profileNoUser": "No user logged in",
+  "@profileNoUser": { "description": "PERFIL — Estado vazio sem usuário" },
+
+  "profileUserFallback": "User",
+  "@profileUserFallback": { "description": "PERFIL — Fallback quando não há nome/email" },
+
+  "profileNoEmail": "No email",
+  "@profileNoEmail": { "description": "PERFIL — Fallback quando email é nulo" },
+
+  "profileEditCompanyTitle": "Edit company",
+  "@profileEditCompanyTitle": { "description": "PERFIL — Título do diálogo de editar empresa" },
+
+  "profileCompanyNameLabel": "Company name",
+  "@profileCompanyNameLabel": { "description": "PERFIL — Label do campo nome da empresa" },
+
+  "profileAvatarUpdated": "Image updated successfully!",
+  "@profileAvatarUpdated": { "description": "PERFIL — Snackbar sucesso ao atualizar avatar" },
+
+  "profileAvatarUpdateError": "Error updating image.",
+  "@profileAvatarUpdateError": { "description": "PERFIL — Snackbar erro ao atualizar avatar" },
+
+  "profilePlanFree": "FREE",
+  "@profilePlanFree": { "description": "PERFIL — Chip do plano Free" },
+
+  "profilePlanPro": "PRO",
+  "@profilePlanPro": { "description": "PERFIL — Chip do plano Pro" },
+
+  "profilePlanMax": "MAX",
+  "@profilePlanMax": { "description": "PERFIL — Chip do plano Max" },
+
+  "profileAccountInfoTitle": "Account information",
+  "@profileAccountInfoTitle": { "description": "PERFIL — Seção informações da conta" },
+
+  "profileEmailLabel": "Email",
+  "@profileEmailLabel": { "description": "PERFIL — Label Email" },
+
+  "profileUidLabel": "UID",
+  "@profileUidLabel": { "description": "PERFIL — Label UID" },
+
+  "profileCreatedAtLabel": "Created at",
+  "@profileCreatedAtLabel": { "description": "PERFIL — Label data de criação" },
+
+  "profileLastLoginLabel": "Last login",
+  "@profileLastLoginLabel": { "description": "PERFIL — Label último login" },
+
+  "commonNotAvailable": "N/A",
+  "@commonNotAvailable": { "description": "GERAL — Valor não disponível" },
+
+  "profileCopiedWithValue": "{value} copied to clipboard",
+  "@profileCopiedWithValue": {
+    "description": "PERFIL — Snackbar ao copiar um valor",
+    "placeholders": { "value": { "type": "String", "example": "UID" } }
+  },
+
+  "profileSecurityTitle": "Security",
+  "@profileSecurityTitle": { "description": "PERFIL — Seção segurança" },
+
+  "profileSignOutTitle": "Sign out",
+  "@profileSignOutTitle": { "description": "PERFIL — Título do diálogo de sair" },
+
+  "profileSignOutConfirm": "Are you sure you want to sign out?",
+  "@profileSignOutConfirm": { "description": "PERFIL — Mensagem de confirmação de sair" },
+
+  "profileSignOutButton": "Sign out",
+  "@profileSignOutButton": { "description": "PERFIL — Botão sair da conta" },
+
+  "profileDeactivateTitle": "Deactivate account",
+  "@profileDeactivateTitle": { "description": "PERFIL — Título do diálogo de desativar conta" },
+
+  "profileDeactivateHint": "To deactivate your account, please confirm your password. This action is irreversible.",
+  "@profileDeactivateHint": { "description": "PERFIL — Texto explicativo ao desativar conta" },
+
+  "profilePasswordLabel": "Password",
+  "@profilePasswordLabel": { "description": "PERFIL — Label campo senha" },
+
+  "profilePasswordRequired": "Enter your password",
+  "@profilePasswordRequired": { "description": "PERFIL — Validação senha obrigatória" },
+
+  "profileWrongPassword": "Incorrect password. Please try again.",
+  "@profileWrongPassword": { "description": "PERFIL — Erro senha incorreta" },
+
+  "profileNoEmailError": "User email not found.",
+  "@profileNoEmailError": { "description": "PERFIL — Erro quando email está ausente" },
+
+  "profileDeactivateGenericError": "Error deactivating account.",
+  "@profileDeactivateGenericError": { "description": "PERFIL — Erro genérico ao desativar" },
+
+  "profileDeactivateButton": "Deactivate",
+  "@profileDeactivateButton": { "description": "PERFIL — Botão desativar conta" },
+
+  "actionSave": "Save",
+  "@actionSave": { "description": "AÇÕES — Botão salvar (padrão do app)" },
+
+  "actionCancel": "Cancel",
+  "@actionCancel": { "description": "AÇÕES — Botão cancelar (padrão do app)" }
 }
+
+
+
 

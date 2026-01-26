@@ -1040,6 +1040,119 @@ class AppLocalizationsDe extends AppLocalizations {
   String currencyValue(double value) {
     return 'CHF $value';
   }
+
+  @override
+  String get profileTitle => 'Profil';
+
+  @override
+  String get profileOpenSettings => 'Einstellungen öffnen';
+
+  @override
+  String profileLoadErrorWithValue(String value) {
+    return 'Fehler beim Laden der Daten: $value';
+  }
+
+  @override
+  String get actionTryAgain => 'Erneut versuchen';
+
+  @override
+  String get profileNoUser => 'Kein Benutzer angemeldet';
+
+  @override
+  String get profileUserFallback => 'Benutzer';
+
+  @override
+  String get profileNoEmail => 'Keine E-Mail';
+
+  @override
+  String get profileEditCompanyTitle => 'Unternehmen bearbeiten';
+
+  @override
+  String get profileCompanyNameLabel => 'Firmenname';
+
+  @override
+  String get profileAvatarUpdated => 'Bild erfolgreich aktualisiert';
+
+  @override
+  String get profileAvatarUpdateError =>
+      'Fehler beim Aktualisieren des Bildes.';
+
+  @override
+  String get profilePlanFree => 'KOSTENLOS';
+
+  @override
+  String get profilePlanPro => 'PRO';
+
+  @override
+  String get profilePlanMax => 'MAX';
+
+  @override
+  String get profileAccountInfoTitle => 'Kontoinformationen';
+
+  @override
+  String get profileEmailLabel => 'E-Mail';
+
+  @override
+  String get profileUidLabel => 'UID';
+
+  @override
+  String get profileCreatedAtLabel => 'Erstellt am';
+
+  @override
+  String get profileLastLoginLabel => 'Letzte Anmeldung';
+
+  @override
+  String get commonNotAvailable => 'k. A.';
+
+  @override
+  String profileCopiedWithValue(String value) {
+    return '$value in die Zwischenablage kopiert';
+  }
+
+  @override
+  String get profileSecurityTitle => 'Sicherheit';
+
+  @override
+  String get profileSignOutTitle => 'Abmelden';
+
+  @override
+  String get profileSignOutConfirm => 'Möchten Sie sich wirklich abmelden?';
+
+  @override
+  String get profileSignOutButton => 'Abmelden';
+
+  @override
+  String get profileDeactivateTitle => 'Konto deaktivieren';
+
+  @override
+  String get profileDeactivateHint =>
+      'Um Ihr Konto zu deaktivieren, bestätigen Sie bitte Ihr Passwort. Diese Aktion ist endgültig.';
+
+  @override
+  String get profilePasswordLabel => 'Passwort';
+
+  @override
+  String get profilePasswordRequired => 'Bitte Passwort eingeben';
+
+  @override
+  String get profileWrongPassword =>
+      'Falsches Passwort. Bitte erneut versuchen.';
+
+  @override
+  String get profileNoEmailError => 'Benutzer-E-Mail nicht gefunden.';
+
+  @override
+  String get profileDeactivateGenericError =>
+      'Fehler beim Deaktivieren des Kontos.';
+
+  @override
+  String get profileDeactivateButton => 'Deaktivieren';
+
+  @override
+  String get actionSave => 'Speichern';
+
+  @override
+  String get actionCancel => 'Abbrechen';
 }
 
 /// The translations for German, as used in Switzerland (`de_CH`).
@@ -2077,4 +2190,117 @@ class AppLocalizationsDeCh extends AppLocalizationsDe {
   String currencyValue(double value) {
     return 'CHF $value';
   }
+
+  @override
+  String get profileTitle => 'Profil';
+
+  @override
+  String get profileOpenSettings => 'Einstellungen öffnen';
+
+  @override
+  String profileLoadErrorWithValue(String value) {
+    return 'Fehler beim Laden der Daten: $value';
+  }
+
+  @override
+  String get actionTryAgain => 'Erneut versuchen';
+
+  @override
+  String get profileNoUser => 'Kein Benutzer angemeldet';
+
+  @override
+  String get profileUserFallback => 'Benutzer';
+
+  @override
+  String get profileNoEmail => 'Keine E-Mail';
+
+  @override
+  String get profileEditCompanyTitle => 'Firma bearbeiten';
+
+  @override
+  String get profileCompanyNameLabel => 'Firmenname';
+
+  @override
+  String get profileAvatarUpdated => 'Bild erfolgreich aktualisiert';
+
+  @override
+  String get profileAvatarUpdateError =>
+      'Fehler beim Aktualisieren des Bildes.';
+
+  @override
+  String get profilePlanFree => 'KOSTENLOS';
+
+  @override
+  String get profilePlanPro => 'PRO';
+
+  @override
+  String get profilePlanMax => 'MAX';
+
+  @override
+  String get profileAccountInfoTitle => 'Kontoinformationen';
+
+  @override
+  String get profileEmailLabel => 'E-Mail';
+
+  @override
+  String get profileUidLabel => 'UID';
+
+  @override
+  String get profileCreatedAtLabel => 'Erstellt am';
+
+  @override
+  String get profileLastLoginLabel => 'Letzte Anmeldung';
+
+  @override
+  String get commonNotAvailable => 'k. A.';
+
+  @override
+  String profileCopiedWithValue(String value) {
+    return '$value in die Zwischenablage kopiert';
+  }
+
+  @override
+  String get profileSecurityTitle => 'Sicherheit';
+
+  @override
+  String get profileSignOutTitle => 'Abmelden';
+
+  @override
+  String get profileSignOutConfirm => 'Möchten Sie sich wirklich abmelden?';
+
+  @override
+  String get profileSignOutButton => 'Abmelden';
+
+  @override
+  String get profileDeactivateTitle => 'Konto deaktivieren';
+
+  @override
+  String get profileDeactivateHint =>
+      'Um Ihr Konto zu deaktivieren, bestätigen Sie bitte Ihr Passwort. Diese Aktion ist endgültig.';
+
+  @override
+  String get profilePasswordLabel => 'Passwort';
+
+  @override
+  String get profilePasswordRequired => 'Bitte Passwort eingeben';
+
+  @override
+  String get profileWrongPassword =>
+      'Falsches Passwort. Bitte erneut versuchen.';
+
+  @override
+  String get profileNoEmailError => 'Benutzer-E-Mail nicht gefunden.';
+
+  @override
+  String get profileDeactivateGenericError =>
+      'Fehler beim Deaktivieren des Kontos.';
+
+  @override
+  String get profileDeactivateButton => 'Deaktivieren';
+
+  @override
+  String get actionSave => 'Speichern';
+
+  @override
+  String get actionCancel => 'Abbrechen';
 }

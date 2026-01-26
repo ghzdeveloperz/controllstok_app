@@ -312,7 +312,7 @@ class _CategoriasScreenState extends State<CategoriasScreen> {
           return ListView.separated(
             padding: const EdgeInsets.all(24),
             itemCount: categories.length,
-            separatorBuilder: (_, _) => const SizedBox(height: 16),
+            separatorBuilder: (context, index) => const SizedBox(height: 16),
             itemBuilder: (context, index) {
               final category = categories[index];
 
@@ -325,7 +325,8 @@ class _CategoriasScreenState extends State<CategoriasScreen> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                   leading: Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(

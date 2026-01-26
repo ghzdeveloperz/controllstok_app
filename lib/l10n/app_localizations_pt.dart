@@ -1029,6 +1029,117 @@ class AppLocalizationsPt extends AppLocalizations {
   String currencyValue(double value) {
     return 'R\$ $value';
   }
+
+  @override
+  String get profileTitle => 'Perfil';
+
+  @override
+  String get profileOpenSettings => 'Abrir configurações';
+
+  @override
+  String profileLoadErrorWithValue(String value) {
+    return 'Erro ao carregar dados: $value';
+  }
+
+  @override
+  String get actionTryAgain => 'Tentar novamente';
+
+  @override
+  String get profileNoUser => 'Nenhum usuário logado';
+
+  @override
+  String get profileUserFallback => 'Usuário';
+
+  @override
+  String get profileNoEmail => 'Sem email';
+
+  @override
+  String get profileEditCompanyTitle => 'Editar empresa';
+
+  @override
+  String get profileCompanyNameLabel => 'Nome da empresa';
+
+  @override
+  String get profileAvatarUpdated => 'Imagem atualizada com sucesso!';
+
+  @override
+  String get profileAvatarUpdateError => 'Erro ao atualizar imagem.';
+
+  @override
+  String get profilePlanFree => 'GRÁTIS';
+
+  @override
+  String get profilePlanPro => 'PRÓ';
+
+  @override
+  String get profilePlanMax => 'MAX';
+
+  @override
+  String get profileAccountInfoTitle => 'Informações da conta';
+
+  @override
+  String get profileEmailLabel => 'Email';
+
+  @override
+  String get profileUidLabel => 'UID';
+
+  @override
+  String get profileCreatedAtLabel => 'Criado em';
+
+  @override
+  String get profileLastLoginLabel => 'Último login';
+
+  @override
+  String get commonNotAvailable => 'N/A';
+
+  @override
+  String profileCopiedWithValue(String value) {
+    return '$value copiado para a área de transferência';
+  }
+
+  @override
+  String get profileSecurityTitle => 'Segurança';
+
+  @override
+  String get profileSignOutTitle => 'Sair da conta';
+
+  @override
+  String get profileSignOutConfirm => 'Tem certeza que deseja sair?';
+
+  @override
+  String get profileSignOutButton => 'Sair da conta';
+
+  @override
+  String get profileDeactivateTitle => 'Desativar conta';
+
+  @override
+  String get profileDeactivateHint =>
+      'Para desativar sua conta, confirme sua senha. Esta ação é irreversível.';
+
+  @override
+  String get profilePasswordLabel => 'Senha';
+
+  @override
+  String get profilePasswordRequired => 'Digite sua senha';
+
+  @override
+  String get profileWrongPassword =>
+      'Senha incorreta. Verifique e tente novamente.';
+
+  @override
+  String get profileNoEmailError => 'Email do usuário não encontrado.';
+
+  @override
+  String get profileDeactivateGenericError => 'Erro ao desativar a conta.';
+
+  @override
+  String get profileDeactivateButton => 'Desativar';
+
+  @override
+  String get actionSave => 'Salvar';
+
+  @override
+  String get actionCancel => 'Cancelar';
 }
 
 /// The translations for Portuguese, as used in Portugal (`pt_PT`).
@@ -2060,4 +2171,116 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   String currencyValue(double value) {
     return '$value €';
   }
+
+  @override
+  String get profileTitle => 'Perfil';
+
+  @override
+  String get profileOpenSettings => 'Abrir definições';
+
+  @override
+  String profileLoadErrorWithValue(String value) {
+    return 'Erro ao carregar dados: $value';
+  }
+
+  @override
+  String get actionTryAgain => 'Tentar novamente';
+
+  @override
+  String get profileNoUser => 'Nenhum utilizador com sessão iniciada';
+
+  @override
+  String get profileUserFallback => 'Utilizador';
+
+  @override
+  String get profileNoEmail => 'Sem email';
+
+  @override
+  String get profileEditCompanyTitle => 'Editar empresa';
+
+  @override
+  String get profileCompanyNameLabel => 'Nome da empresa';
+
+  @override
+  String get profileAvatarUpdated => 'Imagem atualizada com sucesso';
+
+  @override
+  String get profileAvatarUpdateError => 'Erro ao atualizar imagem.';
+
+  @override
+  String get profilePlanFree => 'GRÁTIS';
+
+  @override
+  String get profilePlanPro => 'PRÓ';
+
+  @override
+  String get profilePlanMax => 'MAX';
+
+  @override
+  String get profileAccountInfoTitle => 'Informações da conta';
+
+  @override
+  String get profileEmailLabel => 'Email';
+
+  @override
+  String get profileUidLabel => 'UID';
+
+  @override
+  String get profileCreatedAtLabel => 'Criado em';
+
+  @override
+  String get profileLastLoginLabel => 'Último acesso';
+
+  @override
+  String get commonNotAvailable => 'N/D';
+
+  @override
+  String profileCopiedWithValue(String value) {
+    return '$value copiado para a área de transferência';
+  }
+
+  @override
+  String get profileSecurityTitle => 'Segurança';
+
+  @override
+  String get profileSignOutTitle => 'Terminar sessão';
+
+  @override
+  String get profileSignOutConfirm =>
+      'Tem a certeza de que deseja terminar sessão?';
+
+  @override
+  String get profileSignOutButton => 'Terminar sessão';
+
+  @override
+  String get profileDeactivateTitle => 'Desativar conta';
+
+  @override
+  String get profileDeactivateHint =>
+      'Para desativar a sua conta, confirme a sua palavra-passe. Esta ação é irreversível.';
+
+  @override
+  String get profilePasswordLabel => 'Palavra-passe';
+
+  @override
+  String get profilePasswordRequired => 'Introduza a sua palavra-passe';
+
+  @override
+  String get profileWrongPassword =>
+      'Palavra-passe incorreta. Tente novamente.';
+
+  @override
+  String get profileNoEmailError => 'Email do utilizador não encontrado.';
+
+  @override
+  String get profileDeactivateGenericError => 'Erro ao desativar a conta.';
+
+  @override
+  String get profileDeactivateButton => 'Desativar';
+
+  @override
+  String get actionSave => 'Guardar';
+
+  @override
+  String get actionCancel => 'Cancelar';
 }

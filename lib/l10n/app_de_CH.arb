@@ -1046,6 +1046,121 @@
         "example": "129.90"
       }
     }
-  }
+  },
 
+
+  "profileTitle": "Profil",
+  "@profileTitle": { "description": "PERFIL — Título da tela de perfil" },
+
+  "profileOpenSettings": "Einstellungen öffnen",
+  "@profileOpenSettings": { "description": "PERFIL — Tooltip do botão de configurações" },
+
+  "profileLoadErrorWithValue": "Fehler beim Laden der Daten: {value}",
+  "@profileLoadErrorWithValue": {
+    "description": "PERFIL — Erro ao carregar dados com detalhe",
+    "placeholders": {
+      "value": { "type": "String", "example": "timeout" }
+    }
+  },
+
+  "actionTryAgain": "Erneut versuchen",
+  "@actionTryAgain": { "description": "GERAL — Botão tentar novamente" },
+
+  "profileNoUser": "Kein Benutzer angemeldet",
+  "@profileNoUser": { "description": "PERFIL — Estado vazio sem usuário" },
+
+  "profileUserFallback": "Benutzer",
+  "@profileUserFallback": { "description": "PERFIL — Fallback quando não há nome/email" },
+
+  "profileNoEmail": "Keine E-Mail",
+  "@profileNoEmail": { "description": "PERFIL — Fallback quando email é nulo" },
+
+  "profileEditCompanyTitle": "Firma bearbeiten",
+  "@profileEditCompanyTitle": { "description": "PERFIL — Título do diálogo de editar empresa" },
+
+  "profileCompanyNameLabel": "Firmenname",
+  "@profileCompanyNameLabel": { "description": "PERFIL — Label do campo nome da empresa" },
+
+  "profileAvatarUpdated": "Bild erfolgreich aktualisiert",
+  "@profileAvatarUpdated": { "description": "PERFIL — Snackbar sucesso ao atualizar avatar" },
+
+  "profileAvatarUpdateError": "Fehler beim Aktualisieren des Bildes.",
+  "@profileAvatarUpdateError": { "description": "PERFIL — Snackbar erro ao atualizar avatar" },
+
+  "profilePlanFree": "KOSTENLOS",
+  "@profilePlanFree": { "description": "PERFIL — Chip do plano Free" },
+
+  "profilePlanPro": "PRO",
+  "@profilePlanPro": { "description": "PERFIL — Chip do plano Pro" },
+
+  "profilePlanMax": "MAX",
+  "@profilePlanMax": { "description": "PERFIL — Chip do plano Max" },
+
+  "profileAccountInfoTitle": "Kontoinformationen",
+  "@profileAccountInfoTitle": { "description": "PERFIL — Seção informações da conta" },
+
+  "profileEmailLabel": "E-Mail",
+  "@profileEmailLabel": { "description": "PERFIL — Label Email" },
+
+  "profileUidLabel": "UID",
+  "@profileUidLabel": { "description": "PERFIL — Label UID" },
+
+  "profileCreatedAtLabel": "Erstellt am",
+  "@profileCreatedAtLabel": { "description": "PERFIL — Label data de criação" },
+
+  "profileLastLoginLabel": "Letzte Anmeldung",
+  "@profileLastLoginLabel": { "description": "PERFIL — Label último login" },
+
+  "commonNotAvailable": "k. A.",
+  "@commonNotAvailable": { "description": "GERAL — Valor não disponível" },
+
+  "profileCopiedWithValue": "{value} in die Zwischenablage kopiert",
+  "@profileCopiedWithValue": {
+    "description": "PERFIL — Snackbar ao copiar um valor",
+    "placeholders": {
+      "value": { "type": "String", "example": "UID" }
+    }
+  },
+
+  "profileSecurityTitle": "Sicherheit",
+  "@profileSecurityTitle": { "description": "PERFIL — Seção segurança" },
+
+  "profileSignOutTitle": "Abmelden",
+  "@profileSignOutTitle": { "description": "PERFIL — Título do diálogo de sair" },
+
+  "profileSignOutConfirm": "Möchten Sie sich wirklich abmelden?",
+  "@profileSignOutConfirm": { "description": "PERFIL — Mensagem de confirmação de sair" },
+
+  "profileSignOutButton": "Abmelden",
+  "@profileSignOutButton": { "description": "PERFIL — Botão sair da conta" },
+
+  "profileDeactivateTitle": "Konto deaktivieren",
+  "@profileDeactivateTitle": { "description": "PERFIL — Título do diálogo de desativar conta" },
+
+  "profileDeactivateHint": "Um Ihr Konto zu deaktivieren, bestätigen Sie bitte Ihr Passwort. Diese Aktion ist endgültig.",
+  "@profileDeactivateHint": { "description": "PERFIL — Texto explicativo ao desativar conta" },
+
+  "profilePasswordLabel": "Passwort",
+  "@profilePasswordLabel": { "description": "PERFIL — Label campo senha" },
+
+  "profilePasswordRequired": "Bitte Passwort eingeben",
+  "@profilePasswordRequired": { "description": "PERFIL — Validação senha obrigatória" },
+
+  "profileWrongPassword": "Falsches Passwort. Bitte erneut versuchen.",
+  "@profileWrongPassword": { "description": "PERFIL — Erro senha incorreta" },
+
+  "profileNoEmailError": "Benutzer-E-Mail nicht gefunden.",
+  "@profileNoEmailError": { "description": "PERFIL — Erro quando email está ausente" },
+
+  "profileDeactivateGenericError": "Fehler beim Deaktivieren des Kontos.",
+  "@profileDeactivateGenericError": { "description": "PERFIL — Erro genérico ao desativar" },
+
+  "profileDeactivateButton": "Deaktivieren",
+  "@profileDeactivateButton": { "description": "PERFIL — Botão desativar conta" },
+
+  "actionSave": "Speichern",
+  "@actionSave": { "description": "AÇÕES — Botão salvar (padrão do app)" },
+
+  "actionCancel": "Abbrechen",
+  "@actionCancel": { "description": "AÇÕES — Botão cancelar (padrão do app)" }
 }

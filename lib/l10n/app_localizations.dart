@@ -65,7 +65,7 @@ import 'app_localizations_pt.dart';
 /// property.
 abstract class AppLocalizations {
   AppLocalizations(String locale)
-    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+      : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -88,11 +88,11 @@ abstract class AppLocalizations {
   /// of delegates is preferred or required.
   static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
       <LocalizationsDelegate<dynamic>>[
-        delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ];
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
@@ -101,7 +101,7 @@ abstract class AppLocalizations {
     Locale('en'),
     Locale('es'),
     Locale('pt'),
-    Locale('pt', 'PT'),
+    Locale('pt', 'PT')
   ];
 
   /// GERAL / APP — Título principal do aplicativo
@@ -1933,6 +1933,216 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'R\$ {value}'**
   String currencyValue(double value);
+
+  /// PERFIL — Título da tela de perfil
+  ///
+  /// In pt, this message translates to:
+  /// **'Perfil'**
+  String get profileTitle;
+
+  /// PERFIL — Tooltip do botão de configurações
+  ///
+  /// In pt, this message translates to:
+  /// **'Abrir configurações'**
+  String get profileOpenSettings;
+
+  /// PERFIL — Erro ao carregar dados com detalhe
+  ///
+  /// In pt, this message translates to:
+  /// **'Erro ao carregar dados: {value}'**
+  String profileLoadErrorWithValue(String value);
+
+  /// GERAL — Botão tentar novamente
+  ///
+  /// In pt, this message translates to:
+  /// **'Tentar novamente'**
+  String get actionTryAgain;
+
+  /// PERFIL — Estado vazio sem usuário
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhum usuário logado'**
+  String get profileNoUser;
+
+  /// PERFIL — Fallback quando não há nome/email
+  ///
+  /// In pt, this message translates to:
+  /// **'Usuário'**
+  String get profileUserFallback;
+
+  /// PERFIL — Fallback quando email é nulo
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem email'**
+  String get profileNoEmail;
+
+  /// PERFIL — Título do diálogo de editar empresa
+  ///
+  /// In pt, this message translates to:
+  /// **'Editar empresa'**
+  String get profileEditCompanyTitle;
+
+  /// PERFIL — Label do campo nome da empresa
+  ///
+  /// In pt, this message translates to:
+  /// **'Nome da empresa'**
+  String get profileCompanyNameLabel;
+
+  /// PERFIL — Snackbar sucesso ao atualizar avatar
+  ///
+  /// In pt, this message translates to:
+  /// **'Imagem atualizada com sucesso!'**
+  String get profileAvatarUpdated;
+
+  /// PERFIL — Snackbar erro ao atualizar avatar
+  ///
+  /// In pt, this message translates to:
+  /// **'Erro ao atualizar imagem.'**
+  String get profileAvatarUpdateError;
+
+  /// PERFIL — Chip do plano Free
+  ///
+  /// In pt, this message translates to:
+  /// **'GRÁTIS'**
+  String get profilePlanFree;
+
+  /// PERFIL — Chip do plano Pro
+  ///
+  /// In pt, this message translates to:
+  /// **'PRÓ'**
+  String get profilePlanPro;
+
+  /// PERFIL — Chip do plano Max
+  ///
+  /// In pt, this message translates to:
+  /// **'MAX'**
+  String get profilePlanMax;
+
+  /// PERFIL — Seção informações da conta
+  ///
+  /// In pt, this message translates to:
+  /// **'Informações da conta'**
+  String get profileAccountInfoTitle;
+
+  /// PERFIL — Label Email
+  ///
+  /// In pt, this message translates to:
+  /// **'Email'**
+  String get profileEmailLabel;
+
+  /// PERFIL — Label UID
+  ///
+  /// In pt, this message translates to:
+  /// **'UID'**
+  String get profileUidLabel;
+
+  /// PERFIL — Label data de criação
+  ///
+  /// In pt, this message translates to:
+  /// **'Criado em'**
+  String get profileCreatedAtLabel;
+
+  /// PERFIL — Label último login
+  ///
+  /// In pt, this message translates to:
+  /// **'Último login'**
+  String get profileLastLoginLabel;
+
+  /// GERAL — Valor não disponível
+  ///
+  /// In pt, this message translates to:
+  /// **'N/A'**
+  String get commonNotAvailable;
+
+  /// PERFIL — Snackbar ao copiar um valor
+  ///
+  /// In pt, this message translates to:
+  /// **'{value} copiado para a área de transferência'**
+  String profileCopiedWithValue(String value);
+
+  /// PERFIL — Seção segurança
+  ///
+  /// In pt, this message translates to:
+  /// **'Segurança'**
+  String get profileSecurityTitle;
+
+  /// PERFIL — Título do diálogo de sair
+  ///
+  /// In pt, this message translates to:
+  /// **'Sair da conta'**
+  String get profileSignOutTitle;
+
+  /// PERFIL — Mensagem de confirmação de sair
+  ///
+  /// In pt, this message translates to:
+  /// **'Tem certeza que deseja sair?'**
+  String get profileSignOutConfirm;
+
+  /// PERFIL — Botão sair da conta
+  ///
+  /// In pt, this message translates to:
+  /// **'Sair da conta'**
+  String get profileSignOutButton;
+
+  /// PERFIL — Título do diálogo de desativar conta
+  ///
+  /// In pt, this message translates to:
+  /// **'Desativar conta'**
+  String get profileDeactivateTitle;
+
+  /// PERFIL — Texto explicativo ao desativar conta
+  ///
+  /// In pt, this message translates to:
+  /// **'Para desativar sua conta, confirme sua senha. Esta ação é irreversível.'**
+  String get profileDeactivateHint;
+
+  /// PERFIL — Label campo senha
+  ///
+  /// In pt, this message translates to:
+  /// **'Senha'**
+  String get profilePasswordLabel;
+
+  /// PERFIL — Validação senha obrigatória
+  ///
+  /// In pt, this message translates to:
+  /// **'Digite sua senha'**
+  String get profilePasswordRequired;
+
+  /// PERFIL — Erro senha incorreta
+  ///
+  /// In pt, this message translates to:
+  /// **'Senha incorreta. Verifique e tente novamente.'**
+  String get profileWrongPassword;
+
+  /// PERFIL — Erro quando email está ausente
+  ///
+  /// In pt, this message translates to:
+  /// **'Email do usuário não encontrado.'**
+  String get profileNoEmailError;
+
+  /// PERFIL — Erro genérico ao desativar
+  ///
+  /// In pt, this message translates to:
+  /// **'Erro ao desativar a conta.'**
+  String get profileDeactivateGenericError;
+
+  /// PERFIL — Botão desativar conta
+  ///
+  /// In pt, this message translates to:
+  /// **'Desativar'**
+  String get profileDeactivateButton;
+
+  /// AÇÕES — Botão salvar (padrão do app)
+  ///
+  /// In pt, this message translates to:
+  /// **'Salvar'**
+  String get actionSave;
+
+  /// AÇÕES — Botão cancelar (padrão do app)
+  ///
+  /// In pt, this message translates to:
+  /// **'Cancelar'**
+  String get actionCancel;
 }
 
 class _AppLocalizationsDelegate
@@ -1986,9 +2196,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   }
 
   throw FlutterError(
-    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
-    'an issue with the localizations generation tool. Please file an issue '
-    'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.',
-  );
+      'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+      'an issue with the localizations generation tool. Please file an issue '
+      'on GitHub with a reproducible sample app and the gen-l10n configuration '
+      'that was used.');
 }

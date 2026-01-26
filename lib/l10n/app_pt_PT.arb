@@ -1015,7 +1015,121 @@
         "example": "129.90"
       }
     }
-  }
+  },
 
+  "profileTitle": "Perfil",
+  "@profileTitle": { "description": "PERFIL — Título da tela de perfil" },
+
+  "profileOpenSettings": "Abrir definições",
+  "@profileOpenSettings": { "description": "PERFIL — Tooltip do botão de configurações" },
+
+  "profileLoadErrorWithValue": "Erro ao carregar dados: {value}",
+  "@profileLoadErrorWithValue": {
+    "description": "PERFIL — Erro ao carregar dados com detalhe",
+    "placeholders": {
+      "value": { "type": "String", "example": "timeout" }
+    }
+  },
+
+  "actionTryAgain": "Tentar novamente",
+  "@actionTryAgain": { "description": "GERAL — Botão tentar novamente" },
+
+  "profileNoUser": "Nenhum utilizador com sessão iniciada",
+  "@profileNoUser": { "description": "PERFIL — Estado vazio sem usuário" },
+
+  "profileUserFallback": "Utilizador",
+  "@profileUserFallback": { "description": "PERFIL — Fallback quando não há nome/email" },
+
+  "profileNoEmail": "Sem email",
+  "@profileNoEmail": { "description": "PERFIL — Fallback quando email é nulo" },
+
+  "profileEditCompanyTitle": "Editar empresa",
+  "@profileEditCompanyTitle": { "description": "PERFIL — Título do diálogo de editar empresa" },
+
+  "profileCompanyNameLabel": "Nome da empresa",
+  "@profileCompanyNameLabel": { "description": "PERFIL — Label do campo nome da empresa" },
+
+  "profileAvatarUpdated": "Imagem atualizada com sucesso",
+  "@profileAvatarUpdated": { "description": "PERFIL — Snackbar sucesso ao atualizar avatar" },
+
+  "profileAvatarUpdateError": "Erro ao atualizar imagem.",
+  "@profileAvatarUpdateError": { "description": "PERFIL — Snackbar erro ao atualizar avatar" },
+
+  "profilePlanFree": "GRÁTIS",
+  "@profilePlanFree": { "description": "PERFIL — Chip do plano Free" },
+
+  "profilePlanPro": "PRÓ",
+  "@profilePlanPro": { "description": "PERFIL — Chip do plano Pro" },
+
+  "profilePlanMax": "MAX",
+  "@profilePlanMax": { "description": "PERFIL — Chip do plano Max" },
+
+  "profileAccountInfoTitle": "Informações da conta",
+  "@profileAccountInfoTitle": { "description": "PERFIL — Seção informações da conta" },
+
+  "profileEmailLabel": "Email",
+  "@profileEmailLabel": { "description": "PERFIL — Label Email" },
+
+  "profileUidLabel": "UID",
+  "@profileUidLabel": { "description": "PERFIL — Label UID" },
+
+  "profileCreatedAtLabel": "Criado em",
+  "@profileCreatedAtLabel": { "description": "PERFIL — Label data de criação" },
+
+  "profileLastLoginLabel": "Último acesso",
+  "@profileLastLoginLabel": { "description": "PERFIL — Label último login" },
+
+  "commonNotAvailable": "N/D",
+  "@commonNotAvailable": { "description": "GERAL — Valor não disponível" },
+
+  "profileCopiedWithValue": "{value} copiado para a área de transferência",
+  "@profileCopiedWithValue": {
+    "description": "PERFIL — Snackbar ao copiar um valor",
+    "placeholders": {
+      "value": { "type": "String", "example": "UID" }
+    }
+  },
+
+  "profileSecurityTitle": "Segurança",
+  "@profileSecurityTitle": { "description": "PERFIL — Seção segurança" },
+
+  "profileSignOutTitle": "Terminar sessão",
+  "@profileSignOutTitle": { "description": "PERFIL — Título do diálogo de sair" },
+
+  "profileSignOutConfirm": "Tem a certeza de que deseja terminar sessão?",
+  "@profileSignOutConfirm": { "description": "PERFIL — Mensagem de confirmação de sair" },
+
+  "profileSignOutButton": "Terminar sessão",
+  "@profileSignOutButton": { "description": "PERFIL — Botão sair da conta" },
+
+  "profileDeactivateTitle": "Desativar conta",
+  "@profileDeactivateTitle": { "description": "PERFIL — Título do diálogo de desativar conta" },
+
+  "profileDeactivateHint": "Para desativar a sua conta, confirme a sua palavra-passe. Esta ação é irreversível.",
+  "@profileDeactivateHint": { "description": "PERFIL — Texto explicativo ao desativar conta" },
+
+  "profilePasswordLabel": "Palavra-passe",
+  "@profilePasswordLabel": { "description": "PERFIL — Label campo senha" },
+
+  "profilePasswordRequired": "Introduza a sua palavra-passe",
+  "@profilePasswordRequired": { "description": "PERFIL — Validação senha obrigatória" },
+
+  "profileWrongPassword": "Palavra-passe incorreta. Tente novamente.",
+  "@profileWrongPassword": { "description": "PERFIL — Erro senha incorreta" },
+
+  "profileNoEmailError": "Email do utilizador não encontrado.",
+  "@profileNoEmailError": { "description": "PERFIL — Erro quando email está ausente" },
+
+  "profileDeactivateGenericError": "Erro ao desativar a conta.",
+  "@profileDeactivateGenericError": { "description": "PERFIL — Erro genérico ao desativar" },
+
+  "profileDeactivateButton": "Desativar",
+  "@profileDeactivateButton": { "description": "PERFIL — Botão desativar conta" },
+
+  "actionSave": "Guardar",
+  "@actionSave": { "description": "AÇÕES — Botão salvar (padrão do app)" },
+
+  "actionCancel": "Cancelar",
+  "@actionCancel": { "description": "AÇÕES — Botão cancelar (padrão do app)" }
 }
 

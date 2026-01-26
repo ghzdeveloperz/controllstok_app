@@ -1036,4 +1036,117 @@ class AppLocalizationsEs extends AppLocalizations {
   String currencyValue(double value) {
     return '$value';
   }
+
+  @override
+  String get profileTitle => 'Perfil';
+
+  @override
+  String get profileOpenSettings => 'Abrir configuración';
+
+  @override
+  String profileLoadErrorWithValue(String value) {
+    return 'Error al cargar los datos: $value';
+  }
+
+  @override
+  String get actionTryAgain => 'Intentar de nuevo';
+
+  @override
+  String get profileNoUser => 'Ningún usuario conectado';
+
+  @override
+  String get profileUserFallback => 'Usuario';
+
+  @override
+  String get profileNoEmail => 'Sin correo electrónico';
+
+  @override
+  String get profileEditCompanyTitle => 'Editar empresa';
+
+  @override
+  String get profileCompanyNameLabel => 'Nombre de la empresa';
+
+  @override
+  String get profileAvatarUpdated => 'Imagen actualizada con éxito';
+
+  @override
+  String get profileAvatarUpdateError => 'Error al actualizar la imagen.';
+
+  @override
+  String get profilePlanFree => 'GRATIS';
+
+  @override
+  String get profilePlanPro => 'PRO';
+
+  @override
+  String get profilePlanMax => 'MAX';
+
+  @override
+  String get profileAccountInfoTitle => 'Información de la cuenta';
+
+  @override
+  String get profileEmailLabel => 'Correo electrónico';
+
+  @override
+  String get profileUidLabel => 'UID';
+
+  @override
+  String get profileCreatedAtLabel => 'Creado el';
+
+  @override
+  String get profileLastLoginLabel => 'Último acceso';
+
+  @override
+  String get commonNotAvailable => 'N/D';
+
+  @override
+  String profileCopiedWithValue(String value) {
+    return '$value copiado al portapapeles';
+  }
+
+  @override
+  String get profileSecurityTitle => 'Seguridad';
+
+  @override
+  String get profileSignOutTitle => 'Cerrar sesión';
+
+  @override
+  String get profileSignOutConfirm =>
+      '¿Estás seguro de que deseas cerrar sesión?';
+
+  @override
+  String get profileSignOutButton => 'Cerrar sesión';
+
+  @override
+  String get profileDeactivateTitle => 'Desactivar cuenta';
+
+  @override
+  String get profileDeactivateHint =>
+      'Para desactivar tu cuenta, confirma tu contraseña. Esta acción es irreversible.';
+
+  @override
+  String get profilePasswordLabel => 'Contraseña';
+
+  @override
+  String get profilePasswordRequired => 'Introduce tu contraseña';
+
+  @override
+  String get profileWrongPassword =>
+      'Contraseña incorrecta. Verifica e inténtalo de nuevo.';
+
+  @override
+  String get profileNoEmailError =>
+      'Correo electrónico del usuario no encontrado.';
+
+  @override
+  String get profileDeactivateGenericError => 'Error al desactivar la cuenta.';
+
+  @override
+  String get profileDeactivateButton => 'Desactivar';
+
+  @override
+  String get actionSave => 'Guardar';
+
+  @override
+  String get actionCancel => 'Cancelar';
 }

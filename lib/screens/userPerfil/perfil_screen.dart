@@ -1,526 +1,50 @@
-import 'dart:io';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mystoreday/screens/userPerfil/config_options/config_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+// lib/screens/userPerfil/perfil_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
-import 'package:shimmer/shimmer.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/app_navigator.dart';
+import '../../l10n/app_localizations.dart';
 
 import '../acounts/auth_choice/auth_choice_screen.dart';
+import 'config_options/config_screen.dart';
 
-class PerfilScreen extends StatefulWidget {
+import 'state/perfil_controller.dart';
+import 'widgets/perfil_loading_skeleton.dart';
+import 'widgets/perfil_error_state.dart';
+import 'widgets/perfil_empty_state.dart';
+import 'widgets/perfil_header.dart';
+import 'widgets/perfil_account_info_section.dart';
+import 'widgets/perfil_security_section.dart';
+
+class PerfilScreen extends ConsumerWidget {
   const PerfilScreen({super.key});
 
   @override
-  State<PerfilScreen> createState() => _PerfilScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final state = ref.watch(perfilControllerProvider);
+    final controller = ref.read(perfilControllerProvider.notifier);
 
-class _PerfilScreenState extends State<PerfilScreen>
-    with TickerProviderStateMixin {
-  User? _user;
-
-  bool _isLoading = true;
-  String? _errorMessage;
-
-  // Firestore fields
-  String? _companyName;
-  String? _plan; // free|pro|max  (ou "Grátis"/"Pró"/"Max")
-  String? _photoUrl;
-
-  bool _isUploadingAvatar = false;
-
-  late AnimationController _avatarAnimationController;
-  late Animation<double> _avatarScaleAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadUserData();
-
-    _avatarAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 300),
-      vsync: this,
-    );
-    _avatarScaleAnimation = Tween<double>(begin: 1.0, end: 1.05).animate(
-      CurvedAnimation(
-        parent: _avatarAnimationController,
-        curve: Curves.easeInOut,
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    _avatarAnimationController.dispose();
-    super.dispose();
-  }
-
-  // =========================
-  // LOAD USER + FIRESTORE DATA
-  // =========================
-  Future<void> _loadUserData() async {
-    try {
-      await Future.delayed(const Duration(milliseconds: 500));
-
-      final user = FirebaseAuth.instance.currentUser;
-      if (user == null) throw Exception('Usuário não encontrado');
-
-      await user.reload();
-      final freshUser = FirebaseAuth.instance.currentUser!;
-      final doc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(freshUser.uid)
-          .get();
-
-      final data = doc.data();
-
-      final company = (data?['company'] ?? data?['companyName']) as String?;
-      final plan = (data?['plan'] ?? data?['plano']) as String?;
-      final photoUrl =
-          (data?['photoUrl'] ?? data?['avatarUrl'] ?? data?['photoURL'])
-              as String?;
-
-      if (!mounted) return;
-      setState(() {
-        _user = freshUser;
-        _companyName = company;
-        _plan = plan;
-        _photoUrl = photoUrl;
-        _isLoading = false;
-        _errorMessage = null;
-      });
-    } catch (e) {
-      if (!mounted) return;
-      setState(() {
-        _errorMessage = 'Erro ao carregar dados: $e';
-        _isLoading = false;
-      });
-    }
-  }
-
-  // =========
-  // PLAN CHIP
-  // =========
-  String _planLabel(String? plan) {
-    final p = (plan ?? '').trim().toLowerCase();
-    switch (p) {
-      case 'pro':
-      case 'pró':
-        return 'PRÓ';
-      case 'max':
-        return 'MAX';
-      case 'free':
-      case 'gratis':
-      case 'grátis':
-      case '':
-      default:
-        return 'Grátis';
-    }
-  }
-
-  Color _planColor(String? plan) {
-    final p = (plan ?? '').trim().toLowerCase();
-    switch (p) {
-      case 'pro':
-      case 'pró':
-        return const Color(0xFF1565C0);
-      case 'max':
-        return const Color(0xFF6A1B9A);
-      case 'free':
-      case 'gratis':
-      case 'grátis':
-      case '':
-      default:
-        return const Color(0xFF2E7D32);
-    }
-  }
-
-  Widget _buildPlanChip(String? plan) {
-    final label = _planLabel(plan);
-    final color = _planColor(plan);
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: color.withAlpha(26),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withAlpha(64)),
-      ),
-      child: Text(
-        '$label',
-        style: GoogleFonts.poppins(
-          fontSize: 12,
-          color: color,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-    );
-  }
-
-  // =====================
-  // EDIT COMPANY (DIALOG)
-  // =====================
-  void _showEditCompanyDialog() {
-    if (_user == null) return;
-
-    final controller = TextEditingController(text: _companyName ?? '');
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text(
-          'Editar empresa',
-          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
-        ),
-        content: TextField(
-          controller: controller,
-          decoration: InputDecoration(
-            labelText: 'Nome da empresa',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(
-              'Cancelar',
-              style: GoogleFonts.poppins(color: Colors.grey),
-            ),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.black,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-            onPressed: () async {
-              final newName = controller.text.trim();
-              if (newName.isEmpty) return;
-
-              await FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(_user!.uid)
-                  .set({'company': newName}, SetOptions(merge: true));
-
-              if (!mounted) return;
-              setState(() => _companyName = newName);
-              Navigator.of(context).pop();
-            },
-            child: Text(
-              'Salvar',
-              style: GoogleFonts.poppins(color: Colors.white),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // =====================
-  // AVATAR PICK + UPLOAD
-  // =====================
-  Future<void> _pickAndUploadAvatar() async {
-    if (_user == null) return;
-    if (_isUploadingAvatar) return;
-
-    try {
-      setState(() => _isUploadingAvatar = true);
-
-      final picker = ImagePicker();
-      final picked = await picker.pickImage(
-        source: ImageSource.gallery,
-        imageQuality: 80,
-      );
-
-      if (picked == null) {
-        if (!mounted) return;
-        setState(() => _isUploadingAvatar = false);
-        return;
-      }
-
-      final uid = _user!.uid;
-
-      // caminho fixo (substitui sempre)
-      final ref = FirebaseStorage.instance.ref('users/$uid/avatar.jpg');
-
-      await ref.putFile(File(picked.path));
-      final url = await ref.getDownloadURL();
-
-      await FirebaseFirestore.instance.collection('users').doc(uid).set({
-        'photoUrl': url,
-      }, SetOptions(merge: true));
-
-      if (!mounted) return;
-      setState(() {
-        _photoUrl = url;
-        _isUploadingAvatar = false;
-      });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Imagem atualizada com sucesso!'),
-          backgroundColor: Colors.black87,
-        ),
-      );
-    } catch (e) {
-      if (!mounted) return;
-      setState(() => _isUploadingAvatar = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Erro ao atualizar imagem: $e'),
-          backgroundColor: Colors.black87,
-        ),
+    if (state.isLoading) return const PerfilLoadingSkeleton();
+    if (state.errorMessage != null) {
+      return PerfilErrorState(
+        message: l10n.profileLoadErrorWithValue(state.errorMessage!),
+        onRetry: controller.load,
       );
     }
-  }
+    if (state.user == null)
+      return PerfilEmptyState(message: l10n.profileNoUser);
 
-  // ==========
-  // UTILITIES
-  // ==========
-  void _copyToClipboard(String text, String label) {
-    Clipboard.setData(ClipboardData(text: text));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('$label copiado para a área de transferência'),
-        duration: const Duration(seconds: 2),
-        backgroundColor: Colors.black87,
-      ),
+    final user = state.user!;
+    final displayName = _resolveDisplayName(
+      companyName: state.companyName,
+      email: user.email,
+      fallback: l10n.profileUserFallback,
     );
-  }
 
-  void _showConfirmationDialog(
-    String title,
-    String message,
-    VoidCallback onConfirm,
-  ) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text(
-          title,
-          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
-        ),
-        content: Text(message, style: GoogleFonts.poppins()),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(
-              'Cancelar',
-              style: GoogleFonts.poppins(color: Colors.grey),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              onConfirm();
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.black,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            child: Text(
-              'Confirmar',
-              style: GoogleFonts.poppins(color: Colors.white),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showDeleteAccountDialog({required VoidCallback onConfirmed}) {
-    final TextEditingController passwordController = TextEditingController();
-    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-    bool isLoading = false;
-    String? errorMessage;
-
-    showDialog(
-      context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          title: Text(
-            'Desativar Conta',
-            style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
-          ),
-          content: Form(
-            key: formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'Para desativar sua conta, confirme sua senha. Esta ação é irreversível.',
-                  style: GoogleFonts.poppins(),
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: 'Senha',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    errorText: errorMessage,
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty)
-                      return 'Digite sua senha';
-                    return null;
-                  },
-                ),
-                if (errorMessage != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: Text(
-                      errorMessage!,
-                      style: GoogleFonts.poppins(
-                        color: Colors.red,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(
-                'Cancelar',
-                style: GoogleFonts.poppins(color: Colors.grey),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: isLoading
-                  ? null
-                  : () async {
-                      if (!formKey.currentState!.validate()) return;
-
-                      setState(() {
-                        isLoading = true;
-                        errorMessage = null;
-                      });
-
-                      try {
-                        // Garantindo email não nulo
-                        final email = _user?.email;
-                        if (email == null || email.isEmpty) {
-                          throw FirebaseAuthException(
-                            code: 'no-email',
-                            message: 'Email do usuário não encontrado.',
-                          );
-                        }
-
-                        final credential = EmailAuthProvider.credential(
-                          email: email,
-                          password: passwordController.text,
-                        );
-
-                        await _user!.reauthenticateWithCredential(credential);
-
-                        await FirebaseFirestore.instance
-                            .collection('users')
-                            .doc(_user!.uid)
-                            .update({'active': false});
-
-                        // navegação para AuthChoiceScreen
-                        onConfirmed();
-                      } catch (e) {
-                        if (!mounted) return;
-
-                        String message;
-                        if (e is FirebaseAuthException &&
-                            e.code == 'wrong-password') {
-                          message =
-                              'Senha incorreta. Verifique e tente novamente.';
-                        } else if (e is FirebaseAuthException &&
-                            e.code == 'no-email') {
-                          message =
-                              e.message ?? 'Email do usuário não encontrado.';
-                        } else {
-                          message = 'Erro ao desativar a conta.';
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(message),
-                              backgroundColor: Colors.black87,
-                            ),
-                          );
-                        }
-
-                        setState(() {
-                          errorMessage = message;
-                          isLoading = false;
-                        });
-                      }
-                    },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black87,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: isLoading
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
-                      ),
-                    )
-                  : Text(
-                      'Desativar',
-                      style: GoogleFonts.poppins(color: Colors.white),
-                    ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // =========
-  // BUILD UI
-  // =========
-  @override
-  Widget build(BuildContext context) {
-    if (_isLoading) return _buildLoadingScreen();
-    if (_errorMessage != null) return _buildErrorScreen();
-    if (_user == null) return _buildEmptyScreen();
-
-    // Garantindo que displayName nunca seja nulo
-    String displayName;
-    if (_companyName != null && _companyName!.trim().isNotEmpty) {
-      displayName = _companyName!.trim();
-    } else if (_user!.email != null && _user!.email!.isNotEmpty) {
-      displayName = _user!.email!.split('@').first;
-    } else {
-      displayName = 'Usuário';
-    }
-
-    // Garantindo que email e uid nunca sejam nulos
-    final String email = _user!.email ?? 'Sem email';
-    final String uid = _user!.uid;
-
-    final DateTime? creationTime = _user!.metadata.creationTime;
-    final DateTime? lastSignInTime = _user!.metadata.lastSignInTime;
+    final email = user.email ?? l10n.profileNoEmail;
+    final uid = user.uid;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F8F8),
@@ -529,24 +53,21 @@ class _PerfilScreenState extends State<PerfilScreen>
         elevation: 0,
         centerTitle: true,
         title: Text(
-          'Perfil',
-          style: GoogleFonts.poppins(
-            fontWeight: FontWeight.w700,
-            fontSize: 24,
+          l10n.profileTitle,
+          style: const TextStyle(
+            fontWeight: FontWeight.w800,
+            fontSize: 22,
             color: Colors.black,
           ),
         ),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings, color: Colors.black),
+            tooltip: l10n.profileOpenSettings,
             onPressed: () async {
-              final result = await Navigator.of(
-                context,
-              ).push(MaterialPageRoute(builder: (_) => const ConfigScreen()));
-
-              if (result != null) {
-                // reage ao que veio da tela de configurações
-              }
+              await Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const ConfigScreen()),
+              );
             },
           ),
         ],
@@ -557,650 +78,298 @@ class _PerfilScreenState extends State<PerfilScreen>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildHeader(displayName, email),
-              const SizedBox(height: 32),
-              _buildAccountInfoSection(
-                email,
-                uid,
-                creationTime,
-                lastSignInTime,
+              PerfilHeader(
+                displayName: displayName,
+                email: email,
+                photoUrl: state.photoUrl,
+                planRaw: state.plan,
+                isUploadingAvatar: state.isUploadingAvatar,
+                onEditCompany: () => _showEditCompanyDialog(
+                  context: context,
+                  l10n: l10n,
+                  initialValue: state.companyName ?? '',
+                  onSave: controller.updateCompanyName,
+                ),
+                onPickAvatar: () async {
+                  final url = await controller.pickAndUploadAvatar();
+                  final currentState = ref.read(perfilControllerProvider);
+                  if (url != null && context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(l10n.profileAvatarUpdated),
+                        backgroundColor: Colors.black87,
+                      ),
+                    );
+                  } else if (currentState.errorMessage != null &&
+                      context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(l10n.profileAvatarUpdateError),
+                        backgroundColor: Colors.black87,
+                      ),
+                    );
+                  }
+                },
               ),
               const SizedBox(height: 32),
-              //_buildActionsSection(),
-              const SizedBox(height: 32),
-              _buildSecuritySection(),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  // ==========================
-  // LOADING / ERROR / EMPTY UI
-  // ==========================
-  Widget _buildLoadingScreen() {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8F8F8),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Column(
-                  children: [
-                    Shimmer.fromColors(
-                      baseColor: Colors.grey.shade300,
-                      highlightColor: Colors.grey.shade100,
-                      child: Container(
-                        width: 120,
-                        height: 120,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.grey.shade300,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.1),
-                              blurRadius: 10,
-                              offset: const Offset(0, 5),
-                            ),
-                          ],
-                        ),
-                      ),
+              PerfilAccountInfoSection(
+                email: email,
+                uid: uid,
+                creationTime: user.metadata.creationTime,
+                lastSignInTime: user.metadata.lastSignInTime,
+                onCopy: (text, label) {
+                  Clipboard.setData(ClipboardData(text: text));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(l10n.profileCopiedWithValue(label)),
+                      duration: const Duration(seconds: 2),
+                      backgroundColor: Colors.black87,
                     ),
-                    const SizedBox(height: 16),
-                    Shimmer.fromColors(
-                      baseColor: Colors.grey.shade300,
-                      highlightColor: Colors.grey.shade100,
-                      child: Container(
-                        width: 150,
-                        height: 24,
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade300,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Shimmer.fromColors(
-                      baseColor: Colors.grey.shade300,
-                      highlightColor: Colors.grey.shade100,
-                      child: Container(
-                        width: 200,
-                        height: 16,
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade300,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Shimmer.fromColors(
-                      baseColor: Colors.grey.shade300,
-                      highlightColor: Colors.grey.shade100,
-                      child: Container(
-                        width: 110,
-                        height: 20,
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade300,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                  );
+                },
               ),
               const SizedBox(height: 32),
-              Shimmer.fromColors(
-                baseColor: Colors.grey.shade300,
-                highlightColor: Colors.grey.shade100,
-                child: Container(
-                  width: double.infinity,
-                  height: 200,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade300,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.05),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
+              PerfilSecuritySection(
+                onSignOut: () => _showConfirmationDialog(
+                  context: context,
+                  title: l10n.profileSignOutTitle,
+                  message: l10n.profileSignOutConfirm,
+                  cancelText: l10n.actionCancel,
+                  confirmText: l10n.profileSignOutButton,
+                  onConfirm: () async {
+                    await controller.signOut();
+                    AppNavigator.resetTo(const AuthChoiceScreen());
+                  },
                 ),
-              ),
-              const SizedBox(height: 32),
-              Shimmer.fromColors(
-                baseColor: Colors.grey.shade300,
-                highlightColor: Colors.grey.shade100,
-                child: Container(
-                  width: double.infinity,
-                  height: 150,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade300,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.05),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 32),
-              Shimmer.fromColors(
-                baseColor: Colors.grey.shade300,
-                highlightColor: Colors.grey.shade100,
-                child: Container(
-                  width: double.infinity,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade300,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.05),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildErrorScreen() {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8F8F8),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.error_outline, size: 64, color: Colors.red),
-            const SizedBox(height: 16),
-            Text(
-              _errorMessage!,
-              style: GoogleFonts.poppins(color: Colors.grey),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _loadUserData,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: Text(
-                'Tentar novamente',
-                style: GoogleFonts.poppins(color: Colors.white),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildEmptyScreen() {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8F8F8),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.account_circle, size: 64, color: Colors.grey),
-            const SizedBox(height: 16),
-            Text(
-              'Nenhum usuário logado',
-              style: GoogleFonts.poppins(color: Colors.grey),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // ======================
-  // HEADER (company + plan + avatar com foto)
-  // ======================
-  Widget _buildHeader(String displayName, String email) {
-    return Center(
-      child: Column(
-        children: [
-          GestureDetector(
-            onTap: () => _avatarAnimationController.forward().then(
-              (_) => _avatarAnimationController.reverse(),
-            ),
-            child: AnimatedBuilder(
-              animation: _avatarScaleAnimation,
-              builder: (context, child) {
-                return Transform.scale(
-                  scale: _avatarScaleAnimation.value,
-                  child: Stack(
-                    alignment: Alignment.bottomRight,
-                    children: [
-                      CircleAvatar(
-                        radius: 60,
-                        backgroundColor: Colors.black,
-                        backgroundImage:
-                            (_photoUrl != null && _photoUrl!.isNotEmpty)
-                            ? NetworkImage(_photoUrl!)
-                            : null,
-                        child: (_photoUrl == null || _photoUrl!.isEmpty)
-                            ? Text(
-                                displayName.isNotEmpty
-                                    ? displayName[0].toUpperCase()
-                                    : 'U',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 48,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              )
-                            : null,
-                      ),
-
-                      // Botão de câmera + estado de upload
-                      InkWell(
-                        onTap: _isUploadingAvatar ? null : _pickAndUploadAvatar,
-                        borderRadius: BorderRadius.circular(999),
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.black12),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.12),
-                                blurRadius: 8,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
+                onDeactivate: () => _showDeactivateAccountDialog(
+                  context: context,
+                  l10n: l10n,
+                  onConfirm: (password) async {
+                    try {
+                      await controller.deactivateAccount(password: password);
+                      AppNavigator.resetTo(const AuthChoiceScreen());
+                    } on Exception catch (e) {
+                      // mapeamento simples: você pode evoluir depois
+                      final msg = _mapDeactivateError(l10n, e);
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(msg),
+                            backgroundColor: Colors.black87,
                           ),
-                          child: _isUploadingAvatar
-                              ? const SizedBox(
-                                  width: 18,
-                                  height: 18,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                  ),
-                                )
-                              : const Icon(
-                                  Icons.camera_alt,
-                                  size: 18,
-                                  color: Colors.black87,
-                                ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
-          const SizedBox(height: 16),
-
-          // ✅ Nome da empresa + lápis sempre colado e centralizado
-          SizedBox(
-            width: double.infinity,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                // Texto ocupa toda a largura e fica realmente centralizado
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 48),
-                  child: Text(
-                    displayName,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.poppins(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-
-                // Lápis sempre colado ao texto, sem deslocar o centro
-                Positioned(
-                  right: 60,
-                  child: IconButton(
-                    onPressed: _showEditCompanyDialog,
-                    icon: const Icon(
-                      Icons.edit,
-                      size: 20,
-                      color: Colors.black54,
-                    ),
-                    tooltip: 'Editar empresa',
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                    visualDensity: VisualDensity.compact,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 4),
-          Text(
-            email,
-            style: GoogleFonts.poppins(fontSize: 16, color: Colors.grey),
-          ),
-
-          const SizedBox(height: 8),
-
-          // ✅ Plano
-          _buildPlanChip(_plan),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAccountInfoSection(
-    String email,
-    String uid,
-    DateTime? creationTime,
-    DateTime? lastSignInTime,
-  ) {
-    final createdLocal = creationTime?.toLocal();
-    final lastLoginLocal = lastSignInTime?.toLocal();
-
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(13),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Informações da Conta',
-            style: GoogleFonts.poppins(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: Colors.black,
-            ),
-          ),
-          const SizedBox(height: 16),
-          _buildInfoRow(Icons.email, 'Email', email),
-          const Divider(height: 20),
-          _buildInfoRow(
-            Icons.key,
-            'UID',
-            uid,
-            isCopyable: true,
-            copyLabel: 'UID',
-          ),
-          const Divider(height: 20),
-          _buildInfoRow(
-            Icons.calendar_today,
-            'Criado em',
-            createdLocal != null
-                ? DateFormat('dd/MM/yyyy HH:mm', 'pt_BR').format(createdLocal)
-                : 'N/A',
-          ),
-          const Divider(height: 20),
-          _buildInfoRow(
-            Icons.access_time,
-            'Último login',
-            lastLoginLocal != null
-                ? DateFormat('dd/MM/yyyy HH:mm', 'pt_BR').format(lastLoginLocal)
-                : 'N/A',
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInfoRow(
-    IconData icon,
-    String label,
-    String value, {
-    bool isCopyable = false,
-    String? copyLabel,
-  }) {
-    return Row(
-      children: [
-        Icon(icon, color: Colors.grey, size: 24),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: GoogleFonts.poppins(
-                  fontSize: 12,
-                  color: Colors.grey,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                value,
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
+                        );
+                      }
+                      rethrow;
+                    }
+                  },
                 ),
               ),
             ],
           ),
         ),
-        if (isCopyable)
-          IconButton(
-            icon: const Icon(Icons.copy, color: Colors.grey, size: 20),
-            onPressed: () => _copyToClipboard(value, copyLabel ?? label),
+      ),
+    );
+  }
+
+  static String _resolveDisplayName({
+    required String? companyName,
+    required String? email,
+    required String fallback,
+  }) {
+    if (companyName != null && companyName.trim().isNotEmpty) {
+      return companyName.trim();
+    }
+    if (email != null && email.isNotEmpty && email.contains('@')) {
+      return email.split('@').first;
+    }
+    return fallback;
+  }
+
+  static String _mapDeactivateError(AppLocalizations l10n, Object e) {
+    final msg = e.toString();
+    if (msg.contains('wrong-password')) return l10n.profileWrongPassword;
+    if (msg.contains('no-email')) return l10n.profileNoEmailError;
+    if (msg.contains('no-user')) return l10n.profileNoUser;
+    return l10n.profileDeactivateGenericError;
+  }
+}
+
+void _showEditCompanyDialog({
+  required BuildContext context,
+  required AppLocalizations l10n,
+  required String initialValue,
+  required Future<void> Function(String) onSave,
+}) {
+  final controller = TextEditingController(text: initialValue);
+
+  showDialog(
+    context: context,
+    builder: (_) => AlertDialog(
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      title: Text(
+        l10n.profileEditCompanyTitle,
+        style: const TextStyle(fontWeight: FontWeight.w700),
+      ),
+      content: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: l10n.profileCompanyNameLabel,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(l10n.actionCancel),
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.black,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           ),
+          onPressed: () async {
+            final newName = controller.text.trim();
+            if (newName.isEmpty) return;
+            await onSave(newName);
+            if (context.mounted) Navigator.of(context).pop();
+          },
+          child: Text(
+            l10n.actionSave,
+            style: const TextStyle(color: Colors.white),
+          ),
+        ),
       ],
-    );
-  }
+    ),
+  );
+}
 
-  /*Widget _buildActionsSection() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Ações',
-            style: GoogleFonts.poppins(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: Colors.black,
-            ),
-          ),
-          const SizedBox(height: 16),
-          _buildActionButton(Icons.lock, 'Alterar Senha', () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Funcionalidade em desenvolvimento'),
-              ),
-            );
-          }),
-          const SizedBox(height: 12),
-          _buildActionButton(Icons.manage_accounts, 'Gerenciar Conta', () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Funcionalidade em desenvolvimento'),
-              ),
-            );
-          }),
-          const SizedBox(height: 12),
-          _buildActionButton(Icons.notifications, 'Preferências', () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Funcionalidade em desenvolvimento'),
-              ),
-            );
-          }),
-          const SizedBox(height: 12),
-          _buildActionButton(Icons.help, 'Ajuda & Suporte', () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Funcionalidade em desenvolvimento'),
-              ),
-            );
-          }),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildActionButton(IconData icon, String label, VoidCallback onTap) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-        child: Row(
-          children: [
-            Icon(icon, color: Colors.black, size: 24),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                label,
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-            const Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 16),
-          ],
+void _showConfirmationDialog({
+  required BuildContext context,
+  required String title,
+  required String message,
+  required String cancelText,
+  required String confirmText,
+  required VoidCallback onConfirm,
+}) {
+  showDialog(
+    context: context,
+    builder: (_) => AlertDialog(
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      title: Text(title, style: const TextStyle(fontWeight: FontWeight.w700)),
+      content: Text(message),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(cancelText),
         ),
-      ),
-    );
-  }*/
-
-  Widget _buildSecuritySection() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(13),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+        ElevatedButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+            onConfirm();
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.black,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Segurança',
-            style: GoogleFonts.poppins(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: Colors.black,
-            ),
-          ),
-          const SizedBox(height: 16),
+          child: Text(confirmText, style: const TextStyle(color: Colors.white)),
+        ),
+      ],
+    ),
+  );
+}
 
-          // Botão de Sair da Conta
-          _buildSecurityButton(
-            Icons.logout,
-            'Sair da Conta',
-            const Color.fromARGB(255, 70, 70, 70),
-            () => _showConfirmationDialog(
-              'Sair da Conta',
-              'Tem certeza que deseja sair?',
-              () async {
-                // Desloga o usuário
-                await FirebaseAuth.instance.signOut();
-                AppNavigator.resetTo(const AuthChoiceScreen());
-              },
-            ),
-          ),
+void _showDeactivateAccountDialog({
+  required BuildContext context,
+  required AppLocalizations l10n,
+  required Future<void> Function(String password) onConfirm,
+}) {
+  final passwordController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+  bool isLoading = false;
+  String? errorText;
 
-          const SizedBox(height: 12),
-
-          // Botão de Desativar Conta
-          _buildSecurityButton(
-            Icons.delete_forever,
-            'Desativar Conta',
-            Colors.red.shade800,
-            () => _showDeleteAccountDialog(
-              onConfirmed: () {
-                AppNavigator.resetTo(const AuthChoiceScreen());
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSecurityButton(
-    IconData icon,
-    String label,
-    Color color,
-    VoidCallback onTap,
-  ) {
-    return ElevatedButton(
-      onPressed: onTap,
-      style: ElevatedButton.styleFrom(
+  showDialog(
+    context: context,
+    builder: (_) => StatefulBuilder(
+      builder: (context, setState) => AlertDialog(
         backgroundColor: Colors.white,
-        foregroundColor: color,
-        elevation: 0,
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-          side: BorderSide(color: color.withAlpha(51)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text(
+          l10n.profileDeactivateTitle,
+          style: const TextStyle(fontWeight: FontWeight.w700),
         ),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, size: 24),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              label,
-              style: GoogleFonts.poppins(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
+        content: Form(
+          key: formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(l10n.profileDeactivateHint),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: passwordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: l10n.profilePasswordLabel,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  errorText: errorText,
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty)
+                    return l10n.profilePasswordRequired;
+                  return null;
+                },
               ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: isLoading ? null : () => Navigator.of(context).pop(),
+            child: Text(l10n.actionCancel),
+          ),
+          ElevatedButton(
+            onPressed: isLoading
+                ? null
+                : () async {
+                    if (!formKey.currentState!.validate()) return;
+
+                    setState(() {
+                      isLoading = true;
+                      errorText = null;
+                    });
+
+                    try {
+                      await onConfirm(passwordController.text);
+                      if (context.mounted) Navigator.of(context).pop();
+                    } catch (_) {
+                      // erro já tratado via snackbar (mas deixamos espaço pra erro inline)
+                      setState(() => isLoading = false);
+                    }
+                  },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.black87,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
             ),
+            child: isLoading
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                        strokeWidth: 2, color: Colors.white),
+                  )
+                : Text(
+                    l10n.profileDeactivateButton,
+                    style: const TextStyle(color: Colors.white),
+                  ),
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
 }

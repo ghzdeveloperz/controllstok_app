@@ -682,3 +682,41 @@ Essas regras são reavaliadas a cada mudança de autenticação ou Firestore.
 - Garantir um **ProductCard global-ready** (multilíngue) e fácil de evoluir
 - Reaproveitar regras e formatação em outras views (lista, grid, relatórios) sem duplicar lógica
 - Preparar base para futuras melhorias (formatação de moeda por locale com `intl`, novos status e variações de layout)
+
+
+## [Milestone 27] Tela de Perfil Refatorada + i18n Completo e Estrutura Escalável
+**Status:** Concluído ✅
+
+### Melhorias:
+- Refatorada a **Tela de Perfil** com foco em **organização, legibilidade e escalabilidade**:
+  - Separação clara entre **UI**, **estado** e **regras de negócio**
+  - Controller isolado (`PerfilController`) com responsabilidades bem definidas
+  - Estados explícitos para loading, erro, vazio e sucesso
+- Padronização do gerenciamento de estado com **Riverpod**:
+  - Uso de `StateNotifierProvider` com `autoDispose`
+  - Ciclo de vida controlado e limpeza automática de estado
+  - Preparação da tela para evolução futura sem acoplamento
+- Internacionalização (**i18n**) aplicada de forma completa e consistente:
+  - Todas as strings da tela de perfil removidas do código
+  - Traduções centralizadas em arquivos `.arb`
+  - Suporte a múltiplos idiomas:
+    - 🇧🇷 Português (Brasil)
+    - 🇺🇸 Inglês
+    - 🇪🇸 Espanhol
+    - 🇵🇹 Português (Portugal)
+    - 🇩🇪 Alemão (fallback)
+    - 🇨🇭 Alemão (Suíça — `de_CH`)
+  - Placeholders e descrições documentadas para cada chave
+- UI preparada para estados críticos e ações sensíveis:
+  - Feedback visual para erro de carregamento
+  - Confirmação e validação ao desativar conta
+  - Snackbars padronizados para ações do usuário
+- Base pronta para expansão:
+  - Fácil adição de novos campos no perfil
+  - Inclusão de novos idiomas sem risco de quebra
+  - Manutenção simplificada e previsível
+
+### Objetivo:
+- Elevar a **Tela de Perfil** a um padrão de **código profissional e escalável**
+- Garantir **consistência de idioma**, manutenibilidade e clareza arquitetural
+- Preparar o app para crescimento, internacionalização e futuras evoluções
