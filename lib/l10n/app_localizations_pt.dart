@@ -1198,6 +1198,37 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get actionOk => 'Entendi';
+
+  @override
+  String get aboutTitle => 'Sobre';
+
+  @override
+  String aboutVersionWithValue(String value) {
+    return 'Versão $value';
+  }
+
+  @override
+  String aboutYearWithValue(int value) {
+    return '$value';
+  }
+
+  @override
+  String get aboutDeveloperTitle => 'Desenvolvedor';
+
+  @override
+  String get aboutPrivacyPolicyTitle => 'Política de Privacidade';
+
+  @override
+  String get aboutTermsTitle => 'Termos de Uso';
+
+  @override
+  String get aboutSupportTitle => 'Suporte';
+
+  @override
+  String get aboutHelpButton => 'Ajuda';
+
+  @override
+  String get aboutHelpEmailSubject => 'Ajuda com o MyStoreDay';
 }
 
 /// The translations for Portuguese, as used in Portugal (`pt_PT`).
@@ -2399,4 +2430,35 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get actionOk => 'Compreendi';
+
+  @override
+  String get aboutTitle => 'Sobre';
+
+  @override
+  String aboutVersionWithValue(String value) {
+    return 'Versão $value';
+  }
+
+  @override
+  String aboutYearWithValue(int value) {
+    return '$value';
+  }
+
+  @override
+  String get aboutDeveloperTitle => 'Programador';
+
+  @override
+  String get aboutPrivacyPolicyTitle => 'Política de Privacidade';
+
+  @override
+  String get aboutTermsTitle => 'Termos de Utilização';
+
+  @override
+  String get aboutSupportTitle => 'Suporte';
+
+  @override
+  String get aboutHelpButton => 'Ajuda';
+
+  @override
+  String get aboutHelpEmailSubject => 'Ajuda com o MyStoreDay';
 }

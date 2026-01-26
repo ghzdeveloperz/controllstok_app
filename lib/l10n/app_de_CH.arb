@@ -1227,5 +1227,39 @@
   },
 
   "actionOk": "OK",
-  "@actionOk": { "description": "ALLGEMEIN — Bestätigungsbutton (CH)" }
+  "@actionOk": { "description": "ALLGEMEIN — Bestätigungsbutton (CH)" },
+
+  "aboutTitle": "Über",
+  "@aboutTitle": { "description": "ÜBER — Titel der Über-Seite (Schweiz)" },
+
+  "aboutVersionWithValue": "Version {value}",
+  "@aboutVersionWithValue": {
+    "description": "ÜBER — App-Version Label (CH)",
+    "placeholders": { "value": { "type": "String", "example": "1.0.1" } }
+  },
+
+  "aboutYearWithValue": "{value}",
+  "@aboutYearWithValue": {
+    "description": "ÜBER — Jahr auf der Über-Seite (automatisch, CH)",
+    "placeholders": {"value": { "type": "int", "example": "2026" }
+  },
+
+  "aboutDeveloperTitle": "Entwickler",
+  "@aboutDeveloperTitle": { "description": "ÜBER — Entwickler Label (CH)" },
+
+  "aboutPrivacyPolicyTitle": "Datenschutzerklärung",
+  "@aboutPrivacyPolicyTitle": { "description": "ÜBER — Punkt Datenschutz (CH)" },
+
+  "aboutTermsTitle": "Nutzungsbedingungen",
+  "@aboutTermsTitle": { "description": "ÜBER — Punkt Nutzungsbedingungen (CH)" },
+
+  "aboutSupportTitle": "Support",
+  "@aboutSupportTitle": { "description": "ÜBER — Punkt Support (CH)" },
+
+  "aboutHelpButton": "Hilfe",
+  "@aboutHelpButton": { "description": "ÜBER — Hilfe Button (CH)" },
+
+  "aboutHelpEmailSubject": "Hilfe mit MyStoreDay",
+  "@aboutHelpEmailSubject": { "description": "ÜBER — Betreff Support-E-Mail (CH)" }
+}
 }

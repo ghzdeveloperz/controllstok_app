@@ -792,3 +792,38 @@ Essas regras são reavaliadas a cada mudança de autenticação ou Firestore.
 - Garantir que a tela de Categorias esteja pronta para **crescer sem retrabalho**
 - Facilitar adição de novas funcionalidades (editar categoria, permissões, analytics)
 - Manter o app **100% internacionalizado**, profissional e preparado para distribuição global
+
+
+## [Milestone 29] Tela Sobre Refatorada + Estrutura Escalável + i18n Completo
+**Status:** Concluído ✅
+
+### Melhorias:
+- Refatorada a **Tela Sobre** para um padrão **modular, escalável e profissional**:
+  - Quebra do arquivo monolítico em múltiplos componentes reutilizáveis
+  - Separação clara entre **UI**, **ações** e **dados estáticos**
+  - Organização preparada para crescimento sem retrabalho
+- Padronização de responsabilidades:
+  - Header isolado para exibição de nome do app, versão e ano
+  - Tiles reutilizáveis para itens informativos e de navegação
+  - Actions encapsuladas (email de suporte, dados do app)
+- Internacionalização (**i18n**) aplicada de forma completa:
+  - Remoção total de strings hardcoded
+  - Todas as labels, títulos e botões movidos para arquivos `.arb`
+  - Uso correto de placeholders documentados
+  - Correção de compatibilidade com `flutter gen-l10n`
+- Ajustes funcionais e de produto:
+  - Atualização do nome do app para **MyStoreDay**
+  - Ano exibido de forma **automática** (`DateTime.now().year`)
+  - Assunto do email de suporte traduzido por idioma
+- Suporte completo aos idiomas:
+  - 🇧🇷 Português (Brasil)
+  - 🇵🇹 Português (Portugal)
+  - 🇺🇸 Inglês
+  - 🇪🇸 Espanhol
+  - 🇩🇪 Alemão (fallback)
+  - 🇨🇭 Alemão (Suíça — `de_CH`)
+
+### Objetivo:
+- Elevar a **Tela Sobre** ao padrão de **produto profissional**
+- Garantir **manutenção simples**, clareza arquitetural e escalabilidade
+- Consolidar a base de **i18n** e organização do MyStoreDay

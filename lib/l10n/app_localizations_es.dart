@@ -1207,4 +1207,35 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get actionOk => 'Entendido';
+
+  @override
+  String get aboutTitle => 'Acerca de';
+
+  @override
+  String aboutVersionWithValue(String value) {
+    return 'Versión $value';
+  }
+
+  @override
+  String aboutYearWithValue(int value) {
+    return '$value';
+  }
+
+  @override
+  String get aboutDeveloperTitle => 'Desarrollador';
+
+  @override
+  String get aboutPrivacyPolicyTitle => 'Política de Privacidad';
+
+  @override
+  String get aboutTermsTitle => 'Términos de Uso';
+
+  @override
+  String get aboutSupportTitle => 'Soporte';
+
+  @override
+  String get aboutHelpButton => 'Ayuda';
+
+  @override
+  String get aboutHelpEmailSubject => 'Ayuda con MyStoreDay';
 }

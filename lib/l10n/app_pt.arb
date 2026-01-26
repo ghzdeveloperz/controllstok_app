@@ -1246,7 +1246,7 @@
   "settingsAboutSubtitle": "Versão e informações do app",
   "@settingsAboutSubtitle": { "description": "CONFIG — Subtítulo da opção Sobre" },
 
-  
+
 
   "categoriesTitle": "Categorias",
   "@categoriesTitle": { "description": "CATEGORIAS — Título da tela de categorias" },
@@ -1289,7 +1289,40 @@
   },
 
   "actionOk": "Entendi",
-  "@actionOk": { "description": "GERAL — Botão de confirmação/OK" }
+  "@actionOk": { "description": "GERAL — Botão de confirmação/OK" },
+
+  "aboutTitle": "Sobre",
+  "@aboutTitle": { "description": "SOBRE — Título da tela Sobre" },
+
+  "aboutVersionWithValue": "Versão {value}",
+  "@aboutVersionWithValue": {
+    "description": "SOBRE — Texto da versão do app",
+    "placeholders": { "value": { "type": "String", "example": "1.0.1" } }
+  },
+
+  "aboutYearWithValue": "{value}",
+  "@aboutYearWithValue": {
+    "description": "SOBRE — Ano exibido na tela Sobre (automático)",
+    "placeholders": {"value": { "type": "int", "example": "2026" } }
+  },
+
+  "aboutDeveloperTitle": "Desenvolvedor",
+  "@aboutDeveloperTitle": { "description": "SOBRE — Label do desenvolvedor" },
+
+  "aboutPrivacyPolicyTitle": "Política de Privacidade",
+  "@aboutPrivacyPolicyTitle": { "description": "SOBRE — Item Política de Privacidade" },
+
+  "aboutTermsTitle": "Termos de Uso",
+  "@aboutTermsTitle": { "description": "SOBRE — Item Termos de Uso" },
+
+  "aboutSupportTitle": "Suporte",
+  "@aboutSupportTitle": { "description": "SOBRE — Item Suporte" },
+
+  "aboutHelpButton": "Ajuda",
+  "@aboutHelpButton": { "description": "SOBRE — Botão Ajuda" },
+
+  "aboutHelpEmailSubject": "Ajuda com o MyStoreDay",
+  "@aboutHelpEmailSubject": { "description": "SOBRE — Assunto do email de suporte" }
 
 
 }

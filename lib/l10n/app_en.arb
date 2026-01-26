@@ -1217,7 +1217,40 @@
   },
 
   "actionOk": "OK",
-  "@actionOk": { "description": "GENERAL — Confirmation button" }
+  "@actionOk": { "description": "GENERAL — Confirmation button" },
+
+  "aboutTitle": "About",
+  "@aboutTitle": { "description": "ABOUT — About screen title" },
+
+  "aboutVersionWithValue": "Version {value}",
+  "@aboutVersionWithValue": {
+    "description": "ABOUT — App version label",
+    "placeholders": { "value": { "type": "String", "example": "1.0.1" } }
+  },
+
+  "aboutYearWithValue": "{value}",
+  "@aboutYearWithValue": {
+    "description": "ABOUT — Year shown on About screen (automatic)",
+    "placeholders": {"value": { "type": "int", "example": "2026" } }
+  },
+
+  "aboutDeveloperTitle": "Developer",
+  "@aboutDeveloperTitle": { "description": "ABOUT — Developer label" },
+
+  "aboutPrivacyPolicyTitle": "Privacy Policy",
+  "@aboutPrivacyPolicyTitle": { "description": "ABOUT — Privacy Policy item" },
+
+  "aboutTermsTitle": "Terms of Use",
+  "@aboutTermsTitle": { "description": "ABOUT — Terms of Use item" },
+
+  "aboutSupportTitle": "Support",
+  "@aboutSupportTitle": { "description": "ABOUT — Support item" },
+
+  "aboutHelpButton": "Help",
+  "@aboutHelpButton": { "description": "ABOUT — Help button" },
+
+  "aboutHelpEmailSubject": "Help with MyStoreDay",
+  "@aboutHelpEmailSubject": { "description": "ABOUT — Support email subject" }
 }
 
 

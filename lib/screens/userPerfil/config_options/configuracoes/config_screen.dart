@@ -6,7 +6,7 @@ import '../../../../l10n/app_localizations.dart';
 
 import '../../../acounts/login/login_screen.dart';
 import '../categories/categorias_screen.dart';
-import '../sobre_screen.dart';
+import '../sobre/sobre_screen.dart';
 import '../traducer/traducer_screen.dart';
 
 import 'config_items.dart';

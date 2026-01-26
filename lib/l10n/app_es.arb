@@ -1193,5 +1193,38 @@
   },
 
   "actionOk": "Entendido",
-  "@actionOk": { "description": "GENERAL — Botón de confirmación" }
+  "@actionOk": { "description": "GENERAL — Botón de confirmación" },
+
+  "aboutTitle": "Acerca de",
+  "@aboutTitle": { "description": "SOBRE — Título de la pantalla Acerca de" },
+
+  "aboutVersionWithValue": "Versión {value}",
+  "@aboutVersionWithValue": {
+    "description": "SOBRE — Texto de versión de la app",
+    "placeholders": { "value": { "type": "String", "example": "1.0.1" } }
+  },
+
+  "aboutYearWithValue": "{value}",
+  "@aboutYearWithValue": {
+    "description": "SOBRE — Año mostrado (automático)",
+    "placeholders": {"value": { "type": "int", "example": "2026" } }
+  },
+
+  "aboutDeveloperTitle": "Desarrollador",
+  "@aboutDeveloperTitle": { "description": "SOBRE — Label del desarrollador" },
+
+  "aboutPrivacyPolicyTitle": "Política de Privacidad",
+  "@aboutPrivacyPolicyTitle": { "description": "SOBRE — Opción Política de Privacidad" },
+
+  "aboutTermsTitle": "Términos de Uso",
+  "@aboutTermsTitle": { "description": "SOBRE — Opción Términos de Uso" },
+
+  "aboutSupportTitle": "Soporte",
+  "@aboutSupportTitle": { "description": "SOBRE — Opción Soporte" },
+
+  "aboutHelpButton": "Ayuda",
+  "@aboutHelpButton": { "description": "SOBRE — Botón Ayuda" },
+
+  "aboutHelpEmailSubject": "Ayuda con MyStoreDay",
+  "@aboutHelpEmailSubject": { "description": "SOBRE — Asunto del email de soporte" }
 }

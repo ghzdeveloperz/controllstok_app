@@ -1194,5 +1194,39 @@
   },
 
   "actionOk": "OK",
-  "@actionOk": { "description": "ALLGEMEIN — Bestätigungsbutton" }
+  "@actionOk": { "description": "ALLGEMEIN — Bestätigungsbutton" },
+
+  "aboutTitle": "Über",
+  "@aboutTitle": { "description": "ÜBER — Titel der Über-Seite" },
+
+  "aboutVersionWithValue": "Version {value}",
+  "@aboutVersionWithValue": {
+    "description": "ÜBER — App-Version Label",
+    "placeholders": { "value": { "type": "String", "example": "1.0.1" } }
+  },
+
+  "aboutYearWithValue": "{value}",
+  "@aboutYearWithValue": {
+    "description": "ÜBER — Jahr auf der Über-Seite (automatisch)",
+    "placeholders": {"value": { "type": "int", "example": "2026" }
+  },
+
+  "aboutDeveloperTitle": "Entwickler",
+  "@aboutDeveloperTitle": { "description": "ÜBER — Entwickler Label" },
+
+  "aboutPrivacyPolicyTitle": "Datenschutzerklärung",
+  "@aboutPrivacyPolicyTitle": { "description": "ÜBER — Punkt Datenschutz" },
+
+  "aboutTermsTitle": "Nutzungsbedingungen",
+  "@aboutTermsTitle": { "description": "ÜBER — Punkt Nutzungsbedingungen" },
+
+  "aboutSupportTitle": "Support",
+  "@aboutSupportTitle": { "description": "ÜBER — Punkt Support" },
+
+  "aboutHelpButton": "Hilfe",
+  "@aboutHelpButton": { "description": "ÜBER — Hilfe Button" },
+
+  "aboutHelpEmailSubject": "Hilfe mit MyStoreDay",
+  "@aboutHelpEmailSubject": { "description": "ÜBER — Betreff Support-E-Mail" }
+}
 }

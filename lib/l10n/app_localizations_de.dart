@@ -1211,6 +1211,37 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get actionOk => 'OK';
+
+  @override
+  String get aboutTitle => 'Über';
+
+  @override
+  String aboutVersionWithValue(String value) {
+    return 'Version $value';
+  }
+
+  @override
+  String aboutYearWithValue(int value) {
+    return '$value';
+  }
+
+  @override
+  String get aboutDeveloperTitle => 'Desenvolvedor';
+
+  @override
+  String get aboutPrivacyPolicyTitle => 'Política de Privacidade';
+
+  @override
+  String get aboutTermsTitle => 'Termos de Uso';
+
+  @override
+  String get aboutSupportTitle => 'Suporte';
+
+  @override
+  String get aboutHelpButton => 'Ajuda';
+
+  @override
+  String get aboutHelpEmailSubject => 'Ajuda com o MyStoreDay';
 }
 
 /// The translations for German, as used in Switzerland (`de_CH`).
@@ -2419,4 +2450,17 @@ class AppLocalizationsDeCh extends AppLocalizationsDe {
 
   @override
   String get actionOk => 'OK';
+
+  @override
+  String get aboutTitle => 'Über';
+
+  @override
+  String aboutVersionWithValue(String value) {
+    return 'Version $value';
+  }
+
+  @override
+  String aboutYearWithValue(int value) {
+    return '$value';
+  }
 }

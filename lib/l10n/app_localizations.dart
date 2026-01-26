@@ -2251,6 +2251,60 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Entendi'**
   String get actionOk;
+
+  /// SOBRE — Título da tela Sobre
+  ///
+  /// In pt, this message translates to:
+  /// **'Sobre'**
+  String get aboutTitle;
+
+  /// SOBRE — Texto da versão do app
+  ///
+  /// In pt, this message translates to:
+  /// **'Versão {value}'**
+  String aboutVersionWithValue(String value);
+
+  /// SOBRE — Ano exibido na tela Sobre (automático)
+  ///
+  /// In pt, this message translates to:
+  /// **'{value}'**
+  String aboutYearWithValue(int value);
+
+  /// SOBRE — Label do desenvolvedor
+  ///
+  /// In pt, this message translates to:
+  /// **'Desenvolvedor'**
+  String get aboutDeveloperTitle;
+
+  /// SOBRE — Item Política de Privacidade
+  ///
+  /// In pt, this message translates to:
+  /// **'Política de Privacidade'**
+  String get aboutPrivacyPolicyTitle;
+
+  /// SOBRE — Item Termos de Uso
+  ///
+  /// In pt, this message translates to:
+  /// **'Termos de Uso'**
+  String get aboutTermsTitle;
+
+  /// SOBRE — Item Suporte
+  ///
+  /// In pt, this message translates to:
+  /// **'Suporte'**
+  String get aboutSupportTitle;
+
+  /// SOBRE — Botão Ajuda
+  ///
+  /// In pt, this message translates to:
+  /// **'Ajuda'**
+  String get aboutHelpButton;
+
+  /// SOBRE — Assunto do email de suporte
+  ///
+  /// In pt, this message translates to:
+  /// **'Ajuda com o MyStoreDay'**
+  String get aboutHelpEmailSubject;
 }
 
 class _AppLocalizationsDelegate
