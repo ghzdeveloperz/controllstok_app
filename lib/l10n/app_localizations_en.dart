@@ -1138,4 +1138,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get actionCancel => 'Cancel';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get settingsLanguageTitle => 'Language';
+
+  @override
+  String get settingsLanguageSubtitle => 'Language and region';
+
+  @override
+  String get settingsCategoriesTitle => 'Categories';
+
+  @override
+  String get settingsCategoriesSubtitle => 'Organize your inventory';
+
+  @override
+  String get settingsAboutTitle => 'About';
+
+  @override
+  String get settingsAboutSubtitle => 'App version and information';
 }

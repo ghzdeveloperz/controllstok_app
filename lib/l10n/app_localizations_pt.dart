@@ -1140,6 +1140,27 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get actionCancel => 'Cancelar';
+
+  @override
+  String get settingsTitle => 'Configurações';
+
+  @override
+  String get settingsLanguageTitle => 'Idioma';
+
+  @override
+  String get settingsLanguageSubtitle => 'Idioma e região';
+
+  @override
+  String get settingsCategoriesTitle => 'Categorias';
+
+  @override
+  String get settingsCategoriesSubtitle => 'Organize seu estoque';
+
+  @override
+  String get settingsAboutTitle => 'Sobre';
+
+  @override
+  String get settingsAboutSubtitle => 'Versão e informações do app';
 }
 
 /// The translations for Portuguese, as used in Portugal (`pt_PT`).
@@ -2283,4 +2304,25 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get actionCancel => 'Cancelar';
+
+  @override
+  String get settingsTitle => 'Definições';
+
+  @override
+  String get settingsLanguageTitle => 'Idioma';
+
+  @override
+  String get settingsLanguageSubtitle => 'Idioma e região';
+
+  @override
+  String get settingsCategoriesTitle => 'Categorias';
+
+  @override
+  String get settingsCategoriesSubtitle => 'Organize o seu stock';
+
+  @override
+  String get settingsAboutTitle => 'Sobre';
+
+  @override
+  String get settingsAboutSubtitle => 'Versão e informações da app';
 }

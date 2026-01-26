@@ -1153,6 +1153,27 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get actionCancel => 'Abbrechen';
+
+  @override
+  String get settingsTitle => 'Einstellungen';
+
+  @override
+  String get settingsLanguageTitle => 'Sprache';
+
+  @override
+  String get settingsLanguageSubtitle => 'Sprache und Region';
+
+  @override
+  String get settingsCategoriesTitle => 'Kategorien';
+
+  @override
+  String get settingsCategoriesSubtitle => 'Organisiere dein Inventar';
+
+  @override
+  String get settingsAboutTitle => 'Über';
+
+  @override
+  String get settingsAboutSubtitle => 'App-Version und Informationen';
 }
 
 /// The translations for German, as used in Switzerland (`de_CH`).
@@ -2303,4 +2324,25 @@ class AppLocalizationsDeCh extends AppLocalizationsDe {
 
   @override
   String get actionCancel => 'Abbrechen';
+
+  @override
+  String get settingsTitle => 'Einstellungen';
+
+  @override
+  String get settingsLanguageTitle => 'Sprache';
+
+  @override
+  String get settingsLanguageSubtitle => 'Sprache und Region';
+
+  @override
+  String get settingsCategoriesTitle => 'Kategorien';
+
+  @override
+  String get settingsCategoriesSubtitle => 'Organisiere dein Inventar';
+
+  @override
+  String get settingsAboutTitle => 'Über';
+
+  @override
+  String get settingsAboutSubtitle => 'App-Version und Informationen';
 }

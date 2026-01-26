@@ -7,7 +7,7 @@ import '../../core/app_navigator.dart';
 import '../../l10n/app_localizations.dart';
 
 import '../acounts/auth_choice/auth_choice_screen.dart';
-import 'config_options/config_screen.dart';
+import 'config_options/configuracoes/config_screen.dart';
 
 import 'state/perfil_controller.dart';
 import 'widgets/perfil_loading_skeleton.dart';

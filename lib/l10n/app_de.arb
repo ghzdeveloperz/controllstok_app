@@ -1127,5 +1127,28 @@
   "@actionSave": { "description": "AÇÕES — Botão salvar (padrão do app)" },
 
   "actionCancel": "Abbrechen",
-  "@actionCancel": { "description": "AÇÕES — Botão cancelar (padrão do app)" }
+  "@actionCancel": { "description": "AÇÕES — Botão cancelar (padrão do app)" },
+
+  
+
+  "settingsTitle": "Einstellungen",
+  "@settingsTitle": { "description": "CONFIG — Título da tela de configurações" },
+
+  "settingsLanguageTitle": "Sprache",
+  "@settingsLanguageTitle": { "description": "CONFIG — Título da opção Idioma" },
+
+  "settingsLanguageSubtitle": "Sprache und Region",
+  "@settingsLanguageSubtitle": { "description": "CONFIG — Subtítulo da opção Idioma" },
+
+  "settingsCategoriesTitle": "Kategorien",
+  "@settingsCategoriesTitle": { "description": "CONFIG — Título da opção Categorias" },
+
+  "settingsCategoriesSubtitle": "Organisiere dein Inventar",
+  "@settingsCategoriesSubtitle": { "description": "CONFIG — Subtítulo da opção Categorias" },
+
+  "settingsAboutTitle": "Über",
+  "@settingsAboutTitle": { "description": "CONFIG — Título da opção Sobre" },
+
+  "settingsAboutSubtitle": "App-Version und Informationen",
+  "@settingsAboutSubtitle": { "description": "CONFIG — Subtítulo da opção Sobre" }
 }

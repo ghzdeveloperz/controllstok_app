@@ -720,3 +720,45 @@ Essas regras são reavaliadas a cada mudança de autenticação ou Firestore.
 - Elevar a **Tela de Perfil** a um padrão de **código profissional e escalável**
 - Garantir **consistência de idioma**, manutenibilidade e clareza arquitetural
 - Preparar o app para crescimento, internacionalização e futuras evoluções
+
+## [Milestone 28] Tela de Configurações Refatorada + Estrutura Escalável + i18n Completo
+**Status:** Concluído ✅
+
+### Melhorias:
+- Refatorada a **Tela de Configurações** com foco em **arquitetura escalável e manutenção a longo prazo**:
+  - Quebra do arquivo monolítico em **múltiplos arquivos com responsabilidades claras**
+  - Separação entre:
+    - Tela principal (`ConfigScreen`)
+    - Definição de itens (`ConfigItems`)
+    - Modelo de dados (`ConfigItem`)
+    - Widgets reutilizáveis (cards, animações, AppBar)
+    - Tema e paleta visual centralizada
+- Organização preparada para crescimento:
+  - Inclusão de novas opções de configuração sem alterar a tela principal
+  - Reutilização de componentes visuais e lógicos
+  - Código mais legível, previsível e testável
+- Internacionalização (**i18n**) aplicada de forma completa:
+  - Remoção total de strings hardcoded da tela
+  - Todas as labels e subtítulos movidos para arquivos `.arb`
+  - Chaves documentadas com `@description`
+  - Suporte aos idiomas:
+    - 🇧🇷 Português (Brasil)
+    - 🇺🇸 Inglês
+    - 🇪🇸 Espanhol
+    - 🇵🇹 Português (Portugal)
+    - 🇩🇪 Alemão (fallback)
+    - 🇨🇭 Alemão (Suíça — `de_CH`)
+- UI premium preservada:
+  - Animações de entrada mantidas
+  - Gradientes, sombras e blur intactos
+  - Experiência visual consistente com o restante do app
+- Fluxos sensíveis mantidos e isolados:
+  - Logout encapsulado
+  - Navegação desacoplada da UI
+  - Pontos de extensão claros para futuras regras de negócio
+
+### Objetivo:
+- Elevar a **Tela de Configurações** ao padrão de **produto profissional**
+- Garantir **escalabilidade real**, evitando refatorações custosas no futuro
+- Consolidar a base de **i18n** e arquitetura para crescimento do MyStoreDay
+

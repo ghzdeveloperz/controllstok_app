@@ -2143,6 +2143,48 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Cancelar'**
   String get actionCancel;
+
+  /// CONFIG — Título da tela de configurações
+  ///
+  /// In pt, this message translates to:
+  /// **'Configurações'**
+  String get settingsTitle;
+
+  /// CONFIG — Título da opção Idioma
+  ///
+  /// In pt, this message translates to:
+  /// **'Idioma'**
+  String get settingsLanguageTitle;
+
+  /// CONFIG — Subtítulo da opção Idioma
+  ///
+  /// In pt, this message translates to:
+  /// **'Idioma e região'**
+  String get settingsLanguageSubtitle;
+
+  /// CONFIG — Título da opção Categorias
+  ///
+  /// In pt, this message translates to:
+  /// **'Categorias'**
+  String get settingsCategoriesTitle;
+
+  /// CONFIG — Subtítulo da opção Categorias
+  ///
+  /// In pt, this message translates to:
+  /// **'Organize seu estoque'**
+  String get settingsCategoriesSubtitle;
+
+  /// CONFIG — Título da opção Sobre
+  ///
+  /// In pt, this message translates to:
+  /// **'Sobre'**
+  String get settingsAboutTitle;
+
+  /// CONFIG — Subtítulo da opção Sobre
+  ///
+  /// In pt, this message translates to:
+  /// **'Versão e informações do app'**
+  String get settingsAboutSubtitle;
 }
 
 class _AppLocalizationsDelegate

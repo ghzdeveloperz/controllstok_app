@@ -1223,7 +1223,28 @@
 "actionCancel": "Cancelar",
 "@actionCancel": {
     "description": "AÇÕES — Botão cancelar (padrão do app)"
-  }
+  },
+
+  "settingsTitle": "Configurações",
+  "@settingsTitle": { "description": "CONFIG — Título da tela de configurações" },
+
+  "settingsLanguageTitle": "Idioma",
+  "@settingsLanguageTitle": { "description": "CONFIG — Título da opção Idioma" },
+
+  "settingsLanguageSubtitle": "Idioma e região",
+  "@settingsLanguageSubtitle": { "description": "CONFIG — Subtítulo da opção Idioma" },
+
+  "settingsCategoriesTitle": "Categorias",
+  "@settingsCategoriesTitle": { "description": "CONFIG — Título da opção Categorias" },
+
+  "settingsCategoriesSubtitle": "Organize seu estoque",
+  "@settingsCategoriesSubtitle": { "description": "CONFIG — Subtítulo da opção Categorias" },
+
+  "settingsAboutTitle": "Sobre",
+  "@settingsAboutTitle": { "description": "CONFIG — Título da opção Sobre" },
+
+  "settingsAboutSubtitle": "Versão e informações do app",
+  "@settingsAboutSubtitle": { "description": "CONFIG — Subtítulo da opção Sobre" }
 
 
 }
