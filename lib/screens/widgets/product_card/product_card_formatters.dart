@@ -1,4 +1,6 @@
 // lib/screens/widgets/product_card/product_card_formatters.dart
+import 'package:intl/intl.dart';
+
 import '../../../l10n/app_localizations.dart';
 import 'product_status.dart';
 
@@ -21,8 +23,11 @@ class ProductCardFormatters {
   }
 
   String currency(AppLocalizations l10n, double value) {
-    // ✅ por enquanto usa sua string i18n (simples e consistente)
-    // 🔥 futuro: trocar por NumberFormat.currency(locale: ...) sem mudar UI
-    return l10n.currencyValue(value);
+    // ✅ moeda automática pelo locale + sempre 2 casas decimais
+    final f = NumberFormat.simpleCurrency(
+      locale: l10n.localeName,
+      decimalDigits: 2,
+    );
+    return f.format(value);
   }
 }

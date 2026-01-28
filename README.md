@@ -831,3 +831,26 @@ Essas regras são reavaliadas a cada mudança de autenticação ou Firestore.
 ### Merge tradução-app
 
 ### REMOÇÃO DO VIDEO E MIDIA
+
+## [Milestone 30] Otimização e Padronização do ProductCard (Performance + Layout)
+**Status:** Concluído ✅
+
+### Ajustes realizados:
+- Padronizado o **ProductCard em proporção 1:1 (quadrado)** usando `AspectRatio`, evitando cards esticados ou grandes demais em grids.
+- Corrigida a **formatação de valores monetários** para sempre exibir **2 casas decimais**, respeitando automaticamente o **locale do app** (`intl / NumberFormat.simpleCurrency`).
+- Refatorado o formatter de moeda para centralizar a regra em `ProductCardFormatters`, mantendo consistência visual em todo o app.
+- Melhorada a **performance em listas e grids**:
+  - Blur (`BackdropFilter`) tornou-se **opcional** e desativado por padrão.
+  - Aplicado `ClipRect` no blur para evitar processamento desnecessário.
+  - Reduzido custo de renderização removendo animações redundantes.
+- Otimizado o carregamento de imagens:
+  - Limite de decode e cache (`memCacheWidth/Height`, `maxWidthDiskCache/Height`).
+  - `filterQuality.low` para reduzir custo gráfico.
+  - Placeholders leves e consistentes.
+- Mantido o **visual premium** (imagem 1:1, overlay sutil, bloco inferior com informações e status).
+
+### Resultado:
+- Cards visualmente consistentes em qualquer grid/lista.
+- Scroll fluido mesmo com muitos produtos.
+- Valores financeiros corretos e padronizados.
+- Base preparada para ajustes finos de performance sem refatorações futuras.
