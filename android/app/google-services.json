@@ -43,11 +43,27 @@
       },
       "oauth_client": [
         {
+          "client_id": "653898186857-m4gvg4cgkip9ol9ofoadghd025tbg4bh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ghz.mystoreday_app",
+            "certificate_hash": "dded68eed1cefa10842d0292450588e31743954a"
+          }
+        },
+        {
           "client_id": "653898186857-o5d74m78ok8364d38vfp4j08nf4p5pkh.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.ghz.mystoreday_app",
             "certificate_hash": "7a79a6b17ebcfe853634160a22bd03170a0128ba"
+          }
+        },
+        {
+          "client_id": "653898186857-s2gcrgkvghssi9l07icbku2um7q4hasv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ghz.mystoreday_app",
+            "certificate_hash": "77d2fdc523b19d1133cc8c6986ab5b62842dbe46"
           }
         },
         {
