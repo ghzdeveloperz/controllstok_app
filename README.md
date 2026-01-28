@@ -829,3 +829,5 @@ Essas regras são reavaliadas a cada mudança de autenticação ou Firestore.
 - Consolidar a base de **i18n** e organização do MyStoreDay
 
 ### Merge tradução-app
+
+### REMOÇÃO DO VIDEO E MIDIA
