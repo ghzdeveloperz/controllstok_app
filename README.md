@@ -988,3 +988,6 @@ Resultado: **ID ≠ Nome** → `filteredProducts` ficava vazio.
 - Botões de categoria voltaram a funcionar corretamente ✅
 - Compatibilidade garantida com produtos antigos (salvos com nome da categoria) ✅
 - Estrutura pronta para futura padronização (salvar sempre `categoryId` no produto) ✅
+
+
+## version: 1.0.2+1 | Monetização via AdMob (Native Ads) | Fix filtro por categoria | Otimização ProductCard

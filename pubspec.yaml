@@ -2,7 +2,7 @@ name: mystoreday
 description: "Controle de Estoque para o seu negócio."
 publish_to: 'none'
 
-version: 1.0.1+23
+version: 1.0.2+33
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
