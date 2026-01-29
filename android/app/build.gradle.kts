@@ -4,12 +4,10 @@ import java.io.FileInputStream
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
     id("com.google.gms.google-services")
 }
 
-// 🔹 Carrega as propriedades do keystore
 val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file("key.properties")
 if (keystorePropertiesFile.exists()) {
@@ -17,16 +15,13 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.ghz.mystoreday_app" // ✅ alterado
+    namespace = "com.ghz.mystoreday_app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
-        // ✅ continua usando Java 17
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-
-        // 🔥 ISSO RESOLVE O ERRO DO flutter_local_notifications
         isCoreLibraryDesugaringEnabled = true
     }
 
@@ -35,14 +30,13 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.ghz.mystoreday_app" // ✅ alterado
+        applicationId = "com.ghz.mystoreday_app"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
 
-    // 🔹 Configura a assinatura do release
     signingConfigs {
         create("release") {
             keyAlias = keystoreProperties["keyAlias"] as String
@@ -62,8 +56,10 @@ android {
 }
 
 dependencies {
-    // 🔥 DEPENDÊNCIA OBRIGATÓRIA PARA DESUGARING
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+
+    // ✅ Necessário se você usa androidx.cardview.widget.CardView no XML do Native Ad
+    implementation("androidx.cardview:cardview:1.0.0")
 }
 
 flutter {

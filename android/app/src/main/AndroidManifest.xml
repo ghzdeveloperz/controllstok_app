@@ -11,16 +11,12 @@
     <!-- Notificações (Android 13+) -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
-    <!-- Internet (Firebase, Storage, etc.) -->
+    <!-- Internet (Firebase, Storage, AdMob) -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- =========================
          REMOVER PERMISSÕES DE MÍDIA (Play Console)
-         =========================
-         Você usa Photo Picker / seletor do sistema para escolher 1 imagem.
-         Então NÃO precisa pedir permissões amplas de mídia.
-         Mesmo que plugins adicionem, aqui a gente remove no merge.
-    -->
+         ========================= -->
 
     <!-- Android 13+ -->
     <uses-permission
@@ -51,6 +47,13 @@
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 
+        <!-- ✅ AdMob App ID OFICIAL (com ~)
+             Se um dia você trocar de app no AdMob, é AQUI que muda.
+        -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-7511114302969154~5055740618" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -74,8 +77,8 @@
 
         <!-- ✅ IMPORTANTE:
              NÃO declare FirebaseMessagingService manualmente aqui.
-             O firebase_messaging já injeta os services/receivers no manifest final.
-             Manter isso pode gerar duplicação/conflitos em alguns builds. -->
+             O firebase_messaging injeta os services/receivers no merge final.
+        -->
 
         <meta-data
             android:name="flutterEmbedding"

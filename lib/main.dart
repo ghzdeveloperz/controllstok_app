@@ -6,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart'; // ✅ ADICIONADO
+import 'package:flutter_riverpod/flutter_riverpod.dart'; //
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,6 +23,8 @@ import 'screens/home/home_screen.dart';
 import 'screens/acounts/auth_choice/auth_choice_screen.dart';
 import 'screens/acounts/register/register_screen.dart';
 import 'screens/acounts/onboarding/company_screen.dart';
+
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 /// 🔹 Handler para mensagens em background e app killed
 Future<void> _firebaseBackgroundHandler(RemoteMessage message) async {
@@ -41,6 +43,10 @@ Future<void> _firebaseBackgroundHandler(RemoteMessage message) async {
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+
+  // 🔹 Mobile ADS
+  await MobileAds.instance.initialize();
 
   // 🔹 Firebase
   await FirebaseService.init();

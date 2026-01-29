@@ -854,3 +854,111 @@ Essas regras são reavaliadas a cada mudança de autenticação ou Firestore.
 - Scroll fluido mesmo com muitos produtos.
 - Valores financeiros corretos e padronizados.
 - Base preparada para ajustes finos de performance sem refatorações futuras.
+
+## [Milestone 31] Integração de Anúncios Nativos (AdMob) no Feed de Produtos
+**Status:** Concluído ✅
+
+### O que foi implementado:
+- Integração completa do **Google AdMob (Native Ads)** no app.
+- Criação de um **feed misto** que intercala produtos reais com anúncios:
+  - Inserção de anúncios a cada *N* itens (intervalo configurável).
+- Uso de **NativeAd com layout customizado**, mantendo o visual premium do app.
+- Exibição clara do selo **“Patrocinado”** para conformidade com as políticas.
+
+### Boas práticas aplicadas:
+- ✅ **Anúncios de TESTE em modo debug** (`kDebugMode`):
+  - Evita cliques inválidos durante desenvolvimento.
+  - Protege a conta AdMob contra bloqueios e limitações.
+- ✅ **Anúncios REAIS apenas em build release**:
+  - Monetização segura somente em produção.
+- Lógica automática:
+  - `debug` → Ad Unit de teste
+  - `release` → Ad Unit oficial do app
+
+### Detalhes técnicos:
+- Uso do pacote `google_mobile_ads`.
+- `NativeAdFactory` registrada no Android nativo.
+- `ProductAdCard` isolado como componente reutilizável.
+- Loader customizado exibido enquanto o anúncio carrega.
+- Ads desacoplados da lógica de produtos (arquitetura limpa).
+
+### Observações importantes:
+- O **App ID e Ad Unit ID oficiais** do AdMob foram utilizados.
+- O arquivo **app-ads.txt** foi configurado corretamente no domínio do site.
+- A estratégia atual segue exatamente as **diretrizes do Google AdMob**.
+
+### Manutenção futura:
+- Para forçar anúncios reais em debug (⚠️ não recomendado):
+  ```dart
+  useTestAdUnit: false.
+
+## [Milestone 32] Monetização com AdMob (Native Ads)
+
+**Status:** Concluído ✅  
+**Área:** Monetização / Publicação Google Play  
+**Impacto:** App funcional + monetizável
+
+### Visão geral
+A partir deste milestone, o **MyStoreDay** passa a operar com **monetização ativa via Google AdMob**, utilizando **Native Ads** integrados de forma nativa ao feed de produtos, respeitando UX, políticas do Google Play e boas práticas de segurança.
+
+---
+
+### Estratégia de monetização
+- Tipo de anúncio: **AdMob Native Ads**
+- Formato: **Cards nativos** integrados ao grid de produtos
+- Frequência:  
+  - Inserção automática a cada **N itens** (intervalo saudável, não intrusivo)
+- Identificação clara:
+  - Selo **“Patrocinado”** sempre visível
+- Não bloqueia navegação nem ações principais do usuário
+
+---
+
+### Implementação técnica
+- SDK: `google_mobile_ads`
+- Factory nativa Android registrada:
+  - `factoryId: productCardNative`
+- Comportamento por ambiente:
+  - **Debug:** anúncios de teste (evita penalidades)
+  - **Release:** anúncios reais do AdMob
+- Fallback visual:
+  - Loader customizado enquanto o anúncio carrega
+  - Card nunca fica “quebrado” ou vazio
+
+---
+
+### IDs oficiais
+- **AdMob App ID** configurado no `AndroidManifest.xml`
+- **Ad Unit ID (Native)** usado exclusivamente no ambiente de produção
+- Nenhum ID de teste é utilizado em builds de release
+
+---
+
+### Conformidade com políticas
+- `app-ads.txt` publicado e acessível em:
+
+  
+https://mystoreday.com/app-ads.txt
+
+- Arquivo validado com o publisher ID oficial do AdMob
+- Política de privacidade publicada e acessível
+- Nenhuma permissão sensível solicitada para anúncios
+- Anúncios não simulam conteúdo do app
+- Não há incentivo a cliques acidentais
+
+---
+
+### Segurança e estabilidade
+- Ads isolados em widgets próprios
+- Ciclo de vida controlado (`load`, `dispose`)
+- Nenhum `setState` durante build
+- Nenhum impacto em performance do feed
+- App estável em debug e release
+
+---
+
+### Resultado
+- ✅ App pronto para monetização
+- ✅ App em conformidade com Google Play e AdMob
+- ✅ Base sólida para escalar receita no futuro
+- ✅ Código e UX preparados para crescimento do produto

@@ -1,5 +1,7 @@
 // lib/screens/estoque_screen.dart
 import 'dart:async'; // debounce
+import 'package:flutter/foundation.dart' show kDebugMode;
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -16,6 +18,13 @@ import 'userPerfil/perfil_screen.dart';
 
 import '../l10n/app_localizations.dart';
 
+// ✅ feed misto
+import '../feed/feed_builder.dart';
+import '../feed/feed_item.dart';
+
+// ✅ ads
+import 'widgets/ads/product_ad_card.dart';
+
 class EstoqueScreen extends StatefulWidget {
   final String uid;
   final void Function(List<Product>)? onProductsLoaded;
@@ -29,6 +38,11 @@ class EstoqueScreen extends StatefulWidget {
 class _EstoqueScreenState extends State<EstoqueScreen> {
   // ✅ ID estável para categoria "Todos" (não depende do idioma)
   static const String _kAllCategoryId = '__all__';
+
+  // ✅ SEU AD UNIT ID NATIVO OFICIAL (com /)
+  // (o da sua tela do AdMob)
+  static const String _kNativeAdUnitId =
+      'ca-app-pub-7511114302969154/9353304194';
 
   // Busca e filtros
   final ValueNotifier<String> _searchTextNotifier = ValueNotifier<String>('');
@@ -163,15 +177,12 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
                     child: CircleAvatar(
                       radius: 20,
                       backgroundColor: Colors.black87,
-                      backgroundImage:
-                          (photoUrl != null && photoUrl.isNotEmpty)
-                              ? CachedNetworkImageProvider(photoUrl)
-                              : null,
+                      backgroundImage: (photoUrl != null && photoUrl.isNotEmpty)
+                          ? CachedNetworkImageProvider(photoUrl)
+                          : null,
                       child: (photoUrl == null || photoUrl.isEmpty)
                           ? Text(
-                              email.isNotEmpty
-                                  ? email[0].toUpperCase()
-                                  : 'U',
+                              email.isNotEmpty ? email[0].toUpperCase() : 'U',
                               style: const TextStyle(
                                 fontSize: 16,
                                 color: Colors.white,
@@ -224,7 +235,6 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
           builder: (context, snapshot) {
             if (!snapshot.hasData) return const SizedBox();
 
-            // ✅ Primeiro item é "Todos" com ID estável
             final categories = <Category>[
               Category(id: _kAllCategoryId, name: l10n.allCategory),
               ...(snapshot.data ?? []),
@@ -244,7 +254,9 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
 
                     return GestureDetector(
                       onTap: () {
-                        if (_selectedCategoryIndexNotifier.value == index) return;
+                        if (_selectedCategoryIndexNotifier.value == index) {
+                          return;
+                        }
                         _selectedCategoryIndexNotifier.value = index;
                         _selectedCategoryIdNotifier.value = category.id;
                       },
@@ -264,7 +276,7 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
                           ),
                         ),
                         child: Text(
-                          category.name, // "Todos" já vem traduzido aqui
+                          category.name,
                           style: TextStyle(
                             fontSize: 13.5,
                             fontWeight: FontWeight.w500,
@@ -309,7 +321,8 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
 
                   final matchesCategory = selectedCategoryId == _kAllCategoryId ||
                       product.category == selectedCategoryId ||
-                      product.category == _categoryNameByIdFallback(selectedCategoryId);
+                      product.category ==
+                          _categoryNameByIdFallback(selectedCategoryId);
 
                   return matchesSearch && matchesCategory;
                 }).toList();
@@ -323,18 +336,39 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
                   );
                 }
 
+                // ✅ Feed misto com anúncios
+                final feed = buildFeedWithAds(
+                  products: filteredProducts,
+                  interval: 8, // 6~10 é saudável
+                );
+
                 return GridView.builder(
                   padding: const EdgeInsets.all(20),
-                  gridDelegate:
-                      const SliverGridDelegateWithMaxCrossAxisExtent(
+                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                     maxCrossAxisExtent: 250,
                     childAspectRatio: 0.85,
                     crossAxisSpacing: 16,
                     mainAxisSpacing: 16,
                   ),
-                  itemCount: filteredProducts.length,
+                  itemCount: feed.length,
                   itemBuilder: (context, index) {
-                    final product = filteredProducts[index];
+                    final item = feed[index];
+
+                    if (item is AdFeedItem) {
+                      return ProductAdCard(
+                        key: ValueKey('ad_$index'),
+                        adUnitId: _kNativeAdUnitId,
+
+                        // ✅ Debug => teste; Release => real
+                        // Se um dia quiser forçar real no debug, troque por: false
+                        useTestAdUnit: kDebugMode,
+
+                        aspectRatio: 1.0,
+                      );
+                    }
+
+                    final product = (item as ProductFeedItem).product;
+
                     return ProductCard(
                       product: product,
                       uid: widget.uid,
@@ -352,53 +386,7 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
     );
   }
 
-  /// ⚠️ Fallback: se seu Product.category salva "nome" ao invés de "id",
-  /// você pode adaptar aqui. Mantive um fallback simples.
   String _categoryNameByIdFallback(String categoryId) {
-    // Se o seu product.category salva "nome", então selectedCategoryId deveria ser "nome".
-    // Como não tenho o seu model aqui, deixei neutro.
     return categoryId;
   }
-}
-
-// Ícone de notificações simples (mantido)
-class AnimatedNotificationIcon extends StatelessWidget {
-  final VoidCallback onTap;
-  const AnimatedNotificationIcon({super.key, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: const Icon(
-        Icons.notifications_none_outlined,
-        size: 28,
-        color: Colors.black87,
-      ),
-    );
-  }
-}
-
-Widget buildAvatar({
-  required String email,
-  String? photoUrl,
-  double radius = 20,
-}) {
-  final hasPhoto = photoUrl != null && photoUrl.isNotEmpty;
-
-  return CircleAvatar(
-    radius: radius,
-    backgroundColor: Colors.black87,
-    backgroundImage: hasPhoto ? CachedNetworkImageProvider(photoUrl) : null,
-    child: hasPhoto
-        ? null
-        : Text(
-            email.isNotEmpty ? email[0].toUpperCase() : 'U',
-            style: TextStyle(
-              fontSize: radius,
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-  );
 }
