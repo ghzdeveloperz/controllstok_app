@@ -962,3 +962,29 @@ https://mystoreday.com/app-ads.txt
 - ✅ App em conformidade com Google Play e AdMob
 - ✅ Base sólida para escalar receita no futuro
 - ✅ Código e UX preparados para crescimento do produto
+
+
+## [Milestone 33] Fix — Filtro por Categoria não exibia produtos (ID vs Nome)
+**Status:** Concluído ✅
+
+### Problema
+Ao selecionar uma categoria, a lista ficava vazia porque o filtro comparava:
+- **botão/categoria selecionada:** `Category.id`
+- **produto salvo no Firestore (legado):** `product.category` como **nome** (ex: "Bebidas")
+
+Resultado: **ID ≠ Nome** → `filteredProducts` ficava vazio.
+
+### Solução aplicada
+- Criado um **mapa id → name** vindo do stream de categorias:
+  - `ValueNotifier<Map<String, String>> _categoryIdToNameNotifier`
+- O filtro agora aceita **dois formatos** no `product.category`:
+  - **novo (correto):** `product.category == selectedCategoryId`
+  - **legado (compatível):** `product.category == selectedCategoryName`
+
+### Arquivo alterado
+- `lib/screens/estoque_screen.dart`
+
+### Resultado
+- Botões de categoria voltaram a funcionar corretamente ✅
+- Compatibilidade garantida com produtos antigos (salvos com nome da categoria) ✅
+- Estrutura pronta para futura padronização (salvar sempre `categoryId` no produto) ✅

@@ -40,7 +40,6 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
   static const String _kAllCategoryId = '__all__';
 
   // ✅ SEU AD UNIT ID NATIVO OFICIAL (com /)
-  // (o da sua tela do AdMob)
   static const String _kNativeAdUnitId =
       'ca-app-pub-7511114302969154/9353304194';
 
@@ -50,6 +49,11 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
       ValueNotifier<String>(_kAllCategoryId);
   final ValueNotifier<int> _selectedCategoryIndexNotifier =
       ValueNotifier<int>(0);
+
+  // ✅ categorias (id -> name) para conseguir filtrar mesmo se o produto estiver
+  // salvando o NOME da categoria (legado) ao invés do ID.
+  final ValueNotifier<Map<String, String>> _categoryIdToNameNotifier =
+      ValueNotifier<Map<String, String>>({});
 
   Timer? _debounceTimer;
 
@@ -64,6 +68,7 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
     _searchTextNotifier.dispose();
     _selectedCategoryIdNotifier.dispose();
     _selectedCategoryIndexNotifier.dispose();
+    _categoryIdToNameNotifier.dispose();
     _debounceTimer?.cancel();
     super.dispose();
   }
@@ -235,9 +240,22 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
           builder: (context, snapshot) {
             if (!snapshot.hasData) return const SizedBox();
 
+            final remoteCategories = snapshot.data ?? [];
+
+            // ✅ Atualiza o mapa id->name para o filtro funcionar
+            final nextMap = <String, String>{
+              for (final c in remoteCategories) c.id: c.name,
+            };
+
+            // só atualiza se mudou (evita rebuilds desnecessários)
+            final currentMap = _categoryIdToNameNotifier.value;
+            if (!_mapsEqual(currentMap, nextMap)) {
+              _categoryIdToNameNotifier.value = nextMap;
+            }
+
             final categories = <Category>[
               Category(id: _kAllCategoryId, name: l10n.allCategory),
-              ...(snapshot.data ?? []),
+              ...remoteCategories,
             ];
 
             return ValueListenableBuilder<String>(
@@ -315,66 +333,73 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
             return ValueListenableBuilder<String>(
               valueListenable: _selectedCategoryIdNotifier,
               builder: (context, selectedCategoryId, _) {
-                final filteredProducts = products.where((product) {
-                  final matchesSearch =
-                      product.name.toLowerCase().contains(searchText);
+                return ValueListenableBuilder<Map<String, String>>(
+                  valueListenable: _categoryIdToNameNotifier,
+                  builder: (context, categoryIdToName, _) {
+                    final selectedCategoryName =
+                        categoryIdToName[selectedCategoryId];
 
-                  final matchesCategory = selectedCategoryId == _kAllCategoryId ||
-                      product.category == selectedCategoryId ||
-                      product.category ==
-                          _categoryNameByIdFallback(selectedCategoryId);
+                    final filteredProducts = products.where((product) {
+                      final name = product.name.toLowerCase();
+                      final matchesSearch = name.contains(searchText);
 
-                  return matchesSearch && matchesCategory;
-                }).toList();
+                      // ✅ robusto: aceita produto.category como ID (novo) ou NAME (legado)
+                      final matchesCategory =
+                          selectedCategoryId == _kAllCategoryId ||
+                              product.category == selectedCategoryId ||
+                              (selectedCategoryName != null &&
+                                  product.category == selectedCategoryName);
 
-                if (filteredProducts.isEmpty) {
-                  return Center(
-                    child: Text(
-                      l10n.noProductsFound,
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-                  );
-                }
+                      return matchesSearch && matchesCategory;
+                    }).toList();
 
-                // ✅ Feed misto com anúncios
-                final feed = buildFeedWithAds(
-                  products: filteredProducts,
-                  interval: 8, // 6~10 é saudável
-                );
-
-                return GridView.builder(
-                  padding: const EdgeInsets.all(20),
-                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 250,
-                    childAspectRatio: 0.85,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                  ),
-                  itemCount: feed.length,
-                  itemBuilder: (context, index) {
-                    final item = feed[index];
-
-                    if (item is AdFeedItem) {
-                      return ProductAdCard(
-                        key: ValueKey('ad_$index'),
-                        adUnitId: _kNativeAdUnitId,
-
-                        // ✅ Debug => teste; Release => real
-                        // Se um dia quiser forçar real no debug, troque por: false
-                        useTestAdUnit: kDebugMode,
-
-                        aspectRatio: 1.0,
+                    if (filteredProducts.isEmpty) {
+                      return Center(
+                        child: Text(
+                          l10n.noProductsFound,
+                          style: const TextStyle(color: Colors.grey),
+                        ),
                       );
                     }
 
-                    final product = (item as ProductFeedItem).product;
+                    // ✅ Feed misto com anúncios
+                    final feed = buildFeedWithAds(
+                      products: filteredProducts,
+                      interval: 8,
+                    );
 
-                    return ProductCard(
-                      product: product,
-                      uid: widget.uid,
-                      userCategories:
-                          products.map((p) => p.category).toSet().toList(),
-                      imageProvider: _cachedImages[product.id],
+                    return GridView.builder(
+                      padding: const EdgeInsets.all(20),
+                      gridDelegate:
+                          const SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: 250,
+                        childAspectRatio: 0.85,
+                        crossAxisSpacing: 16,
+                        mainAxisSpacing: 16,
+                      ),
+                      itemCount: feed.length,
+                      itemBuilder: (context, index) {
+                        final item = feed[index];
+
+                        if (item is AdFeedItem) {
+                          return ProductAdCard(
+                            key: ValueKey('ad_$index'),
+                            adUnitId: _kNativeAdUnitId,
+                            useTestAdUnit: kDebugMode,
+                            aspectRatio: 1.0,
+                          );
+                        }
+
+                        final product = (item as ProductFeedItem).product;
+
+                        return ProductCard(
+                          product: product,
+                          uid: widget.uid,
+                          userCategories:
+                              products.map((p) => p.category).toSet().toList(),
+                          imageProvider: _cachedImages[product.id],
+                        );
+                      },
                     );
                   },
                 );
@@ -386,7 +411,12 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
     );
   }
 
-  String _categoryNameByIdFallback(String categoryId) {
-    return categoryId;
+  bool _mapsEqual(Map<String, String> a, Map<String, String> b) {
+    if (identical(a, b)) return true;
+    if (a.length != b.length) return false;
+    for (final entry in a.entries) {
+      if (b[entry.key] != entry.value) return false;
+    }
+    return true;
   }
 }
