@@ -1,7 +1,7 @@
 // lib/screens/home/home_tabs.dart
 import 'package:flutter/material.dart';
 
-import '../estoque_screen.dart';
+import '../vitality/vitality_screen.dart';
 import '../products/new_product/novo_produto_screen.dart';
 import '../scanner_screen.dart';
 import '../relatorios_screen.dart';
@@ -11,7 +11,10 @@ import '../models/product.dart';
 typedef ProductsLoaded = void Function(List<Product> products);
 
 class HomeTabs {
+  // Mantive o nome "estoqueIndex" para não quebrar nada no app agora,
+  // mas a aba 0 passa a ser a tela "Vida Útil".
   static const int estoqueIndex = 0;
+
   static const int novoProdutoIndex = 1;
   static const int scannerIndex = 2;
   static const int relatoriosIndex = 3;
@@ -23,7 +26,7 @@ class HomeTabs {
     required VoidCallback onProductSaved,
   }) {
     return [
-      EstoqueScreen(uid: uid, onProductsLoaded: onProductsLoaded),
+      VitalityScreen(uid: uid), // ✅ troca aqui: antes era EstoqueScreen(...)
       NovoProdutoScreen(uid: uid, onProductSaved: onProductSaved),
       const SizedBox(), // placeholder do scanner (modal/push)
       const RelatoriosScreen(),
